@@ -1,20 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Idea Parking</title>
+
+<style>
+body{
+font-family:-apple-system,system-ui;
+padding:20px;
+max-width:600px;
+margin:auto;
+background:#fafafa;
+}
+
+h1{
+margin-bottom:4px;
+}
+
+p{
+color:#666;
+margin-top:0;
+}
+
+textarea{
+width:100%;
+padding:12px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ccc;
+margin-top:10px;
+}
+
+button{
+margin-top:10px;
+padding:10px 16px;
+font-size:16px;
+border:none;
+border-radius:8px;
+background:#111;
+color:white;
+}
+
+button.secondary{
+background:#ddd;
+color:#000;
+}
+
+.idea{
+background:white;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+border:1px solid #eee;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.small{
+font-size:12px;
+color:#888;
+margin-top:20px;
+}
+</style>
 </head>
 
 <body>
 
 <h1>Idea Parking</h1>
-<p>Quickly store ideas before they disappear</p>
+<p>Quickly store ideas before they disappear.</p>
 
-<label>Your idea</label>
-<textarea></textarea>
+<textarea id="ideaInput" placeholder="Write your idea..."></textarea>
 
-<button>Generate</button>
+<br>
 
-<div>Saved idea</div>
+<button onclick="saveIdea()">Save Idea</button>
+<button class="secondary" onclick="clearIdeas()">Clear All</button>
+
+<div id="ideasList"></div>
+
+<p class="small">
+No login. No tracking. No personal data collected. Runs entirely in your browser.
+</p>
+
+<script>
+
+let ideas = JSON.parse(localStorage.getItem("ideas") || "[]")
+
+function render(){
+const list = document.getElementById("ideasList")
+list.innerHTML=""
+
+ideas.forEach((idea,i)=>{
+const div=document.createElement("div")
+div.className="idea"
+
+div.innerHTML=`
+<span>${idea}</span>
+<button onclick="deleteIdea(${i})">✕</button>
+`
+
+list.appendChild(div)
+})
+
+localStorage.setItem("ideas",JSON.stringify(ideas))
+}
+
+function saveIdea(){
+const input=document.getElementById("ideaInput")
+const value=input.value.trim()
+
+if(!value) return
+
+ideas.unshift(value)
+input.value=""
+
+render()
+}
+
+function deleteIdea(i){
+ideas.splice(i,1)
+render()
+}
+
+function clearIdeas(){
+ideas=[]
+render()
+}
+
+render()
+
+</script>
 
 </body>
 </html>
