@@ -6,7 +6,7 @@
 
 <title>Idea → Post Angles | REFRAME Studio</title>
 
-<meta name="description" content="Turn a simple idea into 3 possible post angles." />
+<meta name="description" content="Turn a small idea into 3 possible post angles." />
 
 <style>
 
@@ -27,7 +27,7 @@ margin-bottom:4px;
 .brand{
 font-size:14px;
 color:#666;
-margin-bottom:16px;
+margin-bottom:18px;
 }
 
 textarea{
@@ -83,6 +83,7 @@ display:none;
 
 .angle{
 margin-bottom:14px;
+line-height:1.5;
 }
 
 .footer{
@@ -107,14 +108,18 @@ by REFRAME Studio
 
 <div class="row">
 
-<button id="expandBtn">Expand</button>
+<button id="expandBtn">Generate Angles</button>
 
 <button id="exampleBtn" class="secondary">
-Try example
+Example
 </button>
 
 <button id="copyBtn" class="secondary">
-Copy
+Copy Angles
+</button>
+
+<button id="clearBtn" class="secondary">
+Clear
 </button>
 
 </div>
@@ -135,7 +140,7 @@ Copy
 
 <br><br>
 
-Turn small ideas into possible post angles.  
+Turn a small idea into possible post angles.  
 #Reframed
 
 <br><br>
@@ -155,6 +160,7 @@ const ideaInput=document.getElementById("idea")
 const expandBtn=document.getElementById("expandBtn")
 const exampleBtn=document.getElementById("exampleBtn")
 const copyBtn=document.getElementById("copyBtn")
+const clearBtn=document.getElementById("clearBtn")
 
 const result=document.getElementById("result")
 const status=document.getElementById("status")
@@ -162,6 +168,10 @@ const status=document.getElementById("status")
 const angle1=document.getElementById("angle1")
 const angle2=document.getElementById("angle2")
 const angle3=document.getElementById("angle3")
+
+function isJapanese(text){
+return /[ぁ-んァ-ン一-龯]/.test(text)
+}
 
 function expandIdea(){
 
@@ -172,11 +182,25 @@ status.textContent="Write an idea first"
 return
 }
 
-angle1.textContent="1. Why "+idea+" is more important than people think"
+const jp=isJapanese(idea)
+
+if(jp){
+
+angle1.textContent="1. なぜ「"+idea+"」は多くの人が見落としている問題なのか"
+
+angle2.textContent="2. 「"+idea+"」が起きる本当の理由"
+
+angle3.textContent="3. 「"+idea+"」をシンプルに解決する考え方"
+
+}else{
+
+angle1.textContent="1. Why "+idea+" matters more than people think"
 
 angle2.textContent="2. The hidden problem behind "+idea
 
 angle3.textContent="3. A simple way to rethink "+idea
+
+}
 
 result.style.display="block"
 
@@ -214,9 +238,18 @@ status.textContent="Copied"
 
 }
 
+function clear(){
+
+ideaInput.value=""
+result.style.display="none"
+status.textContent="Cleared"
+
+}
+
 expandBtn.addEventListener("click",expandIdea)
 exampleBtn.addEventListener("click",example)
 copyBtn.addEventListener("click",copy)
+clearBtn.addEventListener("click",clear)
 
 ideaInput.addEventListener("keydown",function(e){
 
