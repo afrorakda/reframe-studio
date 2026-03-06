@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comment → Content | REFRAME Studio</title>
+  <style>
+    :root{
+      --bg:#f7f7fb;
+      --card:#ffffff;
+      --text:#151515;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --accent-2:#2563eb;
+      --soft:#eef2ff;
+      --success:#ecfdf5;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+      background:linear-gradient(180deg,#f9fafb 0%,#f4f6fb 100%);
+      color:var(--text);
+      line-height:1.6;
+    }
+    .wrap{
+      width:min(960px,calc(100% - 24px));
+      margin:0 auto;
+      padding:24px 0 40px;
+    }
+    .hero{
+      padding:24px 0 12px;
+    }
+    .eyebrow{
+      display:inline-block;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      background:#eaf2ff;
+      border:1px solid #dbeafe;
+      padding:6px 10px;
+      border-radius:999px;
+      margin-bottom:12px;
+    }
+    h1{
+      font-size:clamp(28px,5vw,44px);
+      line-height:1.15;
+      margin:0 0 10px;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      max-width:760px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:18px;
+      margin-top:22px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid rgba(17,24,39,.07);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .panel{
+      padding:18px;
+    }
+    .label{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+      font-size:14px;
+      font-weight:700;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:500;
+    }
+    textarea{
+      width:100%;
+      min-height:220px;
+      resize:vertical;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:14px;
+      padding:14px 14px 16px;
+      font:inherit;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s, transform .08s;
+    }
+    textarea:focus{
+      border-color:#93c5fd;
+      box-shadow:0 0 0 4px rgba(37,99,235,.12);
+    }
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:13px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .08s ease, opacity .2s ease, box-shadow .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 8px 18px rgba(17,24,39,.18);
+    }
+    .secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .ghost{
+      background:#f3f4f6;
+      color:#111827;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background:#fff;
+      color:#374151;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .result-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .result-title{
+      margin:0;
+      font-size:18px;
+      line-height:1.35;
+    }
+    .status{
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .blocks{
+      display:grid;
+      gap:12px;
+      margin-top:6px;
+    }
+    .block{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+    }
+    .block h3{
+      margin:0 0 8px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:#4b5563;
+    }
+    .block p{
+      margin:0;
+      font-size:15px;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    .empty{
+      border:1.5px dashed #d1d5db;
+      background:linear-gradient(180deg,#ffffff,#fafafa);
+      border-radius:16px;
+      padding:18px;
+      color:var(--muted);
+      min-height:180px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .meta{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+    .meta .mini{
+      background:var(--soft);
+      border:1px solid #dbeafe;
+      border-radius:12px;
+      padding:12px;
+    }
+    .mini .k{
+      display:block;
+      font-size:11px;
+      color:#4b5563;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:4px;
+      font-weight:700;
+    }
+    .mini .v{
+      font-size:14px;
+      color:#111827;
+      font-weight:700;
+    }
+    .copy-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .copy-note{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+      min-height:18px;
+    }
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    @media (max-width: 820px){
+      .grid{grid-template-columns:1fr}
+      .meta{grid-template-columns:1fr}
+      .wrap{width:min(100% - 16px,960px)}
+      .panel{padding:16px}
+      textarea{min-height:180px}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{scroll-behavior:auto}
+      button,textarea{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">REFRAME Studio</div>
+      <h1>Comment → Content</h1>
+      <p class="sub">批判コメントを、発信の切り口に変えるツール。コメントの背後にある反応を整理し、次の投稿ネタに変換します。</p>
+    </section>
+
+    <section class="grid" aria-label="Comment to Content tool">
+      <div class="card panel">
+        <label class="label" for="commentInput">
+          <span>批判コメントを入力</span>
+          <span class="hint">日本語入力対応</span>
+        </label>
+        <textarea id="commentInput" placeholder="例：それって理想論ですよね。現場を知らない人の発言に見えます。"></textarea>
+
+        <div class="actions">
+          <button class="primary" id="generateBtn" type="button">変換する</button>
+          <button class="secondary" id="sampleBtn" type="button">サンプルを入れる</button>
+          <button class="ghost" id="clearBtn" type="button">クリア</button>
+        </div>
+
+        <div class="chips" aria-label="Quick examples">
+          <button class="chip" type="button" data-fill="それってただの自己満ですよね。誰の役にも立たないと思います。">自己満と言われた</button>
+          <button class="chip" type="button" data-fill="綺麗事すぎます。現実ではそんなにうまくいきません。">綺麗事と言われた</button>
+          <button class="chip" type="button" data-fill="結局、あなたもポジショントークしてるだけでは？">ポジショントークと言われた</button>
+          <button class="chip" type="button" data-fill="そんなの初心者向けすぎる。深さがない。">浅いと言われた</button>
+          <button class="chip" type="button" data-fill="抽象的すぎて何が言いたいのかわからないです。">抽象的と言われた</button>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <div class="result-head">
+          <div>
+            <h2 class="result-title">出力結果</h2>
+            <div class="status" id="resultStatus">入力待ち</div>
+          </div>
+        </div>
+
+        <div id="emptyState" class="empty">
+          コメントを入力して「変換する」を押すと、<br>
+          投稿の切り口・反応の正体・投稿アイデアが表示されます。
+        </div>
+
+        <div id="resultArea" hidden>
+          <div class="blocks">
+            <section class="block">
+              <h3>Possible post angle</h3>
+              <p id="postAngle"></p>
+            </section>
+
+            <section class="block">
+              <h3>What people are reacting to</h3>
+              <p id="reactionTarget"></p>
+            </section>
+
+            <section class="block">
+              <h3>Content idea</h3>
+              <p id="contentIdea"></p>
+            </section>
+          </div>
+
+          <div class="meta">
+            <div class="mini">
+              <span class="k">Tone</span>
+              <span class="v" id="metaTone">—</span>
+            </div>
+            <div class="mini">
+              <span class="k">Focus</span>
+              <span class="v" id="metaFocus">—</span>
+            </div>
+            <div class="mini">
+              <span class="k">Format</span>
+              <span class="v" id="metaFormat">—</span>
+            </div>
+          </div>
+
+          <div class="copy-row">
+            <button class="secondary" id="copyAllBtn" type="button">結果をコピー</button>
+          </div>
+          <div class="copy-note" id="copyNote" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+      <p><strong>Built by REFRAME Studio</strong></p>
+
+      <p>
+        批判コメントを、発信の切り口・反応の正体・次の投稿アイデアに変換するブラウザ内ツール。<br>
+        #Reframed
+      </p>
+
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const input = document.getElementById('commentInput');
+      const generateBtn = document.getElementById('generateBtn');
+      const sampleBtn = document.getElementById('sampleBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const emptyState = document.getElementById('emptyState');
+      const resultArea = document.getElementById('resultArea');
+      const resultStatus = document.getElementById('resultStatus');
+      const postAngle = document.getElementById('postAngle');
+      const reactionTarget = document.getElementById('reactionTarget');
+      const contentIdea = document.getElementById('contentIdea');
+      const metaTone = document.getElementById('metaTone');
+      const metaFocus = document.getElementById('metaFocus');
+      const metaFormat = document.getElementById('metaFormat');
+      const copyAllBtn = document.getElementById('copyAllBtn');
+      const copyNote = document.getElementById('copyNote');
+
+      const sampleComment = 'それって理想論ですよね。現場を知らない人の発言に見えます。';
+
+      const keywordRules = [
+        {
+          match: /(理想論|綺麗事|きれいごと|現実じゃない|現実を知らない|甘い)/,
+          angle: '「理想論」と言われる発信ほど、まだ言語化されていない現場課題に触れていることがある',
+          reacting: '相手は“内容の正しさ”より、“実装の難しさ”や“自分の現実との距離”に反応している',
+          idea: '「理想論に見える提案が、なぜ現場で拒否されるのか」を3つのズレ（前提・経験・再現性）で解説する投稿',
+          tone: '冷静',
+          focus: '理想と現実のギャップ',
+          format: '3ポイント解説'
+        },
+        {
+          match: /(自己満|誰の役にも立たない|独りよがり|意味ない)/,
+          angle: '“自己満”という批判の裏には、価値の受け取り方がまだ一致していないという論点がある',
+          reacting: '人は内容そのものより、「自分に利益があるか」「文脈に接続できるか」に反応している',
+          idea: '「自己満と言われた発信が、どうすれば他者価値に変わるのか」を具体例つきで示す投稿',
+          tone: '翻訳的',
+          focus: '価値の伝達',
+          format: 'Before / After比較'
+        },
+        {
+          match: /(浅い|薄い|深さがない|初心者向けすぎる|レベルが低い)/,
+          angle: '“浅い”という批判は、情報量の問題だけでなく、期待していた深度とのズレを示している',
+          reacting: '相手は“内容不足”というより、“自分向けではない”ことに反応している可能性が高い',
+          idea: '「同じテーマでも、初心者向け・実務向け・上級者向けで何が変わるのか」を階層で整理する投稿',
+          tone: '整理型',
+          focus: '対象読者のズレ',
+          format: 'レベル別マップ'
+        },
+        {
+          match: /(抽象的|ふわっと|わからない|何が言いたい|具体性がない)/,
+          angle: '抽象的と言われるときは、メッセージではなく“着地の設計”が不足していることが多い',
+          reacting: '相手は思想自体ではなく、「明日どう使えるか」が見えないことに反応している',
+          idea: '抽象論を実務に落とすための変換ステップを、1つのテーマで具体化して見せる投稿',
+          tone: '実務的',
+          focus: '抽象から具体への変換',
+          format: 'ステップ解説'
+        },
+        {
+          match: /(ポジショントーク|売り込み|営業|誘導|結局それが言いたい)/,
+          angle: '“ポジショントーク”と見なされる発信は、意見よりも利害関係の見え方が先に読まれている',
+          reacting: '相手は主張の内容ではなく、「誰の得になる話か」という構造に反応している',
+          idea: '「なぜ正しい話でも信用されないのか」を、内容ではなく利害の見え方から解説する投稿',
+          tone: '構造分析',
+          focus: '信頼と利害',
+          format: '構造分解'
+        },
+        {
+          match: /(上から目線|偉そう|説教|押しつけ|決めつけ)/,
+          angle: '“上から目線”という反応は、主張の強さではなく、相手の解釈余地のなさに起因することが多い',
+          reacting: '人は正しさより、“自分で考える余白”を奪われることに強く反応する',
+          idea: '「同じ内容でも反発を生む言い方と届く言い方の差」を比較する投稿',
+          tone: '対話的',
+          focus: '伝え方の余白',
+          format: '言い換え比較'
+        },
+        {
+          match: /(攻撃的|感じ悪い|不快|きつい|怖い)/,
+          angle: '批判が“内容”ではなく“温度”に向くとき、受け手は論点より安全性を見ている',
+          reacting: '相手は主張の中身より、「この人の話を受け取って大丈夫か」という心理的安全性に反応している',
+          idea: '「強いメッセージを保ちつつ、拒絶されにくくする言い換え」を例つきで紹介する投稿',
+          tone: 'やわらかい',
+          focus: '温度設計',
+          format: '言い換えテンプレ'
+        }
+      ];
+
+      const fallbackAngles = [
+        '批判コメントは“否定”ではなく、“どこに引っかかったか”を示す観測データとして読む',
+        '反発が生まれる場所には、まだ説明されていない前提や期待値のズレが隠れている',
+        'コメントの強さは、テーマの重要性ではなく、受け手の利害や不安に触れた度合いを示している'
+      ];
+
+      const fallbackReacting = [
+        '人は発信内容そのものより、価値観のズレ・立場の違い・再現可能性への不安に反応しやすい',
+        'この反応は「間違っている」より、「自分の経験と接続しづらい」に近い可能性がある',
+        '表面の言葉より、相手の期待・不信・違和感のポイントを読むと次の発信材料になる'
+      ];
+
+      const fallbackIdeas = [
+        'このコメントを起点に、「なぜそう見えるのか」を分解して説明する投稿',
+        '批判の背景にある誤解・前提不足・期待値のズレを整理する投稿',
+        '“反発されたポイント”をテーマに、伝え方を改善した具体例を出す投稿'
+      ];
+
+      const tones = ['冷静', '実務的', '構造分析', '翻訳的', '対話的'];
+      const focuses = ['期待値のズレ', '伝え方の設計', '信頼の構造', '価値の翻訳', '実装の難しさ'];
+      const formats = ['3ポイント解説', '比較投稿', '構造分解', 'ステップ解説', '箇条書き投稿'];
+
+      function normalizeText(text) {
+        return (text || '')
+          .replace(/\r\n/g, '\n')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function extractQuotedFragment(text) {
+        const t = normalizeText(text);
+        if (!t) return '';
+        const clipped = t.length > 44 ? t.slice(0, 44) + '…' : t;
+        return `「${clipped}」`;
+      }
+
+      function pickByHash(text, arr) {
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+          hash = ((hash << 5) - hash) + text.charCodeAt(i);
+          hash |= 0;
+        }
+        return arr[Math.abs(hash) % arr.length];
+      }
+
+      function inferRule(text) {
+        for (const rule of keywordRules) {
+          if (rule.match.test(text)) return rule;
+        }
+        return null;
+      }
+
+      function buildOutput(rawText) {
+        const text = normalizeText(rawText);
+        const fragment = extractQuotedFragment(text);
+        const rule = inferRule(text);
+
+        if (rule) {
+          return {
+            angle: `${fragment} という反応から切り出せる投稿角度：${rule.angle}。`,
+            reacting: `${fragment} に対して、${rule.reacting}。`,
+            idea: `${rule.idea}。冒頭でコメントを一文だけ引用し、次に「その反応が起こる理由」、最後に「どう読み替えるか」を置く構成が使いやすい。`,
+            tone: rule.tone,
+            focus: rule.focus,
+            format: rule.format
+          };
+        }
+
+        return {
+          angle: `${fragment} というコメントは、発信そのものより“受け手がどこで引っかかったか”を示している。投稿角度は「${pickByHash(text, fallbackAngles)}」で組み立てる。`,
+          reacting: `${pickByHash(text.split('').reverse().join(''), fallbackReacting)}。つまり、反応の対象は主張そのものだけではなく、前提・立場・受け取り方のズレかもしれない。`,
+          idea: `${pickByHash(text + 'idea', fallbackIdeas)}。構成は「コメントの要点 → 相手が反応したポイント → そこから広げる学び」の順でまとめる。`,
+          tone: pickByHash(text + 'tone', tones),
+          focus: pickByHash(text + 'focus', focuses),
+          format: pickByHash(text + 'format', formats)
+        };
+      }
+
+      function renderResult(output) {
+        postAngle.textContent = output.angle;
+        reactionTarget.textContent = output.reacting;
+        contentIdea.textContent = output.idea;
+        metaTone.textContent = output.tone;
+        metaFocus.textContent = output.focus;
+        metaFormat.textContent = output.format;
+
+        emptyState.hidden = true;
+        resultArea.hidden = false;
+        resultStatus.textContent = '変換済み';
+      }
+
+      function clearResult() {
+        resultArea.hidden = true;
+        emptyState.hidden = false;
+        resultStatus.textContent = '入力待ち';
+        copyNote.textContent = '';
+      }
+
+      function generate() {
+        const text = normalizeText(input.value);
+        if (!text) {
+          clearResult();
+          input.focus();
+          return;
+        }
+        const output = buildOutput(text);
+        renderResult(output);
+      }
+
+      async function copyAll() {
+        const text = [
+          'Possible post angle',
+          postAngle.textContent,
+          '',
+          'What people are reacting to',
+          reactionTarget.textContent,
+          '',
+          'Content idea',
+          contentIdea.textContent
+        ].join('\n');
+
+        try {
+          await navigator.clipboard.writeText(text);
+          copyNote.textContent = '結果をコピーしました。';
+        } catch (e) {
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          temp.remove();
+          copyNote.textContent = '結果をコピーしました。';
+        }
+      }
+
+      generateBtn.addEventListener('click', generate);
+      sampleBtn.addEventListener('click', () => {
+        input.value = sampleComment;
+        generate();
+      });
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        clearResult();
+        input.focus();
+      });
+      copyAllBtn.addEventListener('click', copyAll);
+
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          input.value = chip.getAttribute('data-fill') || '';
+          generate();
+        });
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          generate();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
