@@ -1,376 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REFRAME Studio</title>
-  <meta name="description" content="Turn harsh comments into useful feedback." />
-  <style>
-    :root {
-      --bg: #f5f5f5;
-      --card: #ffffff;
-      --text: #111111;
-      --muted: #666666;
-      --line: #dddddd;
-      --accent: #163b6d;
-      --soft: #fafafa;
-      --danger: #e63946;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * {
-      box-sizing: border-box;
-    }
+<title>REFRAME Studio – Harsh Comment Reframer</title>
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
+<style>
 
-    .wrap {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
+body{
+font-family:Arial, Helvetica, sans-serif;
+background:#ffffff;
+color:#111;
+max-width:720px;
+margin:auto;
+padding:24px;
+}
 
-    h1 {
-      margin: 0 0 4px;
-      font-size: 32px;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
+h1{
+font-size:30px;
+margin-bottom:4px;
+}
 
-    .sub {
-      margin: 0 0 20px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+.tagline{
+color:#444;
+margin-bottom:16px;
+}
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-    }
+textarea{
+width:100%;
+height:140px;
+padding:12px;
+font-size:16px;
+border:1px solid #ccc;
+border-radius:10px;
+}
 
-    label {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+.row{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:12px;
+}
 
-    textarea {
-      width: 100%;
-      min-height: 130px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #fff;
-      color: var(--text);
-      font: inherit;
-      resize: vertical;
-    }
+button{
+padding:10px 14px;
+font-size:15px;
+background:#1E3A5F;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
 
-    .hero {
-      margin: 18px 0 14px;
-      padding: 6px 4px 0;
-      font-size: 30px;
-      line-height: 1.15;
-      font-weight: 800;
-      color: var(--danger);
-      text-shadow:
-        -1px -1px 0 #333,
-         1px -1px 0 #333,
-        -1px  1px 0 #333,
-         1px  1px 0 #333;
-    }
+button.secondary{
+background:#f2f2f2;
+color:#111;
+border:1px solid #ddd;
+}
 
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 16px 0 10px;
-    }
+button:hover{
+opacity:0.9;
+}
 
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 14px;
-      font: inherit;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-    }
+.status{
+margin-top:10px;
+font-size:13px;
+color:#444;
+}
 
-    button.secondary {
-      background: #fff;
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
+.result{
+margin-top:20px;
+border:1px solid #e5e5e5;
+border-radius:12px;
+padding:18px;
+background:#fafafa;
+}
 
-    .status {
-      min-height: 24px;
-      font-size: 13px;
-      color: var(--muted);
-      margin: 4px 0 10px;
-    }
+.label{
+font-weight:bold;
+font-size:13px;
+color:#555;
+margin-bottom:6px;
+}
 
-    .result {
-      margin-top: 10px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--soft);
-      padding: 18px;
-    }
+.block{
+margin-bottom:16px;
+}
 
-    .section + .section {
-      margin-top: 18px;
-    }
+.footer{
+margin-top:16px;
+font-size:12px;
+color:#777;
+line-height:1.4;
+}
 
-    .section-title {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-bottom: 8px;
-    }
+.note{
+margin-top:14px;
+font-size:12px;
+color:#666;
+}
 
-    .section-text {
-      font-size: 16px;
-    }
-
-    .list {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    .meta {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .footer {
-      margin-top: 18px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>REFRAME Studio</h1>
-    <p class="sub">Harsh Comment Reframer</p>
 
-    <div class="card">
-      <label for="inputText">Paste a harsh comment</label>
-      <textarea id="inputText" placeholder="Example: I have no idea what you're talking about. What you're writing is way too confusing."></textarea>
+<h1>REFRAME <span style="font-weight:300;">Studio</span></h1>
 
-      <div class="hero">Turn harsh comments<br>into useful feedback</div>
+<div class="tagline">
+Harsh Comment Reframer
+</div>
 
-      <div class="actions">
-        <button id="reframeBtn" type="button">Reframe</button>
-        <button id="exampleBtn" type="button" class="secondary">Try example</button>
-        <button id="copyResultBtn" type="button" class="secondary">Copy result</button>
-        <button id="copyPostBtn" type="button" class="secondary">Copy as Post</button>
-      </div>
+<textarea id="input" placeholder="Paste a harsh comment here"></textarea>
 
-      <div class="status" id="statusText"></div>
+<div class="row">
 
-      <div class="result">
-        <div class="section">
-          <div class="section-title">Cleaned Signal</div>
-          <div class="section-text" id="signalText">Your reframed signal will appear here.</div>
-        </div>
+<button id="btn">Reframe</button>
 
-        <div class="section">
-          <div class="section-title">Core Request</div>
-          <div class="section-text" id="requestText">Your extracted request will appear here.</div>
-        </div>
+<button id="exampleBtn" class="secondary">
+Try example
+</button>
 
-        <div class="section">
-          <div class="section-title">Strategic Move</div>
-          <div class="section-text" id="moveText">Your next move will appear here.</div>
-        </div>
+<button id="copyBtn" class="secondary">
+Copy result
+</button>
 
-        <div class="meta" id="metaText">
-          Reframed with REFRAME Studio<br>
-          REFRAME = turn criticism into improvement signals.<br>
-          Runs entirely in your browser. No data is stored.<br>
-          #Reframed
-        </div>
-      </div>
+<button id="copyPostBtn" class="secondary">
+Copy as Post
+</button>
 
-      <div class="footer">
-        We don’t store your text. Don’t paste personal info.
-      </div>
-    </div>
-  </div>
+<button id="shareBtn" class="secondary">
+Share on X
+</button>
 
-  <script>
-    const inputText = document.getElementById("inputText");
-    const signalText = document.getElementById("signalText");
-    const requestText = document.getElementById("requestText");
-    const moveText = document.getElementById("moveText");
-    const statusText = document.getElementById("statusText");
+</div>
 
-    const example = "I have no idea what you're talking about. What you're writing is way too confusing.";
+<div id="status" class="status"></div>
 
-    function normalize(text) {
-      return text.trim().toLowerCase();
-    }
+<div id="output" class="result" style="display:none">
 
-    function hasAny(text, words) {
-      return words.some(word => text.includes(word));
-    }
+<div class="block">
+<div class="label">Cleaned Signal</div>
+<div id="signal"></div>
+</div>
 
-    function unique(items) {
-      return [...new Set(items)];
-    }
+<div class="block">
+<div class="label">Core Request</div>
+<div id="request"></div>
+</div>
 
-    function buildReframe(raw) {
-      const text = normalize(raw);
+<div class="block">
+<div class="label">Strategic Move</div>
+<div id="move"></div>
+</div>
 
-      let signal = "Request to improve clarity or usability.";
-      const requests = [];
-      const moves = [];
+<div class="footer">
+Reframed with REFRAME Studio<br>
+REFRAME = 批判を「改善要望」に変換する思考ツール<br>
+Runs entirely in your browser. No data is stored.<br>
+#Reframed
+</div>
 
-      if (hasAny(text, ["confusing", "unclear", "hard to understand", "don't understand", "no idea"])) {
-        signal = "The message may be unclear and harder to understand than intended.";
-        requests.push("Make it easier to understand");
-        requests.push("Improve structure");
-        moves.push("Simplify the wording");
-        moves.push("Shorten the explanation");
-        moves.push("Add one clear example");
-      }
+</div>
 
-      if (hasAny(text, ["too long", "long", "wall of text"])) {
-        signal = "The message may feel too dense or too long.";
-        requests.push("Make it shorter");
-        requests.push("Highlight the main point faster");
-        moves.push("Cut extra detail");
-        moves.push("Lead with the main point");
-      }
+<div class="note">
+We don’t store your text. Don’t paste personal info.
+</div>
 
-      if (hasAny(text, ["boring", "dull", "flat"])) {
-        signal = "The content may not feel engaging enough.";
-        requests.push("Make it more engaging");
-        moves.push("Strengthen the opening");
-        moves.push("Use a sharper example");
-      }
+<script>
 
-      if (hasAny(text, ["stupid", "bad", "terrible", "awful", "trash"])) {
-        signal = "The reaction is harsh, but there may still be a useful signal about value or quality.";
-        requests.push("Clarify the value");
-        requests.push("Improve the weak part instead of defending the whole thing");
-        moves.push("Find the weakest part and improve it first");
-      }
+const $ = (id)=>document.getElementById(id)
 
-      if (hasAny(text, ["messy", "all over the place", "disorganized"])) {
-        signal = "The structure may feel disorganized.";
-        requests.push("Create a clearer flow");
-        requests.push("Group related points together");
-        moves.push("Reorder the sections");
-        moves.push("Use headings or bullets");
-      }
+function isJapanese(text){
+return /[ぁ-んァ-ン一-龯]/.test(text)
+}
 
-      if (requests.length === 0) {
-        requests.push("Extract the useful part of the criticism");
-        requests.push("Look for the hidden improvement request");
-        moves.push("Rewrite the message in neutral language");
-        moves.push("Identify one change worth testing");
-        moves.push("Ignore the tone and keep the signal");
-      }
+function setStatus(msg){
+$("status").textContent = msg
+}
 
-      const cleanRequests = unique(requests);
-      const cleanMoves = unique(moves).slice(0, 3);
+function reframe(){
 
-      return {
-        signal,
-        request: cleanRequests.map(item => "• " + item).join("\n"),
-        move: "Next move:\n" + cleanMoves.map((item, index) => `${index + 1}. ${item}`).join("\n")
-      };
-    }
+const raw = $("input").value.trim()
 
-    function renderResult(result) {
-      signalText.textContent = result.signal;
-      requestText.textContent = result.request;
-      moveText.textContent = result.move;
-    }
+if(!raw){
+setStatus("Paste a comment first")
+return
+}
 
-    document.getElementById("reframeBtn").addEventListener("click", () => {
-      const raw = inputText.value.trim();
+const lang = isJapanese(raw) ? "ja" : "en"
 
-      if (!raw) {
-        statusText.textContent = "Paste a comment first.";
-        return;
-      }
+let signal
+let request
+let move
 
-      const result = buildReframe(raw);
-      renderResult(result);
-      statusText.textContent = "Reframed.";
-    });
+if(lang==="ja"){
 
-    document.getElementById("exampleBtn").addEventListener("click", () => {
-      inputText.value = example;
-      const result = buildReframe(example);
-      renderResult(result);
-      statusText.textContent = "Example loaded.";
-    });
+signal="内容を改善してほしいという要望"
 
-    document.getElementById("copyResultBtn").addEventListener("click", async () => {
-      const text = [
-        "REFRAME Studio",
-        "",
-        "Cleaned Signal",
-        signalText.textContent,
-        "",
-        "Core Request",
-        requestText.textContent,
-        "",
-        "Strategic Move",
-        moveText.textContent
-      ].join("\n");
+request="・分かりやすくする\n・使いやすくする"
 
-      try {
-        await navigator.clipboard.writeText(text);
-        statusText.textContent = "Result copied.";
-      } catch (e) {
-        statusText.textContent = "Copy failed.";
-      }
-    });
+move="次の一手：\n1. UIをシンプルに\n2. 説明を短く\n3. 例を追加"
 
-    document.getElementById("copyPostBtn").addEventListener("click", async () => {
-      const text = [
-        "Harsh comment reframed with REFRAME Studio",
-        "",
-        "Cleaned Signal:",
-        signalText.textContent,
-        "",
-        "Core Request:",
-        requestText.textContent,
-        "",
-        "Strategic Move:",
-        moveText.textContent,
-        "",
-        "Runs entirely in the browser. No data is stored.",
-        "#Reframed"
-      ].join("\n");
+}else{
 
-      try {
-        await navigator.clipboard.writeText(text);
-        statusText.textContent = "Post copied.";
-      } catch (e) {
-        statusText.textContent = "Copy failed.";
-      }
-    });
-  </script>
+signal="Request to improve clarity or usability."
+
+request="- Make it easier to understand\n- Improve structure"
+
+move="Next move:\n1. Simplify layout\n2. Shorten explanation\n3. Add an example"
+
+}
+
+$("signal").innerText=signal
+$("request").innerText=request
+$("move").innerText=move
+
+$("output").style.display="block"
+
+setStatus("Done")
+
+}
+
+function example(){
+
+$("input").value="Your UI is confusing and looks outdated."
+
+setStatus("Example inserted")
+
+}
+
+async function copy(){
+
+const text =
+`REFRAME Studio
+
+${$("signal").innerText}
+
+${$("request").innerText}
+
+${$("move").innerText}
+
+#Reframed`
+
+await navigator.clipboard.writeText(text)
+
+setStatus("Copied")
+
+}
+
+async function copyPost(){
+
+const text =
+`I reframed a harsh comment using REFRAME Studio.
+
+${$("signal").innerText}
+
+${$("request").innerText}
+
+${$("move").innerText}
+
+#Reframed`
+
+await navigator.clipboard.writeText(text)
+
+setStatus("Post copied")
+
+}
+
+function share(){
+
+const text="I reframed a harsh comment using REFRAME Studio. #Reframed"
+
+const url=location.href
+
+window.open(
+"https://twitter.com/intent/tweet?text="+encodeURIComponent(text)+"&url="+encodeURIComponent(url)
+)
+
+}
+
+$("btn").addEventListener("click",reframe)
+$("exampleBtn").addEventListener("click",example)
+$("copyBtn").addEventListener("click",copy)
+$("copyPostBtn").addEventListener("click",copyPost)
+$("shareBtn").addEventListener("click",share)
+
+$("input").addEventListener("keydown",function(e){
+
+if(e.key==="Enter" && !e.shiftKey){
+
+e.preventDefault()
+
+reframe()
+
+}
+
+})
+
+setStatus("Loaded")
+
+</script>
+
 </body>
 </html>
