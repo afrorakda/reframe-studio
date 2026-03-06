@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thread Navigator | REFRAME Studio</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: auto;
+      padding: 20px;
+      background: #ffffff;
+      color: #111;
+      line-height: 1.5;
+    }
+
+    h1 {
+      margin-bottom: 4px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    h3 {
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #111;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .search {
+      margin-top: 20px;
+    }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 12px;
+      background: #fafafa;
+    }
+
+    .delete {
+      margin-top: 10px;
+      background: #cc3333;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #555;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+
+    .footer p {
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Thread Navigator</h1>
+  <div class="subtitle">by REFRAME Studio</div>
+
+  <h3>Add Thread</h3>
+
+  <input type="date" id="date" />
+
+  <select id="ai">
+    <option>ChatGPT</option>
+    <option>Gemini</option>
+    <option>Claude</option>
+    <option>Grok</option>
+    <option>Other</option>
+  </select>
+
+  <input id="thread" placeholder="Thread name" />
+  <input id="topic" placeholder="Actual topic" />
+  <input id="next" placeholder="Next step" />
+
+  <button onclick="addEntry()">Add</button>
+
+  <div class="search">
+    <input id="search" placeholder="Search..." onkeyup="render()" />
+  </div>
+
+  <div id="list"></div>
+
+  <div class="footer">
+    <p><strong>Built by REFRAME Studio</strong></p>
+    <p>
+      No login<br />
+      No tracking<br />
+      No personal data collected<br />
+      Runs entirely in your browser
+    </p>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem("threads") || "[]");
+
+    function save() {
+      localStorage.setItem("threads", JSON.stringify(data));
+    }
+
+    function addEntry() {
+      const entry = {
+        date: document.getElementById("date").value,
+        ai: document.getElementById("ai").value,
+        thread: document.getElementById("thread").value.trim(),
+        topic: document.getElementById("topic").value.trim(),
+        next: document.getElementById("next").value.trim()
+      };
+
+      if (!entry.thread) return;
+
+      data.unshift(entry);
+      save();
+
+      document.getElementById("thread").value = "";
+      document.getElementById("topic").value = "";
+      document.getElementById("next").value = "";
+
+      render();
+    }
+
+    function deleteEntry(index) {
+      data.splice(index, 1);
+      save();
+      render();
+    }
+
+    function render() {
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      const q = document.getElementById("search").value.toLowerCase();
+
+      data.forEach((e, i) => {
+        const text = (e.ai + " " + e.thread + " " + e.topic).toLowerCase();
+
+        if (!text.includes(q)) return;
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML =
+          "<b>" + (e.date || "No date") + "</b><br>" +
+          e.ai + "<br>" +
+          "<b>" + e.thread + "</b><br>" +
+          "Topic: " + (e.topic || "-") + "<br>" +
+          "Next: " + (e.next || "-") +
+          "<br><button class='delete' onclick='deleteEntry(" + i + ")'>Delete</button>";
+
+        list.appendChild(card);
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>
