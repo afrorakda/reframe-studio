@@ -1,339 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REFRAME Studio | REFRAME Studio</title>
+  <meta name="description" content="Turn harsh comments into useful feedback." />
+  <style>
+    :root{
+      --bg:#f5f5f5;
+      --card:#ffffff;
+      --soft:#fafafa;
+      --text:#111111;
+      --muted:#666666;
+      --line:#dddddd;
+      --accent:#1e3a5f;
+      --accent-hover:#16314f;
+      --chip:#f2f2f2;
+      --shadow:0 1px 2px rgba(0,0,0,0.04);
+    }
 
-<title>REFRAME Studio – Harsh Comment Reframer</title>
+    *{
+      box-sizing:border-box;
+    }
 
-<meta name="description" content="Turn harsh comments into useful feedback." />
+    html{
+      -webkit-text-size-adjust:100%;
+    }
 
-<style>
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
 
-body{
-font-family:Arial, Helvetica, sans-serif;
-background:#ffffff;
-color:#111;
-max-width:720px;
-margin:auto;
-padding:24px;
-}
+    .wrap{
+      max-width:760px;
+      margin:0 auto;
+      padding:24px 16px 40px;
+    }
 
-h1{
-font-size:30px;
-margin-bottom:4px;
-}
+    .topbar{
+      margin-bottom:18px;
+    }
 
-.tagline{
-color:#444;
-margin-bottom:16px;
-}
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      text-decoration:none;
+      color:var(--muted);
+      font-size:14px;
+    }
 
-textarea{
-width:100%;
-height:140px;
-padding:12px;
-font-size:16px;
-border:1px solid #ccc;
-border-radius:10px;
-}
+    .back-link:hover{
+      color:var(--text);
+    }
 
-.row{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:12px;
-}
+    .hero{
+      margin-bottom:20px;
+    }
 
-button{
-padding:10px 14px;
-font-size:15px;
-background:#1E3A5F;
-color:white;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
+    h1{
+      margin:0 0 4px;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-0.02em;
+    }
 
-button.secondary{
-background:#f2f2f2;
-color:#111;
-border:1px solid #ddd;
-}
+    .brand{
+      font-size:14px;
+      color:var(--muted);
+      margin:0 0 10px;
+    }
 
-button:hover{
-opacity:0.9;
-}
+    .tagline{
+      font-size:16px;
+      color:var(--text);
+      margin:0;
+    }
 
-.status{
-margin-top:10px;
-font-size:13px;
-color:#444;
-}
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
 
-.result{
-margin-top:20px;
-border:1px solid #e5e5e5;
-border-radius:12px;
-padding:18px;
-background:#fafafa;
-}
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
 
-.label{
-font-weight:bold;
-font-size:13px;
-color:#555;
-margin-bottom:6px;
-}
+    textarea{
+      width:100%;
+      min-height:150px;
+      padding:14px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      resize:vertical;
+    }
 
-.block{
-margin-bottom:16px;
-}
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
 
-.footer{
-margin-top:16px;
-font-size:12px;
-color:#777;
-line-height:1.4;
-}
+    .chip{
+      appearance:none;
+      border:1px solid var(--line);
+      background:var(--chip);
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 10px;
+      font:inherit;
+      font-size:13px;
+      cursor:pointer;
+    }
 
-.note{
-margin-top:14px;
-font-size:12px;
-color:#666;
-}
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
 
-.global-footer{
-margin-top:40px;
-font-size:12px;
-color:#666;
-line-height:1.6;
-}
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:12px 14px;
+      font:inherit;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+    }
 
-</style>
+    button:hover{
+      background:var(--accent-hover);
+    }
+
+    button.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    button.secondary:hover{
+      background:#f8f8f8;
+    }
+
+    .status{
+      min-height:22px;
+      margin-top:12px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .result{
+      display:none;
+      margin-top:18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--soft);
+      padding:18px;
+    }
+
+    .block + .block{
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+
+    .label{
+      font-weight:700;
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .result-text{
+      font-size:16px;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    .inline-footer{
+      margin-top:18px;
+      padding-top:16px;
+      border-top:1px solid var(--line);
+      font-size:12px;
+      color:#777;
+      line-height:1.6;
+    }
+
+    .global-footer{
+      margin-top:36px;
+      font-size:12px;
+      color:#666;
+      line-height:1.7;
+    }
+
+    .global-footer p{
+      margin:0 0 14px;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back-link" href="./">← Back to REFRAME Studio</a>
+    </div>
 
-<h1>REFRAME <span style="font-weight:300;">Studio</span></h1>
+    <div class="hero">
+      <h1>REFRAME Studio</h1>
+      <p class="brand">by REFRAME Studio</p>
+      <p class="tagline">Turn harsh comments into useful feedback.</p>
+    </div>
 
-<div class="tagline">
-Harsh Comment Reframer
-</div>
+    <div class="panel">
+      <label for="input">Paste a harsh comment</label>
+      <textarea id="input" placeholder="Paste a harsh comment here"></textarea>
 
-<textarea id="input" placeholder="Paste a harsh comment here"></textarea>
+      <div class="chips">
+        <button class="chip" type="button" id="exampleEn">Try English example</button>
+        <button class="chip" type="button" id="exampleJa">日本語の例を入れる</button>
+      </div>
 
-<div class="row">
+      <div class="actions">
+        <button id="btn" type="button">Reframe</button>
+        <button id="copyBtn" type="button" class="secondary">Copy result</button>
+        <button id="copyPostBtn" type="button" class="secondary">Copy as Post</button>
+        <button id="shareBtn" type="button" class="secondary">Share on X</button>
+        <button id="clearBtn" type="button" class="secondary">Clear</button>
+      </div>
 
-<button id="btn">Reframe</button>
+      <div id="status" class="status"></div>
 
-<button id="exampleBtn" class="secondary">
-Try example
-</button>
+      <div id="output" class="result">
+        <div class="block">
+          <div class="label">Cleaned Signal</div>
+          <div id="signal" class="result-text"></div>
+        </div>
 
-<button id="copyBtn" class="secondary">
-Copy result
-</button>
+        <div class="block">
+          <div class="label">Core Request</div>
+          <div id="request" class="result-text"></div>
+        </div>
 
-<button id="copyPostBtn" class="secondary">
-Copy as Post
-</button>
+        <div class="block">
+          <div class="label">Strategic Move</div>
+          <div id="move" class="result-text"></div>
+        </div>
 
-<button id="shareBtn" class="secondary">
-Share on X
-</button>
+        <div class="inline-footer">
+          Reframed with REFRAME Studio<br>
+          REFRAME = 批判を「改善要望」に変換する思考ツール<br>
+          Runs entirely in your browser. No data is stored.<br>
+          #Reframed
+        </div>
+      </div>
+    </div>
 
-</div>
+    <footer class="global-footer">
+      <p><strong>Built by REFRAME Studio</strong></p>
 
-<div id="status" class="status"></div>
+      <p>
+        Turn harsh criticism into useful signals.<br>
+        #Reframed
+      </p>
 
-<div id="output" class="result" style="display:none">
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
 
-<div class="block">
-<div class="label">Cleaned Signal</div>
-<div id="signal"></div>
-</div>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
 
-<div class="block">
-<div class="label">Core Request</div>
-<div id="request"></div>
-</div>
+  <script>
+    const $ = (id) => document.getElementById(id);
 
-<div class="block">
-<div class="label">Strategic Move</div>
-<div id="move"></div>
-</div>
+    function isJapanese(text) {
+      return /[ぁ-んァ-ン一-龯]/.test(text);
+    }
 
-<div class="footer">
-Reframed with REFRAME Studio<br>
-REFRAME = 批判を「改善要望」に変換する思考ツール<br>
-Runs entirely in your browser. No data is stored.<br>
-#Reframed
-</div>
+    function setStatus(msg) {
+      $("status").textContent = msg;
+    }
 
-</div>
+    function showOutput() {
+      $("output").style.display = "block";
+    }
 
-<div class="note">
-We don’t store your text. Don’t paste personal info.
-</div>
+    function hideOutput() {
+      $("output").style.display = "none";
+    }
 
-<div class="global-footer">
+    function reframe() {
+      const raw = $("input").value.trim();
 
-<strong>Built by REFRAME Studio</strong>
+      if (!raw) {
+        setStatus("Paste a comment first.");
+        hideOutput();
+        return;
+      }
 
-<br><br>
+      const lang = isJapanese(raw) ? "ja" : "en";
 
-Turn harsh criticism into useful signals.
+      let signal = "";
+      let request = "";
+      let move = "";
 
-<br>
+      if (lang === "ja") {
+        signal = "内容や伝え方を改善してほしいという要望。";
+        request = "・分かりやすくする\n・構造を整理する\n・相手が理解しやすい形にする";
+        move = "次の一手：\n1. 説明を短くする\n2. 一番言いたいことを先に出す\n3. 具体例を1つ加える";
+      } else {
+        signal = "There is likely a request to improve clarity, structure, or usability.";
+        request = "- Make it easier to understand\n- Improve structure\n- Make the point clearer";
+        move = "Next move:\n1. Shorten the explanation\n2. Put the main point first\n3. Add one concrete example";
+      }
 
-#Reframed
+      $("signal").innerText = signal;
+      $("request").innerText = request;
+      $("move").innerText = move;
 
-<br><br>
+      showOutput();
+      setStatus("Reframed.");
+    }
 
-Open-source style tools. Simple. Private. Fast.
+    function insertEnglishExample() {
+      $("input").value = "Your UI is confusing and looks outdated.";
+      setStatus("English example inserted.");
+    }
 
-<br><br>
+    function insertJapaneseExample() {
+      $("input").value = "何を言いたいのか分かりにくいし、説明が長すぎる。";
+      setStatus("日本語の例を入れました。");
+    }
 
-No login. No tracking. No personal data collected.  
-Runs entirely in your browser.
+    async function copyResult() {
+      if ($("output").style.display === "none" || !$("signal").innerText) {
+        setStatus("Nothing to copy yet.");
+        return;
+      }
 
-</div>
-
-<script>
-
-const $ = (id)=>document.getElementById(id)
-
-function isJapanese(text){
-return /[ぁ-んァ-ン一-龯]/.test(text)
-}
-
-function setStatus(msg){
-$("status").textContent = msg
-}
-
-function reframe(){
-
-const raw = $("input").value.trim()
-
-if(!raw){
-setStatus("Paste a comment first")
-return
-}
-
-const lang = isJapanese(raw) ? "ja" : "en"
-
-let signal
-let request
-let move
-
-if(lang==="ja"){
-
-signal="内容を改善してほしいという要望"
-
-request="・分かりやすくする\n・使いやすくする"
-
-move="次の一手：\n1. UIをシンプルに\n2. 説明を短く\n3. 例を追加"
-
-}else{
-
-signal="Request to improve clarity or usability."
-
-request="- Make it easier to understand\n- Improve structure"
-
-move="Next move:\n1. Simplify layout\n2. Shorten explanation\n3. Add an example"
-
-}
-
-$("signal").innerText=signal
-$("request").innerText=request
-$("move").innerText=move
-
-$("output").style.display="block"
-
-setStatus("Done")
-
-}
-
-function example(){
-
-$("input").value="Your UI is confusing and looks outdated."
-
-setStatus("Example inserted")
-
-}
-
-async function copy(){
-
-const text =
+      const text =
 `REFRAME Studio
 
+Cleaned Signal
 ${$("signal").innerText}
 
+Core Request
 ${$("request").innerText}
 
+Strategic Move
 ${$("move").innerText}
 
-#Reframed`
+#Reframed`;
 
-await navigator.clipboard.writeText(text)
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus("Result copied.");
+      } catch (e) {
+        setStatus("Copy failed.");
+      }
+    }
 
-setStatus("Copied")
+    async function copyPost() {
+      if ($("output").style.display === "none" || !$("signal").innerText) {
+        setStatus("Nothing to copy yet.");
+        return;
+      }
 
-}
-
-async function copyPost(){
-
-const text =
+      const text =
 `I reframed a harsh comment using REFRAME Studio.
 
+Cleaned Signal:
 ${$("signal").innerText}
 
+Core Request:
 ${$("request").innerText}
 
+Strategic Move:
 ${$("move").innerText}
 
-#Reframed`
+#Reframed`;
 
-await navigator.clipboard.writeText(text)
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus("Post copied.");
+      } catch (e) {
+        setStatus("Copy failed.");
+      }
+    }
 
-setStatus("Post copied")
+    function shareOnX() {
+      const text = "I reframed a harsh comment using REFRAME Studio. #Reframed";
+      const url = location.href;
+      window.open(
+        "https://twitter.com/intent/tweet?text=" +
+        encodeURIComponent(text) +
+        "&url=" +
+        encodeURIComponent(url),
+        "_blank"
+      );
+    }
 
-}
+    function clearAll() {
+      $("input").value = "";
+      $("signal").innerText = "";
+      $("request").innerText = "";
+      $("move").innerText = "";
+      hideOutput();
+      setStatus("Cleared.");
+    }
 
-function share(){
+    $("btn").addEventListener("click", reframe);
+    $("exampleEn").addEventListener("click", insertEnglishExample);
+    $("exampleJa").addEventListener("click", insertJapaneseExample);
+    $("copyBtn").addEventListener("click", copyResult);
+    $("copyPostBtn").addEventListener("click", copyPost);
+    $("shareBtn").addEventListener("click", shareOnX);
+    $("clearBtn").addEventListener("click", clearAll);
 
-const text="I reframed a harsh comment using REFRAME Studio. #Reframed"
+    $("input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        reframe();
+      }
+    });
 
-const url=location.href
-
-window.open(
-"https://twitter.com/intent/tweet?text="+encodeURIComponent(text)+"&url="+encodeURIComponent(url)
-)
-
-}
-
-$("btn").addEventListener("click",reframe)
-$("exampleBtn").addEventListener("click",example)
-$("copyBtn").addEventListener("click",copy)
-$("copyPostBtn").addEventListener("click",copyPost)
-$("shareBtn").addEventListener("click",share)
-
-$("input").addEventListener("keydown",function(e){
-
-if(e.key==="Enter" && !e.shiftKey){
-
-e.preventDefault()
-
-reframe()
-
-}
-
-})
-
-setStatus("Loaded")
-
-</script>
-
+    setStatus("Loaded.");
+  </script>
 </body>
 </html>
