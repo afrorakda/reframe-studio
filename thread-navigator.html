@@ -1,271 +1,635 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thread Navigator | REFRAME Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thread Navigator | REFRAME Studio</title>
+  <meta name="description" content="Save and resume AI threads across ChatGPT, Claude, and Gemini." />
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --line: #dddddd;
+      --soft: #fafafa;
+      --accent: #111111;
+      --danger: #b42318;
+    }
 
-<style>
+    * {
+      box-sizing: border-box;
+    }
 
-body{
-font-family:system-ui,-apple-system,sans-serif;
-max-width:720px;
-margin:auto;
-padding:20px;
-background:#ffffff;
-color:#111;
-}
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
 
-h1{
-margin-bottom:4px;
-}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+    }
 
-.subtitle{
-color:#666;
-margin-bottom:24px;
-}
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
 
-input,select{
-width:100%;
-padding:10px;
-margin-bottom:12px;
-border:1px solid #ccc;
-border-radius:6px;
-font-size:16px;
-box-sizing:border-box;
-}
+    .topbar {
+      margin-bottom: 18px;
+    }
 
-button{
-padding:10px 16px;
-border:none;
-border-radius:6px;
-background:#111;
-color:#fff;
-cursor:pointer;
-margin-right:8px;
-margin-bottom:8px;
-}
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-.secondary{
-background:#666;
-}
+    .back-link:hover {
+      color: var(--text);
+    }
 
-.danger{
-background:#cc3333;
-}
+    h1 {
+      margin: 0 0 4px;
+      font-size: 32px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
 
-.card{
-border:1px solid #ddd;
-border-radius:8px;
-padding:14px;
-margin-top:12px;
-background:#fafafa;
-}
+    .brand {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-.card-buttons{
-margin-top:10px;
-}
+    .intro {
+      margin: 0 0 20px;
+      color: var(--text);
+      font-size: 16px;
+    }
 
-.footer{
-margin-top:40px;
-font-size:14px;
-color:#555;
-border-top:1px solid #eee;
-padding-top:20px;
-}
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+    }
 
-</style>
+    .section + .section {
+      margin-top: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      padding: 12px;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    button.danger {
+      background: #fff;
+      color: var(--danger);
+      border: 1px solid #f1b5b0;
+    }
+
+    .helper {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .count {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .entry {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--soft);
+      padding: 14px;
+    }
+
+    .entry-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .entry-ai {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 8px;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    .entry-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .entry-title {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.35;
+      margin-bottom: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .entry-url {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .entry-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .entry-actions a,
+    .entry-actions button {
+      font-size: 14px;
+    }
+
+    .entry-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    @media (min-width: 720px) {
+      .grid.two {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 180px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back-link" href="./">← Back to REFRAME Studio</a>
+    </div>
 
-<h1>Thread Navigator</h1>
-<div class="subtitle">by REFRAME Studio</div>
+    <header>
+      <h1>Thread Navigator</h1>
+      <p class="brand">by REFRAME Studio</p>
+      <p class="intro">Save AI threads so you can resume the right conversation later.</p>
+    </header>
 
-<h3>Add Thread</h3>
+    <section class="panel section">
+      <div class="grid two">
+        <div>
+          <label for="aiType">AI</label>
+          <select id="aiType">
+            <option value="ChatGPT">ChatGPT</option>
+            <option value="Claude">Claude</option>
+            <option value="Gemini">Gemini</option>
+          </select>
+        </div>
 
-<input type="date" id="date">
+        <div>
+          <label for="threadUrl">Thread URL</label>
+          <input
+            id="threadUrl"
+            type="url"
+            placeholder="Paste thread URL here"
+            inputmode="url"
+            autocapitalize="off"
+            autocomplete="off"
+          />
+        </div>
+      </div>
 
-<select id="ai">
-<option>ChatGPT</option>
-<option>Gemini</option>
-<option>Claude</option>
-<option>Grok</option>
-<option>Other</option>
-</select>
+      <div class="section">
+        <label for="threadNote">What were you doing?</label>
+        <textarea
+          id="threadNote"
+          placeholder="Example: REFRAME Studio pricing idea / fixing footer / title experiments"
+        ></textarea>
+        <p class="helper">Keep it short. One line is enough.</p>
+      </div>
 
-<input id="thread" placeholder="Thread name">
-<input id="topic" placeholder="Actual topic">
-<input id="next" placeholder="Next step">
+      <div class="actions">
+        <button id="saveBtn" type="button">Save thread</button>
+        <button id="pasteExampleBtn" type="button" class="secondary">Try example</button>
+        <button id="clearFormBtn" type="button" class="secondary">Clear form</button>
+      </div>
 
-<button onclick="saveEntry()" id="saveBtn">Add</button>
-<button class="secondary" onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
+      <div class="status" id="statusText"></div>
+    </section>
 
-<input id="search" placeholder="Search..." onkeyup="render()">
+    <section class="panel section">
+      <div class="toolbar">
+        <div>
+          <label for="searchInput">Search saved threads</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search by AI, note, or URL"
+            autocomplete="off"
+          />
+        </div>
 
-<div style="margin-top:10px;">
-<button class="secondary" onclick="exportJSON()">Export JSON</button>
-<button class="danger" onclick="clearAll()">Clear All</button>
-</div>
+        <div>
+          <label for="filterAi">Filter by AI</label>
+          <select id="filterAi">
+            <option value="All">All</option>
+            <option value="ChatGPT">ChatGPT</option>
+            <option value="Claude">Claude</option>
+            <option value="Gemini">Gemini</option>
+          </select>
+        </div>
+      </div>
 
-<div id="list"></div>
+      <div class="actions" style="margin-top: 0; margin-bottom: 14px;">
+        <button id="exportBtn" type="button" class="secondary">Export JSON</button>
+        <button id="clearAllBtn" type="button" class="danger">Clear all</button>
+      </div>
 
-<div class="footer">
+      <div class="count" id="countText">0 saved threads</div>
+      <div class="list" id="threadList"></div>
+    </section>
 
-<p><strong>Built by REFRAME Studio</strong></p>
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
 
-<p>
-No login<br>
-No tracking<br>
-No personal data collected<br>
-Runs entirely in your browser
-</p>
+      <p>
+        AI thread navigator<br>
+        Never lose track of your AI conversations.<br>
+        #Reframed
+      </p>
 
-</div>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
 
-<script>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
 
-let data = JSON.parse(localStorage.getItem("threads") || "[]");
-let editIndex = -1;
+  <script>
+    const STORAGE_KEY = "reframe-thread-navigator-v2-final";
 
-function save(){
-localStorage.setItem("threads", JSON.stringify(data));
-}
+    const aiType = document.getElementById("aiType");
+    const threadUrl = document.getElementById("threadUrl");
+    const threadNote = document.getElementById("threadNote");
+    const saveBtn = document.getElementById("saveBtn");
+    const pasteExampleBtn = document.getElementById("pasteExampleBtn");
+    const clearFormBtn = document.getElementById("clearFormBtn");
+    const statusText = document.getElementById("statusText");
 
-function clearForm(){
-document.getElementById("date").value="";
-document.getElementById("ai").value="ChatGPT";
-document.getElementById("thread").value="";
-document.getElementById("topic").value="";
-document.getElementById("next").value="";
-}
+    const searchInput = document.getElementById("searchInput");
+    const filterAi = document.getElementById("filterAi");
+    const exportBtn = document.getElementById("exportBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    const countText = document.getElementById("countText");
+    const threadList = document.getElementById("threadList");
 
-function saveEntry(){
+    let threads = loadThreads();
 
-let entry={
-date:document.getElementById("date").value,
-ai:document.getElementById("ai").value,
-thread:document.getElementById("thread").value,
-topic:document.getElementById("topic").value,
-next:document.getElementById("next").value
-};
+    function loadThreads() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (error) {
+        return [];
+      }
+    }
 
-if(!entry.thread) return;
+    function saveThreads() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+    }
 
-if(editIndex===-1){
-data.unshift(entry);
-}else{
-data[editIndex]=entry;
-editIndex=-1;
-document.getElementById("saveBtn").innerText="Add";
-document.getElementById("cancelBtn").style.display="none";
-}
+    function cleanText(text) {
+      return text.trim().replace(/\s+/g, " ");
+    }
 
-save();
-clearForm();
-render();
+    function isValidUrl(value) {
+      try {
+        new URL(value);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
 
-}
+    function formatDate(value) {
+      const date = new Date(value);
+      return date.toLocaleString();
+    }
 
-function editEntry(index){
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-let e=data[index];
+    function setStatus(message) {
+      statusText.textContent = message;
+    }
 
-document.getElementById("date").value=e.date;
-document.getElementById("ai").value=e.ai;
-document.getElementById("thread").value=e.thread;
-document.getElementById("topic").value=e.topic;
-document.getElementById("next").value=e.next;
+    function clearForm() {
+      aiType.value = "ChatGPT";
+      threadUrl.value = "";
+      threadNote.value = "";
+      setStatus("");
+    }
 
-editIndex=index;
+    function buildThreadEntry(thread, index) {
+      return `
+        <article class="entry">
+          <div class="entry-top">
+            <div class="entry-ai">${escapeHtml(thread.ai)}</div>
+            <div class="entry-date">${escapeHtml(formatDate(thread.createdAt))}</div>
+          </div>
 
-document.getElementById("saveBtn").innerText="Save";
-document.getElementById("cancelBtn").style.display="inline-block";
+          <div class="entry-title">${escapeHtml(thread.note)}</div>
+          <div class="entry-url">${escapeHtml(thread.url)}</div>
 
-window.scrollTo({top:0,behavior:"smooth"});
+          <div class="entry-actions">
+            <a href="${escapeHtml(thread.url)}" target="_blank" rel="noopener noreferrer">Resume</a>
+            <button type="button" class="secondary" onclick="copyThreadUrl(${index})">Copy URL</button>
+            <button type="button" class="secondary" onclick="editThread(${index})">Edit</button>
+            <button type="button" class="danger" onclick="deleteThread(${index})">Delete</button>
+          </div>
+        </article>
+      `;
+    }
 
-}
+    function getFilteredThreads() {
+      const query = cleanText(searchInput.value).toLowerCase();
+      const aiFilter = filterAi.value;
 
-function cancelEdit(){
-editIndex=-1;
-clearForm();
-document.getElementById("saveBtn").innerText="Add";
-document.getElementById("cancelBtn").style.display="none";
-}
+      return threads.filter((thread) => {
+        const matchesAi = aiFilter === "All" || thread.ai === aiFilter;
 
-function deleteEntry(index){
-data.splice(index,1);
-save();
-render();
-}
+        if (!matchesAi) return false;
+        if (!query) return true;
 
-function clearAll(){
+        const haystack = `${thread.ai} ${thread.url} ${thread.note}`.toLowerCase();
+        return haystack.includes(query);
+      });
+    }
 
-if(!confirm("Delete all entries?")) return;
+    function renderThreads() {
+      const filtered = getFilteredThreads();
 
-data=[];
-save();
-render();
+      countText.textContent = `${filtered.length} saved thread${filtered.length === 1 ? "" : "s"}`;
 
-}
+      if (filtered.length === 0) {
+        threadList.innerHTML = `
+          <div class="empty">
+            No saved threads yet.<br>
+            Save a thread with AI + URL + one short note.
+          </div>
+        `;
+        return;
+      }
 
-function exportJSON(){
+      threadList.innerHTML = filtered
+        .map((thread) => {
+          const realIndex = threads.findIndex((item) => item.id === thread.id);
+          return buildThreadEntry(thread, realIndex);
+        })
+        .join("");
+    }
 
-let json=JSON.stringify(data,null,2);
+    function addThread() {
+      const ai = aiType.value;
+      const url = cleanText(threadUrl.value);
+      const note = cleanText(threadNote.value);
 
-let blob=new Blob([json],{type:"application/json"});
+      if (!url) {
+        setStatus("Paste a thread URL first.");
+        return;
+      }
 
-let url=URL.createObjectURL(blob);
+      if (!isValidUrl(url)) {
+        setStatus("That URL does not look valid.");
+        return;
+      }
 
-let a=document.createElement("a");
+      if (!note) {
+        setStatus("Write one short note about what you were doing.");
+        return;
+      }
 
-a.href=url;
-a.download="thread-navigator-data.json";
+      const entry = {
+        id: String(Date.now()),
+        ai,
+        url,
+        note,
+        createdAt: new Date().toISOString()
+      };
 
-a.click();
+      threads.unshift(entry);
+      saveThreads();
+      renderThreads();
+      clearForm();
+      setStatus("Thread saved.");
+    }
 
-URL.revokeObjectURL(url);
+    window.deleteThread = function(index) {
+      const confirmed = confirm("Delete this saved thread?");
+      if (!confirmed) return;
 
-}
+      threads.splice(index, 1);
+      saveThreads();
+      renderThreads();
+      setStatus("Thread deleted.");
+    };
 
-function render(){
+    window.editThread = function(index) {
+      const thread = threads[index];
+      if (!thread) return;
 
-let list=document.getElementById("list");
+      aiType.value = thread.ai;
+      threadUrl.value = thread.url;
+      threadNote.value = thread.note;
 
-list.innerHTML="";
+      threads.splice(index, 1);
+      saveThreads();
+      renderThreads();
+      setStatus("Loaded into the form. Edit and save again.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-let q=document.getElementById("search").value.toLowerCase();
+    window.copyThreadUrl = async function(index) {
+      const thread = threads[index];
+      if (!thread) return;
 
-data.forEach((e,i)=>{
+      try {
+        await navigator.clipboard.writeText(thread.url);
+        setStatus("URL copied.");
+      } catch (error) {
+        setStatus("Copy failed.");
+      }
+    };
 
-let text=(e.ai+" "+e.thread+" "+e.topic+" "+e.next).toLowerCase();
+    function exportThreads() {
+      const blob = new Blob([JSON.stringify(threads, null, 2)], {
+        type: "application/json"
+      });
 
-if(!text.includes(q)) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "thread-navigator-export.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
 
-let card=document.createElement("div");
+      setStatus("Exported JSON.");
+    }
 
-card.className="card";
+    function clearAllThreads() {
+      if (threads.length === 0) {
+        setStatus("No threads to clear.");
+        return;
+      }
 
-card.innerHTML=
-"<b>"+(e.date||"No date")+"</b><br>"+
-e.ai+"<br>"+
-"<b>"+e.thread+"</b><br>"+
-"Topic: "+(e.topic||"-")+"<br>"+
-"Next: "+(e.next||"-")+
-"<div class='card-buttons'>"+
-"<button onclick='editEntry("+i+")'>Edit</button>"+
-"<button class='danger' onclick='deleteEntry("+i+")'>Delete</button>"+
-"</div>";
+      const confirmed = confirm("Clear all saved threads?");
+      if (!confirmed) return;
 
-list.appendChild(card);
+      threads = [];
+      saveThreads();
+      renderThreads();
+      setStatus("All threads cleared.");
+    }
 
-});
+    function loadExample() {
+      aiType.value = "ChatGPT";
+      threadUrl.value = "https://chatgpt.com/c/example-thread";
+      threadNote.value = "REFRAME Studio pricing and workbook idea";
+      setStatus("Example loaded.");
+    }
 
-}
+    saveBtn.addEventListener("click", addThread);
+    pasteExampleBtn.addEventListener("click", loadExample);
+    clearFormBtn.addEventListener("click", clearForm);
+    searchInput.addEventListener("input", renderThreads);
+    filterAi.addEventListener("change", renderThreads);
+    exportBtn.addEventListener("click", exportThreads);
+    clearAllBtn.addEventListener("click", clearAllThreads);
 
-render();
-
-</script>
-
+    renderThreads();
+  </script>
 </body>
 </html>
