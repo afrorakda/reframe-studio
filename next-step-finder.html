@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Next Step Finder | REFRAME Studio</title>
+<meta name="description" content="Turn vague goals into one concrete next step. No login. No tracking. Runs entirely in your browser.">
+
+<style>
+
+:root{
+--bg:#f5f5f5;
+--card:#ffffff;
+--text:#111;
+--muted:#666;
+--line:#ddd;
+--accent:#111;
+--soft:#fafafa;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+line-height:1.5;
+}
+
+.wrap{
+max-width:720px;
+margin:auto;
+padding:24px 16px 40px;
+}
+
+h1{
+margin:0;
+font-size:30px;
+line-height:1.1;
+}
+
+.brand{
+color:var(--muted);
+margin-bottom:16px;
+font-size:14px;
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:14px;
+padding:16px;
+}
+
+label{
+display:block;
+font-size:13px;
+color:var(--muted);
+margin-bottom:6px;
+}
+
+textarea{
+width:100%;
+min-height:110px;
+padding:12px;
+border:1px solid var(--line);
+border-radius:10px;
+font:inherit;
+}
+
+select{
+width:100%;
+padding:10px;
+border:1px solid var(--line);
+border-radius:10px;
+font:inherit;
+}
+
+.grid{
+display:grid;
+gap:10px;
+}
+
+button{
+border:0;
+border-radius:10px;
+padding:12px 14px;
+background:var(--accent);
+color:#fff;
+font:inherit;
+cursor:pointer;
+}
+
+button.secondary{
+background:#fff;
+color:var(--text);
+border:1px solid var(--line);
+}
+
+.actions{
+margin-top:16px;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.result{
+margin-top:16px;
+background:var(--soft);
+border:1px solid var(--line);
+border-radius:12px;
+padding:14px;
+}
+
+.result-block{
+margin-bottom:10px;
+}
+
+.result-label{
+font-size:12px;
+color:var(--muted);
+margin-bottom:4px;
+}
+
+.tiny{
+font-size:12px;
+color:var(--muted);
+margin-top:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>Next Step Finder</h1>
+<div class="brand">by REFRAME Studio</div>
+
+<div class="card">
+
+<label>Goal</label>
+<textarea id="goal" placeholder="Example: Launch my first browser tool"></textarea>
+
+<div class="grid">
+
+<div>
+<label>Why you feel stuck</label>
+<select id="reason">
+<option value="big">Too big</option>
+<option value="options">Too many options</option>
+<option value="start">Don't know where to start</option>
+<option value="energy">Low energy</option>
+<option value="fear">Afraid it won't be good</option>
+<option value="think">Overthinking</option>
+</select>
+</div>
+
+<div>
+<label>Time available</label>
+<select id="time">
+<option value="5">5 min</option>
+<option value="15">15 min</option>
+<option value="30">30 min</option>
+<option value="60">60+ min</option>
+</select>
+</div>
+
+</div>
+
+<div class="actions">
+<button id="generate">Find my next step</button>
+<button id="clear" class="secondary">Clear</button>
+</div>
+
+<div class="result" id="result" style="display:none">
+
+<div class="result-block">
+<div class="result-label">Your next step</div>
+<div id="step"></div>
+</div>
+
+<div class="result-block">
+<div class="result-label">Why this step</div>
+<div id="why"></div>
+</div>
+
+</div>
+
+<div class="tiny">
+No login. No tracking. No personal data collected. Runs entirely in your browser.
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const goal=document.getElementById("goal")
+const reason=document.getElementById("reason")
+const time=document.getElementById("time")
+
+const step=document.getElementById("step")
+const why=document.getElementById("why")
+const result=document.getElementById("result")
+
+document.getElementById("generate").onclick=function(){
+
+const g=goal.value.trim()
+
+if(!g){
+alert("Please enter a goal")
+return
+}
+
+let next=""
+let explanation=""
+
+switch(reason.value){
+
+case "big":
+next="Write your goal in one clear sentence."
+explanation="Big goals become easier when reduced to one simple outcome."
+break
+
+case "options":
+next="Choose the easiest option to start today."
+explanation="Progress usually comes from one active choice."
+break
+
+case "start":
+next="Write the very first visible action."
+explanation="Starting becomes easier when the action is concrete."
+break
+
+case "energy":
+next="Do a 2-minute version of the task."
+explanation="Low energy needs a smaller entry point."
+break
+
+case "fear":
+next="Create a rough first draft without improving it."
+explanation="Removing quality pressure unlocks movement."
+break
+
+case "think":
+next="Run one small experiment instead of thinking more."
+explanation="Action creates clarity faster than planning."
+break
+
+}
+
+step.innerText=next
+why.innerText=explanation
+
+result.style.display="block"
+
+}
+
+document.getElementById("clear").onclick=function(){
+goal.value=""
+result.style.display="none"
+}
+
+</script>
+
+</body>
+</html>
