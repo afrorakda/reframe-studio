@@ -1,168 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thread Navigator | REFRAME Studio</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      max-width: 720px;
-      margin: auto;
-      padding: 20px;
-      background: #ffffff;
-      color: #111;
-      line-height: 1.5;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thread Navigator | REFRAME Studio</title>
 
-    h1 {
-      margin-bottom: 4px;
-      font-size: 28px;
-    }
+<style>
 
-    .subtitle {
-      color: #666;
-      margin-bottom: 24px;
-    }
+body{
+font-family:system-ui,-apple-system,sans-serif;
+max-width:720px;
+margin:auto;
+padding:20px;
+background:#ffffff;
+color:#111;
+}
 
-    h3 {
-      margin-top: 24px;
-      margin-bottom: 12px;
-    }
+h1{
+margin-bottom:4px;
+}
 
-    input,
-    select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      box-sizing: border-box;
-      background: #fff;
-      color: #111;
-    }
+.subtitle{
+color:#666;
+margin-bottom:24px;
+}
 
-    button {
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
-      background: #111;
-      color: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
+input,select{
+width:100%;
+padding:10px;
+margin-bottom:12px;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:16px;
+box-sizing:border-box;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
+button{
+padding:10px 16px;
+border:none;
+border-radius:6px;
+background:#111;
+color:#fff;
+cursor:pointer;
+margin-right:8px;
+margin-bottom:8px;
+}
 
-    .secondary {
-      background: #666;
-    }
+.secondary{
+background:#666;
+}
 
-    .danger {
-      background: #cc3333;
-    }
+.danger{
+background:#cc3333;
+}
 
-    .search {
-      margin-top: 20px;
-    }
+.card{
+border:1px solid #ddd;
+border-radius:8px;
+padding:14px;
+margin-top:12px;
+background:#fafafa;
+}
 
-    .actions {
-      margin-top: 12px;
-      margin-bottom: 8px;
-    }
+.card-buttons{
+margin-top:10px;
+}
 
-    .card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 14px;
-      margin-top: 12px;
-      background: #fafafa;
-    }
+.footer{
+margin-top:40px;
+font-size:14px;
+color:#555;
+border-top:1px solid #eee;
+padding-top:20px;
+}
 
-    .card-buttons {
-      margin-top: 12px;
-    }
-
-    .message {
-      margin-top: 8px;
-      color: #666;
-      font-size: 14px;
-    }
-
-    .footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #555;
-      border-top: 1px solid #eee;
-      padding-top: 20px;
-    }
-
-    .footer p {
-      margin: 6px 0;
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <h1>Thread Navigator</h1>
-  <div class="subtitle">by REFRAME Studio</div>
 
-  <h3>Add Thread</h3>
+<h1>Thread Navigator</h1>
+<div class="subtitle">by REFRAME Studio</div>
 
-  <input type="date" id="date" />
+<h3>Add Thread</h3>
 
-  <select id="ai">
-    <option>ChatGPT</option>
-    <option>Gemini</option>
-    <option>Claude</option>
-    <option>Grok</option>
-    <option>Other</option>
-  </select>
+<input type="date" id="date">
 
-  <input id="thread" placeholder="Thread name" />
-  <input id="topic" placeholder="Actual topic" />
-  <input id="next" placeholder="Next step" />
+<select id="ai">
+<option>ChatGPT</option>
+<option>Gemini</option>
+<option>Claude</option>
+<option>Grok</option>
+<option>Other</option>
+</select>
 
-  <button onclick="saveEntry()" id="saveBtn">Add</button>
-  <button class="secondary" onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
+<input id="thread" placeholder="Thread name">
+<input id="topic" placeholder="Actual topic">
+<input id="next" placeholder="Next step">
 
-  <div class="search">
-    <input id="search" placeholder="Search..." onkeyup="render()" />
-  </div>
+<button onclick="saveEntry()" id="saveBtn">Add</button>
+<button class="secondary" onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancel</button>
 
-  <div class="actions">
-    <button class="secondary" onclick="exportJSON()">Export JSON</button>
-    <button class="danger" onclick="clearAll()">Clear All</button>
-  </div>
+<input id="search" placeholder="Search..." onkeyup="render()">
 
-  <div id="message" class="message"></div>
-  <div id="list"></div>
+<div style="margin-top:10px;">
+<button class="secondary" onclick="exportJSON()">Export JSON</button>
+<button class="danger" onclick="clearAll()">Clear All</button>
+</div>
 
-  <div class="footer">
-    <p><strong>Built by REFRAME Studio</strong></p>
-    <p>
-      No login<br />
-      No tracking<br />
-      No personal data collected<br />
-      Runs entirely in your browser
-    </p>
-  </div>
+<div id="list"></div>
 
-  <script>
-    let data = JSON.parse(localStorage.getItem("threads") || "[]");
-    let editIndex = -1;
+<div class="footer">
 
-    function save() {
-      localStorage.setItem("threads", JSON.stringify(data));
-    }
+<p><strong>Built by REFRAME Studio</strong></p>
 
-    function showMessage(text) {
-      const message = document.getElementById("message");
-      message.innerText = text;
-      setTimeout(() => {
-        message.innerText = "";
-     
+<p>
+No login<br>
+No tracking<br>
+No personal data collected<br>
+Runs entirely in your browser
+</p>
+
+</div>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("threads") || "[]");
+let editIndex = -1;
+
+function save(){
+localStorage.setItem("threads", JSON.stringify(data));
+}
+
+function clearForm(){
+document.getElementById("date").value="";
+document.getElementById("ai").value="ChatGPT";
+document.getElementById("thread").value="";
+document.getElementById("topic").value="";
+document.getElementById("next").value="";
+}
+
+function saveEntry(){
+
+let entry={
+date:document.getElementById("date").value,
+ai:document.getElementById("ai").value,
+thread:document.getElementById("thread").value,
+topic:document.getElementById("topic").value,
+next:document.getElementById("next").value
+};
+
+if(!entry.thread) return;
+
+if(editIndex===-1){
+data.unshift(entry);
+}else{
+data[editIndex]=entry;
+editIndex=-1;
+document.getElementById("saveBtn").innerText="Add";
+document.getElementById("cancelBtn").style.display="none";
+}
+
+save();
+clearForm();
+render();
+
+}
+
+function editEntry(index){
+
+let e=data[index];
+
+document.getElementById("date").value=e.date;
+document.getElementById("ai").value=e.ai;
+document.getElementById("thread").value=e.thread;
+document.getElementById("topic").value=e.topic;
+document.getElementById("next").value=e.next;
+
+editIndex=index;
+
+document.getElementById("saveBtn").innerText="Save";
+document.getElementById("cancelBtn").style.display="inline-block";
+
+window.scrollTo({top:0,behavior:"smooth"});
+
+}
+
+function cancelEdit(){
+editIndex=-1;
+clearForm();
+document.getElementById("saveBtn").innerText="Add";
+document.getElementById("cancelBtn").style.display="none";
+}
+
+function deleteEntry(index){
+data.splice(index,1);
+save();
+render();
+}
+
+function clearAll(){
+
+if(!confirm("Delete all entries?")) return;
+
+data=[];
+save();
+render();
+
+}
+
+function exportJSON(){
+
+let json=JSON.stringify(data,null,2);
+
+let blob=new Blob([json],{type:"application/json"});
+
+let url=URL.createObjectURL(blob);
+
+let a=document.createElement("a");
+
+a.href=url;
+a.download="thread-navigator-data.json";
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+}
+
+function render(){
+
+let list=document.getElementById("list");
+
+list.innerHTML="";
+
+let q=document.getElementById("search").value.toLowerCase();
+
+data.forEach((e,i)=>{
+
+let text=(e.ai+" "+e.thread+" "+e.topic+" "+e.next).toLowerCase();
+
+if(!text.includes(q)) return;
+
+let card=document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=
+"<b>"+(e.date||"No date")+"</b><br>"+
+e.ai+"<br>"+
+"<b>"+e.thread+"</b><br>"+
+"Topic: "+(e.topic||"-")+"<br>"+
+"Next: "+(e.next||"-")+
+"<div class='card-buttons'>"+
+"<button onclick='editEntry("+i+")'>Edit</button>"+
+"<button class='danger' onclick='deleteEntry("+i+")'>Delete</button>"+
+"</div>";
+
+list.appendChild(card);
+
+});
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
