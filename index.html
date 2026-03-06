@@ -1,104 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>REFRAME Studio – Harsh Comment Reframer</title>
+<title>REFRAME Studio</title>
+
+<meta name="description" content="Ultra-simple browser tools that solve small everyday friction problems.">
 
 <style>
 
+:root{
+--bg:#f5f5f5;
+--card:#ffffff;
+--text:#111;
+--muted:#666;
+--line:#ddd;
+}
+
+*{
+box-sizing:border-box;
+}
+
 body{
-font-family:Arial, Helvetica, sans-serif;
-background:#ffffff;
-color:#111;
-max-width:720px;
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+.wrap{
+max-width:900px;
 margin:auto;
-padding:24px;
+padding:32px 16px 60px;
 }
 
 h1{
-font-size:30px;
+margin:0;
+font-size:36px;
+}
+
+.subtitle{
+color:var(--muted);
+margin-top:8px;
+margin-bottom:28px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr;
+gap:14px;
+}
+
+.card{
+display:block;
+text-decoration:none;
+background:var(--card);
+border:1px solid var(--line);
+border-radius:14px;
+padding:16px;
+transition:0.15s;
+}
+
+.card:hover{
+transform:translateY(-2px);
+border-color:#bbb;
+}
+
+.card-title{
+font-size:20px;
 margin-bottom:4px;
 }
 
-.tagline{
-color:#444;
-margin-bottom:16px;
+.brand{
+font-size:13px;
+color:var(--muted);
+margin-bottom:10px;
 }
 
-textarea{
-width:100%;
-height:140px;
-padding:12px;
-font-size:16px;
-border:1px solid #ccc;
-border-radius:10px;
-}
-
-.row{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:12px;
-}
-
-button{
-padding:10px 14px;
+.desc{
 font-size:15px;
-background:#1E3A5F;
-color:white;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-
-button.secondary{
-background:#f2f2f2;
-color:#111;
-border:1px solid #ddd;
-}
-
-button:hover{
-opacity:0.9;
-}
-
-.status{
-margin-top:10px;
-font-size:13px;
-color:#444;
-}
-
-.result{
-margin-top:20px;
-border:1px solid #e5e5e5;
-border-radius:12px;
-padding:18px;
-background:#fafafa;
-}
-
-.label{
-font-weight:bold;
-font-size:13px;
-color:#555;
-margin-bottom:6px;
-}
-
-.block{
-margin-bottom:16px;
 }
 
 .footer{
-margin-top:16px;
+margin-top:30px;
 font-size:12px;
-color:#777;
-line-height:1.4;
+color:var(--muted);
 }
 
-.note{
-margin-top:14px;
-font-size:12px;
-color:#666;
+@media (min-width:700px){
+
+.grid{
+grid-template-columns:1fr 1fr;
+}
+
 }
 
 </style>
@@ -106,202 +102,48 @@ color:#666;
 
 <body>
 
-<h1>REFRAME <span style="font-weight:300;">Studio</span></h1>
+<div class="wrap">
 
-<div class="tagline">
-Harsh Comment Reframer
+<h1>REFRAME Studio</h1>
+
+<p class="subtitle">
+Ultra-simple browser tools that solve small everyday friction problems.
+</p>
+
+<div class="grid">
+
+<a class="card" href="thread-navigator.html">
+<div class="card-title">Thread Navigator</div>
+<div class="brand">by REFRAME Studio</div>
+<div class="desc">
+Track AI conversation threads across multiple chats.
 </div>
+</a>
 
-<textarea id="input" placeholder="Paste a harsh comment here"></textarea>
-
-<div class="row">
-
-<button id="btn">Reframe</button>
-
-<button id="exampleBtn" class="secondary">
-Try example
-</button>
-
-<button id="copyBtn" class="secondary">
-Copy result
-</button>
-
-<button id="copyPostBtn" class="secondary">
-Copy as Post
-</button>
-
-<button id="shareBtn" class="secondary">
-Share on X
-</button>
-
+<a class="card" href="next-step-finder.html">
+<div class="card-title">Next Step Finder</div>
+<div class="brand">by REFRAME Studio</div>
+<div class="desc">
+Turn vague goals into one concrete next step.
 </div>
+</a>
 
-<div id="status" class="status"></div>
-
-<div id="output" class="result" style="display:none">
-
-<div class="block">
-<div class="label">Cleaned Signal</div>
-<div id="signal"></div>
+<a class="card" href="idea-parking.html">
+<div class="card-title">Idea Parking</div>
+<div class="brand">by REFRAME Studio</div>
+<div class="desc">
+Quickly store ideas before they disappear.
 </div>
+</a>
 
-<div class="block">
-<div class="label">Core Request</div>
-<div id="request"></div>
-</div>
-
-<div class="block">
-<div class="label">Strategic Move</div>
-<div id="move"></div>
 </div>
 
 <div class="footer">
-Reframed with REFRAME Studio<br>
-REFRAME = 批判を「改善要望」に変換する思考ツール<br>
-Runs entirely in your browser. No data is stored.<br>
-#Reframed
+No login. No tracking. No personal data collected.
+Runs entirely in your browser.
 </div>
 
 </div>
-
-<div class="note">
-We don’t store your text. Don’t paste personal info.
-</div>
-
-<script>
-
-const $ = (id)=>document.getElementById(id)
-
-function isJapanese(text){
-return /[ぁ-んァ-ン一-龯]/.test(text)
-}
-
-function setStatus(msg){
-$("status").textContent = msg
-}
-
-function reframe(){
-
-const raw = $("input").value.trim()
-
-if(!raw){
-setStatus("Paste a comment first")
-return
-}
-
-const lang = isJapanese(raw) ? "ja" : "en"
-
-let signal
-let request
-let move
-
-if(lang==="ja"){
-
-signal="内容を改善してほしいという要望"
-
-request="・分かりやすくする\n・使いやすくする"
-
-move="次の一手：\n1. UIをシンプルに\n2. 説明を短く\n3. 例を追加"
-
-}else{
-
-signal="Request to improve clarity or usability."
-
-request="- Make it easier to understand\n- Improve structure"
-
-move="Next move:\n1. Simplify layout\n2. Shorten explanation\n3. Add an example"
-
-}
-
-$("signal").innerText=signal
-$("request").innerText=request
-$("move").innerText=move
-
-$("output").style.display="block"
-
-setStatus("Done")
-
-}
-
-function example(){
-
-$("input").value="Your UI is confusing and looks outdated."
-
-setStatus("Example inserted")
-
-}
-
-async function copy(){
-
-const text =
-`REFRAME Studio
-
-${$("signal").innerText}
-
-${$("request").innerText}
-
-${$("move").innerText}
-
-#Reframed`
-
-await navigator.clipboard.writeText(text)
-
-setStatus("Copied")
-
-}
-
-async function copyPost(){
-
-const text =
-`I reframed a harsh comment using REFRAME Studio.
-
-${$("signal").innerText}
-
-${$("request").innerText}
-
-${$("move").innerText}
-
-#Reframed`
-
-await navigator.clipboard.writeText(text)
-
-setStatus("Post copied")
-
-}
-
-function share(){
-
-const text="I reframed a harsh comment using REFRAME Studio. #Reframed"
-
-const url=location.href
-
-window.open(
-"https://twitter.com/intent/tweet?text="+encodeURIComponent(text)+"&url="+encodeURIComponent(url)
-)
-
-}
-
-$("btn").addEventListener("click",reframe)
-$("exampleBtn").addEventListener("click",example)
-$("copyBtn").addEventListener("click",copy)
-$("copyPostBtn").addEventListener("click",copyPost)
-$("shareBtn").addEventListener("click",share)
-
-$("input").addEventListener("keydown",function(e){
-
-if(e.key==="Enter" && !e.shiftKey){
-
-e.preventDefault()
-
-reframe()
-
-}
-
-})
-
-setStatus("Loaded")
-
-</script>
 
 </body>
 </html>
