@@ -1,71 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>REFRAME Studio</title>
 
-<meta name="description" content="Ultra-simple browser tools that solve small everyday friction problems." />
-
 <style>
 
 body{
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-margin:0;
-background:#f5f5f5;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+background:#fff;
 color:#111;
-}
-
-.wrap{
-max-width:900px;
+max-width:720px;
 margin:auto;
-padding:32px 16px;
+padding:24px;
 }
 
 h1{
-font-size:36px;
-margin:0;
+font-size:32px;
+margin-bottom:6px;
 }
 
-.subtitle{
+.tagline{
 color:#666;
-margin-top:8px;
-margin-bottom:28px;
+margin-bottom:20px;
 }
 
-.grid{
-display:grid;
-gap:16px;
-}
-
-.card{
+.tool{
 display:block;
-text-decoration:none;
-background:white;
 border:1px solid #ddd;
 border-radius:14px;
-padding:16px;
+padding:18px;
+margin-bottom:16px;
+text-decoration:none;
 color:#111;
 }
 
-.card:hover{
-border-color:#bbb;
+.tool:hover{
+background:#fafafa;
 }
 
-.title{
-font-size:20px;
-margin-bottom:4px;
+.tool h2{
+margin:0 0 6px 0;
+font-size:22px;
 }
 
-.brand{
-font-size:13px;
-color:#666;
-margin-bottom:8px;
-}
-
-.desc{
-font-size:15px;
+.tool p{
+margin:0;
+color:#555;
 }
 
 .footer{
@@ -80,47 +63,74 @@ line-height:1.6;
 
 <body>
 
-<div class="wrap">
-
 <h1>REFRAME Studio</h1>
 
-<p class="subtitle">
+<div class="tagline">
 Ultra-simple browser tools that solve small everyday friction problems.
-</p>
-
-<div class="grid">
-
-<a class="card" href="reframe-studio.html">
-<div class="title">REFRAME Studio</div>
-<div class="brand">by REFRAME Studio</div>
-<div class="desc">Turn harsh comments into useful feedback.</div>
-</a>
-
-<a class="card" href="thread-navigator.html">
-<div class="title">Thread Navigator</div>
-<div class="brand">by REFRAME Studio</div>
-<div class="desc">Never lose track of your AI conversations.</div>
-</a>
-
-<a class="card" href="next-step-finder.html">
-<div class="title">Next Step Finder</div>
-<div class="brand">by REFRAME Studio</div>
-<div class="desc">Turn vague goals into one concrete next step.</div>
-</a>
-
 </div>
+
+<div id="tools"></div>
 
 <div class="footer">
 
-Built by REFRAME Studio
+<strong>Built by REFRAME Studio</strong>
 
 <br><br>
 
 Open-source style tools. Simple. Private. Fast.
 
-</div>
+<br><br>
+
+No login. No tracking. No personal data collected.  
+Runs entirely in your browser.
 
 </div>
+
+<script>
+
+const tools=[
+{
+file:"reframe-studio.html",
+title:"REFRAME Studio",
+desc:"Turn harsh comments into useful feedback."
+},
+{
+file:"thread-navigator.html",
+title:"Thread Navigator",
+desc:"Never lose track of your AI conversations."
+},
+{
+file:"next-step-finder.html",
+title:"Next Step Finder",
+desc:"Turn vague goals into one concrete next step."
+},
+{
+file:"idea-to-post-angles.html",
+title:"Idea → Post Angles",
+desc:"Turn a small idea into possible post angles."
+}
+]
+
+const container=document.getElementById("tools")
+
+tools.forEach(t=>{
+
+const a=document.createElement("a")
+
+a.className="tool"
+
+a.href=t.file
+
+a.innerHTML=`
+<h2>${t.title}</h2>
+<p>${t.desc}</p>
+`
+
+container.appendChild(a)
+
+})
+
+</script>
 
 </body>
 </html>
