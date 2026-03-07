@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Overthinking Breaker | REFRAME Studio</title>
+  <meta name="description" content="A simple private tool to help you stop overthinking and focus on the next small step." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#111111;
+      --muted:#666666;
+      --line:#e6e3dd;
+      --accent:#111111;
+      --soft:#f1efe9;
+      --shadow:0 10px 30px rgba(0,0,0,0.06);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+      background:linear-gradient(180deg,#faf9f6 0%,#f5f3ee 100%);
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .wrap{
+      width:min(760px,calc(100% - 32px));
+      margin:0 auto;
+      padding:24px 0 40px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,4vw,38px);
+      line-height:1.1;
+      letter-spacing:-0.02em;
+    }
+
+    .sub{
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:160px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      color:var(--text);
+      padding:14px 14px;
+      font:inherit;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
+    }
+
+    textarea:focus{
+      border-color:#bdb7aa;
+      box-shadow:0 0 0 4px rgba(17,17,17,0.05);
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .secondary{
+      background:var(--soft);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .secondary[disabled]{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:20px;
+    }
+
+    .result{
+      margin-top:20px;
+      display:none;
+    }
+
+    .result.show{
+      display:block;
+    }
+
+    .result-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .result-title{
+      font-size:16px;
+      font-weight:800;
+      margin:0;
+    }
+
+    .pill{
+      font-size:12px;
+      color:var(--muted);
+      background:var(--soft);
+      border:1px solid var(--line);
+      padding:6px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .item{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .item h2{
+      margin:0 0 8px;
+      font-size:15px;
+      line-height:1.3;
+    }
+
+    .item p{
+      margin:0;
+      font-size:15px;
+    }
+
+    .empty{
+      color:var(--muted);
+    }
+
+    .mini{
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    @media (max-width:640px){
+      .wrap{width:min(100% - 20px,760px);padding:16px 0 32px}
+      .card{padding:16px}
+      button{width:100%}
+      .controls{flex-direction:column}
+      .result-head{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" aria-labelledby="app-title">
+      <h1 id="app-title">Overthinking Breaker</h1>
+      <p class="sub" id="subtext">Write the worry, problem, or decision you are overthinking. Get clear on what matters and the next small step.</p>
+
+      <label class="label" for="input" id="inputLabel">Your situation</label>
+      <textarea
+        id="input"
+        placeholder="Example: I keep thinking about whether I should switch jobs, and I’m stuck comparing every possible outcome."
+        aria-describedby="hint"
+      ></textarea>
+
+      <div class="controls">
+        <button class="primary" id="analyzeBtn" type="button">Break it down</button>
+        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+        <button class="secondary" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="hint" id="hint" aria-live="polite"></div>
+
+      <section class="result" id="result" aria-live="polite">
+        <div class="result-head">
+          <h2 class="result-title" id="resultTitle">3 insights</h2>
+          <div class="pill" id="langPill">English</div>
+        </div>
+
+        <div class="grid">
+          <article class="item">
+            <h2 id="mattersTitle">What actually matters</h2>
+            <p id="mattersText" class="empty">—</p>
+          </article>
+
+          <article class="item">
+            <h2 id="notMattersTitle">What doesn’t matter</h2>
+            <p id="notMattersText" class="empty">—</p>
+          </article>
+
+          <article class="item">
+            <h2 id="stepTitle">Next small step</h2>
+            <p id="stepText" class="empty">—</p>
+          </article>
+        </div>
+
+        <div class="mini" id="miniNote">Private in-browser tool. No data leaves your device.</div>
+      </section>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          A simple private tool to stop overthinking by separating what matters, what does not, and the next small step.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const input = document.getElementById('input');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const hint = document.getElementById('hint');
+      const result = document.getElementById('result');
+      const langPill = document.getElementById('langPill');
+
+      const subtext = document.getElementById('subtext');
+      const inputLabel = document.getElementById('inputLabel');
+      const resultTitle = document.getElementById('resultTitle');
+      const mattersTitle = document.getElementById('mattersTitle');
+      const notMattersTitle = document.getElementById('notMattersTitle');
+      const stepTitle = document.getElementById('stepTitle');
+      const miniNote = document.getElementById('miniNote');
+
+      const mattersText = document.getElementById('mattersText');
+      const notMattersText = document.getElementById('notMattersText');
+      const stepText = document.getElementById('stepText');
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let isListening = false;
+
+      const copy = {
+        en: {
+          subtext: 'Write the worry, problem, or decision you are overthinking. Get clear on what matters and the next small step.',
+          inputLabel: 'Your situation',
+          inputPlaceholder: 'Example: I keep thinking about whether I should switch jobs, and I’m stuck comparing every possible outcome.',
+          analyzeBtn: 'Break it down',
+          voiceBtn: 'Voice Input',
+          voiceBtnStop: 'Stop Listening',
+          clearBtn: 'Clear',
+          resultTitle: '3 insights',
+          mattersTitle: 'What actually matters',
+          notMattersTitle: 'What doesn’t matter',
+          stepTitle: 'Next small step',
+          miniNote: 'Private in-browser tool. No data leaves your device.',
+          langName: 'English',
+          emptyInput: 'Please write one worry, problem, or decision first.',
+          voiceUnsupported: 'Voice input is not supported in this browser.',
+          voiceReady: 'Voice input is available.',
+          voiceListening: 'Listening… speak naturally.',
+          voiceStopped: 'Voice input stopped.',
+          voiceError: 'Voice input could not start.',
+          mattersTemplates: [
+            'The real issue is not every possible outcome. It is the one decision criterion that affects your next week most: {focus}.',
+            'What matters most here is reducing uncertainty around {focus}, not solving your whole future at once.',
+            'The key point is whether this choice supports {focus} in a realistic way.'
+          ],
+          notMattersTemplates: [
+            'You do not need a perfect answer, full certainty, or a plan for every scenario.',
+            'Other people’s imagined opinions, tiny edge cases, and trying to predict everything do not matter right now.',
+            'You can ignore the pressure to get this exactly right before taking any action.'
+          ],
+          stepTemplates: [
+            'Take one small action today: {step}.',
+            'For the next step, do only this: {step}.',
+            'Make the decision smaller: {step}.'
+          ],
+          fallbackFocus: 'what will actually change in your daily life',
+          fallbackStep: 'write down one option, one risk, and one action to test within 10 minutes'
+        },
+        ja: {
+          subtext: '考えすぎている悩み・問題・決断を書いてください。大事なことと、次の小さな一歩を整理します。',
+          inputLabel: '今の状況',
+          inputPlaceholder: '例：転職すべきかずっと考えていて、あらゆる可能性を比較しすぎて動けません。',
+          analyzeBtn: '整理する',
+          voiceBtn: '音声入力',
+          voiceBtnStop: '停止',
+          clearBtn: 'クリア',
+          resultTitle: '3つの整理',
+          mattersTitle: '本当に大事なこと',
+          notMattersTitle: '今は大事ではないこと',
+          stepTitle: '次の小さな一歩',
+          miniNote: 'ブラウザ内だけで動くプライベートツールです。データは外部送信されません。',
+          langName: '日本語',
+          emptyInput: 'まずは悩み・問題・決断を1つ書いてください。',
+          voiceUnsupported: 'このブラウザでは音声入力に対応していません。',
+          voiceReady: '音声入力が使えます。',
+          voiceListening: '聞き取り中…そのまま話してください。',
+          voiceStopped: '音声入力を停止しました。',
+          voiceError: '音声入力を開始できませんでした。',
+          mattersTemplates: [
+            '本当に見るべきなのは、あらゆる可能性ではなく、直近の生活に最も影響する軸です。つまり「{focus}」です。',
+            '大事なのは人生全体を一気に決めることではなく、「{focus}」の不確実さを少し下げることです。',
+            'この場面で重要なのは、この選択が「{focus}」を現実的に支えるかどうかです。'
+          ],
+          notMattersTemplates: [
+            '完璧な答え、100%の確信、すべてのパターンの予測は今は必要ありません。',
+            '人にどう見られるかの想像、細かい例外、全部を先回りして考えることは今の優先事項ではありません。',
+            '最初から正解を出そうとすることは、今は手放して大丈夫です。'
+          ],
+          stepTemplates: [
+            '次の一歩は小さくて十分です。まずは「{step}」。',
+            '今やることは1つで十分です。「{step}」。',
+            '決断を小さくしてください。まずは「{step}」。'
+          ],
+          fallbackFocus: 'これからの毎日に実際に何が変わるか',
+          fallbackStep: '選択肢を1つ書き、気になるリスクを1つ書き、10分でできる試し方を1つ決める'
+        }
+      };
+
+      function detectLanguage(text) {
+        const jaPattern = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
+        return jaPattern.test(text) ? 'ja' : 'en';
+      }
+
+      function setLanguageUI(lang) {
+        const t = copy[lang];
+        document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+        subtext.textContent = t.subtext;
+        inputLabel.textContent = t.inputLabel;
+        input.placeholder = t.inputPlaceholder;
+        analyzeBtn.textContent = t.analyzeBtn;
+        clearBtn.textContent = t.clearBtn;
+        voiceBtn.textContent = isListening ? t.voiceBtnStop : t.voiceBtn;
+        resultTitle.textContent = t.resultTitle;
+        mattersTitle.textContent = t.mattersTitle;
+        notMattersTitle.textContent = t.notMattersTitle;
+        stepTitle.textContent = t.stepTitle;
+        miniNote.textContent = t.miniNote;
+        langPill.textContent = t.langName;
+      }
+
+      function pick(arr, seedText) {
+        let sum = 0;
+        for (let i = 0; i < seedText.length; i++) sum += seedText.charCodeAt(i);
+        return arr[sum % arr.length];
+      }
+
+      function extractFocus(text, lang) {
+        const clean = text.replace(/\s+/g, ' ').trim();
+
+        const patterns = lang === 'ja'
+          ? [
+              /(.+?)すべきか/,
+              /(.+?)かどうか/,
+              /(.+?)について/,
+              /(.+?)が不安/,
+              /(.+?)で迷/,
+              /(.+?)を決め/,
+              /(.+?)したい/
+            ]
+          : [
+              /whether I should ([^.!,?\n]+)/i,
+              /if I should ([^.!,?\n]+)/i,
+              /about ([^.!,?\n]+)/i,
+              /deciding ([^.!,?\n]+)/i,
+              /worried about ([^.!,?\n]+)/i,
+              /stuck on ([^.!,?\n]+)/i,
+              /should I ([^.!,?\n]+)/i
+            ];
+
+        for (const pattern of patterns) {
+          const m = clean.match(pattern);
+          if (m && m[1]) {
+            return tidyFocus(m[1], lang);
+          }
+        }
+
+        const parts = clean.split(/[。.!?\n,、]/).map(s => s.trim()).filter(Boolean);
+        if (parts.length) return tidyFocus(parts[0], lang);
+
+        return copy[lang].fallbackFocus;
+      }
+
+      function tidyFocus(text, lang) {
+        let t = text.trim()
+          .replace(/^(to\s+)/i, '')
+          .replace(/^whether\s+/i, '')
+          .replace(/^if\s+/i, '')
+          .replace(/^about\s+/i, '')
+          .replace(/[「」"'“”]/g, '')
+          .trim();
+
+        if (!t) return copy[lang].fallbackFocus;
+        if (t.length > 40) t = t.slice(0, 40).trim();
+        return t;
+      }
+
+      function inferStep(text, lang) {
+        const lower = text.toLowerCase();
+
+        if (lang === 'ja') {
+          if (/転職|仕事|会社|職場/.test(text)) return '求人を1件見るか、信頼できる人に15分だけ話を聞く';
+          if (/恋愛|結婚|彼|彼女|人間関係/.test(text)) return '相手に確認したいことを1つだけ書き出す';
+          if (/お金|費用|出費|買う|購入/.test(text)) return '予算の上限を1つ決める';
+          if (/進路|学校|受験|勉強/.test(text)) return '候補を2つに絞って比較基準を1つだけ書く';
+          if (/引っ越し|移住/.test(text)) return '最優先条件を1つ決めて候補を3つまでにする';
+          return copy.ja.fallbackStep;
+        } else {
+          if (/job|career|work|company|quit|switch/.test(lower)) return 'look at one real option or ask one trusted person for a 15-minute reality check';
+          if (/relationship|dating|marriage|partner/.test(lower)) return 'write one question you actually need answered and ask only that';
+          if (/money|price|cost|buy|purchase/.test(lower)) return 'set a hard budget limit before thinking any further';
+          if (/school|study|college|exam|degree/.test(lower)) return 'reduce your options to two and compare them using one criterion';
+          if (/move|moving|city|relocate/.test(lower)) return 'choose one must-have and eliminate options that do not meet it';
+          return copy.en.fallbackStep;
+        }
+      }
+
+      function generateInsight(text) {
+        const lang = detectLanguage(text);
+        const t = copy[lang];
+        const focus = extractFocus(text, lang);
+        const step = inferStep(text, lang);
+
+        const matters = pick(t.mattersTemplates, text).replace('{focus}', focus);
+        const notMatters = pick(t.notMattersTemplates, text);
+        const nextStep = pick(t.stepTemplates, text.split('').reverse().join('')).replace('{step}', step);
+
+        return { lang, matters, notMatters, nextStep };
+      }
+
+      function render() {
+        const text = input.value.trim();
+        const lang = detectLanguage(text || '');
+        setLanguageUI(lang);
+
+        if (!text) {
+          hint.textContent = copy[lang].emptyInput;
+          result.classList.remove('show');
+          return;
+        }
+
+        const output = generateInsight(text);
+
+        mattersText.textContent = output.matters;
+        notMattersText.textContent = output.notMatters;
+        stepText.textContent = output.nextStep;
+
+        mattersText.classList.remove('empty');
+        notMattersText.classList.remove('empty');
+        stepText.classList.remove('empty');
+
+        result.classList.add('show');
+        hint.textContent = '';
+      }
+
+      function resetApp() {
+        const lang = detectLanguage(input.value.trim() || '');
+        input.value = '';
+        setLanguageUI(lang);
+        hint.textContent = '';
+        result.classList.remove('show');
+        mattersText.textContent = '—';
+        notMattersText.textContent = '—';
+        stepText.textContent = '—';
+        mattersText.classList.add('empty');
+        notMattersText.classList.add('empty');
+        stepText.classList.add('empty');
+        input.focus();
+      }
+
+      function setupVoice() {
+        const currentLang = detectLanguage(input.value.trim() || '');
+        setLanguageUI(currentLang);
+
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          hint.textContent = copy[currentLang].voiceUnsupported;
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = function () {
+          isListening = true;
+          const lang = detectLanguage(input.value.trim() || '');
+          const t = copy[lang];
+          voiceBtn.textContent = t.voiceBtnStop;
+          hint.textContent = t.voiceListening;
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          const lang = detectLanguage(input.value.trim() || '');
+          const t = copy[lang];
+          voiceBtn.textContent = t.voiceBtn;
+          if (hint.textContent === t.voiceListening) {
+            hint.textContent = t.voiceStopped;
+          }
+        };
+
+        recognition.onerror = function () {
+          isListening = false;
+          const lang = detectLanguage(input.value.trim() || '');
+          const t = copy[lang];
+          voiceBtn.textContent = t.voiceBtn;
+          hint.textContent = t.voiceError;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = Array.from(event.results)
+            .map(r => r[0] && r[0].transcript ? r[0].transcript : '')
+            .join(' ')
+            .trim();
+
+          if (!transcript) return;
+
+          input.value = input.value.trim()
+            ? (input.value.trim() + '\n' + transcript)
+            : transcript;
+
+          const lang = detectLanguage(input.value);
+          setLanguageUI(lang);
+          render();
+        };
+
+        hint.textContent = copy[currentLang].voiceReady;
+      }
+
+      analyzeBtn.addEventListener('click', render);
+      clearBtn.addEventListener('click', resetApp);
+
+      input.addEventListener('input', function () {
+        const lang = detectLanguage(input.value.trim() || '');
+        setLanguageUI(lang);
+        hint.textContent = '';
+      });
+
+      input.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') render();
+      });
+
+      voiceBtn.addEventListener('click', function () {
+        const lang = detectLanguage(input.value.trim() || '');
+        setLanguageUI(lang);
+
+        if (!recognition) {
+          hint.textContent = copy[lang].voiceUnsupported;
+          return;
+        }
+
+        if (isListening) {
+          recognition.stop();
+          return;
+        }
+
+        recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+        try {
+          recognition.start();
+        } catch (err) {
+          hint.textContent = copy[lang].voiceError;
+        }
+      });
+
+      setLanguageUI('en');
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
