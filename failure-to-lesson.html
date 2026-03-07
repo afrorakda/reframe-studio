@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Failure → Lesson | REFRAME Studio</title>
+  <meta name="description" content="Turn a failure or setback into 1–3 practical lessons you can use right away." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#161616;
+      --muted:#666;
+      --line:#e7e3dc;
+      --accent:#1f6feb;
+      --accent-2:#0f3d91;
+      --shadow:0 6px 18px rgba(0,0,0,0.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Hiragino Sans","Yu Gothic","Meiryo",sans-serif}
+    body{line-height:1.5}
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+      padding:16px 16px 40px;
+    }
+    .back{
+      display:inline-block;
+      margin:6px 0 18px;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+    }
+    .back:active,.back:hover{color:var(--text)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h1{
+      font-size:28px;
+      line-height:1.15;
+      margin:0 0 10px;
+      letter-spacing:-0.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    textarea{
+      width:100%;
+      min-height:144px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      resize:vertical;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(31,111,235,0.12);
+    }
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:14px 16px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      min-height:48px;
+    }
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .primary:hover,.primary:active{background:var(--accent-2)}
+    .secondary{
+      background:#f1f4f9;
+      color:#16355f;
+      border:1px solid #d7e3f6;
+      flex:1 1 150px;
+    }
+    .secondary:hover,.secondary:active{background:#e8eef8}
+    .ghost{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      flex:1 1 140px;
+    }
+    .ghost:hover,.ghost:active{background:#fafafa}
+    .status{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:20px;
+    }
+    .result{
+      margin-top:18px;
+      border-top:1px solid var(--line);
+      padding-top:18px;
+    }
+    .result h2{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+    .empty{
+      color:var(--muted);
+      font-size:14px;
+      padding:12px 0 4px;
+    }
+    .lesson-list{
+      display:grid;
+      gap:10px;
+    }
+    .lesson{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      padding:14px;
+    }
+    .lesson-num{
+      display:inline-block;
+      font-size:12px;
+      font-weight:700;
+      color:var(--accent-2);
+      background:#eef4ff;
+      border:1px solid #d8e6ff;
+      border-radius:999px;
+      padding:4px 8px;
+      margin-bottom:8px;
+    }
+    .lesson-text{
+      margin:0;
+      font-size:15px;
+    }
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    footer{
+      margin-top:40px;
+      font-size:12px;
+      color:#666;
+      line-height:1.6;
+    }
+    @media (max-width: 480px){
+      h1{font-size:24px}
+      .card{padding:16px}
+      button{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="title">Failure → Lesson</h1>
+      <p class="desc" id="description">Describe a failure or setback. Get 1–3 practical lessons you can use next time.</p>
+
+      <label id="inputLabel" for="input">What happened?</label>
+      <textarea id="input" placeholder="Example: I launched too early, got weak feedback, and had to redo most of the work."></textarea>
+
+      <div class="row">
+        <button id="generateBtn" class="primary" type="button">Extract Lessons</button>
+        <button id="exampleBtn" class="secondary" type="button">Try example</button>
+        <button id="voiceBtn" class="ghost" type="button">Voice Input</button>
+        <button id="copyBtn" class="ghost" type="button">Copy result</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <section class="result" aria-live="polite">
+        <h2 id="resultHeading">Lessons</h2>
+        <div id="result" class="empty">Your lessons will appear here.</div>
+        <p id="hint" class="hint"></p>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        A tiny tool that turns a setback into a few clear lessons you can apply immediately.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('input');
+      const generateBtn = document.getElementById('generateBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const resultEl = document.getElementById('result');
+      const statusEl = document.getElementById('status');
+      const hintEl = document.getElementById('hint');
+
+      const ui = {
+        title: document.getElementById('title'),
+        description: document.getElementById('description'),
+        inputLabel: document.getElementById('inputLabel'),
+        resultHeading: document.getElementById('resultHeading')
+      };
+
+      function detectLanguage(text) {
+        const s = (text || '').trim();
+        if (!s) return document.documentElement.lang === 'ja' ? 'ja' : 'en';
+        const hasJapanese = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(s);
+        return hasJapanese ? 'ja' : 'en';
+      }
+
+      function applyLanguage(lang) {
+        document.documentElement.lang = lang;
+        if (lang === 'ja') {
+          ui.title.textContent = 'Failure → Lesson';
+          ui.description.textContent = '失敗やつまずきを書くと、次に使える実践的な学びを1〜3個に整理します。';
+          ui.inputLabel.textContent = '何が起きましたか？';
+          ui.resultHeading.textContent = '学び';
+          inputEl.placeholder = '例：見切り発車で公開してしまい、反応が弱く、大半を作り直すことになった。';
+          generateBtn.textContent = '学びを抽出';
+          exampleBtn.textContent = '例を試す';
+          voiceBtn.textContent = '音声入力';
+          copyBtn.textContent = '結果をコピー';
+          if (!resultEl.dataset.hasResult) {
+            resultEl.className = 'empty';
+            resultEl.textContent = 'ここに学びが表示されます。';
+          }
+          hintEl.textContent = '';
+        } else {
+          ui.title.textContent = 'Failure → Lesson';
+          ui.description.textContent = 'Describe a failure or setback. Get 1–3 practical lessons you can use next time.';
+          ui.inputLabel.textContent = 'What happened?';
+          ui.resultHeading.textContent = 'Lessons';
+          inputEl.placeholder = 'Example: I launched too early, got weak feedback, and had to redo most of the work.';
+          generateBtn.textContent = 'Extract Lessons';
+          exampleBtn.textContent = 'Try example';
+          voiceBtn.textContent = 'Voice Input';
+          copyBtn.textContent = 'Copy result';
+          if (!resultEl.dataset.hasResult) {
+            resultEl.className = 'empty';
+            resultEl.textContent = 'Your lessons will appear here.';
+          }
+          hintEl.textContent = '';
+        }
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function splitSentences(text) {
+        return text
+          .split(/[\n\r。！？.!?]+/)
+          .map(s => s.trim())
+          .filter(Boolean);
+      }
+
+      function summarizeInput(text, lang) {
+        const trimmed = text.trim().replace(/\s+/g, ' ');
+        if (trimmed.length <= 90) return trimmed;
+        return lang === 'ja' ? trimmed.slice(0, 90) + '…' : trimmed.slice(0, 90) + '...';
+      }
+
+      function hasAny(text, keywords) {
+        const t = text.toLowerCase();
+        return keywords.some(k => t.includes(k));
+      }
+
+      function pickLessons(text, lang) {
+        const raw = text.trim();
+        const lower = raw.toLowerCase();
+
+        const jaPatterns = {
+          planning: ['遅刻','締切','期限','スケジュール','時間','準備不足','見積','計画','段取り','後回し','急いで','焦って'],
+          communication: ['伝わ','説明','共有','連絡','誤解','認識','会話','相談','フィードバック','反応','空気'],
+          scope: ['やりすぎ','広げすぎ','詰め込み','機能','増やしすぎ','全部','完璧','一気に','盛り込み'],
+          validation: ['見切り発車','仮説','検証','ニーズ','需要','反応','テスト','公開','ローンチ','作り直し'],
+          skill: ['できなかった','苦手','知識不足','経験不足','慣れ','練習','ミス','精度','品質'],
+          emotion: ['緊張','不安','怖','自信','落ち込','疲れ','焦り','空回り','プレッシャー','しんどい']
+        };
+
+        const enPatterns = {
+          planning: ['late','deadline','time','schedule','planning','estimate','rushed','rush','delay','unprepared','last minute'],
+          communication: ['communicat','explain','shared','share','misunderstood','feedback','alignment','expectation','told','message'],
+          scope: ['too much','too many','scope','feature','features','everything','perfect','overbuilt','overbuild','complex'],
+          validation: ['launched','launch','assumption','assumptions','validate','validation','test','market','demand','feedback','redo'],
+          skill: ['mistake','error','skill','skills','knowledge','experience','practice','quality','bug','bugs'],
+          emotion: ['anxious','anxiety','nervous','scared','fear','confidence','burned out','overwhelmed','stress','stressed','pressure']
+        };
+
+        const patterns = lang === 'ja' ? jaPatterns : enPatterns;
+        const matches = {
+          planning: hasAny(lower, patterns.planning),
+          communication: hasAny(lower, patterns.communication),
+          scope: hasAny(lower, patterns.scope),
+          validation: hasAny(lower, patterns.validation),
+          skill: hasAny(lower, patterns.skill),
+          emotion: hasAny(lower, patterns.emotion)
+        };
+
+        const lessons = [];
+        const summary = summarizeInput(raw, lang);
+
+        function addLesson(text) {
+          if (!lessons.includes(text) && lessons.length < 3) lessons.push(text);
+        }
+
+        if (lang === 'ja') {
+          if (matches.validation) addLesson('先に大きく作るより、小さく試して反応を見てから広げるほうが損失は小さい。');
+          if (matches.scope) addLesson('失敗の原因が努力不足ではなく、範囲の広げすぎにあるなら、最初の一歩をもっと小さく切るべきだった。');
+          if (matches.communication) addLesson('自分の中で分かっていることでも、相手との認識合わせを言葉にしないとズレは起きる。');
+          if (matches.planning) addLesson('時間不足は気合いの問題ではなく、見積もりと準備の設計を甘く見たサイン。');
+          if (matches.skill) addLesson('うまくいかなかった部分は才能の有無より、事前練習や確認の不足として分解できる。');
+          if (matches.emotion) addLesson('感情が乱れた場面ほど、意思の強さより先に環境や手順を整える必要がある。');
+
+          if (lessons.length === 0) {
+            addLesson('失敗そのものより、どの前提が外れたのかを見つけると、次の一手はかなり明確になる。');
+            addLesson('一度に全部を正そうとせず、再発しやすい一点だけを改善すると学びが定着しやすい。');
+            addLesson('今回のつまずきは、やり方より順番を見直すサインかもしれない。');
+          } else if (lessons.length === 1) {
+            addLesson('今回の失敗は、能力の否定ではなく、設計・順番・確認のどこかを調整する材料になる。');
+            addLesson('次回は同じ条件で繰り返さず、ひとつだけ条件を変えて試すと学びが増える。');
+          } else if (lessons.length === 2) {
+            addLesson('今回のつまずきは「何をやるか」より「どの順でやるか」を問い直すきっかけになる。');
+          }
+        } else {
+          if (matches.validation) addLesson('Test the assumption earlier. Small proof beats a big rebuild.');
+          if (matches.scope) addLesson('The problem may not be effort. It may be that the scope was too wide for the first pass.');
+          if (matches.communication) addLesson('What feels obvious to you still needs explicit alignment with other people.');
+          if (matches.planning) addLesson('Time pressure usually points to weak estimation or preparation, not weak character.');
+          if (matches.skill) addLesson('A miss can often be turned into a practice gap: what needed rehearsal, review, or a checklist?');
+          if (matches.emotion) addLesson('When emotion spikes, better structure usually helps more than more willpower.');
+
+          if (lessons.length === 0) {
+            addLesson('Find the assumption that failed. That is usually the real lesson.');
+            addLesson('Improve one repeatable step, not everything at once.');
+            addLesson('This setback may be less about ability and more about sequence, scope, or feedback timing.');
+          } else if (lessons.length === 1) {
+            addLesson('A failure is often a design signal, not a verdict on you.');
+            addLesson('Next time, change one condition early so the lesson becomes testable.');
+          } else if (lessons.length === 2) {
+            addLesson('The next gain may come from doing things in a different order, not from doing more.');
+          }
+        }
+
+        return {
+          summary,
+          lessons: lessons.slice(0, 3)
+        };
+      }
+
+      function renderLessons(lang, data) {
+        const items = data.lessons.map((lesson, index) => {
+          const label = lang === 'ja' ? `学び ${index + 1}` : `Lesson ${index + 1}`;
+          return `
+            <div class="lesson">
+              <div class="lesson-num">${escapeHtml(label)}</div>
+              <p class="lesson-text">${escapeHtml(lesson)}</p>
+            </div>
+          `;
+        }).join('');
+
+        resultEl.dataset.hasResult = 'true';
+        resultEl.className = 'lesson-list';
+        resultEl.innerHTML = items;
+
+        if (lang === 'ja') {
+          hintEl.textContent = '入力を少し具体的にすると、学びも具体的になります。';
+        } else {
+          hintEl.textContent = 'More specific input usually gives more specific lessons.';
+        }
+      }
+
+      function buildCopyText(lang) {
+        if (!resultEl.dataset.hasResult) return '';
+        const cards = Array.from(resultEl.querySelectorAll('.lesson-text')).map((el, idx) => {
+          return (lang === 'ja' ? `学び ${idx + 1}: ` : `Lesson ${idx + 1}: `) + el.textContent.trim();
+        });
+        return cards.join('\n');
+      }
+
+      function setStatus(message) {
+        statusEl.textContent = message || '';
+      }
+
+      function generate() {
+        const text = inputEl.value.trim();
+        const lang = detectLanguage(text);
+        applyLanguage(lang);
+
+        if (!text) {
+          resultEl.dataset.hasResult = '';
+          resultEl.className = 'empty';
+          resultEl.textContent = lang === 'ja'
+            ? 'まずは失敗やつまずきを1〜2文で書いてください。'
+            : 'Please enter a failure or setback in 1–2 sentences first.';
+          hintEl.textContent = '';
+          setStatus('');
+          return;
+        }
+
+        const output = pickLessons(text, lang);
+        renderLessons(lang, output);
+        setStatus(lang === 'ja' ? '学びを抽出しました。' : 'Lessons extracted.');
+      }
+
+      function tryExample() {
+        const currentLang = detectLanguage(inputEl.value);
+        if (currentLang === 'ja') {
+          inputEl.value = '提案を急いで出したら、相手の期待とズレていてやり直しになった。事前確認をほとんどしていなかった。';
+        } else {
+          inputEl.value = 'I shipped a feature too quickly, but it did not match what users actually needed, so I had to redo most of it.';
+        }
+        const lang = detectLanguage(inputEl.value);
+        applyLanguage(lang);
+        inputEl.focus();
+        generate();
+      }
+
+      async function copyResult() {
+        const lang = detectLanguage(inputEl.value || document.documentElement.lang);
+        const text = buildCopyText(lang);
+        if (!text) {
+          setStatus(lang === 'ja' ? 'コピーする結果がありません。' : 'There is no result to copy yet.');
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus(lang === 'ja' ? '結果をコピーしました。' : 'Result copied.');
+        } catch (e) {
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          try {
+            document.execCommand('copy');
+            setStatus(lang === 'ja' ? '結果をコピーしました。' : 'Result copied.');
+          } catch (_) {
+            setStatus(lang === 'ja' ? 'コピーできませんでした。手動でコピーしてください。' : 'Copy failed. Please copy manually.');
+          }
+          document.body.removeChild(temp);
+        }
+      }
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          voiceBtn.style.opacity = '0.55';
+          const lang = detectLanguage(inputEl.value);
+          applyLanguage(lang);
+          setStatus(lang === 'ja' ? 'このブラウザでは音声入力に対応していません。' : 'Voice input is not supported in this browser.');
+          return;
+        }
+
+        let recognition = null;
+        let listening = false;
+
+        function startRecognition() {
+          const lang = detectLanguage(inputEl.value);
+          recognition = new SpeechRecognition();
+          recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+          recognition.interimResults = false;
+          recognition.maxAlternatives = 1;
+
+          recognition.onstart = function () {
+            listening = true;
+            voiceBtn.textContent = lang === 'ja' ? '録音中...' : 'Listening...';
+            setStatus(lang === 'ja' ? '話してください。' : 'Speak now.');
+          };
+
+          recognition.onresult = function (event) {
+            const transcript = event.results[0][0].transcript || '';
+            if (inputEl.value.trim()) {
+              inputEl.value = inputEl.value.trim() + (lang === 'ja' ? '\n' : '\n') + transcript.trim();
+            } else {
+              inputEl.value = transcript.trim();
+            }
+            applyLanguage(detectLanguage(inputEl.value));
+            setStatus(lang === 'ja' ? '音声を入力しました。' : 'Voice captured.');
+          };
+
+          recognition.onerror = function () {
+            const currentLang = detectLanguage(inputEl.value);
+            setStatus(currentLang === 'ja' ? '音声入力を開始できませんでした。' : 'Could not start voice input.');
+          };
+
+          recognition.onend = function () {
+            listening = false;
+            const currentLang = detectLanguage(inputEl.value);
+            voiceBtn.textContent = currentLang === 'ja' ? '音声入力' : 'Voice Input';
+          };
+
+          recognition.start();
+        }
+
+        voiceBtn.addEventListener('click', function () {
+          if (listening && recognition) {
+            recognition.stop();
+            return;
+          }
+          startRecognition();
+        });
+      }
+
+      function loadInputFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const urlInput = params.get('input');
+        if (urlInput) {
+          inputEl.value = urlInput;
+        }
+        applyLanguage(detectLanguage(inputEl.value));
+      }
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', tryExample);
+      copyBtn.addEventListener('click', copyResult);
+
+      inputEl.addEventListener('input', function () {
+        applyLanguage(detectLanguage(inputEl.value));
+        setStatus('');
+      });
+
+      loadInputFromURL();
+      setupVoice();
+
+      if (inputEl.value.trim()) {
+        generate();
+      }
+    })();
+  </script>
+</body>
+</html>
