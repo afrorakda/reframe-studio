@@ -56,11 +56,73 @@ h1{
   font-size:16px;
   padding:14px 20px;
   cursor:pointer;
-  margin-bottom:26px;
+  margin-bottom:28px;
 }
 
 .random-btn:hover{
   opacity:0.92;
+}
+
+.section{
+  margin:0 0 28px 0;
+}
+
+.section-title{
+  font-size:22px;
+  font-weight:700;
+  margin:0 0 8px 0;
+}
+
+.section-text{
+  color:#555;
+  font-size:15px;
+  line-height:1.5;
+  margin:0 0 14px 0;
+}
+
+.loop-card{
+  display:block;
+  text-decoration:none;
+  color:var(--text);
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:12px;
+}
+
+.loop-card:hover{
+  background:#fafafa;
+}
+
+.loop-step{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+  font-weight:600;
+  letter-spacing:0.02em;
+  text-transform:uppercase;
+}
+
+.loop-title{
+  font-size:20px;
+  font-weight:700;
+  line-height:1.25;
+  margin:0 0 6px 0;
+}
+
+.loop-desc{
+  color:#555;
+  font-size:15px;
+  line-height:1.5;
+  margin:0;
+}
+
+.loop-arrow{
+  text-align:center;
+  color:#999;
+  font-size:18px;
+  margin:6px 0 10px;
 }
 
 .status{
@@ -132,6 +194,51 @@ h1{
   </p>
 
   <button class="random-btn" id="randomBtn">🎲 Try a random tool</button>
+
+  <div class="section">
+    <h2 class="section-title">🧠 Thinking Loop</h2>
+    <p class="section-text">
+      A simple flow for turning friction into clarity, ideas, and action.
+    </p>
+
+    <a class="loop-card" href="confusion-to-question.html">
+      <div class="loop-step">Step 1</div>
+      <div class="loop-title">Confusion → Question</div>
+      <p class="loop-desc">Turn vague thoughts into clear questions.</p>
+    </a>
+
+    <div class="loop-arrow">↓</div>
+
+    <a class="loop-card" href="problem-to-options.html">
+      <div class="loop-step">Step 2</div>
+      <div class="loop-title">Problem → Options</div>
+      <p class="loop-desc">Turn a vague problem into possible paths forward.</p>
+    </a>
+
+    <div class="loop-arrow">↓</div>
+
+    <a class="loop-card" href="idea-to-post-angles.html">
+      <div class="loop-step">Step 3</div>
+      <div class="loop-title">Idea → Post Angles</div>
+      <p class="loop-desc">Generate possible directions from one idea.</p>
+    </a>
+
+    <div class="loop-arrow">↓</div>
+
+    <a class="loop-card" href="hook-generator.html">
+      <div class="loop-step">Step 4</div>
+      <div class="loop-title">Hook Generator</div>
+      <p class="loop-desc">Create strong opening hooks for a post.</p>
+    </a>
+
+    <div class="loop-arrow">↓</div>
+
+    <a class="loop-card" href="tweet-polisher.html">
+      <div class="loop-step">Step 5</div>
+      <div class="loop-title">Tweet Polisher</div>
+      <p class="loop-desc">Turn rough writing into clearer, stronger posts.</p>
+    </a>
+  </div>
 
   <div id="status" class="status">Loading tools...</div>
 
@@ -212,8 +319,9 @@ function extractTitle(html, fallback){
 }
 
 function extractDescription(html){
-  const match = html.match(/<meta\s+name=["']description["']\s+content=["']([^"]+)["']\s*\/?>/i)
-             || html.match(/<meta\s+name=['"]description['"]\s+content=['"]([^']+)['"]\s*\/?>/i);
+  const match =
+    html.match(/<meta\s+name=["']description["']\s+content=["']([^"]+)["']\s*\/?>/i) ||
+    html.match(/<meta\s+name=['"]description['"]\s+content=['"]([^']+)['"]\s*\/?>/i);
 
   if(!match) return "Small browser tool by REFRAME Studio.";
   return match[1].trim();
