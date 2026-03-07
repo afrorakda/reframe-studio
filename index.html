@@ -5,402 +5,311 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>REFRAME Studio</title>
-<meta name="description" content="Ultra-simple browser tools that solve small everyday friction problems.">
+<meta name="description" content="Ultra-simple browser tools that reduce thinking friction.">
 
 <style>
-:root{
-  --bg:#f5f5f5;
-  --card:#ffffff;
-  --text:#111111;
-  --muted:#666666;
-  --line:#dddddd;
-  --accent:#111111;
-}
-
-*{
-  box-sizing:border-box;
-}
 
 body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:24px;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+max-width:760px;
+margin:auto;
+padding:24px;
+background:#f5f5f5;
 }
 
 h1{
-  font-size:36px;
-  line-height:1.1;
-  margin:0 0 12px 0;
+font-size:36px;
+margin-bottom:10px;
 }
 
 .subtitle{
-  color:var(--muted);
-  font-size:16px;
-  line-height:1.45;
-  margin:0 0 28px 0;
-}
-
-.random-btn{
-  display:inline-block;
-  border:none;
-  border-radius:14px;
-  background:var(--accent);
-  color:#fff;
-  font-size:16px;
-  padding:14px 20px;
-  cursor:pointer;
-  margin-bottom:28px;
-}
-
-.random-btn:hover{
-  opacity:0.92;
+color:#666;
+margin-bottom:24px;
 }
 
 .section{
-  margin:0 0 28px 0;
+margin-top:30px;
 }
 
-.section-title{
-  font-size:22px;
-  font-weight:700;
-  margin:0 0 8px 0;
+.card{
+display:block;
+background:white;
+padding:20px;
+border-radius:16px;
+border:1px solid #ddd;
+margin-bottom:14px;
+text-decoration:none;
+color:black;
 }
 
-.section-text{
-  color:#555;
-  font-size:15px;
-  line-height:1.5;
-  margin:0 0 14px 0;
-}
-
-.loop-card{
-  display:block;
-  text-decoration:none;
-  color:var(--text);
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:12px;
-}
-
-.loop-card:hover{
-  background:#fafafa;
-}
-
-.loop-step{
-  font-size:13px;
-  color:var(--muted);
-  margin-bottom:6px;
-  font-weight:600;
-  letter-spacing:0.02em;
-  text-transform:uppercase;
-}
-
-.loop-title{
-  font-size:20px;
-  font-weight:700;
-  line-height:1.25;
-  margin:0 0 6px 0;
-}
-
-.loop-desc{
-  color:#555;
-  font-size:15px;
-  line-height:1.5;
-  margin:0;
-}
-
-.loop-arrow{
-  text-align:center;
-  color:#999;
-  font-size:18px;
-  margin:6px 0 10px;
-}
-
-.status{
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:18px;
-}
-
-.tool{
-  display:block;
-  text-decoration:none;
-  color:var(--text);
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:22px 20px;
-  margin-bottom:18px;
-}
-
-.tool:hover{
-  background:#fafafa;
+.card:hover{
+background:#fafafa;
 }
 
 .tool-title{
-  font-size:22px;
-  font-weight:700;
-  line-height:1.25;
-  margin:0 0 8px 0;
+font-size:20px;
+font-weight:bold;
 }
 
 .tool-desc{
-  color:#555;
-  font-size:15px;
-  line-height:1.5;
-  margin:0;
+color:#666;
+font-size:14px;
+margin-top:4px;
 }
 
-.links{
-  margin-top:30px;
-  font-size:14px;
+.arrow{
+text-align:center;
+color:#aaa;
+font-size:20px;
+margin:6px 0;
 }
 
-.links a{
-  color:#1e3a5f;
-  text-decoration:none;
-  font-weight:600;
+.random{
+background:black;
+color:white;
+border:none;
+padding:14px 20px;
+border-radius:14px;
+font-size:16px;
+margin-bottom:26px;
 }
 
-.links a:hover{
-  text-decoration:underline;
+.problem{
+display:block;
+background:white;
+padding:16px;
+border-radius:14px;
+border:1px solid #ddd;
+margin-bottom:10px;
+text-decoration:none;
+color:black;
+}
+
+.problem:hover{
+background:#fafafa;
+}
+
+.status{
+margin-top:20px;
+color:#666;
+font-size:14px;
 }
 
 .footer{
-  margin-top:40px;
-  font-size:12px;
-  color:#666;
-  line-height:1.6;
+margin-top:40px;
+font-size:12px;
+color:#666;
 }
+
 </style>
 </head>
 
 <body>
-<div class="wrap">
 
-  <h1>REFRAME Studio</h1>
+<h1>REFRAME Studio</h1>
 
-  <p class="subtitle">
-    Ultra-simple browser tools that solve small everyday friction problems.
-  </p>
+<p class="subtitle">
+Reduce thinking friction.
+</p>
 
-  <button class="random-btn" id="randomBtn">🎲 Try a random tool</button>
+<button class="random" onclick="randomTool()">🎲 Random tool</button>
 
-  <div class="section">
-    <h2 class="section-title">🧠 Thinking Loop</h2>
-    <p class="section-text">
-      A simple flow for turning friction into clarity, ideas, and action.
-    </p>
+<div class="section">
 
-    <a class="loop-card" href="confusion-to-question.html">
-      <div class="loop-step">Step 1</div>
-      <div class="loop-title">Confusion → Question</div>
-      <p class="loop-desc">Turn vague thoughts into clear questions.</p>
-    </a>
+<h2>🧠 Thinking Loop</h2>
 
-    <div class="loop-arrow">↓</div>
+<a class="card" href="confusion-to-question.html">
+<div class="tool-title">Confusion → Question</div>
+<div class="tool-desc">Turn vague thoughts into clear questions</div>
+</a>
 
-    <a class="loop-card" href="problem-to-options.html">
-      <div class="loop-step">Step 2</div>
-      <div class="loop-title">Problem → Options</div>
-      <p class="loop-desc">Turn a vague problem into possible paths forward.</p>
-    </a>
+<div class="arrow">↓</div>
 
-    <div class="loop-arrow">↓</div>
+<a class="card" href="problem-to-options.html">
+<div class="tool-title">Problem → Options</div>
+<div class="tool-desc">Turn a vague problem into possible paths</div>
+</a>
 
-    <a class="loop-card" href="idea-to-post-angles.html">
-      <div class="loop-step">Step 3</div>
-      <div class="loop-title">Idea → Post Angles</div>
-      <p class="loop-desc">Generate possible directions from one idea.</p>
-    </a>
+<div class="arrow">↓</div>
 
-    <div class="loop-arrow">↓</div>
+<a class="card" href="idea-to-post-angles.html">
+<div class="tool-title">Idea → Post Angles</div>
+<div class="tool-desc">Generate directions from an idea</div>
+</a>
 
-    <a class="loop-card" href="hook-generator.html">
-      <div class="loop-step">Step 4</div>
-      <div class="loop-title">Hook Generator</div>
-      <p class="loop-desc">Create strong opening hooks for a post.</p>
-    </a>
+<div class="arrow">↓</div>
 
-    <div class="loop-arrow">↓</div>
+<a class="card" href="hook-generator.html">
+<div class="tool-title">Hook Generator</div>
+<div class="tool-desc">Create strong opening hooks</div>
+</a>
 
-    <a class="loop-card" href="tweet-polisher.html">
-      <div class="loop-step">Step 5</div>
-      <div class="loop-title">Tweet Polisher</div>
-      <p class="loop-desc">Turn rough writing into clearer, stronger posts.</p>
-    </a>
-  </div>
+<div class="arrow">↓</div>
 
-  <div id="status" class="status">Loading tools...</div>
-
-  <div id="tools"></div>
-
-  <div class="links">
-    <a href="about.html">About</a> |
-    <a href="roadmap.html">Roadmap</a>
-  </div>
-
-  <div class="footer">
-    <p><strong>Built by REFRAME Studio</strong></p>
-
-    <p>
-      Tiny thinking tools for creators and builders.<br>
-      #Reframed
-    </p>
-
-    <p>
-      Open-source style tools. Simple. Private. Fast.
-    </p>
-
-    <p>
-      No login. No tracking. No personal data collected.<br>
-      Runs entirely in your browser.
-    </p>
-  </div>
+<a class="card" href="tweet-polisher.html">
+<div class="tool-title">Tweet Polisher</div>
+<div class="tool-desc">Turn rough writing into strong posts</div>
+</a>
 
 </div>
 
+
+<div class="section">
+
+<h2>Where are you stuck?</h2>
+
+<a class="problem" href="confusion-to-question.html">
+🤔 I'm confused
+</a>
+
+<a class="problem" href="criticism-to-idea.html">
+😤 Someone criticized me
+</a>
+
+<a class="problem" href="idea-to-post-angles.html">
+🧠 I have an idea
+</a>
+
+<a class="problem" href="hook-generator.html">
+✍️ I'm writing a post
+</a>
+
+<a class="problem" href="tweet-polisher.html">
+🚀 I want to publish
+</a>
+
+</div>
+
+
+<div class="section">
+
+<h2>All tools</h2>
+
+<div id="status" class="status">Loading tools...</div>
+
+<div id="tools"></div>
+
+</div>
+
+<div class="footer">
+
+<p><strong>Built by REFRAME Studio</strong></p>
+
+<p>
+Open-source style tools. Simple. Private. Fast.
+</p>
+
+<p>
+No login. No tracking. No personal data collected.
+</p>
+
+<p>
+<a href="about.html">About</a> |
+<a href="roadmap.html">Roadmap</a>
+</p>
+
+</div>
+
+
 <script>
-const OWNER = "afrorakda";
-const REPO = "reframe-studio";
-const BRANCH = "main";
 
-const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
-const rawBase = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/`;
+const OWNER="afrorakda";
+const REPO="reframe-studio";
+const BRANCH="main";
 
-const excludedFiles = [
-  "index.html",
-  "about.html",
-  "roadmap.html",
-  "reframe_tool_factory.html"
+const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
+const raw=`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/`;
+
+const exclude=[
+"index.html",
+"about.html",
+"roadmap.html",
+"reframe_tool_factory.html"
 ];
 
-let loadedToolFiles = [];
+let tools=[];
 
-function escapeHtml(str){
-  return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
+function titleFromFile(name){
+
+return name
+.replace(".html","")
+.split("-")
+.map(w=>w.charAt(0).toUpperCase()+w.slice(1))
+.join(" ");
+
 }
 
-function cleanTitle(title){
-  return title
-    .replace(/\s*\|\s*REFRAME Studio\s*$/i,"")
-    .replace(/\s*–\s*REFRAME Studio\s*$/i,"")
-    .replace(/\s*-\s*REFRAME Studio\s*$/i,"")
-    .trim();
-}
+function buildCard(file,title,desc){
 
-function filenameToTitle(filename){
-  const base = filename.replace(".html","");
-  return base
-    .split("-")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+return `
+<a class="card" href="${file}">
+<div class="tool-title">${title}</div>
+<div class="tool-desc">${desc}</div>
+</a>
+`;
 
-function extractTitle(html, fallback){
-  const match = html.match(/<title>(.*?)<\/title>/i);
-  if(!match) return fallback;
-  const title = cleanTitle(match[1]);
-  return title || fallback;
-}
-
-function extractDescription(html){
-  const match =
-    html.match(/<meta\s+name=["']description["']\s+content=["']([^"]+)["']\s*\/?>/i) ||
-    html.match(/<meta\s+name=['"]description['"]\s+content=['"]([^']+)['"]\s*\/?>/i);
-
-  if(!match) return "Small browser tool by REFRAME Studio.";
-  return match[1].trim();
-}
-
-function buildToolCard(file, title, description){
-  return `
-    <a class="tool" href="${escapeHtml(file)}">
-      <div class="tool-title">${escapeHtml(title)}</div>
-      <p class="tool-desc">${escapeHtml(description)}</p>
-    </a>
-  `;
 }
 
 async function loadTools(){
-  const statusEl = document.getElementById("status");
-  const toolsEl = document.getElementById("tools");
 
-  try{
-    const repoRes = await fetch(apiUrl);
-    if(!repoRes.ok) throw new Error("Failed to fetch repository contents");
+const res=await fetch(api);
+const files=await res.json();
 
-    const files = await repoRes.json();
+const html=files
+.filter(f=>f.name.endsWith(".html"))
+.filter(f=>!exclude.includes(f.name));
 
-    const htmlFiles = files
-      .filter(file => file.type === "file")
-      .filter(file => file.name.endsWith(".html"))
-      .filter(file => !excludedFiles.includes(file.name));
+const data=[];
 
-    const toolData = [];
+for(const file of html){
 
-    for(const file of htmlFiles){
-      try{
-        const rawRes = await fetch(rawBase + file.name);
-        if(!rawRes.ok) throw new Error("Failed to fetch tool html");
+try{
 
-        const html = await rawRes.text();
+const r=await fetch(raw+file.name);
+const text=await r.text();
 
-        const fallbackTitle = filenameToTitle(file.name);
-        const title = extractTitle(html, fallbackTitle);
-        const description = extractDescription(html);
+const titleMatch=text.match(/<title>(.*?)<\/title>/i);
+const descMatch=text.match(/meta name="description" content="([^"]+)/i);
 
-        toolData.push({
-          file: file.name,
-          title,
-          description
-        });
-      }catch(error){
-        toolData.push({
-          file: file.name,
-          title: filenameToTitle(file.name),
-          description: "Small browser tool by REFRAME Studio."
-        });
-      }
-    }
+const title=titleMatch?titleMatch[1].replace("| REFRAME Studio",""):titleFromFile(file.name);
+const desc=descMatch?descMatch[1]:"Small browser tool";
 
-    toolData.sort((a,b) => a.title.localeCompare(b.title));
+data.push({file:file.name,title,desc});
 
-    loadedToolFiles = toolData.map(tool => tool.file);
+}catch{
 
-    toolsEl.innerHTML = toolData.map(tool =>
-      buildToolCard(tool.file, tool.title, tool.description)
-    ).join("");
+data.push({
+file:file.name,
+title:titleFromFile(file.name),
+desc:"Small browser tool"
+});
 
-    statusEl.textContent = `${toolData.length} tools`;
-  }catch(error){
-    statusEl.textContent = "Could not load tools.";
-  }
+}
+
+}
+
+data.sort((a,b)=>a.title.localeCompare(b.title));
+
+tools=data.map(t=>t.file);
+
+document.getElementById("tools").innerHTML=
+data.map(t=>buildCard(t.file,t.title,t.desc)).join("");
+
+document.getElementById("status").innerText=
+data.length+" tools";
+
 }
 
 function randomTool(){
-  if(!loadedToolFiles.length) return;
-  const random = loadedToolFiles[Math.floor(Math.random() * loadedToolFiles.length)];
-  window.location.href = random;
+
+const r=tools[Math.floor(Math.random()*tools.length)];
+
+window.location.href=r;
+
 }
 
-document.getElementById("randomBtn").addEventListener("click", randomTool);
-
 loadTools();
+
 </script>
 
 </body>
