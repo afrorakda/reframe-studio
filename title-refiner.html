@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Title Refiner | REFRAME Studio</title>
+  <meta name="description" content="Improve a weak title and generate three stronger alternatives instantly in your browser." />
+  <style>
+    :root{
+      --bg:#f7f7f8;
+      --card:#ffffff;
+      --text:#111111;
+      --muted:#666666;
+      --line:#e5e7eb;
+      --accent:#111111;
+      --accent-2:#f1f5f9;
+      --good:#0f766e;
+      --shadow:0 10px 30px rgba(0,0,0,0.06);
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif}
+    body{padding:20px}
+    .wrap{max-width:760px;margin:0 auto}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(24px,4vw,34px);
+      line-height:1.15;
+      letter-spacing:-0.02em;
+    }
+    .sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    textarea{
+      width:100%;
+      min-height:110px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px 14px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    textarea:focus{
+      border-color:#999;
+      box-shadow:0 0 0 4px rgba(17,17,17,0.06);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      align-items:center;
+    }
+    button{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      font:inherit;
+      border-radius:12px;
+      padding:12px 16px;
+      transition:transform .02s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      font-weight:700;
+    }
+    .secondary{
+      background:var(--accent-2);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .ghost{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .results{
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+    .result{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+    }
+    .result .tag{
+      display:inline-block;
+      font-size:12px;
+      font-weight:700;
+      color:var(--good);
+      background:#ecfeff;
+      border:1px solid #bae6fd;
+      padding:4px 8px;
+      border-radius:999px;
+      margin-bottom:8px;
+    }
+    .result p{
+      margin:0;
+      font-size:18px;
+      line-height:1.5;
+      word-break:break-word;
+    }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .lang-badge{
+      flex-shrink:0;
+      font-size:12px;
+      color:var(--muted);
+      background:#fafafa;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px 10px;
+      white-space:nowrap;
+    }
+    .empty{
+      color:var(--muted);
+      font-size:14px;
+      border:1px dashed var(--line);
+      border-radius:14px;
+      padding:16px;
+      background:#fcfcfc;
+    }
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    @media (max-width:640px){
+      body{padding:14px}
+      .card{padding:16px}
+      .topbar{flex-direction:column;align-items:flex-start}
+      .controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .controls button:first-child{grid-column:1 / -1}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <main class="card">
+      <div class="topbar">
+        <div>
+          <h1 id="appTitle">Title Refiner</h1>
+          <p class="sub" id="appSub">Turn a weak title into 3 stronger options.</p>
+        </div>
+        <div class="lang-badge" id="langBadge" aria-live="polite">Language: Auto</div>
+      </div>
+
+      <label class="label" id="inputLabel" for="titleInput">Enter a title</label>
+      <textarea
+        id="titleInput"
+        placeholder="e.g. My thoughts on productivity"
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="controls">
+        <button class="primary" id="generateBtn" type="button">Refine Title</button>
+        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+        <button class="ghost" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="hint" id="hintText">
+        Keeps everything in your browser. No login. No tracking.
+      </div>
+
+      <section class="results" id="results" aria-live="polite">
+        <div class="empty" id="emptyState">Your improved titles will appear here.</div>
+      </section>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Improve a weak title and instantly generate stronger alternatives for posts, articles, and ideas.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const input = document.getElementById('titleInput');
+      const generateBtn = document.getElementById('generateBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const results = document.getElementById('results');
+      const emptyState = document.getElementById('emptyState');
+      const langBadge = document.getElementById('langBadge');
+      const appTitle = document.getElementById('appTitle');
+      const appSub = document.getElementById('appSub');
+      const inputLabel = document.getElementById('inputLabel');
+      const hintText = document.getElementById('hintText');
+
+      let currentLang = 'auto';
+      let recognition = null;
+      let isListening = false;
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function detectLanguage(text) {
+        const t = (text || '').trim();
+        if (!t) return 'auto';
+
+        const jaChars = (t.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/g) || []).length;
+        const latinChars = (t.match(/[A-Za-z]/g) || []).length;
+
+        if (jaChars > 0 && jaChars >= latinChars * 0.3) return 'ja';
+        return 'en';
+      }
+
+      function updateLanguageUI(lang) {
+        currentLang = lang;
+
+        if (lang === 'ja') {
+          document.documentElement.lang = 'ja';
+          appTitle.textContent = 'Title Refiner';
+          appSub.textContent = '弱いタイトルを、より強い3案に整えます。';
+          inputLabel.textContent = 'タイトルを入力';
+          input.placeholder = '例：生産性について思ったこと';
+          generateBtn.textContent = 'タイトルを改善';
+          clearBtn.textContent = 'クリア';
+          hintText.textContent = 'すべてブラウザ内で動作します。ログイン不要。トラッキングなし。';
+          langBadge.textContent = '言語: 日本語';
+          if (!input.value.trim() && emptyState) {
+            emptyState.textContent = '改善したタイトルがここに表示されます。';
+          }
+          if (recognition && !isListening) {
+            voiceBtn.textContent = '音声入力';
+          }
+        } else if (lang === 'en') {
+          document.documentElement.lang = 'en';
+          appTitle.textContent = 'Title Refiner';
+          appSub.textContent = 'Turn a weak title into 3 stronger options.';
+          inputLabel.textContent = 'Enter a title';
+          input.placeholder = 'e.g. My thoughts on productivity';
+          generateBtn.textContent = 'Refine Title';
+          clearBtn.textContent = 'Clear';
+          hintText.textContent = 'Keeps everything in your browser. No login. No tracking.';
+          langBadge.textContent = 'Language: English';
+          if (!input.value.trim() && emptyState) {
+            emptyState.textContent = 'Your improved titles will appear here.';
+          }
+          if (recognition && !isListening) {
+            voiceBtn.textContent = 'Voice Input';
+          }
+        } else {
+          document.documentElement.lang = 'en';
+          langBadge.textContent = 'Language: Auto';
+        }
+      }
+
+      function titleCaseEnglish(text) {
+        return text
+          .toLowerCase()
+          .split(/\s+/)
+          .filter(Boolean)
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+
+      function cleanTitle(text, lang) {
+        let t = (text || '').trim();
+        t = t.replace(/\s+/g, ' ').replace(/[「」]/g, '').trim();
+
+        if (lang === 'en') {
+          t = t.replace(/\s*[-–—]\s*/g, ' - ');
+          if (t === t.toLowerCase()) {
+            t = titleCaseEnglish(t);
+          }
+        }
+
+        return t;
+      }
+
+      function stripLeadPhrasesEn(text) {
+        return text
+          .replace(/^(my thoughts on|thoughts on|an introduction to|intro to|about|why|how to)\s+/i, '')
+          .replace(/^(the )/i, '')
+          .trim();
+      }
+
+      function stripLeadPhrasesJa(text) {
+        return text
+          .replace(/^(私の|僕の|わたしの)/, '')
+          .replace(/(について|に関する|の話|のこと)$/g, '')
+          .trim();
+      }
+
+      function shortenEnglish(text, maxLen) {
+        if (text.length <= maxLen) return text;
+        const words = text.split(' ');
+        let out = '';
+        for (const w of words) {
+          const next = out ? out + ' ' + w : w;
+          if (next.length > maxLen) break;
+          out = next;
+        }
+        return out || text.slice(0, maxLen).trim();
+      }
+
+      function shortenJapanese(text, maxLen) {
+        if (text.length <= maxLen) return text;
+        return text.slice(0, maxLen).replace(/[、。・\-—:：!?！？\s]+$/,'');
+      }
+
+      function generateEnglishTitles(raw) {
+        const cleaned = cleanTitle(raw, 'en');
+        const coreBase = stripLeadPhrasesEn(cleaned);
+        const core = coreBase || cleaned;
+
+        const noPunct = core.replace(/[!?.,:;]+$/g, '').trim();
+        const shortCore = shortenEnglish(noPunct, 34);
+
+        let stronger = cleaned;
+        let curiosity = '';
+        let shortTitle = shortCore;
+
+        if (/^\d+/.test(noPunct)) {
+          stronger = noPunct;
+          curiosity = `What Makes ${noPunct} Worth Paying Attention To?`;
+          shortTitle = shortenEnglish(noPunct, 30);
+        } else if (/how to/i.test(cleaned)) {
+          const rest = cleaned.replace(/how to\s+/i, '').trim();
+          stronger = `How to ${rest} Without Wasting Time`;
+          curiosity = `The Simpler Way to ${rest}`;
+          shortTitle = shortenEnglish(rest, 28);
+        } else if (/why/i.test(cleaned)) {
+          const rest = cleaned.replace(/why\s+/i, '').trim();
+          stronger = `Why ${rest}`;
+          curiosity = `What Most People Miss About ${rest}`;
+          shortTitle = shortenEnglish(rest, 28);
+        } else {
+          stronger = `${noPunct}: A Clearer, Stronger Take`;
+          curiosity = `What Most People Miss About ${noPunct}`;
+          shortTitle = shortCore;
+        }
+
+        if (!/[!?]$/.test(curiosity)) curiosity += '?';
+
+        return [
+          { label: 'Stronger Title', text: stronger },
+          { label: 'Curiosity Title', text: curiosity },
+          { label: 'Short Title', text: shortTitle }
+        ];
+      }
+
+      function generateJapaneseTitles(raw) {
+        const cleaned = cleanTitle(raw, 'ja');
+        const coreBase = stripLeadPhrasesJa(cleaned);
+        const core = coreBase || cleaned;
+        const noPunct = core.replace(/[。！？!?\s]+$/g, '').trim();
+        const shortCore = shortenJapanese(noPunct, 18);
+
+        let stronger = '';
+        let curiosity = '';
+        let shortTitle = shortCore;
+
+        if (/なぜ|どうして/.test(cleaned)) {
+          const rest = noPunct.replace(/^(なぜ|どうして)/, '').trim();
+          stronger = rest ? `${rest}の本質` : `${noPunct}の本質`;
+          curiosity = rest ? `なぜ${rest}がうまくいくのか？` : `${noPunct}の裏側とは？`;
+        } else if (/方法|やり方|仕方/.test(cleaned)) {
+          stronger = `${noPunct}をうまく進める方法`;
+          curiosity = `${noPunct}で見落とされがちなこと`;
+        } else {
+          stronger = `${noPunct}をもっと伝わる形にすると`;
+          curiosity = `${noPunct}で本当に大事なことは？`;
+        }
+
+        return [
+          { label: '強化タイトル', text: stronger },
+          { label: '興味を引くタイトル', text: curiosity },
+          { label: '短いタイトル', text: shortTitle }
+        ];
+      }
+
+      function renderResults(items) {
+        results.innerHTML = items.map(item => {
+          return `
+            <div class="result">
+              <div class="tag">${escapeHtml(item.label)}</div>
+              <p>${escapeHtml(item.text)}</p>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function refineTitle() {
+        const raw = input.value.trim();
+        const lang = detectLanguage(raw);
+        updateLanguageUI(lang === 'auto' ? 'en' : lang);
+
+        if (!raw) {
+          results.innerHTML = `<div class="empty">${currentLang === 'ja' ? 'まずタイトルを入力してください。' : 'Enter a title first.'}</div>`;
+          return;
+        }
+
+        const output = (lang === 'ja')
+          ? generateJapaneseTitles(raw)
+          : generateEnglishTitles(raw);
+
+        renderResults(output);
+      }
+
+      input.addEventListener('input', () => {
+        const lang = detectLanguage(input.value);
+        if (lang !== 'auto') updateLanguageUI(lang);
+      });
+
+      generateBtn.addEventListener('click', refineTitle);
+
+      input.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          refineTitle();
+        }
+      });
+
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        updateLanguageUI('auto');
+        results.innerHTML = `<div class="empty" id="emptyState">Your improved titles will appear here.</div>`;
+        input.focus();
+      });
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          voiceBtn.textContent = 'Voice Unavailable';
+          voiceBtn.title = 'Speech recognition is not supported in this browser.';
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        voiceBtn.addEventListener('click', () => {
+          if (isListening) {
+            recognition.stop();
+            return;
+          }
+
+          const langGuess = detectLanguage(input.value);
+          recognition.lang = langGuess === 'ja' ? 'ja-JP' : 'en-US';
+
+          try {
+            recognition.start();
+          } catch (_) {}
+        });
+
+        recognition.onstart = function () {
+          isListening = true;
+          voiceBtn.textContent = currentLang === 'ja' ? '停止' : 'Stop';
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          voiceBtn.textContent = currentLang === 'ja' ? '音声入力' : 'Voice Input';
+        };
+
+        recognition.onerror = function () {
+          isListening = false;
+          voiceBtn.textContent = currentLang === 'ja' ? '音声入力' : 'Voice Input';
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || '';
+          input.value = transcript.trim();
+          const lang = detectLanguage(input.value);
+          updateLanguageUI(lang === 'auto' ? 'en' : lang);
+          refineTitle();
+        };
+      }
+
+      updateLanguageUI('auto');
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
