@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Problem → Tiny Step | REFRAME Studio</title>
+  <meta name="description" content="Turn a big or vague problem into 1–3 tiny first steps you can do right now." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#666;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --accent-2:#2563eb;
+      --ok:#0f766e;
+      --shadow:0 6px 24px rgba(0,0,0,.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+    body{padding:16px}
+    .wrap{max-width:720px;margin:0 auto}
+    .back{
+      display:inline-block;
+      margin:4px 0 16px;
+      color:var(--text);
+      text-decoration:none;
+      font-size:14px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:28px;
+      line-height:1.15;
+      letter-spacing:-0.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    textarea{
+      width:100%;
+      min-height:140px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.5;
+      background:#fff;
+      color:var(--text);
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#c7d2fe;
+      box-shadow:0 0 0 4px rgba(37,99,235,.08);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      min-height:48px;
+      transition:transform .02s ease,opacity .2s ease,background .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:#eef2ff;
+      color:#1e3a8a;
+      flex:1 1 140px;
+    }
+    .ghost{
+      background:#f3f4f6;
+      color:var(--text);
+      flex:1 1 140px;
+    }
+    .result{
+      margin-top:16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fcfcfc;
+      padding:16px;
+    }
+    .result-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .result-title strong{
+      font-size:14px;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .steps{
+      margin:10px 0 0;
+      padding-left:20px;
+    }
+    .steps li{
+      margin:0 0 10px;
+      line-height:1.55;
+    }
+    .meta{
+      margin-top:12px;
+      color:var(--ok);
+      font-size:13px;
+      font-weight:600;
+    }
+    .hidden{display:none!important}
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+    footer{
+      margin-top:40px;
+      font-size:12px;
+      color:#666;
+      line-height:1.6;
+    }
+    @media (max-width:520px){
+      h1{font-size:24px}
+      .card{padding:16px}
+      .row{gap:8px}
+      button{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="title">Problem → Tiny Step</h1>
+      <p class="desc" id="desc">Turn a big or vague problem into 1–3 tiny first steps you can do right now.</p>
+
+      <label for="problemInput" id="inputLabel">Your problem</label>
+      <textarea
+        id="problemInput"
+        placeholder="Example: I need to change jobs, but everything feels too big and I keep avoiding it."
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="row">
+        <button class="primary" id="generateBtn">Break it into tiny steps</button>
+        <button class="secondary" id="exampleBtn" type="button">Try example</button>
+        <button class="ghost" id="voiceBtn" type="button">Voice Input</button>
+      </div>
+
+      <div class="result" aria-live="polite">
+        <div class="result-title">
+          <strong id="resultHeading">Result</strong>
+          <button class="ghost" id="copyBtn" type="button">Copy result</button>
+        </div>
+        <div id="emptyState" class="hint">Paste a problem, tap the main button, and get a few small next steps.</div>
+        <ol id="stepsList" class="steps hidden"></ol>
+        <div id="meta" class="meta hidden"></div>
+        <div id="copyStatus" class="small" aria-live="polite"></div>
+      </div>
+    </main>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turns an overwhelming problem into a few tiny, practical first steps you can take immediately.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const el = {
+        title: document.getElementById('title'),
+        desc: document.getElementById('desc'),
+        inputLabel: document.getElementById('inputLabel'),
+        input: document.getElementById('problemInput'),
+        generateBtn: document.getElementById('generateBtn'),
+        exampleBtn: document.getElementById('exampleBtn'),
+        voiceBtn: document.getElementById('voiceBtn'),
+        resultHeading: document.getElementById('resultHeading'),
+        emptyState: document.getElementById('emptyState'),
+        stepsList: document.getElementById('stepsList'),
+        meta: document.getElementById('meta'),
+        copyBtn: document.getElementById('copyBtn'),
+        copyStatus: document.getElementById('copyStatus')
+      };
+
+      const ui = {
+        en: {
+          title: 'Problem → Tiny Step',
+          desc: 'Turn a big or vague problem into 1–3 tiny first steps you can do right now.',
+          inputLabel: 'Your problem',
+          placeholder: 'Example: I need to change jobs, but everything feels too big and I keep avoiding it.',
+          generate: 'Break it into tiny steps',
+          example: 'Try example',
+          voice: 'Voice Input',
+          result: 'Result',
+          empty: 'Paste a problem, tap the main button, and get a few small next steps.',
+          copy: 'Copy result',
+          copied: 'Copied.',
+          copiedFail: 'Could not copy. Please copy manually.',
+          noInput: 'Please enter a problem first.',
+          voiceUnavailable: 'Voice input is not supported in this browser.',
+          voiceStart: 'Listening...',
+          voiceStop: 'Stop',
+          voiceIdle: 'Voice Input',
+          stepLabel: 'Tiny next steps',
+          meta: 'Keep it small: aim for something you can start in 5–10 minutes.',
+          exampleText: 'I need to update my resume and start a job search, but it feels overwhelming and I do not know where to start.'
+        },
+        ja: {
+          title: 'Problem → Tiny Step',
+          desc: '大きすぎる悩みを、今すぐできる小さな最初の一歩に変えます。',
+          inputLabel: '悩み・問題',
+          placeholder: '例：転職したいのに、やることが大きすぎて手が止まっています。',
+          generate: '小さな一歩にする',
+          example: '例を入れる',
+          voice: '音声入力',
+          result: '結果',
+          empty: '悩みを書いて、ボタンを押すと、すぐ動ける小さな一歩が出ます。',
+          copy: '結果をコピー',
+          copied: 'コピーしました。',
+          copiedFail: 'コピーできませんでした。手動でコピーしてください。',
+          noInput: '先に悩みや問題を入力してください。',
+          voiceUnavailable: 'このブラウザでは音声入力に対応していません。',
+          voiceStart: '聞き取り中...',
+          voiceStop: '停止',
+          voiceIdle: '音声入力',
+          stepLabel: '小さな次の一歩',
+          meta: '5〜10分で始められる大きさまで小さくするのがコツです。',
+          exampleText: '転職したいのに、何から始めればいいか分からず、考えるだけで止まってしまいます。'
+        }
+      };
+
+      const jpRegex = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+
+      function detectLanguage(text) {
+        return jpRegex.test(text || '') ? 'ja' : 'en';
+      }
+
+      function applyUI(lang) {
+        const t = ui[lang];
+        document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+        el.title.textContent = t.title;
+        el.desc.textContent = t.desc;
+        el.inputLabel.textContent = t.inputLabel;
+        el.input.placeholder = t.placeholder;
+        el.generateBtn.textContent = t.generate;
+        el.exampleBtn.textContent = t.example;
+        if (!isListening) el.voiceBtn.textContent = t.voice;
+        el.resultHeading.textContent = t.result;
+        el.emptyState.textContent = t.empty;
+        el.copyBtn.textContent = t.copy;
+      }
+
+      function cleanText(text) {
+        return (text || '')
+          .replace(/\s+/g, ' ')
+          .replace(/[ \t]+\n/g, '\n')
+          .trim();
+      }
+
+      function compactProblem(text, lang) {
+        let s = cleanText(text);
+        s = s.replace(/^[\-\*\d\.\)\s]+/, '');
+        if (lang === 'ja') {
+          s = s.replace(/^(私は|僕は|自分は|最近|今|ちょっと|かなり)/, '');
+          s = s.replace(/(です|ます|と思います|気がします|状態です|んです)+$/,'');
+        } else {
+          s = s.replace(/^(i am|i'm|i need to|i want to|lately|recently)\s+/i, '');
+          s = s.replace(/[.?!]+$/, '');
+        }
+        return s.slice(0, 90);
+      }
+
+      function getCategory(text) {
+        const s = (text || '').toLowerCase();
+        if (/resume|cv|job|career|interview|work|転職|就職|仕事|面接|職務経歴書|履歴書/.test(s)) return 'job';
+        if (/study|learn|exam|homework|research|essay|勉強|試験|テスト|宿題|レポート|研究/.test(s)) return 'study';
+        if (/money|budget|debt|invoice|payment|rent|finance|お金|家計|借金|支払い|請求|予算/.test(s)) return 'money';
+        if (/email|message|reply|talk|conversation|call|連絡|返信|メール|相談|話す|電話/.test(s)) return 'communication';
+        if (/clean|room|house|mess|organize|片付け|部屋|掃除|整理/.test(s)) return 'space';
+        if (/project|plan|task|deadline|todo|企画|計画|プロジェクト|締切|タスク/.test(s)) return 'project';
+        return 'general';
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, function (m) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+        });
+      }
+
+      function generateSteps(text) {
+        const lang = detectLanguage(text);
+        const t = ui[lang];
+        const problem = compactProblem(text, lang);
+        const category = getCategory(text);
+        let steps = [];
+
+        if (lang === 'ja') {
+          if (category === 'job') {
+            steps = [
+              `まず「${problem}」を1文で書き直す。`,
+              `10分だけ使って、履歴書・職務経歴書・求人のどれか1つを開く。`,
+              `今日やる作業を1つだけ決める。例：実績を3行書く。`
+            ];
+          } else if (category === 'study') {
+            steps = [
+              `学ぶ範囲を1つに絞る。例：「最初の1章だけ」。`,
+              `タイマーを10分にして、1ページ読むか1問だけ解く。`,
+              `終わったら「次に見る場所」を1行メモする。`
+            ];
+          } else if (category === 'money') {
+            steps = [
+              `お金の不安を1つに絞る。例：「今月の支払い」。`,
+              `今わかる数字を3つだけ書く。例：残高・固定費・期限。`,
+              `今日やる最小行動を1つ決める。例：請求を1件確認する。`
+            ];
+          } else if (category === 'communication') {
+            steps = [
+              `相手に伝えたいことを1文で下書きする。`,
+              `送る前に、要件を1つだけに絞る。`,
+              `2分で送れる短い連絡を1件だけ送る。`
+            ];
+          } else if (category === 'space') {
+            steps = [
+              `片づける場所を1か所だけ決める。例：机の右半分。`,
+              `5分だけタイマーをかけて、その場所だけ触る。`,
+              `終わった物は「捨てる・戻す・保留」の3つに分ける。`
+            ];
+          } else if (category === 'project') {
+            steps = [
+              `この問題のゴールを1文で書く。`,
+              `ゴールまでの作業を思いつくまま3つだけ出す。`,
+              `その中で5〜10分で終わるものを1つだけ始める。`
+            ];
+          } else {
+            steps = [
+              `「${problem}」を、今いちばん困っている1点だけに絞る。`,
+              `次の10分でできる最小作業を1つだけやる。例：3行メモする。`,
+              `終わったら、次の一歩を1つだけ決める。`
+            ];
+          }
+        } else {
+          if (category === 'job') {
+            steps = [
+              `Rewrite the problem in one line: "${problem}".`,
+              `Spend 10 minutes on just one item: open your resume, CV, or one job post.`,
+              `Choose one tiny action for today, such as writing 3 bullet points of experience.`
+            ];
+          } else if (category === 'study') {
+            steps = [
+              `Shrink the scope to one small target, such as only the first page or one question.`,
+              `Set a 10-minute timer and study only until it ends.`,
+              `Leave one note for your next session so restarting is easy.`
+            ];
+          } else if (category === 'money') {
+            steps = [
+              `Name the exact money issue in one line, such as this month's payments.`,
+              `Write down only 3 numbers you know right now: balance, fixed costs, next due date.`,
+              `Do one tiny action today, such as checking one bill or one transaction.`
+            ];
+          } else if (category === 'communication') {
+            steps = [
+              `Draft one sentence with the main point you need to say.`,
+              `Reduce it to one clear request or update.`,
+              `Send one short message that takes under 2 minutes.`
+            ];
+          } else if (category === 'space') {
+            steps = [
+              `Pick one very small area, such as one shelf or half a desk.`,
+              `Set a 5-minute timer and touch only that area.`,
+              `Sort items into 3 groups: keep, move, toss.`
+            ];
+          } else if (category === 'project') {
+            steps = [
+              `Write the goal in one sentence.`,
+              `List 3 possible actions without judging them.`,
+              `Start the easiest action that can be done in 5–10 minutes.`
+            ];
+          } else {
+            steps = [
+              `Reduce the problem to the single part that feels most stuck: "${problem}".`,
+              `Pick one action that can be started in the next 10 minutes.`,
+              `After that, decide only the next tiny step, not the whole plan.`
+            ];
+          }
+        }
+
+        return { lang, steps: steps.slice(0, 3), meta: t.meta };
+      }
+
+      function renderSteps(result) {
+        el.emptyState.classList.add('hidden');
+        el.stepsList.classList.remove('hidden');
+        el.meta.classList.remove('hidden');
+        el.stepsList.innerHTML = result.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('');
+        el.meta.textContent = result.meta;
+      }
+
+      function getResultText() {
+        const items = Array.from(el.stepsList.querySelectorAll('li')).map((li, i) => `${i + 1}. ${li.textContent}`);
+        return items.join('\n');
+      }
+
+      function handleGenerate() {
+        const raw = cleanText(el.input.value);
+        const lang = detectLanguage(raw);
+        applyUI(lang);
+        el.copyStatus.textContent = '';
+
+        if (!raw) {
+          el.emptyState.classList.remove('hidden');
+          el.stepsList.classList.add('hidden');
+          el.meta.classList.add('hidden');
+          el.emptyState.textContent = ui[lang].noInput;
+          return;
+        }
+
+        const result = generateSteps(raw);
+        renderSteps(result);
+      }
+
+      async function copyResult() {
+        const lang = detectLanguage(el.input.value);
+        const t = ui[lang];
+        const text = getResultText();
+
+        if (!text) {
+          el.copyStatus.textContent = t.noInput;
+          return;
+        }
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            temp.remove();
+          }
+          el.copyStatus.textContent = t.copied;
+        } catch (e) {
+          el.copyStatus.textContent = t.copiedFail;
+        }
+      }
+
+      function tryExample() {
+        const currentLang = detectLanguage(el.input.value);
+        const hasJapaneseUI = currentLang === 'ja';
+        const lang = hasJapaneseUI ? 'ja' : 'en';
+        el.input.value = ui[lang].exampleText;
+        applyUI(lang);
+        handleGenerate();
+        el.input.focus();
+      }
+
+      // Optional voice input
+      let recognition = null;
+      let isListening = false;
+
+      function initVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          el.voiceBtn.addEventListener('click', function () {
+            const lang = detectLanguage(el.input.value);
+            applyUI(lang);
+            el.copyStatus.textContent = ui[lang].voiceUnavailable;
+          });
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.continuous = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          isListening = true;
+          const lang = detectLanguage(el.input.value);
+          el.voiceBtn.textContent = ui[lang].voiceStop;
+          el.copyStatus.textContent = ui[lang].voiceStart;
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          const lang = detectLanguage(el.input.value);
+          el.voiceBtn.textContent = ui[lang].voiceIdle;
+        };
+
+        recognition.onerror = function () {
+          isListening = false;
+          const lang = detectLanguage(el.input.value);
+          el.voiceBtn.textContent = ui[lang].voiceIdle;
+          el.copyStatus.textContent = ui[lang].voiceUnavailable;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || '';
+          const current = el.input.value.trim();
+          el.input.value = current ? (current + ' ' + transcript) : transcript;
+          const lang = detectLanguage(el.input.value);
+          applyUI(lang);
+          el.copyStatus.textContent = '';
+        };
+
+        el.voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(el.input.value);
+          applyUI(lang);
+
+          if (!recognition) {
+            el.copyStatus.textContent = ui[lang].voiceUnavailable;
+            return;
+          }
+
+          if (isListening) {
+            recognition.stop();
+            return;
+          }
+
+          recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+          try {
+            recognition.start();
+          } catch (e) {
+            el.copyStatus.textContent = ui[lang].voiceUnavailable;
+          }
+        });
+      }
+
+      function loadFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const input = params.get('input');
+        if (input) {
+          el.input.value = input;
+        }
+      }
+
+      // Events
+      el.generateBtn.addEventListener('click', handleGenerate);
+      el.copyBtn.addEventListener('click', copyResult);
+      el.exampleBtn.addEventListener('click', tryExample);
+      el.input.addEventListener('input', function () {
+        const lang = detectLanguage(el.input.value);
+        applyUI(lang);
+        el.copyStatus.textContent = '';
+      });
+
+      // Init
+      loadFromURL();
+      applyUI(detectLanguage(el.input.value));
+      initVoice();
+
+      if (cleanText(el.input.value)) {
+        handleGenerate();
+      }
+    })();
+  </script>
+</body>
+</html>
