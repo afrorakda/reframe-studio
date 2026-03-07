@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Comment → Question | REFRAME Studio</title>
+  <meta name="description" content="Turn a comment into 1–3 useful questions that help clarify, decide, or move forward." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#667085;
+      --line:#e7e7e2;
+      --accent:#111111;
+      --accent-2:#2f6fed;
+      --danger:#b42318;
+      --shadow:0 8px 30px rgba(16,24,40,.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Noto Sans JP",sans-serif}
+    body{line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    .wrap{max-width:760px;margin:0 auto;padding:16px 16px 40px}
+    .back{
+      display:inline-flex;align-items:center;gap:8px;
+      text-decoration:none;font-size:14px;color:var(--muted);
+      margin-bottom:18px
+    }
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:20px
+    }
+    h1{
+      font-size:28px;line-height:1.15;margin:0 0 10px;font-weight:800;letter-spacing:-.02em
+    }
+    .desc{margin:0 0 18px;color:var(--muted);font-size:15px}
+    label{
+      display:block;font-size:14px;font-weight:700;margin:0 0 8px
+    }
+    textarea{
+      width:100%;min-height:140px;resize:vertical;border:1px solid var(--line);
+      border-radius:14px;padding:14px 14px 16px;font:inherit;color:var(--text);
+      background:#fff;outline:none
+    }
+    textarea:focus{border-color:#b9c7ff;box-shadow:0 0 0 4px rgba(47,111,237,.10)}
+    .row{
+      display:flex;flex-wrap:wrap;gap:10px;margin-top:12px
+    }
+    button{
+      appearance:none;border:none;border-radius:12px;padding:14px 16px;
+      font:inherit;font-weight:700;cursor:pointer;min-height:48px
+    }
+    .primary{background:var(--accent);color:#fff;flex:1 1 220px}
+    .secondary{background:#eef2ff;color:#1d4ed8}
+    .ghost{background:#f3f4f6;color:#374151}
+    .result{
+      margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#fcfcfb;
+      min-height:120px
+    }
+    .result h2{
+      margin:0 0 10px;font-size:15px
+    }
+    .hint,.status,.empty{
+      font-size:14px;color:var(--muted);margin:0
+    }
+    .status{margin-top:10px}
+    .status.error{color:var(--danger)}
+    .questions{
+      margin:0;padding-left:20px
+    }
+    .questions li{
+      margin:0 0 10px;font-size:16px
+    }
+    .toolbar{
+      display:flex;flex-wrap:wrap;gap:10px;margin-top:12px
+    }
+    .copy-btn{display:none}
+    .lang-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:12px;color:var(--muted);margin-top:10px
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;background:#98a2b3
+    }
+    .footer-card{
+      background:transparent;border:none;box-shadow:none;padding:0
+    }
+    @media (max-width:480px){
+      .wrap{padding:14px 14px 32px}
+      .card{padding:16px}
+      h1{font-size:24px}
+      button{width:100%}
+      .primary{flex-basis:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <section class="card" aria-labelledby="tool-title">
+      <h1 id="tool-title">Comment → Question</h1>
+      <p class="desc" id="tool-desc">Turn a comment into 1–3 useful questions that make the next step clearer.</p>
+
+      <label for="commentInput" id="inputLabel">Comment</label>
+      <textarea id="commentInput" placeholder="Paste a comment here..."></textarea>
+
+      <div class="row">
+        <button class="primary" id="generateBtn" type="button">Generate Questions</button>
+        <button class="secondary" id="exampleBtn" type="button">Try example</button>
+        <button class="ghost" id="voiceBtn" type="button">Voice Input</button>
+      </div>
+
+      <p class="status" id="status" aria-live="polite"></p>
+      <div class="lang-badge" aria-live="polite">
+        <span class="dot"></span>
+        <span id="langBadge">Language: Auto</span>
+      </div>
+
+      <div class="result" id="result" aria-live="polite">
+        <h2 id="resultTitle">Result</h2>
+        <p class="empty" id="emptyText">Your questions will appear here.</p>
+        <ol class="questions" id="questionsList" hidden></ol>
+
+        <div class="toolbar">
+          <button class="ghost copy-btn" id="copyBtn" type="button">Copy result</button>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turn a comment into short, useful questions you can ask next.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var inputEl = document.getElementById('commentInput');
+      var generateBtn = document.getElementById('generateBtn');
+      var exampleBtn = document.getElementById('exampleBtn');
+      var voiceBtn = document.getElementById('voiceBtn');
+      var copyBtn = document.getElementById('copyBtn');
+      var questionsList = document.getElementById('questionsList');
+      var emptyText = document.getElementById('emptyText');
+      var statusEl = document.getElementById('status');
+      var langBadge = document.getElementById('langBadge');
+      var resultTitle = document.getElementById('resultTitle');
+      var inputLabel = document.getElementById('inputLabel');
+      var descEl = document.getElementById('tool-desc');
+
+      var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+      var recognition = null;
+      var isListening = false;
+
+      function hasJapanese(text) {
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+      }
+
+      function detectLanguage(text) {
+        if (hasJapanese(text)) return 'ja';
+        return 'en';
+      }
+
+      function uiText(lang) {
+        if (lang === 'ja') {
+          return {
+            title: '質問案',
+            inputLabel: 'コメント',
+            desc: 'コメントを、次の一歩につながる1〜3個の質問に変換します。',
+            placeholder: 'コメントを入力してください…',
+            generate: '質問を作る',
+            example: '例を試す',
+            voice: '音声入力',
+            copy: '結果をコピー',
+            empty: 'ここに質問が表示されます。',
+            copied: 'コピーしました。',
+            copyFailed: 'コピーできませんでした。',
+            noInput: '先にコメントを入力してください。',
+            lang: '言語: 日本語',
+            listening: '音声入力中…',
+            speechUnsupported: 'このブラウザでは音声入力は使えません。',
+            speechError: '音声入力を開始できませんでした。'
+          };
+        }
+        return {
+          title: 'Questions',
+          inputLabel: 'Comment',
+          desc: 'Turn a comment into 1–3 useful questions that make the next step clearer.',
+          placeholder: 'Paste a comment here...',
+          generate: 'Generate Questions',
+          example: 'Try example',
+          voice: 'Voice Input',
+          copy: 'Copy result',
+          empty: 'Your questions will appear here.',
+          copied: 'Copied.',
+          copyFailed: 'Could not copy.',
+          noInput: 'Please enter a comment first.',
+          lang: 'Language: English',
+          listening: 'Listening…',
+          speechUnsupported: 'Voice input is not supported in this browser.',
+          speechError: 'Could not start voice input.'
+        };
+      }
+
+      function sanitizeText(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .trim();
+      }
+
+      function stripTrailingPunctuation(text, lang) {
+        var cleaned = text.trim();
+        if (lang === 'ja') {
+          return cleaned.replace(/[。！？!?\s]+$/g, '');
+        }
+        return cleaned.replace(/[.?!\s]+$/g, '');
+      }
+
+      function splitSentences(text, lang) {
+        if (lang === 'ja') {
+          return text
+            .split(/[。！？\n]+/)
+            .map(function (s) { return s.trim(); })
+            .filter(Boolean);
+        }
+        return text
+          .split(/[.!?\n]+/)
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean);
+      }
+
+      function truncate(text, max) {
+        if (text.length <= max) return text;
+        return text.slice(0, max).trim();
+      }
+
+      function pickFocus(text, lang) {
+        var t = sanitizeText(text);
+        var parts = splitSentences(t, lang);
+        var focus = parts[0] || t;
+        focus = stripTrailingPunctuation(focus, lang);
+        return truncate(focus, lang === 'ja' ? 60 : 90);
+      }
+
+      function containsAny(text, words) {
+        var lower = text.toLowerCase();
+        return words.some(function (w) { return lower.indexOf(w) !== -1; });
+      }
+
+      function makeQuestions(comment, lang) {
+        var raw = sanitizeText(comment);
+        var focus = pickFocus(raw, lang);
+        var lower = raw.toLowerCase();
+        var qs = [];
+
+        if (lang === 'ja') {
+          var hasProblem = /問題|課題|困る|むずかしい|難しい|できない|遅い|不足|混乱|大変/.test(raw);
+          var hasOpinion = /べき|と思う|気がする|感じる|たぶん|多分/.test(raw);
+          var hasRequest = /してほしい|欲しい|必要|ほしい/.test(raw);
+          var hasTime = /今|いつ|今日|今週|締切|期限|急ぎ/.test(raw);
+
+          if (hasProblem) qs.push('具体的には、どの場面で「' + focus + '」が問題になっていますか？');
+          if (hasRequest) qs.push('「' + focus + '」によって、本当に必要なのは何ですか？');
+          if (hasOpinion) qs.push('その見方を変えるとしたら、別の解釈はありますか？');
+          if (hasTime) qs.push('それは、いつまでに判断または対応が必要ですか？');
+
+          if (qs.length < 3) qs.push('このコメントの背景にある一番大きな前提は何ですか？');
+          if (qs.length < 3) qs.push('次の一歩として、誰に何を確認すると前に進みますか？');
+          if (qs.length < 3) qs.push('うまくいった状態を一言で言うと、どうなっていますか？');
+
+          return dedupe(qs).slice(0, 3);
+        }
+
+        var hasIssue = containsAny(lower, ['problem', 'issue', 'stuck', 'hard', 'difficult', 'confusing', 'late', 'delay', 'risk', 'blocked', 'wrong']);
+        var hasNeed = containsAny(lower, ['need', 'want', 'should', 'must', 'have to']);
+        var hasFeeling = containsAny(lower, ['feel', 'think', 'maybe', 'probably', 'seems']);
+        var hasTimeEn = containsAny(lower, ['today', 'tomorrow', 'this week', 'deadline', 'urgent', 'soon', 'now']);
+
+        if (hasIssue) qs.push('Where exactly does "' + focus + '" become a problem?');
+        if (hasNeed) qs.push('What do we actually need from "' + focus + '"?');
+        if (hasFeeling) qs.push('What other interpretation could also be true here?');
+        if (hasTimeEn) qs.push('By when does this need a decision or action?');
+
+        if (qs.length < 3) qs.push('What assumption is hidden inside this comment?');
+        if (qs.length < 3) qs.push('Who needs to clarify what next?');
+        if (qs.length < 3) qs.push('What would a good outcome look like in one sentence?');
+
+        return dedupe(qs).slice(0, 3);
+      }
+
+      function dedupe(arr) {
+        var out = [];
+        var seen = Object.create(null);
+        arr.forEach(function (item) {
+          var key = item.trim();
+          if (!seen[key]) {
+            seen[key] = true;
+            out.push(item);
+          }
+        });
+        return out;
+      }
+
+      function renderUI(lang) {
+        var t = uiText(lang);
+        inputLabel.textContent = t.inputLabel;
+        descEl.textContent = t.desc;
+        inputEl.placeholder = t.placeholder;
+        generateBtn.textContent = t.generate;
+        exampleBtn.textContent = t.example;
+        voiceBtn.textContent = t.voice;
+        copyBtn.textContent = t.copy;
+        resultTitle.textContent = t.title;
+        langBadge.textContent = t.lang;
+        if (!questionsList.children.length) {
+          emptyText.textContent = t.empty;
+        }
+      }
+
+      function renderQuestions(questions, lang) {
+        questionsList.innerHTML = '';
+        questions.forEach(function (q) {
+          var li = document.createElement('li');
+          li.textContent = q;
+          questionsList.appendChild(li);
+        });
+        emptyText.hidden = true;
+        questionsList.hidden = false;
+        copyBtn.style.display = 'inline-block';
+        renderUI(lang);
+      }
+
+      function clearStatus() {
+        statusEl.textContent = '';
+        statusEl.className = 'status';
+      }
+
+      function setStatus(message, isError) {
+        statusEl.textContent = message;
+        statusEl.className = isError ? 'status error' : 'status';
+      }
+
+      function getResultText() {
+        var items = questionsList.querySelectorAll('li');
+        var lines = [];
+        items.forEach(function (li, i) {
+          lines.push((i + 1) + '. ' + li.textContent);
+        });
+        return lines.join('\n');
+      }
+
+      function updateLanguageFromInput() {
+        var text = inputEl.value.trim();
+        var lang = text ? detectLanguage(text) : ((navigator.language || '').toLowerCase().indexOf('ja') === 0 ? 'ja' : 'en');
+        renderUI(lang);
+        return lang;
+      }
+
+      function generate() {
+        clearStatus();
+        var text = sanitizeText(inputEl.value);
+        var lang = updateLanguageFromInput();
+        var t = uiText(lang);
+
+        if (!text) {
+          emptyText.hidden = false;
+          questionsList.hidden = true;
+          questionsList.innerHTML = '';
+          copyBtn.style.display = 'none';
+          emptyText.textContent = t.empty;
+          setStatus(t.noInput, true);
+          return;
+        }
+
+        var questions = makeQuestions(text, lang);
+        renderQuestions(questions, lang);
+      }
+
+      async function copyResult() {
+        clearStatus();
+        var lang = updateLanguageFromInput();
+        var t = uiText(lang);
+        var text = getResultText();
+
+        if (!text) return;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'absolute';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+          }
+          setStatus(t.copied, false);
+        } catch (e) {
+          setStatus(t.copyFailed, true);
+        }
+      }
+
+      function loadExample() {
+        clearStatus();
+        var current = inputEl.value.trim();
+        var lang = current ? detectLanguage(current) : ((navigator.language || '').toLowerCase().indexOf('ja') === 0 ? 'ja' : 'en');
+
+        if (lang === 'ja') {
+          inputEl.value = 'この企画、誰のためのものかが曖昧なまま進んでいて、会議のたびに話がずれています。';
+        } else {
+          inputEl.value = 'This project keeps moving forward, but it is still unclear who it is really for, and every meeting drifts in a different direction.';
+        }
+        updateLanguageFromInput();
+        generate();
+      }
+
+      function setupVoice() {
+        var lang = updateLanguageFromInput();
+        var t = uiText(lang);
+
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          voiceBtn.style.opacity = '0.6';
+          voiceBtn.title = t.speechUnsupported;
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          isListening = true;
+          var liveLang = updateLanguageFromInput();
+          var tt = uiText(liveLang);
+          voiceBtn.textContent = tt.listening;
+          setStatus(tt.listening, false);
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          var liveLang = updateLanguageFromInput();
+          var tt = uiText(liveLang);
+          voiceBtn.textContent = tt.voice;
+        };
+
+        recognition.onerror = function () {
+          isListening = false;
+          var liveLang = updateLanguageFromInput();
+          var tt = uiText(liveLang);
+          voiceBtn.textContent = tt.voice;
+          setStatus(tt.speechError, true);
+        };
+
+        recognition.onresult = function (event) {
+          var transcript = '';
+          for (var i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          inputEl.value = (inputEl.value ? inputEl.value + ' ' : '') + transcript.trim();
+          updateLanguageFromInput();
+          generate();
+        };
+
+        voiceBtn.addEventListener('click', function () {
+          clearStatus();
+          if (isListening) {
+            recognition.stop();
+            return;
+          }
+          var liveLang = updateLanguageFromInput();
+          recognition.lang = liveLang === 'ja' ? 'ja-JP' : 'en-US';
+          try {
+            recognition.start();
+          } catch (e) {
+            var tt = uiText(liveLang);
+            setStatus(tt.speechError, true);
+          }
+        });
+      }
+
+      function loadUrlInput() {
+        var params = new URLSearchParams(window.location.search);
+        var preset = params.get('input');
+        if (preset) {
+          inputEl.value = preset;
+        }
+      }
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', loadExample);
+      copyBtn.addEventListener('click', copyResult);
+      inputEl.addEventListener('input', function () {
+        clearStatus();
+        updateLanguageFromInput();
+      });
+
+      loadUrlInput();
+      updateLanguageFromInput();
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
