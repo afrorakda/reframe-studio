@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Idea → Opposite | REFRAME Studio</title>
+  <meta name="description" content="Explore the opposite angle of an idea by generating 1–3 concise opposite viewpoints in your input language." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#666;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --accent-2:#374151;
+      --soft:#f1f5f9;
+      --success:#0f766e;
+      --shadow:0 8px 24px rgba(0,0,0,.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+      -webkit-text-size-adjust:100%;
+    }
+    body{
+      min-height:100vh;
+      padding:20px 14px 40px;
+    }
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+    }
+    .back{
+      display:inline-block;
+      margin-bottom:16px;
+      color:var(--accent-2);
+      text-decoration:none;
+      font-size:14px;
+    }
+    .back:hover{ text-decoration:underline; }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:28px;
+      line-height:1.2;
+      letter-spacing:-0.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    textarea{
+      width:100%;
+      min-height:120px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+      resize:vertical;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#9ca3af;
+      box-shadow:0 0 0 3px rgba(17,24,39,.08);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:14px 16px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      min-height:48px;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{ transform:translateY(1px); }
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:var(--soft);
+      color:var(--text);
+      flex:1 1 150px;
+    }
+    .secondary[disabled],
+    .primary[disabled]{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .status{
+      margin-top:10px;
+      min-height:20px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .result{
+      margin-top:18px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fcfcfc;
+      padding:14px;
+    }
+    .result h2{
+      margin:0 0 10px;
+      font-size:16px;
+    }
+    .placeholder{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .items{
+      display:grid;
+      gap:10px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+    .item{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 12px 12px 14px;
+      line-height:1.6;
+      font-size:15px;
+      white-space:pre-wrap;
+    }
+    .meta{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .sr-only{
+      position:absolute !important;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+    @media (max-width:480px){
+      h1{font-size:24px}
+      .card{padding:16px}
+      button{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="title">Idea → Opposite</h1>
+      <p id="desc" class="desc">Enter one idea and get 1–3 opposite viewpoints to quickly reframe it.</p>
+
+      <label id="inputLabel" for="ideaInput">Your idea</label>
+      <textarea id="ideaInput" placeholder="Example: We should make the onboarding process longer so people understand everything first."></textarea>
+
+      <div class="row">
+        <button id="generateBtn" class="primary" type="button">Generate opposites</button>
+        <button id="exampleBtn" class="secondary" type="button">Try example</button>
+        <button id="voiceBtn" class="secondary" type="button">Voice Input</button>
+        <button id="copyBtn" class="secondary" type="button">Copy result</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <section class="result" aria-labelledby="resultTitle">
+        <h2 id="resultTitle">Result</h2>
+        <div id="resultPlaceholder" class="placeholder">Your opposite viewpoints will appear here.</div>
+        <ol id="resultList" class="items" hidden></ol>
+        <div id="meta" class="meta"></div>
+      </section>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Explore the opposite angle of an idea with 1–3 concise counter-viewpoints.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+
+      const el = {
+        title: $("title"),
+        desc: $("desc"),
+        inputLabel: $("inputLabel"),
+        ideaInput: $("ideaInput"),
+        generateBtn: $("generateBtn"),
+        exampleBtn: $("exampleBtn"),
+        voiceBtn: $("voiceBtn"),
+        copyBtn: $("copyBtn"),
+        status: $("status"),
+        resultTitle: $("resultTitle"),
+        resultPlaceholder: $("resultPlaceholder"),
+        resultList: $("resultList"),
+        meta: $("meta")
+      };
+
+      const uiLang = /^ja/i.test(navigator.language || "") ? "ja" : "en";
+
+      const UI = {
+        ja: {
+          title: "Idea → Opposite",
+          desc: "アイデアを1つ入れると、反対側の見方を1〜3個すばやく出します。",
+          inputLabel: "アイデア",
+          inputPlaceholder: "例：最初に全部理解してもらうため、オンボーディングは長いほうがいい。",
+          generate: "反対視点を出す",
+          example: "例を入れる",
+          voice: "音声入力",
+          copy: "結果をコピー",
+          resultTitle: "結果",
+          placeholder: "ここに反対視点が表示されます。",
+          empty: "アイデアを入力してください。",
+          copied: "結果をコピーしました。",
+          nothingToCopy: "コピーできる結果がありません。",
+          voiceUnsupported: "このブラウザでは音声入力に対応していません。",
+          listening: "音声入力中…",
+          voiceReady: "話してください。",
+          voiceStopped: "音声入力を停止しました。",
+          meta: "入力言語: 日本語",
+          exampleText: "会議は全員参加にしたほうが情報共有しやすい。",
+          labels: {
+            whatIf: "逆から見ると",
+            instead: "代わりに",
+            test: "試すなら"
+          }
+        },
+        en: {
+          title: "Idea → Opposite",
+          desc: "Enter one idea and get 1–3 opposite viewpoints to quickly reframe it.",
+          inputLabel: "Your idea",
+          inputPlaceholder: "Example: We should make the onboarding process longer so people understand everything first.",
+          generate: "Generate opposites",
+          example: "Try example",
+          voice: "Voice Input",
+          copy: "Copy result",
+          resultTitle: "Result",
+          placeholder: "Your opposite viewpoints will appear here.",
+          empty: "Please enter an idea.",
+          copied: "Result copied.",
+          nothingToCopy: "There is no result to copy yet.",
+          voiceUnsupported: "Voice input is not supported in this browser.",
+          listening: "Listening…",
+          voiceReady: "Speak now.",
+          voiceStopped: "Voice input stopped.",
+          meta: "Input language: English",
+          exampleText: "All meetings should include everyone so information stays aligned.",
+          labels: {
+            whatIf: "What if the opposite is true",
+            instead: "Instead",
+            test: "A practical test"
+          }
+        }
+      };
+
+      function applyUI(lang) {
+        const t = UI[lang];
+        document.documentElement.lang = lang === "ja" ? "ja" : "en";
+        el.title.textContent = t.title;
+        el.desc.textContent = t.desc;
+        el.inputLabel.textContent = t.inputLabel;
+        el.ideaInput.placeholder = t.inputPlaceholder;
+        el.generateBtn.textContent = t.generate;
+        el.exampleBtn.textContent = t.example;
+        el.voiceBtn.textContent = t.voice;
+        el.copyBtn.textContent = t.copy;
+        el.resultTitle.textContent = t.resultTitle;
+        if (!el.resultList.children.length) {
+          el.resultPlaceholder.textContent = t.placeholder;
+        }
+      }
+
+      applyUI(uiLang);
+
+      function detectLanguage(text) {
+        if (!text) return uiLang;
+        const jaPattern = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+        return jaPattern.test(text) ? "ja" : "en";
+      }
+
+      const antonymMap = {
+        en: [
+          ["more", "less"], ["less", "more"],
+          ["always", "sometimes"], ["never", "sometimes"],
+          ["everyone", "a smaller group"], ["all", "a smaller part"],
+          ["faster", "slower"], ["slower", "faster"],
+          ["bigger", "smaller"], ["smaller", "bigger"],
+          ["longer", "shorter"], ["shorter", "longer"],
+          ["centralized", "decentralized"], ["decentralized", "centralized"],
+          ["standardized", "customized"], ["customized", "standardized"],
+          ["manual", "automated"], ["automated", "manual"],
+          ["simple", "richer"], ["complex", "simpler"],
+          ["open", "restricted"], ["private", "public"],
+          ["more meetings", "fewer meetings"], ["more process", "less process"],
+          ["high-touch", "self-serve"], ["self-serve", "high-touch"]
+        ],
+        ja: [
+          ["全員", "少人数"], ["みんな", "一部だけ"],
+          ["長く", "短く"], ["短く", "長く"],
+          ["増やす", "減らす"], ["減らす", "増やす"],
+          ["早く", "遅く"], ["遅く", "早く"],
+          ["大きく", "小さく"], ["小さく", "大きく"],
+          ["集中", "分散"], ["分散", "集中"],
+          ["標準化", "個別対応"], ["個別対応", "標準化"],
+          ["手動", "自動"], ["自動", "手動"],
+          ["公開", "限定"], ["限定", "公開"],
+          ["複雑", "シンプル"], ["シンプル", "複雑"],
+          ["厳しく", "ゆるく"], ["ゆるく", "厳しく"],
+          ["必ず", "必要なときだけ"], ["常に", "状況次第で"],
+          ["会議を増やす", "会議を減らす"], ["工程を増やす", "工程を減らす"]
+        ]
+      };
+
+      function replaceFirstMatch(text, lang) {
+        const map = antonymMap[lang];
+        for (let i = 0; i < map.length; i++) {
+          const from = map[i][0];
+          const to = map[i][1];
+          const re = new RegExp(escapeRegExp(from), lang === "en" ? "i" : "");
+          if (re.test(text)) {
+            return text.replace(re, to);
+          }
+        }
+        return null;
+      }
+
+      function escapeRegExp(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      function cleanIdea(text) {
+        return (text || "").trim().replace(/\s+/g, " ");
+      }
+
+      function shorten(text, max) {
+        return text.length > max ? text.slice(0, max - 1).trim() + "…" : text;
+      }
+
+      function buildOpposites(idea, lang) {
+        const base = cleanIdea(idea);
+        if (!base) return [];
+
+        const replaced = replaceFirstMatch(base, lang);
+        const items = [];
+
+        if (lang === "ja") {
+          const compact = shorten(base.replace(/[。！？!?]+$/g, ""), 90);
+          if (replaced && replaced !== base) {
+            items.push(`逆から見ると、「${shorten(replaced.replace(/[。！？!?]+$/g, ""), 90)}」のほうが機能するかもしれません。`);
+          } else {
+            items.push(`逆から見ると、「${compact}」ではなく、あえて反対の設計にしたほうが明確になるかもしれません。`);
+          }
+          items.push(`代わりに、「${compact}」を最小化・短縮・限定すると何が良くなるかを考えてみる。`);
+          items.push(`試すなら、「${compact}」をやる前提ではなく、本当に不要にできないかを見る。`);
+        } else {
+          const compact = shorten(base.replace(/[.?!]+$/g, ""), 90);
+          if (replaced && replaced !== base) {
+            items.push(`What if the opposite is true: "${shorten(replaced.replace(/[.?!]+$/g, ""), 90)}"?`);
+          } else {
+            items.push(`What if the opposite is stronger: not "${compact}", but the reverse approach?`);
+          }
+          items.push(`Instead, reduce, shorten, or narrow "${compact}" and see what improves.`);
+          items.push(`A practical test: assume "${compact}" is unnecessary. What would you do then?`);
+        }
+
+        return dedupe(items).slice(0, 3);
+      }
+
+      function dedupe(arr) {
+        const seen = new Set();
+        return arr.filter(item => {
+          const key = item.toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
+      function renderResults(items, lang) {
+        el.resultList.innerHTML = "";
+        if (!items.length) {
+          el.resultList.hidden = true;
+          el.resultPlaceholder.hidden = false;
+          el.resultPlaceholder.textContent = UI[lang].placeholder;
+          el.meta.textContent = "";
+          return;
+        }
+
+        items.forEach((text) => {
+          const li = document.createElement("li");
+          li.className = "item";
+          li.textContent = text;
+          el.resultList.appendChild(li);
+        });
+
+        el.resultPlaceholder.hidden = true;
+        el.resultList.hidden = false;
+        el.meta.textContent = UI[lang].meta;
+      }
+
+      function currentResultText() {
+        return Array.from(el.resultList.querySelectorAll(".item"))
+          .map((node, i) => `${i + 1}. ${node.textContent}`)
+          .join("\n");
+      }
+
+      function setStatus(message) {
+        el.status.textContent = message || "";
+      }
+
+      function generate() {
+        const input = cleanIdea(el.ideaInput.value);
+        const lang = detectLanguage(input);
+        setStatus("");
+        if (!input) {
+          renderResults([], lang);
+          setStatus(UI[lang].empty);
+          return;
+        }
+        const items = buildOpposites(input, lang);
+        renderResults(items, lang);
+      }
+
+      el.generateBtn.addEventListener("click", generate);
+
+      el.ideaInput.addEventListener("keydown", function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+          generate();
+        }
+      });
+
+      el.exampleBtn.addEventListener("click", function () {
+        const lang = uiLang;
+        el.ideaInput.value = UI[lang].exampleText;
+        generate();
+        el.ideaInput.focus();
+      });
+
+      el.copyBtn.addEventListener("click", async function () {
+        const inputLang = detectLanguage(el.ideaInput.value);
+        const text = currentResultText();
+        if (!text) {
+          setStatus(UI[inputLang].nothingToCopy);
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus(UI[inputLang].copied);
+        } catch (err) {
+          const temp = document.createElement("textarea");
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          try {
+            document.execCommand("copy");
+            setStatus(UI[inputLang].copied);
+          } catch (e) {
+            setStatus(UI[inputLang].nothingToCopy);
+          }
+          document.body.removeChild(temp);
+        }
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let listening = false;
+
+      function setupVoice() {
+        if (!SpeechRecognition) {
+          el.voiceBtn.addEventListener("click", function () {
+            const lang = detectLanguage(el.ideaInput.value);
+            setStatus(UI[lang].voiceUnsupported);
+          });
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        recognition.onstart = function () {
+          listening = true;
+          const lang = detectLanguage(el.ideaInput.value);
+          el.voiceBtn.textContent = lang === "ja" ? "停止" : "Stop";
+          setStatus(UI[lang].listening + " " + UI[lang].voiceReady);
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || "";
+          if (transcript) {
+            el.ideaInput.value = transcript.trim();
+            generate();
+          }
+        };
+
+        recognition.onerror = function () {
+          const lang = detectLanguage(el.ideaInput.value);
+          setStatus(UI[lang].voiceUnsupported);
+        };
+
+        recognition.onend = function () {
+          listening = false;
+          const lang = detectLanguage(el.ideaInput.value);
+          el.voiceBtn.textContent = UI[lang].voice;
+        };
+
+        el.voiceBtn.addEventListener("click", function () {
+          const lang = detectLanguage(el.ideaInput.value);
+          if (listening) {
+            recognition.stop();
+            setStatus(UI[lang].voiceStopped);
+            return;
+          }
+          recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
+          try {
+            recognition.start();
+          } catch (e) {
+            setStatus(UI[lang].voiceUnsupported);
+          }
+        });
+      }
+
+      setupVoice();
+
+      (function loadInputFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const value = params.get("input");
+        if (value) {
+          el.ideaInput.value = value;
+          generate();
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>
