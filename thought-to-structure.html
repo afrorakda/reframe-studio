@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thought → Structure | REFRAME Studio</title>
+  <meta name="description" content="Organize scattered thoughts or notes into a simple, usable structure in your browser." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#171717;
+      --muted:#666;
+      --line:#e5e5e0;
+      --accent:#111;
+      --accent-2:#2d6cdf;
+      --ok:#0f766e;
+      --shadow:0 6px 24px rgba(0,0,0,.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",Meiryo,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .wrap{
+      max-width:760px;
+      margin:0 auto;
+      padding:20px 16px 48px;
+    }
+    .back{
+      display:inline-block;
+      margin:0 0 18px;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+    }
+    .back:hover{color:var(--text)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h1{
+      font-size:clamp(28px,4vw,36px);
+      line-height:1.15;
+      margin:0 0 10px;
+      letter-spacing:-.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+    }
+    label{
+      display:block;
+      font-weight:600;
+      margin:0 0 8px;
+      font-size:14px;
+    }
+    textarea{
+      width:100%;
+      min-height:180px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#b9c8f0;
+      box-shadow:0 0 0 4px rgba(45,108,223,.10);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:13px 16px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      min-height:46px;
+      transition:.15s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:#f0f1f3;
+      color:var(--text);
+      flex:1 1 140px;
+    }
+    .secondary[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:20px;
+    }
+    .result{
+      margin-top:18px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fcfcfb;
+    }
+    .result:empty{display:none}
+    .result h2{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+    .block{
+      padding:12px 0;
+      border-top:1px solid var(--line);
+    }
+    .block:first-of-type{border-top:none;padding-top:0}
+    .k{
+      display:inline-block;
+      font-size:12px;
+      font-weight:700;
+      color:var(--accent-2);
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      margin-bottom:6px;
+    }
+    .v{
+      font-size:15px;
+    }
+    ul.clean{
+      margin:6px 0 0 18px;
+      padding:0;
+    }
+    ul.clean li{margin:4px 0}
+    .copy-row{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-end;
+    }
+    .status-ok{color:var(--ok)}
+    footer{
+      margin-top:40px;
+      font-size:12px;
+      color:#666;
+      line-height:1.6;
+    }
+    @media (max-width:560px){
+      .card{padding:16px}
+      .row button{width:100%}
+      textarea{min-height:160px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="title">Thought → Structure</h1>
+      <p id="desc" class="desc">Turn scattered thoughts into a simple structure you can act on right away.</p>
+
+      <label id="inputLabel" for="input">Your thoughts</label>
+      <textarea id="input" placeholder="Type rough thoughts, notes, or fragments here..."></textarea>
+
+      <div class="row">
+        <button id="mainBtn" class="primary" type="button">Make structure</button>
+        <button id="exampleBtn" class="secondary" type="button">Try example</button>
+        <button id="voiceBtn" class="secondary" type="button">Voice Input</button>
+      </div>
+
+      <div id="hint" class="hint" aria-live="polite"></div>
+
+      <section id="result" class="result" aria-live="polite"></section>
+
+      <div class="copy-row">
+        <button id="copyBtn" class="secondary" type="button">Copy result</button>
+      </div>
+    </main>
+
+    <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Organizes scattered thoughts into a short structure with a theme, focus, outline, and next steps.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const el = {
+        title: document.getElementById('title'),
+        desc: document.getElementById('desc'),
+        inputLabel: document.getElementById('inputLabel'),
+        input: document.getElementById('input'),
+        mainBtn: document.getElementById('mainBtn'),
+        exampleBtn: document.getElementById('exampleBtn'),
+        voiceBtn: document.getElementById('voiceBtn'),
+        hint: document.getElementById('hint'),
+        result: document.getElementById('result'),
+        copyBtn: document.getElementById('copyBtn')
+      };
+
+      const ui = {
+        en: {
+          title: 'Thought → Structure',
+          desc: 'Turn scattered thoughts into a simple structure you can act on right away.',
+          inputLabel: 'Your thoughts',
+          placeholder: 'Type rough thoughts, notes, or fragments here...',
+          mainBtn: 'Make structure',
+          exampleBtn: 'Try example',
+          voiceBtn: 'Voice Input',
+          copyBtn: 'Copy result',
+          unsupportedVoice: 'Voice input is not supported in this browser.',
+          listening: 'Listening...',
+          stopped: 'Voice input stopped.',
+          copied: 'Copied.',
+          copyFail: 'Could not copy automatically. Please copy manually.',
+          empty: 'Please enter a few thoughts first.',
+          resultTitle: 'Simple structure',
+          sectionTheme: 'Theme',
+          sectionFocus: 'Core focus',
+          sectionOutline: 'Outline',
+          sectionNext: 'Next steps',
+          nextPrefix: 'Do this next:',
+          example: `I want to launch a small creative project.
+I have too many ideas.
+Maybe a weekly essay, maybe short videos, maybe interviews.
+I care about consistency more than growth.
+I am worried about time and making it too big.
+I want one simple format I can keep for 3 months.`
+        },
+        ja: {
+          title: 'Thought → Structure',
+          desc: '散らばった考えを、すぐ使えるシンプルな構成に整理します。',
+          inputLabel: '考えやメモ',
+          placeholder: '思いついたこと、断片的なメモ、頭の中の整理前の言葉を入力してください...',
+          mainBtn: '構造化する',
+          exampleBtn: '例を入れる',
+          voiceBtn: '音声入力',
+          copyBtn: '結果をコピー',
+          unsupportedVoice: 'このブラウザでは音声入力に対応していません。',
+          listening: '聞き取り中...',
+          stopped: '音声入力を停止しました。',
+          copied: 'コピーしました。',
+          copyFail: '自動コピーに失敗しました。手動でコピーしてください。',
+          empty: 'まず考えやメモを入力してください。',
+          resultTitle: 'シンプルな構造',
+          sectionTheme: 'テーマ',
+          sectionFocus: '核となる焦点',
+          sectionOutline: '構成',
+          sectionNext: '次の一歩',
+          nextPrefix: '次にやること：',
+          example: `小さな発信プロジェクトを始めたい。
+でもアイデアが多すぎる。
+週1の文章、短い動画、インタビュー案がある。
+伸ばすことより継続できることを大事にしたい。
+時間が足りないし、大きくしすぎるのも不安。
+まずは3か月続けられる形を一つ決めたい。`
+        }
+      };
+
+      let lastOutputText = '';
+      let recognition = null;
+      let isListening = false;
+
+      function detectLanguage(text) {
+        if (!text) return 'en';
+        const jp = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+        return jp.test(text) ? 'ja' : 'en';
+      }
+
+      function t() {
+        return ui[detectLanguage(el.input.value)];
+      }
+
+      function applyUI() {
+        const lang = t();
+        document.documentElement.lang = detectLanguage(el.input.value);
+        el.title.textContent = lang.title;
+        el.desc.textContent = lang.desc;
+        el.inputLabel.textContent = lang.inputLabel;
+        el.input.placeholder = lang.placeholder;
+        el.mainBtn.textContent = lang.mainBtn;
+        el.exampleBtn.textContent = lang.exampleBtn;
+        el.voiceBtn.textContent = lang.voiceBtn;
+        el.copyBtn.textContent = lang.copyBtn;
+      }
+
+      function normalizeText(text) {
+        return text
+          .replace(/\r/g, '\n')
+          .replace(/[•●▪︎◦]/g, '-')
+          .replace(/\t/g, ' ')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+      }
+
+      function splitIdeas(text) {
+        return normalizeText(text)
+          .split(/\n+|(?<=[。！？!?])\s*|(?<=\.)\s+(?=[A-Z0-9])|;/)
+          .map(s => s.replace(/^[-\d.)\s]+/, '').trim())
+          .filter(Boolean);
+      }
+
+      function pickTheme(lines, lang) {
+        const joined = lines.join(' ').trim();
+        if (!joined) return lang === 'ja' ? '考えを整理する' : 'Organize the idea';
+
+        const first = lines.find(Boolean) || joined;
+        const cleaned = first
+          .replace(/^(i want to|i need to|i'm trying to|trying to|maybe|want to)\s+/i, '')
+          .replace(/^(したい|やりたい|やろうと思う|考えている|まずは)\s*/i, '')
+          .trim();
+
+        if (lang === 'ja') {
+          return cleaned.length > 28 ? cleaned.slice(0, 28) + '…' : cleaned;
+        }
+        return cleaned.length > 42 ? cleaned.slice(0, 42) + '…' : cleaned;
+      }
+
+      function scoreLine(line, lang) {
+        const lower = line.toLowerCase();
+        const focusKeywordsEn = ['want', 'need', 'goal', 'important', 'because', 'problem', 'stuck', 'worry', 'decide', 'focus'];
+        const focusKeywordsJa = ['したい', '必要', '大事', '重要', '悩', '不安', '決めたい', '目的', '課題', '迷'];
+        let score = line.length > 8 ? 1 : 0;
+        const keywords = lang === 'ja' ? focusKeywordsJa : focusKeywordsEn;
+        keywords.forEach(k => {
+          if (lower.includes(k)) score += 2;
+        });
+        if (/[?？]/.test(line)) score += 1;
+        return score;
+      }
+
+      function pickFocus(lines, lang) {
+        if (!lines.length) return lang === 'ja' ? '考えの中心を一つに絞る' : 'Narrow to one clear focus';
+        const ranked = lines
+          .map(line => ({ line, score: scoreLine(line, lang) }))
+          .sort((a, b) => b.score - a.score || b.line.length - a.line.length);
+        return ranked[0].line;
+      }
+
+      function uniqueShort(lines, max, lang) {
+        const out = [];
+        const seen = new Set();
+        for (const raw of lines) {
+          let line = raw.trim().replace(/\s+/g, ' ');
+          if (!line) continue;
+          const key = line.toLowerCase();
+          if (seen.has(key)) continue;
+          seen.add(key);
+
+          const limit = lang === 'ja' ? 44 : 72;
+          if (line.length > limit) line = line.slice(0, limit - 1) + '…';
+          out.push(line);
+          if (out.length >= max) break;
+        }
+        return out;
+      }
+
+      function makeOutline(lines, lang) {
+        if (!lines.length) {
+          return lang === 'ja'
+            ? ['背景を一文で書く', '今いちばん大事な点を一つに絞る', '次の一歩を一つ決める']
+            : ['Write the situation in one line', 'Choose the single most important point', 'Decide one next step'];
+        }
+
+        const ordered = uniqueShort(lines, 3, lang);
+        if (ordered.length === 1) {
+          return lang === 'ja'
+            ? [ordered[0], '論点を1つ足す', '次の一歩を決める']
+            : [ordered[0], 'Add one supporting point', 'Decide the next step'];
+        }
+        return ordered;
+      }
+
+      function makeNextSteps(lines, lang) {
+        const text = lines.join(' ').toLowerCase();
+
+        if (lang === 'ja') {
+          const steps = [];
+          if (text.includes('多すぎ') || text.includes('迷') || text.includes('いろいろ')) {
+            steps.push('候補を3つまでに絞る');
+          }
+          if (text.includes('時間') || text.includes('忙')) {
+            steps.push('30分でできる最小単位にする');
+          }
+          if (text.includes('不安') || text.includes('心配')) {
+            steps.push('失敗コストが低い形で試す');
+          }
+          steps.push('今日やることを1つだけ決める');
+          return uniqueShort(steps, 3, 'ja');
+        }
+
+        const steps = [];
+        if (text.includes('too many') || text.includes('many ideas') || text.includes('stuck') || text.includes('decide')) {
+          steps.push('Cut the options down to three');
+        }
+        if (text.includes('time') || text.includes('busy')) {
+          steps.push('Reduce it to a 30-minute version');
+        }
+        if (text.includes('worried') || text.includes('risk') || text.includes('big')) {
+          steps.push('Test the smallest low-risk version');
+        }
+        steps.push('Choose one action for today');
+        return uniqueShort(steps, 3, 'en');
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, m => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[m]));
+      }
+
+      function renderResult(data, lang) {
+        const L = ui[lang];
+        const outlineHtml = data.outline.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+        const nextHtml = data.next.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+
+        el.result.innerHTML = `
+          <h2>${escapeHtml(L.resultTitle)}</h2>
+
+          <div class="block">
+            <div class="k">${escapeHtml(L.sectionTheme)}</div>
+            <div class="v">${escapeHtml(data.theme)}</div>
+          </div>
+
+          <div class="block">
+            <div class="k">${escapeHtml(L.sectionFocus)}</div>
+            <div class="v">${escapeHtml(data.focus)}</div>
+          </div>
+
+          <div class="block">
+            <div class="k">${escapeHtml(L.sectionOutline)}</div>
+            <div class="v">
+              <ul class="clean">${outlineHtml}</ul>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="k">${escapeHtml(L.sectionNext)}</div>
+            <div class="v">
+              <ul class="clean">${nextHtml}</ul>
+            </div>
+          </div>
+        `;
+
+        lastOutputText = [
+          L.resultTitle,
+          '',
+          `${L.sectionTheme}: ${data.theme}`,
+          `${L.sectionFocus}: ${data.focus}`,
+          `${L.sectionOutline}:`,
+          ...data.outline.map((x) => `- ${x}`),
+          `${L.sectionNext}:`,
+          ...data.next.map((x) => `- ${x}`)
+        ].join('\n');
+      }
+
+      function generate() {
+        const raw = el.input.value.trim();
+        const lang = detectLanguage(raw);
+        const L = ui[lang];
+        applyUI();
+
+        if (!raw) {
+          el.hint.textContent = L.empty;
+          el.result.innerHTML = '';
+          lastOutputText = '';
+          return;
+        }
+
+        const lines = splitIdeas(raw);
+        const data = {
+          theme: pickTheme(lines, lang),
+          focus: pickFocus(lines, lang),
+          outline: makeOutline(lines, lang),
+          next: makeNextSteps(lines, lang)
+        };
+
+        renderResult(data, lang);
+        el.hint.textContent = '';
+      }
+
+      async function copyResult() {
+        const lang = detectLanguage(el.input.value);
+        const L = ui[lang];
+
+        if (!lastOutputText) {
+          generate();
+          if (!lastOutputText) {
+            el.hint.textContent = L.empty;
+            return;
+          }
+        }
+
+        try {
+          await navigator.clipboard.writeText(lastOutputText);
+          el.hint.textContent = L.copied;
+          el.hint.classList.add('status-ok');
+          setTimeout(() => el.hint.classList.remove('status-ok'), 1200);
+        } catch (e) {
+          el.hint.textContent = L.copyFail;
+        }
+      }
+
+      function insertExample() {
+        const currentLang = detectLanguage(el.input.value);
+        const lang = currentLang === 'ja' ? 'ja' : 'en';
+        el.input.value = ui[lang].example;
+        applyUI();
+        generate();
+        el.input.focus();
+      }
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          el.voiceBtn.disabled = true;
+          el.voiceBtn.setAttribute('aria-disabled', 'true');
+          el.hint.textContent = t().unsupportedVoice;
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          isListening = true;
+          el.hint.textContent = t().listening;
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          if (el.hint.textContent === t().listening) {
+            el.hint.textContent = t().stopped;
+          }
+        };
+
+        recognition.onerror = function () {
+          isListening = false;
+          el.hint.textContent = t().unsupportedVoice;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = Array.from(event.results)
+            .map(r => r[0] && r[0].transcript ? r[0].transcript : '')
+            .join(' ')
+            .trim();
+
+          if (!transcript) return;
+
+          const space = el.input.value.trim() ? '\n' : '';
+          el.input.value = el.input.value + space + transcript;
+          applyUI();
+          generate();
+        };
+
+        el.voiceBtn.addEventListener('click', function () {
+          try {
+            if (isListening) {
+              recognition.stop();
+              return;
+            }
+            recognition.lang = detectLanguage(el.input.value) === 'ja' ? 'ja-JP' : 'en-US';
+            recognition.start();
+          } catch (e) {
+            el.hint.textContent = t().unsupportedVoice;
+          }
+        });
+      }
+
+      function loadInputParam() {
+        const params = new URLSearchParams(window.location.search);
+        const inputValue = params.get('input');
+        if (inputValue) {
+          el.input.value = inputValue;
+        }
+      }
+
+      el.input.addEventListener('input', applyUI);
+      el.mainBtn.addEventListener('click', generate);
+      el.exampleBtn.addEventListener('click', insertExample);
+      el.copyBtn.addEventListener('click', copyResult);
+
+      loadInputParam();
+      applyUI();
+      setupVoice();
+
+      if (el.input.value.trim()) {
+        generate();
+      }
+    })();
+  </script>
+</body>
+</html>
