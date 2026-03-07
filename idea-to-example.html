@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Idea → Example | REFRAME Studio</title>
+  <meta name="description" content="Generate 3 practical examples from a single idea or concept." />
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --card: #ffffff;
+      --text: #1f2328;
+      --muted: #667085;
+      --line: #e6e8ec;
+      --accent: #111111;
+      --accent-2: #f1f3f5;
+      --success: #0f9d58;
+      --shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #b8c0cc;
+      box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.05);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 16px;
+      min-height: 48px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.02s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      flex: 1 1 220px;
+    }
+
+    .secondary {
+      background: var(--accent-2);
+      color: var(--text);
+      flex: 1 1 140px;
+    }
+
+    .secondary[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin-top: 8px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .result-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .examples {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .example-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .example-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .example-text {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      background: #fcfcfc;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+      .wrap { padding: 16px 12px 28px; }
+      .card { padding: 16px; }
+      h1 { font-size: 24px; }
+      .toolbar { gap: 8px; }
+      button { width: 100%; }
+      .result-header {
+        display: block;
+      }
+      .result-title {
+        margin-bottom: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="pageTitle">Idea → Example</h1>
+      <p class="desc" id="pageDesc">Turn one idea into 3 practical examples you can use right away.</p>
+
+      <label for="ideaInput" id="inputLabel">Your idea or concept</label>
+      <textarea
+        id="ideaInput"
+        placeholder="e.g. A tool that helps freelancers follow up with clients"
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="false"
+      ></textarea>
+
+      <div class="toolbar">
+        <button class="primary" id="generateBtn">Generate 3 examples</button>
+        <button class="secondary" id="exampleBtn">Try example</button>
+        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+        <button class="secondary" id="copyBtn" type="button">Copy result</button>
+      </div>
+
+      <div class="status" id="status" aria-live="polite"></div>
+
+      <section class="result" aria-labelledby="resultTitle">
+        <div class="result-header">
+          <h2 class="result-title" id="resultTitle">Examples</h2>
+          <div class="hint" id="resultHint">3 short, concrete examples</div>
+        </div>
+
+        <div id="resultArea">
+          <div class="empty" id="emptyState">Enter an idea and generate examples.</div>
+          <div class="examples" id="examplesList" hidden></div>
+        </div>
+      </section>
+
+      <footer>
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Generates 3 practical examples from one idea so you can clarify it fast.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var inputEl = document.getElementById('ideaInput');
+      var generateBtn = document.getElementById('generateBtn');
+      var exampleBtn = document.getElementById('exampleBtn');
+      var voiceBtn = document.getElementById('voiceBtn');
+      var copyBtn = document.getElementById('copyBtn');
+      var statusEl = document.getElementById('status');
+      var examplesListEl = document.getElementById('examplesList');
+      var emptyStateEl = document.getElementById('emptyState');
+
+      var pageTitleEl = document.getElementById('pageTitle');
+      var pageDescEl = document.getElementById('pageDesc');
+      var inputLabelEl = document.getElementById('inputLabel');
+      var resultTitleEl = document.getElementById('resultTitle');
+      var resultHintEl = document.getElementById('resultHint');
+
+      var currentOutputText = '';
+      var recognition = null;
+      var isListening = false;
+
+      function detectLanguage(text) {
+        if (!text) return 'en';
+        var jaPattern = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
+        return jaPattern.test(text) ? 'ja' : 'en';
+      }
+
+      function t(lang, ja, en) {
+        return lang === 'ja' ? ja : en;
+      }
+
+      function updateStaticText() {
+        var lang = detectLanguage(inputEl.value.trim());
+        document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+        pageTitleEl.textContent = 'Idea → Example';
+        pageDescEl.textContent = t(
+          lang,
+          '1つのアイデアから、すぐ使える具体例を3つ作ります。',
+          'Turn one idea into 3 practical examples you can use right away.'
+        );
+        inputLabelEl.textContent = t(lang, 'アイデア・コンセプト', 'Your idea or concept');
+        inputEl.placeholder = t(
+          lang,
+          '例：フリーランスの営業フォローを助けるツール',
+          'e.g. A tool that helps freelancers follow up with clients'
+        );
+        generateBtn.textContent = t(lang, '3つの例を作る', 'Generate 3 examples');
+        exampleBtn.textContent = t(lang, '例を試す', 'Try example');
+        copyBtn.textContent = t(lang, '結果をコピー', 'Copy result');
+        resultTitleEl.textContent = t(lang, '例', 'Examples');
+        resultHintEl.textContent = t(lang, '短く、具体的な3例', '3 short, concrete examples');
+        if (!isListening) {
+          voiceBtn.textContent = t(lang, '音声入力', 'Voice Input');
+        }
+        if (!currentOutputText) {
+          emptyStateEl.textContent = t(
+            lang,
+            'アイデアを入力して、例を作ってください。',
+            'Enter an idea and generate examples.'
+          );
+        }
+      }
+
+      function cleanIdea(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .replace(/^[\-\–\—•\s]+/, '')
+          .trim();
+      }
+
+      function toLowerSafe(text) {
+        return (text || '').toLowerCase();
+      }
+
+      function chooseEnglishCategory(idea) {
+        var s = toLowerSafe(idea);
+        if (/(app|tool|platform|software|service|site|website|dashboard|assistant|bot)/.test(s)) return 'product';
+        if (/(content|post|video|newsletter|podcast|course|workshop|event)/.test(s)) return 'content';
+        if (/(habit|routine|goal|study|fitness|health|sleep|focus)/.test(s)) return 'personal';
+        return 'general';
+      }
+
+      function chooseJapaneseCategory(idea) {
+        var s = idea || '';
+        if (/(アプリ|ツール|サービス|サイト|ソフト|ダッシュボード|bot|ボット|支援|管理)/.test(s)) return 'product';
+        if (/(投稿|動画|記事|ニュースレター|講座|ワークショップ|イベント|発信|コンテンツ)/.test(s)) return 'content';
+        if (/(習慣|ルーティン|目標|勉強|学習|健康|睡眠|集中|運動)/.test(s)) return 'personal';
+        return 'general';
+      }
+
+      function generateExamplesEn(idea) {
+        var category = chooseEnglishCategory(idea);
+        var subject = cleanIdea(idea);
+
+        var sets = {
+          product: [
+            'A freelance designer uses "' + subject + '" to send a follow-up 24 hours after a client meeting.',
+            'A small team uses "' + subject + '" to turn weekly requests into a simple shared checklist.',
+            'A solo founder uses "' + subject + '" to spot the next most important task in under 1 minute.'
+          ],
+          content: [
+            'A creator turns "' + subject + '" into a 60-second video with one problem, one tip, and one takeaway.',
+            'A coach turns "' + subject + '" into a short email that gives one example and one action step.',
+            'A team turns "' + subject + '" into a workshop opener with one question and one live exercise.'
+          ],
+          personal: [
+            'A student uses "' + subject + '" as a 10-minute daily routine before starting study time.',
+            'A busy worker uses "' + subject + '" as a simple reset rule during the afternoon slump.',
+            'A beginner tracks "' + subject + '" with one small action repeated every day for a week.'
+          ],
+          general: [
+            'A teacher uses "' + subject + '" to explain one hard concept with a real-life classroom example.',
+            'A local shop uses "' + subject + '" to improve one part of the customer experience this week.',
+            'A startup uses "' + subject + '" to test one small experiment before building a bigger solution.'
+          ]
+        };
+
+        return sets[category];
+      }
+
+      function generateExamplesJa(idea) {
+        var category = chooseJapaneseCategory(idea);
+        var subject = cleanIdea(idea);
+
+        var sets = {
+          product: [
+            'フリーランスのデザイナーが「' + subject + '」を使い、商談の24時間後に自然なフォローを送る。',
+            '小さなチームが「' + subject + '」を使い、毎週の依頼を見やすい共有チェックリストにする。',
+            '個人で動く起業家が「' + subject + '」を使い、次にやるべき1件を1分で決める。'
+          ],
+          content: [
+            '発信者が「' + subject + '」を、問題・ヒント・一言で伝える短い動画ネタにする。',
+            'コーチが「' + subject + '」を、具体例1つと行動1つだけの短いメールにする。',
+            'チームが「' + subject + '」を、冒頭の問いとミニ演習があるワークショップ導入にする。'
+          ],
+          personal: [
+            '学生が「' + subject + '」を、勉強前の10分ルーティンとして毎日使う。',
+            '忙しい会社員が「' + subject + '」を、午後に集中を戻すための簡単な切り替え習慣にする。',
+            '初心者が「' + subject + '」を、1週間だけ続ける小さな行動として試してみる。'
+          ],
+          general: [
+            '先生が「' + subject + '」を、身近な例で難しい内容を説明する授業ネタにする。',
+            '地域のお店が「' + subject + '」を、今週すぐ改善できる接客アイデアとして使う。',
+            'スタートアップが「' + subject + '」を、先に小さく試す実験案として使う。'
+          ]
+        };
+
+        return sets[category];
+      }
+
+      function renderExamples(list, lang) {
+        examplesListEl.innerHTML = '';
+        var labels = lang === 'ja' ? ['例 1', '例 2', '例 3'] : ['Example 1', 'Example 2', 'Example 3'];
+
+        for (var i = 0; i < list.length; i++) {
+          var item = document.createElement('div');
+          item.className = 'example-item';
+
+          var label = document.createElement('div');
+          label.className = 'example-label';
+          label.textContent = labels[i] || (lang === 'ja' ? '例' : 'Example');
+
+          var text = document.createElement('p');
+          text.className = 'example-text';
+          text.textContent = list[i];
+
+          item.appendChild(label);
+          item.appendChild(text);
+          examplesListEl.appendChild(item);
+        }
+
+        emptyStateEl.hidden = true;
+        examplesListEl.hidden = false;
+      }
+
+      function generate() {
+        var raw = inputEl.value.trim();
+        var lang = detectLanguage(raw);
+        updateStaticText();
+
+        if (!raw) {
+          currentOutputText = '';
+          examplesListEl.hidden = true;
+          emptyStateEl.hidden = false;
+          emptyStateEl.textContent = t(
+            lang,
+            '先にアイデアを入力してください。',
+            'Please enter an idea first.'
+          );
+          statusEl.className = 'status';
+          statusEl.textContent = t(
+            lang,
+            '入力が空です。',
+            'Input is empty.'
+          );
+          return;
+        }
+
+        var idea = cleanIdea(raw);
+        var examples = lang === 'ja' ? generateExamplesJa(idea) : generateExamplesEn(idea);
+        renderExamples(examples, lang);
+
+        currentOutputText = examples.map(function (item, index) {
+          return (lang === 'ja' ? '例 ' : 'Example ') + (index + 1) + ': ' + item;
+        }).join('\n');
+
+        statusEl.className = 'status success';
+        statusEl.textContent = t(
+          lang,
+          '3つの例を作成しました。',
+          'Generated 3 examples.'
+        );
+      }
+
+      function insertExample() {
+        var currentLang = detectLanguage(inputEl.value.trim());
+        var useJapanese = currentLang === 'ja' || (inputEl.value.trim() === '' && Math.random() < 0.5);
+
+        inputEl.value = useJapanese
+          ? '親が子どもの読書習慣を続けやすくするアイデア'
+          : 'A concept for helping remote teams run better weekly check-ins';
+
+        updateStaticText();
+        generate();
+      }
+
+      async function copyResult() {
+        var lang = detectLanguage(inputEl.value.trim());
+
+        if (!currentOutputText) {
+          statusEl.className = 'status';
+          statusEl.textContent = t(
+            lang,
+            '先に結果を作ってください。',
+            'Generate a result first.'
+          );
+          return;
+        }
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(currentOutputText);
+          } else {
+            var temp = document.createElement('textarea');
+            temp.value = currentOutputText;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'absolute';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+          }
+
+          statusEl.className = 'status success';
+          statusEl.textContent = t(
+            lang,
+            '結果をコピーしました。',
+            'Copied result.'
+          );
+        } catch (err) {
+          statusEl.className = 'status';
+          statusEl.textContent = t(
+            lang,
+            'コピーできませんでした。',
+            'Could not copy the result.'
+          );
+        }
+      }
+
+      function setupVoiceInput() {
+        var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          var lang = detectLanguage(inputEl.value.trim());
+          voiceBtn.textContent = t(lang, '音声入力は非対応', 'Voice input unavailable');
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        recognition.onstart = function () {
+          isListening = true;
+          var lang = detectLanguage(inputEl.value.trim());
+          voiceBtn.textContent = t(lang, '聞き取り中...', 'Listening...');
+          statusEl.className = 'status';
+          statusEl.textContent = t(
+            lang,
+            '話してください。',
+            'Speak now.'
+          );
+        };
+
+        recognition.onresult = function (event) {
+          var transcript = '';
+          if (event.results && event.results[0] && event.results[0][0]) {
+            transcript = event.results[0][0].transcript || '';
+          }
+          inputEl.value = cleanIdea(transcript);
+          updateStaticText();
+          generate();
+        };
+
+        recognition.onerror = function () {
+          var lang = detectLanguage(inputEl.value.trim());
+          statusEl.className = 'status';
+          statusEl.textContent = t(
+            lang,
+            '音声入力を使えませんでした。',
+            'Voice input could not be used.'
+          );
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          updateStaticText();
+        };
+      }
+
+      function handleVoiceClick() {
+        if (!recognition) return;
+
+        var lang = detectLanguage(inputEl.value.trim());
+        recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+
+        try {
+          if (isListening) {
+            recognition.stop();
+          } else {
+            recognition.start();
+          }
+        } catch (e) {
+          statusEl.className = 'status';
+          statusEl.textContent = t(
+            lang,
+            '音声入力を開始できませんでした。',
+            'Could not start voice input.'
+          );
+        }
+      }
+
+      function loadInputFromURL() {
+        var params = new URLSearchParams(window.location.search);
+        var inputValue = params.get('input');
+        if (inputValue) {
+          inputEl.value = inputValue;
+        }
+      }
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', insertExample);
+      copyBtn.addEventListener('click', copyResult);
+      voiceBtn.addEventListener('click', handleVoiceClick);
+      inputEl.addEventListener('input', updateStaticText);
+
+      loadInputFromURL();
+      updateStaticText();
+
+      if (inputEl.value.trim()) {
+        generate();
+      }
+
+      setupVoiceInput();
+    })();
+  </script>
+</body>
+</html>
