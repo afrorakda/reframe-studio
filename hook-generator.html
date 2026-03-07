@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hook Generator | REFRAME Studio</title>
+  <meta
+    name="description"
+    content="Generate 3 strong opening hooks for a post from a single topic or idea."
+  />
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --border: #e6e6e9;
+      --accent: #111111;
+      --accent-text: #ffffff;
+      --soft: #f1f1f3;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans",
+        "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 5vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .input-wrap {
+      display: grid;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    textarea:focus {
+      border-color: #999;
+      box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.06);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.04s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    button:active { transform: translateY(1px); }
+
+    .primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      min-width: 140px;
+    }
+
+    .secondary {
+      background: var(--soft);
+      color: var(--text);
+    }
+
+    .secondary[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status {
+      min-height: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .result {
+      margin-top: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .result.hidden { display: none; }
+
+    .hook {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .hook-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .hook-text {
+      font-size: 18px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .card { padding: 16px; }
+      .hook-text { font-size: 17px; }
+      .controls button,
+      .result-actions button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <h1 id="title">Hook Generator</h1>
+      <p class="sub" id="subtitle">Turn one topic into 3 strong opening hooks for your next post.</p>
+
+      <div class="input-wrap">
+        <label for="topic" id="inputLabel" class="sub" style="margin:0;">Topic or idea</label>
+        <textarea
+          id="topic"
+          placeholder="Example: Why most creators struggle to stay consistent"
+          aria-label="Topic or idea"
+        ></textarea>
+
+        <div class="controls">
+          <button id="generateBtn" class="primary" type="button">Generate Hooks</button>
+          <button id="voiceBtn" class="secondary" type="button">Voice Input</button>
+          <button id="clearBtn" class="secondary" type="button">Clear</button>
+        </div>
+
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+
+      <section id="result" class="result hidden" aria-live="polite">
+        <div class="hook">
+          <div class="hook-label" id="labelCuriosity">Curiosity hook</div>
+          <div class="hook-text" id="curiosityText"></div>
+        </div>
+
+        <div class="hook">
+          <div class="hook-label" id="labelProblem">Problem hook</div>
+          <div class="hook-text" id="problemText"></div>
+        </div>
+
+        <div class="hook">
+          <div class="hook-label" id="labelContrarian">Contrarian hook</div>
+          <div class="hook-text" id="contrarianText"></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="copyBtn" class="secondary" type="button">Copy All</button>
+        </div>
+      </section>
+
+      <p class="note" id="note">
+        Works entirely in your browser. No login. No tracking. No personal data collected.
+      </p>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Generate 3 practical opening hooks from a single topic or idea for faster post drafting.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const ui = {
+        en: {
+          pageTitle: "Hook Generator",
+          subtitle: "Turn one topic into 3 strong opening hooks for your next post.",
+          inputLabel: "Topic or idea",
+          placeholder: "Example: Why most creators struggle to stay consistent",
+          generate: "Generate Hooks",
+          voice: "Voice Input",
+          clear: "Clear",
+          copy: "Copy All",
+          copied: "Copied.",
+          voiceNotSupported: "Voice input is not supported in this browser.",
+          voiceReady: "Voice input is ready.",
+          voiceListening: "Listening...",
+          voiceStopped: "Voice input stopped.",
+          empty: "Enter a topic first.",
+          note: "Works entirely in your browser. No login. No tracking. No personal data collected.",
+          labelCuriosity: "Curiosity hook",
+          labelProblem: "Problem hook",
+          labelContrarian: "Contrarian hook"
+        },
+        ja: {
+          pageTitle: "フック生成",
+          subtitle: "1つのテーマから、投稿の冒頭で使える強いフックを3つ作ります。",
+          inputLabel: "テーマ・アイデア",
+          placeholder: "例：なぜ多くの発信者は継続できないのか",
+          generate: "フックを生成",
+          voice: "音声入力",
+          clear: "クリア",
+          copy: "すべてコピー",
+          copied: "コピーしました。",
+          voiceNotSupported: "このブラウザでは音声入力に対応していません。",
+          voiceReady: "音声入力の準備ができました。",
+          voiceListening: "聞き取り中...",
+          voiceStopped: "音声入力を停止しました。",
+          empty: "まずテーマを入力してください。",
+          note: "このツールはブラウザ内だけで動作します。ログイン不要、追跡なし、個人データの収集なし。",
+          labelCuriosity: "好奇心フック",
+          labelProblem: "問題提起フック",
+          labelContrarian: "逆張りフック"
+        }
+      };
+
+      const topicEl = document.getElementById("topic");
+      const generateBtn = document.getElementById("generateBtn");
+      const voiceBtn = document.getElementById("voiceBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const statusEl = document.getElementById("status");
+      const resultEl = document.getElementById("result");
+      const curiosityText = document.getElementById("curiosityText");
+      const problemText = document.getElementById("problemText");
+      const contrarianText = document.getElementById("contrarianText");
+
+      const textEls = {
+        title: document.getElementById("title"),
+        subtitle: document.getElementById("subtitle"),
+        inputLabel: document.getElementById("inputLabel"),
+        labelCuriosity: document.getElementById("labelCuriosity"),
+        labelProblem: document.getElementById("labelProblem"),
+        labelContrarian: document.getElementById("labelContrarian"),
+        note: document.getElementById("note")
+      };
+
+      function detectLanguage(text) {
+        const jaPattern = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+        return jaPattern.test(text) ? "ja" : "en";
+      }
+
+      function applyLanguage(lang) {
+        const t = ui[lang];
+        document.documentElement.lang = lang;
+        textEls.title.textContent = t.pageTitle;
+        textEls.subtitle.textContent = t.subtitle;
+        textEls.inputLabel.textContent = t.inputLabel;
+        topicEl.placeholder = t.placeholder;
+        generateBtn.textContent = t.generate;
+        voiceBtn.textContent = t.voice;
+        clearBtn.textContent = t.clear;
+        copyBtn.textContent = t.copy;
+        textEls.labelCuriosity.textContent = t.labelCuriosity;
+        textEls.labelProblem.textContent = t.labelProblem;
+        textEls.labelContrarian.textContent = t.labelContrarian;
+        textEls.note.textContent = t.note;
+      }
+
+      function normalizeTopic(text) {
+        return text.replace(/\s+/g, " ").trim();
+      }
+
+      function trimPunctuation(text, lang) {
+        return text
+          .replace(/^[\s"'“”‘’「」『』【】\[\]()]+/, "")
+          .replace(/[\s"'“”‘’「」『』【】\[\]()]+$/, "")
+          .replace(/[.?!。！？]+$/g, "")
+          .trim();
+      }
+
+      function titleCaseEnglish(str) {
+        return str
+          .split(" ")
+          .map(word => {
+            if (!word) return word;
+            if (/^(a|an|the|and|or|but|for|nor|on|at|to|from|by|of|in|with)$/i.test(word)) {
+              return word.toLowerCase();
+            }
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          })
+          .join(" ")
+          .replace(/^./, c => c.toUpperCase());
+      }
+
+      function buildHooks(topic, lang) {
+        const clean = trimPunctuation(normalizeTopic(topic), lang);
+
+        if (lang === "ja") {
+          const softTopic = clean;
+          return {
+            curiosity: [
+              `なぜ${softTopic}は、思った以上に結果を左右するのでしょうか？`,
+              `${softTopic}で差がつく人は、最初に何を見ているのでしょうか？`,
+              `${softTopic}を理解すると、見えてくる景色が変わります。`
+            ],
+            problem: [
+              `${softTopic}がうまくいかないのは、努力不足ではなく入口の設計かもしれません。`,
+              `${softTopic}で多くの人が止まるのは、才能ではなく最初の勘違いです。`,
+              `${softTopic}を続けても手応えが薄いなら、やり方より前提を見直すタイミングです。`
+            ],
+            contrarian: [
+              `${softTopic}は、増やすより削るほうがうまくいくことがあります。`,
+              `${softTopic}は、正攻法より“やらないこと”で差がつくかもしれません。`,
+              `${softTopic}で必要なのは、もっと頑張ることではないのかもしれません。`
+            ]
+          };
+        }
+
+        const softTopic = clean.length < 4 ? clean : titleCaseEnglish(clean);
+        return {
+          curiosity: [
+            `What makes ${softTopic} matter more than most people realize?`,
+            `The hidden shift inside ${softTopic} that changes the whole outcome.`,
+            `Before you dismiss ${softTopic}, look at what it quietly controls.`
+          ],
+          problem: [
+            `Most people struggle with ${softTopic} for one reason they rarely notice.`,
+            `If ${softTopic} feels harder than it should, the real problem may not be effort.`,
+            `The biggest mistake with ${softTopic} usually happens before the work even starts.`
+          ],
+          contrarian: [
+            `${softTopic} may improve faster when you do less, not more.`,
+            `The usual advice about ${softTopic} might be exactly what slows people down.`,
+            `You probably do not need more discipline for ${softTopic}; you may need a different angle.`
+          ]
+        };
+      }
+
+      function pickVariant(arr, seed) {
+        return arr[seed % arr.length];
+      }
+
+      function seedFromText(text) {
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+          hash = (hash << 5) - hash + text.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash);
+      }
+
+      function generate() {
+        const topic = normalizeTopic(topicEl.value);
+        const lang = detectLanguage(topic || "en");
+        applyLanguage(lang);
+
+        if (!topic) {
+          statusEl.textContent = ui[lang].empty;
+          resultEl.classList.add("hidden");
+          return;
+        }
+
+        const hooks = buildHooks(topic, lang);
+        const seed = seedFromText(topic);
+
+        curiosityText.textContent = pickVariant(hooks.curiosity, seed + 1);
+        problemText.textContent = pickVariant(hooks.problem, seed + 2);
+        contrarianText.textContent = pickVariant(hooks.contrarian, seed + 3);
+
+        resultEl.classList.remove("hidden");
+        statusEl.textContent = "";
+      }
+
+      function clearAll() {
+        const lang = detectLanguage(topicEl.value || "en");
+        applyLanguage(lang);
+        topicEl.value = "";
+        curiosityText.textContent = "";
+        problemText.textContent = "";
+        contrarianText.textContent = "";
+        resultEl.classList.add("hidden");
+        statusEl.textContent = "";
+        topicEl.focus();
+      }
+
+      async function copyAll() {
+        const topic = normalizeTopic(topicEl.value);
+        const lang = detectLanguage(topic || "en");
+        const text = [
+          `${ui[lang].labelCuriosity}: ${curiosityText.textContent}`,
+          `${ui[lang].labelProblem}: ${problemText.textContent}`,
+          `${ui[lang].labelContrarian}: ${contrarianText.textContent}`
+        ].join("\n\n");
+
+        try {
+          await navigator.clipboard.writeText(text);
+          statusEl.textContent = ui[lang].copied;
+        } catch (_) {
+          statusEl.textContent = text;
+        }
+      }
+
+      let recognition = null;
+      let listening = false;
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const currentLang = detectLanguage(topicEl.value || "en");
+        applyLanguage(currentLang);
+
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          statusEl.textContent = ui[currentLang].voiceNotSupported;
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          listening = true;
+          const lang = detectLanguage(topicEl.value || "en");
+          statusEl.textContent = ui[lang].voiceListening;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || "";
+          const existing = topicEl.value.trim();
+          topicEl.value = existing ? (existing + " " + transcript).trim() : transcript.trim();
+          const lang = detectLanguage(topicEl.value);
+          applyLanguage(lang);
+          statusEl.textContent = ui[lang].voiceStopped;
+        };
+
+        recognition.onerror = function () {
+          const lang = detectLanguage(topicEl.value || "en");
+          statusEl.textContent = ui[lang].voiceStopped;
+        };
+
+        recognition.onend = function () {
+          listening = false;
+        };
+
+        voiceBtn.addEventListener("click", function () {
+          const lang = detectLanguage(topicEl.value || "en");
+          applyLanguage(lang);
+
+          try {
+            recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
+            if (listening) {
+              recognition.stop();
+            } else {
+              recognition.start();
+            }
+          } catch (_) {
+            statusEl.textContent = ui[lang].voiceNotSupported;
+          }
+        });
+
+        statusEl.textContent = ui[currentLang].voiceReady;
+      }
+
+      topicEl.addEventListener("input", function () {
+        const lang = detectLanguage(topicEl.value || "en");
+        applyLanguage(lang);
+        if (statusEl.textContent === ui.en.voiceNotSupported || statusEl.textContent === ui.ja.voiceNotSupported) {
+          return;
+        }
+        if (!topicEl.value.trim()) statusEl.textContent = "";
+      });
+
+      topicEl.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          generate();
+        }
+      });
+
+      generateBtn.addEventListener("click", generate);
+      clearBtn.addEventListener("click", clearAll);
+      copyBtn.addEventListener("click", copyAll);
+
+      applyLanguage("en");
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
