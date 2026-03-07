@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complexity Cleaner | REFRAME Studio</title>
+  <meta name="description" content="Simplify complicated explanations into a simple version, bullet version, and short version in your browser." />
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #111827;
+      --accent-soft: #eef2ff;
+      --success: #065f46;
+      --success-bg: #ecfdf5;
+      --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 24px 20px 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .sub {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .main {
+      padding: 16px 20px 24px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .lang-pill, .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    .status-pill.active {
+      color: var(--success);
+      background: var(--success-bg);
+      border-color: #a7f3d0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.7;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #c7d2fe;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.06s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: #f3f4f6;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .secondary[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .results {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 16px;
+    }
+
+    .result-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .result-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .copy-btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.8;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .placeholder {
+      color: var(--muted);
+      padding: 18px 0 2px;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .footer-wrap {
+      padding: 0 4px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 16px 12px 28px;
+      }
+
+      .hero, .main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .result-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .copy-btn {
+        width: 100%;
+      }
+
+      .actions button {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <section class="hero">
+        <h1 id="title">Complexity Cleaner</h1>
+        <p id="subtitle" class="sub">Paste a complicated explanation and get 3 clearer versions instantly.</p>
+      </section>
+
+      <section class="main">
+        <div class="panel">
+          <div class="toolbar">
+            <div id="languageBadge" class="lang-pill">Language: Auto</div>
+            <div id="voiceStatus" class="status-pill hidden">Voice ready</div>
+          </div>
+
+          <textarea id="inputText" placeholder="Paste a complex explanation, article, or long paragraph here..."></textarea>
+
+          <div class="actions">
+            <button id="simplifyBtn" class="primary" type="button">Simplify</button>
+            <button id="voiceBtn" class="secondary hidden" type="button">Voice Input</button>
+            <button id="clearBtn" class="secondary" type="button">Clear</button>
+          </div>
+
+          <div id="results" class="results">
+            <div id="emptyState" class="placeholder">
+              Your simplified versions will appear here.
+            </div>
+
+            <div id="simpleCard" class="result-card hidden">
+              <div class="result-head">
+                <h2 id="simpleLabel" class="result-title">Simple version</h2>
+                <button class="copy-btn" type="button" data-copy="simpleOutput">Copy</button>
+              </div>
+              <div id="simpleOutput" class="output"></div>
+            </div>
+
+            <div id="bulletCard" class="result-card hidden">
+              <div class="result-head">
+                <h2 id="bulletLabel" class="result-title">Bullet version</h2>
+                <button class="copy-btn" type="button" data-copy="bulletOutput">Copy</button>
+              </div>
+              <div id="bulletOutput" class="output"></div>
+            </div>
+
+            <div id="shortCard" class="result-card hidden">
+              <div class="result-head">
+                <h2 id="shortLabel" class="result-title">Short version</h2>
+                <button class="copy-btn" type="button" data-copy="shortOutput">Copy</button>
+              </div>
+              <div id="shortOutput" class="output"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-wrap">
+          <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+            <p><strong>Built by REFRAME Studio</strong></p>
+            <p>
+              Simplifies dense explanations into three clear formats you can use immediately.<br>
+              #Reframed
+            </p>
+            <p>
+              Open-source style tools. Simple. Private. Fast.
+            </p>
+            <p>
+              No login. No tracking. No personal data collected.<br>
+              Runs entirely in your browser.
+            </p>
+          </footer>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const inputText = document.getElementById('inputText');
+      const simplifyBtn = document.getElementById('simplifyBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const voiceStatus = document.getElementById('voiceStatus');
+      const languageBadge = document.getElementById('languageBadge');
+      const emptyState = document.getElementById('emptyState');
+
+      const simpleCard = document.getElementById('simpleCard');
+      const bulletCard = document.getElementById('bulletCard');
+      const shortCard = document.getElementById('shortCard');
+
+      const simpleOutput = document.getElementById('simpleOutput');
+      const bulletOutput = document.getElementById('bulletOutput');
+      const shortOutput = document.getElementById('shortOutput');
+
+      const title = document.getElementById('title');
+      const subtitle = document.getElementById('subtitle');
+      const simpleLabel = document.getElementById('simpleLabel');
+      const bulletLabel = document.getElementById('bulletLabel');
+      const shortLabel = document.getElementById('shortLabel');
+
+      let currentLang = 'en';
+      let recognition = null;
+      let isListening = false;
+
+      const ui = {
+        en: {
+          appTitle: 'Complexity Cleaner',
+          subtitle: 'Paste a complicated explanation and get 3 clearer versions instantly.',
+          placeholder: 'Paste a complex explanation, article, or long paragraph here...',
+          simplify: 'Simplify',
+          clear: 'Clear',
+          voice: 'Voice Input',
+          listening: 'Listening...',
+          voiceReady: 'Voice ready',
+          voiceOff: 'Voice not supported',
+          languageAuto: 'Language: Auto',
+          languageDetected: 'Language: English',
+          empty: 'Your simplified versions will appear here.',
+          simple: 'Simple version',
+          bullet: 'Bullet version',
+          short: 'Short version',
+          copy: 'Copy',
+          copied: 'Copied',
+          errorEmpty: 'Please enter some text first.',
+          shortLead: 'In short: ',
+          bulletPrefix: '• ',
+          simpleIntro: 'Here is the simpler version:',
+          noUsefulText: 'The text is already fairly simple. Here is a cleaner version.'
+        },
+        ja: {
+          appTitle: 'Complexity Cleaner',
+          subtitle: '複雑な説明を貼り付けると、すぐに3つのわかりやすい形に整理します。',
+          placeholder: '複雑な説明、記事、長い文章をここに貼り付けてください...',
+          simplify: '簡潔にする',
+          clear: 'クリア',
+          voice: '音声入力',
+          listening: '聞き取り中...',
+          voiceReady: '音声入力対応',
+          voiceOff: '音声入力非対応',
+          languageAuto: '言語: 自動判定',
+          languageDetected: '言語: 日本語',
+          empty: 'ここに簡潔な3つのバージョンが表示されます。',
+          simple: 'シンプル版',
+          bullet: '箇条書き版',
+          short: '短縮版',
+          copy: 'コピー',
+          copied: 'コピー済み',
+          errorEmpty: '先に文章を入力してください。',
+          shortLead: '要するに、',
+          bulletPrefix: '・',
+          simpleIntro: 'わかりやすくすると、',
+          noUsefulText: 'すでに比較的わかりやすい文章なので、少しだけ整えました。'
+        }
+      };
+
+      const stopwordsEn = new Set([
+        'the','a','an','and','or','but','if','then','than','that','this','these','those','is','am','are','was','were','be','been',
+        'being','to','of','in','on','at','for','from','by','with','as','it','its','into','about','over','after','before','between',
+        'through','during','without','within','can','could','should','would','may','might','will','shall','do','does','did','done',
+        'have','has','had','having','not','no','yes','you','your','we','our','they','their','he','she','his','her','them','us',
+        'i','me','my','mine','so','because','therefore','however','more','most','many','much','very','also','such'
+      ]);
+
+      const stopwordsJa = [
+        'こと','それ','これ','ため','もの','よう','ところ','場合','など','そして','また','さらに','ただし','つまり','しかし',
+        'について','において','により','によって','として','である','です','ます','した','して','される','する','いる','ある'
+      ];
+
+      function detectLanguage(text) {
+        const jaChars = (text.match(/[\u3040-\u30ff\u3400-\u9fff]/g) || []).length;
+        const latinChars = (text.match(/[A-Za-z]/g) || []).length;
+        if (jaChars > 0 && jaChars >= Math.max(2, latinChars * 0.2)) return 'ja';
+        return 'en';
+      }
+
+      function applyUI(lang) {
+        currentLang = lang;
+        const t = ui[lang];
+        document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+        title.textContent = t.appTitle;
+        subtitle.textContent = t.subtitle;
+        inputText.placeholder = t.placeholder;
+        simplifyBtn.textContent = t.simplify;
+        clearBtn.textContent = t.clear;
+        simpleLabel.textContent = t.simple;
+        bulletLabel.textContent = t.bullet;
+        shortLabel.textContent = t.short;
+        emptyState.textContent = t.empty;
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.textContent = t.copy;
+        });
+
+        languageBadge.textContent = inputText.value.trim()
+          ? t.languageDetected
+          : t.languageAuto;
+
+        if (recognition) {
+          voiceBtn.textContent = isListening ? t.listening : t.voice;
+          voiceStatus.textContent = t.voiceReady;
+        } else {
+          voiceStatus.textContent = t.voiceOff;
+        }
+      }
+
+      function normalizeText(text) {
+        return text
+          .replace(/\r/g, '\n')
+          .replace(/[ \t]+\n/g, '\n')
+          .replace(/\n{3,}/g, '\n\n')
+          .replace(/[ \t]{2,}/g, ' ')
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .trim();
+      }
+
+      function removeParenthetical(text) {
+        return text
+          .replace(/\([^()]*\)/g, '')
+          .replace(/（[^（）]*）/g, '')
+          .replace(/\[[^\]]*\]/g, '')
+          .replace(/【[^】]*】/g, '')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+      }
+
+      function splitSentences(text, lang) {
+        const cleaned = text.replace(/\n+/g, ' ').trim();
+        if (!cleaned) return [];
+        if (lang === 'ja') {
+          return cleaned
+            .split(/(?<=[。！？])/)
+            .map(s => s.trim())
+            .filter(Boolean);
+        }
+        return cleaned
+          .split(/(?<=[.!?])\s+/)
+          .map(s => s.trim())
+          .filter(Boolean);
+      }
+
+      function tokenizeEn(text) {
+        return text
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, ' ')
+          .split(/\s+/)
+          .filter(w => w && !stopwordsEn.has(w) && w.length > 2);
+      }
+
+      function tokenizeJa(text) {
+        const chunks = text.match(/[\u3040-\u30ff\u3400-\u9fffA-Za-z0-9]{2,}/g) || [];
+        return chunks.filter(w => !stopwordsJa.some(sw => w === sw));
+      }
+
+      function wordFreq(text, lang) {
+        const tokens = lang === 'ja' ? tokenizeJa(text) : tokenizeEn(text);
+        const freq = {};
+        tokens.forEach(token => {
+          freq[token] = (freq[token] || 0) + 1;
+        });
+        return freq;
+      }
+
+      function scoreSentence(sentence, freq, lang) {
+        const tokens = lang === 'ja' ? tokenizeJa(sentence) : tokenizeEn(sentence);
+        if (!tokens.length) return 0;
+        let score = 0;
+        tokens.forEach(t => score += (freq[t] || 0));
+
+        const lengthPenalty = sentence.length > (lang === 'ja' ? 90 : 180) ? 0.85 : 1;
+        const clarityBonus = /(:|：|first|second|finally|重要|結論|要するに|つまり)/i.test(sentence) ? 1.12 : 1;
+        return score * lengthPenalty * clarityBonus;
+      }
+
+      function pickKeySentences(sentences, text, lang, count) {
+        const freq = wordFreq(text, lang);
+        const scored = sentences.map((s, i) => ({
+          index: i,
+          text: s,
+          score: scoreSentence(s, freq, lang)
+        }));
+
+        scored.sort((a, b) => b.score - a.score);
+        const chosen = scored.slice(0, Math.min(count, scored.length)).sort((a, b) => a.index - b.index);
+        return chosen.map(x => x.text);
+      }
+
+      function simplifySentence(sentence, lang) {
+        let s = removeParenthetical(sentence);
+
+        if (lang === 'ja') {
+          s = s
+            .replace(/ということです/g, 'です')
+            .replace(/といえます/g, 'です')
+            .replace(/と考えられます/g, 'と考えられます')
+            .replace(/において/g, 'で')
+            .replace(/については/g, 'は')
+            .replace(/について/g, 'のこと')
+            .replace(/そのため、?/g, 'だから、')
+            .replace(/したがって、?/g, 'なので、')
+            .replace(/一方で、?/g, 'ただ、')
+            .replace(/つまり、?/g, '')
+            .replace(/要するに、?/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        } else {
+          s = s
+            .replace(/\bhowever\b/gi, 'but')
+            .replace(/\btherefore\b/gi, 'so')
+            .replace(/\bin order to\b/gi, 'to')
+            .replace(/\bdue to the fact that\b/gi, 'because')
+            .replace(/\bit is important to note that\b/gi, '')
+            .replace(/\bin many cases\b/gi, 'often')
+            .replace(/\ba significant number of\b/gi, 'many')
+            .replace(/\s+/g, ' ')
+            .trim();
+        }
+
+        s = s.replace(/^[,.;:\-、。]+/, '').trim();
+        return s;
+      }
+
+      function cleanSentenceEnd(text, lang) {
+        let t = text.trim();
+        if (!t) return t;
+        if (lang === 'ja') {
+          t = t.replace(/[、]+$/g, '');
+          if (!/[。！？]$/.test(t)) t += '。';
+        } else {
+          t = t.replace(/[,;:]+$/g, '');
+          if (!/[.!?]$/.test(t)) t += '.';
+        }
+        return t;
+      }
+
+      function trimToLength(text, max, lang) {
+        if (text.length <= max) return text;
+        let cut = text.slice(0, max).trim();
+        const splitBy = lang === 'ja' ? /[。！？、]/ : /[.!?,;:]/;
+        const parts = cut.split(splitBy).filter(Boolean);
+        if (parts.length > 1) {
+          cut = parts.slice(0, -1).join(lang === 'ja' ? '。' : '. ');
+        }
+        return cleanSentenceEnd(cut || text.slice(0, max).trim(), lang);
+      }
+
+      function simpleVersion(text, lang) {
+        const sentences = splitSentences(text, lang);
+        if (!sentences.length) return '';
+
+        const key = pickKeySentences(sentences, text, lang, lang === 'ja' ? 4 : 4)
+          .map(s => cleanSentenceEnd(simplifySentence(s, lang), lang));
+
+        let combined = key.join(lang === 'ja' ? '' : ' ');
+        combined = trimToLength(combined, lang === 'ja' ? 220 : 320, lang);
+
+        if (!combined) {
+          combined = cleanSentenceEnd(simplifySentence(sentences[0], lang), lang);
+        }
+        return combined;
+      }
+
+      function bulletVersion(text, lang) {
+        const sentences = splitSentences(text, lang);
+        if (!sentences.length) return '';
+
+        const key = pickKeySentences(sentences, text, lang, 4)
+          .map(s => cleanSentenceEnd(simplifySentence(s, lang), lang));
+
+        const unique = [];
+        key.forEach(item => {
+          const normalized = item.replace(/\s+/g, '').toLowerCase();
+          if (!unique.some(u => u.replace(/\s+/g, '').toLowerCase() === normalized)) {
+            unique.push(item);
+          }
+        });
+
+        const prefix = ui[lang].bulletPrefix;
+        return unique.map(line => `${prefix} ${line.replace(/[•・]\s*/g, '')}`).join('\n');
+      }
+
+      function shortVersion(text, lang) {
+        const sentences = splitSentences(text, lang);
+        if (!sentences.length) return '';
+
+        const key = pickKeySentences(sentences, text, lang, 2)
+          .map(s => simplifySentence(s, lang));
+
+        let summary = key.join(lang === 'ja' ? '' : ' ');
+        summary = trimToLength(summary, lang === 'ja' ? 78 : 120, lang);
+
+        if (lang === 'ja') {
+          summary = ui[lang].shortLead + summary.replace(/^要するに、?/, '');
+        } else {
+          summary = ui[lang].shortLead + summary.charAt(0).toLowerCase() + summary.slice(1);
+        }
+        return cleanSentenceEnd(summary, lang);
+      }
+
+      function simplify(text, lang) {
+        const normalized = normalizeText(text);
+        const stripped = removeParenthetical(normalized);
+        const source = stripped || normalized;
+
+        const simple = simpleVersion(source, lang) || ui[lang].noUsefulText;
+        const bullet = bulletVersion(source, lang) || simple;
+        const short = shortVersion(source, lang) || simple;
+
+        return { simple, bullet, short };
+      }
+
+      function showResults(data) {
+        emptyState.classList.add('hidden');
+        simpleCard.classList.remove('hidden');
+        bulletCard.classList.remove('hidden');
+        shortCard.classList.remove('hidden');
+
+        simpleOutput.textContent = data.simple;
+        bulletOutput.textContent = data.bullet;
+        shortOutput.textContent = data.short;
+      }
+
+      function hideResults() {
+        emptyState.classList.remove('hidden');
+        simpleCard.classList.add('hidden');
+        bulletCard.classList.add('hidden');
+        shortCard.classList.add('hidden');
+
+        simpleOutput.textContent = '';
+        bulletOutput.textContent = '';
+        shortOutput.textContent = '';
+      }
+
+      function handleLanguageUpdate() {
+        const text = inputText.value.trim();
+        const lang = text ? detectLanguage(text) : currentLang;
+        applyUI(lang);
+      }
+
+      simplifyBtn.addEventListener('click', () => {
+        const text = inputText.value.trim();
+        const lang = detectLanguage(text || '');
+        applyUI(lang);
+
+        if (!text) {
+          hideResults();
+          emptyState.textContent = ui[lang].errorEmpty;
+          return;
+        }
+
+        const results = simplify(text, lang);
+        showResults(results);
+      });
+
+      clearBtn.addEventListener('click', () => {
+        inputText.value = '';
+        hideResults();
+        applyUI(currentLang === 'ja' ? 'ja' : 'en');
+        inputText.focus();
+      });
+
+      inputText.addEventListener('input', handleLanguageUpdate);
+
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const targetId = btn.getAttribute('data-copy');
+          const target = document.getElementById(targetId);
+          const text = target ? target.textContent : '';
+          if (!text) return;
+
+          try {
+            await navigator.clipboard.writeText(text);
+            const original = ui[currentLang].copy;
+            btn.textContent = ui[currentLang].copied;
+            setTimeout(() => {
+              btn.textContent = original;
+            }, 1200);
+          } catch (_) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(target);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        });
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        voiceBtn.classList.remove('hidden');
+        voiceStatus.classList.remove('hidden');
+
+        recognition.onstart = () => {
+          isListening = true;
+          recognition.lang = currentLang === 'ja' ? 'ja-JP' : 'en-US';
+          applyUI(currentLang);
+          voiceStatus.classList.add('active');
+        };
+
+        recognition.onend = () => {
+          isListening = false;
+          applyUI(currentLang);
+          voiceStatus.classList.remove('active');
+        };
+
+        recognition.onerror = () => {
+          isListening = false;
+          applyUI(currentLang);
+          voiceStatus.classList.remove('active');
+        };
+
+        recognition.onresult = (event) => {
+          const transcript = Array.from(event.results)
+            .map(result => result[0].transcript)
+            .join(' ')
+            .trim();
+
+          inputText.value = inputText.value
+            ? `${inputText.value}${currentLang === 'ja' ? '\n' : '\n'}${transcript}`
+            : transcript;
+
+          handleLanguageUpdate();
+        };
+
+        voiceBtn.addEventListener('click', () => {
+          if (!recognition) return;
+          if (isListening) {
+            recognition.stop();
+            return;
+          }
+          const detected = detectLanguage(inputText.value.trim() || '');
+          applyUI(detected);
+          recognition.lang = detected === 'ja' ? 'ja-JP' : 'en-US';
+          recognition.start();
+        });
+      } else {
+        voiceStatus.classList.remove('hidden');
+      }
+
+      applyUI('en');
+      hideResults();
+    })();
+  </script>
+</body>
+</html>
