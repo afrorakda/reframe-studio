@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Idea → Thread | REFRAME Studio</title>
+  <meta
+    name="description"
+    content="Turn a small idea into a simple X thread outline in your browser."
+  />
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --line: #e6e6e1;
+      --accent: #111111;
+      --accent-2: #2f6fed;
+      --success: #0f9d58;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP",
+        "Hiragino Sans", "Yu Gothic", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 38px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px;
+      font: inherit;
+      line-height: 1.6;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    textarea:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(47, 111, 237, 0.08);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.04s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    button:active { transform: translateY(1px); }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      background: #efefea;
+      color: var(--text);
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--muted);
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .ghost[disabled],
+    .secondary[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 10px;
+      min-height: 22px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .result {
+      margin-top: 18px;
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fafaf8;
+    }
+
+    .result-head strong {
+      font-size: 14px;
+    }
+
+    .lang-badge {
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    .thread {
+      padding: 4px 0;
+    }
+
+    .item {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .item:last-child {
+      border-bottom: 0;
+    }
+
+    .kicker {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: var(--accent-2);
+      text-transform: uppercase;
+    }
+
+    .content {
+      font-size: 16px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 16px 16px;
+      border-top: 1px solid var(--line);
+      background: #fafaf8;
+      flex-wrap: wrap;
+    }
+
+    .note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      .card { padding: 16px; }
+      .controls { flex-direction: row; }
+      .controls button {
+        flex: 1 1 auto;
+        min-width: 120px;
+      }
+      .result-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .toolbar button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" aria-labelledby="title">
+      <h1 id="title">Idea → Thread</h1>
+      <p class="sub" id="subtext">
+        Turn a small idea into a simple X thread outline.
+      </p>
+
+      <label for="idea" id="inputLabel">Enter a topic or small idea</label>
+      <textarea
+        id="idea"
+        placeholder="Example: Why small habits matter more than motivation"
+        autocomplete="off"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="controls">
+        <button class="primary" id="generateBtn" type="button">Generate Thread</button>
+        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+        <button class="ghost" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="status" id="status" aria-live="polite"></div>
+
+      <section class="result" id="result" aria-live="polite">
+        <div class="result-head">
+          <strong id="resultTitle">Thread Outline</strong>
+          <span class="lang-badge" id="langBadge">Language: English</span>
+        </div>
+
+        <div class="thread" id="thread"></div>
+
+        <div class="toolbar">
+          <button class="secondary" id="copyBtn" type="button">Copy</button>
+        </div>
+      </section>
+
+      <p class="note" id="note">
+        Works fully in your browser. No login. No tracking.
+      </p>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Turn a small idea into a simple X thread outline with a hook, three points, and a conclusion.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const ideaEl = document.getElementById("idea");
+      const generateBtn = document.getElementById("generateBtn");
+      const voiceBtn = document.getElementById("voiceBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const statusEl = document.getElementById("status");
+      const resultEl = document.getElementById("result");
+      const resultTitleEl = document.getElementById("resultTitle");
+      const langBadgeEl = document.getElementById("langBadge");
+      const threadEl = document.getElementById("thread");
+      const inputLabelEl = document.getElementById("inputLabel");
+      const subtextEl = document.getElementById("subtext");
+      const noteEl = document.getElementById("note");
+
+      let currentLanguage = "en";
+      let recognition = null;
+      let isListening = false;
+      let lastOutputText = "";
+
+      const i18n = {
+        en: {
+          title: "Idea → Thread",
+          sub: "Turn a small idea into a simple X thread outline.",
+          inputLabel: "Enter a topic or small idea",
+          placeholder: "Example: Why small habits matter more than motivation",
+          generate: "Generate Thread",
+          voice: "Voice Input",
+          voiceStop: "Stop",
+          clear: "Clear",
+          resultTitle: "Thread Outline",
+          language: "Language: English",
+          copy: "Copy",
+          copied: "Copied.",
+          note: "Works fully in your browser. No login. No tracking.",
+          unsupportedVoice: "Voice input is not supported in this browser.",
+          listening: "Listening… speak now.",
+          stopped: "Voice input stopped.",
+          empty: "Enter a topic first.",
+          prompt: "This thread is about",
+          labels: {
+            hook: "Hook",
+            p1: "Point 1",
+            p2: "Point 2",
+            p3: "Point 3",
+            conclusion: "Conclusion"
+          }
+        },
+        ja: {
+          title: "Idea → Thread",
+          sub: "小さなアイデアを、シンプルなXスレッド構成に変換します。",
+          inputLabel: "トピックや小さなアイデアを入力",
+          placeholder: "例：やる気より小さな習慣のほうが大事な理由",
+          generate: "スレッド生成",
+          voice: "音声入力",
+          voiceStop: "停止",
+          clear: "クリア",
+          resultTitle: "スレッド構成",
+          language: "言語: 日本語",
+          copy: "コピー",
+          copied: "コピーしました。",
+          note: "このツールはブラウザ内で完結します。ログイン不要。追跡なし。",
+          unsupportedVoice: "このブラウザは音声入力に対応していません。",
+          listening: "音声入力中… 話してください。",
+          stopped: "音声入力を停止しました。",
+          empty: "先にトピックを入力してください。",
+          prompt: "このスレッドのテーマは",
+          labels: {
+            hook: "Hook",
+            p1: "Point 1",
+            p2: "Point 2",
+            p3: "Point 3",
+            conclusion: "Conclusion"
+          }
+        }
+      };
+
+      function detectLanguage(text) {
+        const hasJapanese = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+        return hasJapanese ? "ja" : "en";
+      }
+
+      function applyLanguage(lang) {
+        currentLanguage = lang;
+        const t = i18n[lang];
+
+        document.documentElement.lang = lang;
+        document.title = "Idea → Thread | REFRAME Studio";
+        subtextEl.textContent = t.sub;
+        inputLabelEl.textContent = t.inputLabel;
+        ideaEl.placeholder = t.placeholder;
+        generateBtn.textContent = t.generate;
+        clearBtn.textContent = t.clear;
+        copyBtn.textContent = t.copy;
+        resultTitleEl.textContent = t.resultTitle;
+        langBadgeEl.textContent = t.language;
+        noteEl.textContent = t.note;
+
+        if (!isListening) {
+          voiceBtn.textContent = t.voice;
+        }
+      }
+
+      function normalizeTopic(input) {
+        return input
+          .replace(/\s+/g, " ")
+          .replace(/[。．]+$/g, "")
+          .replace(/[.]+$/g, "")
+          .trim();
+      }
+
+      function stripLead(text, lang) {
+        let cleaned = text.trim();
+
+        if (lang === "en") {
+          cleaned = cleaned
+            .replace(/^(about|topic|idea)\s*:\s*/i, "")
+            .replace(/^(this is about)\s+/i, "")
+            .trim();
+        } else {
+          cleaned = cleaned
+            .replace(/^(テーマ|話題|アイデア)\s*[:：]\s*/i, "")
+            .replace(/^(これは)\s*/i, "")
+            .trim();
+        }
+
+        return cleaned;
+      }
+
+      function compactPhrase(topic, lang) {
+        const cleaned = stripLead(topic, lang);
+        return cleaned.length > 90 ? cleaned.slice(0, 90).trim() + (lang === "ja" ? "…" : "...") : cleaned;
+      }
+
+      function makeEnglishThread(topic) {
+        const t = compactPhrase(topic, "en");
+        const lc = t.charAt(0).toLowerCase() + t.slice(1);
+
+        return {
+          hook: `Most people overlook this: ${t} can be turned into a useful insight fast.`,
+          p1: `Start with the core claim. In one line: ${t}. If you cannot say it simply, the idea is still blurry.`,
+          p2: `Make it concrete. Explain why it matters now, who it helps, or what problem it solves.`,
+          p3: `Add one practical angle. Share an example, a mistake to avoid, or one action people can take today.`,
+          conclusion: `That is the thread: a clear hook, 3 useful points, and one closing takeaway around ${lc}.`
+        };
+      }
+
+      function makeJapaneseThread(topic) {
+        const t = compactPhrase(topic, "ja");
+
+        return {
+          hook: `見落とされがちですが、「${t}」は短いスレッドでも十分伝わります。`,
+          p1: `まず結論を一言で置きます。テーマは「${t}」。ここが曖昧だと全体もぼやけます。`,
+          p2: `次に、なぜ大事なのかを具体化します。今それが必要な理由、誰に役立つのか、何が変わるのかを示します。`,
+          p3: `最後に実用性を足します。具体例、よくある失敗、今日からできる一歩のどれかを入れると読みやすくなります。`,
+          conclusion: `つまり、「${t}」は Hook → 3つの要点 → ひとことで締める、の流れにするとシンプルに伝わります。`
+        };
+      }
+
+      function buildThread(topic) {
+        const lang = detectLanguage(topic);
+        applyLanguage(lang);
+        const data = lang === "ja" ? makeJapaneseThread(topic) : makeEnglishThread(topic);
+        return { lang, data };
+      }
+
+      function renderThread(threadData) {
+        const t = i18n[currentLanguage];
+        const items = [
+          [t.labels.hook, threadData.hook],
+          [t.labels.p1, threadData.p1],
+          [t.labels.p2, threadData.p2],
+          [t.labels.p3, threadData.p3],
+          [t.labels.conclusion, threadData.conclusion]
+        ];
+
+        threadEl.innerHTML = items
+          .map(([label, content]) => {
+            return `
+              <div class="item">
+                <div class="kicker">${escapeHtml(label)}</div>
+                <div class="content">${escapeHtml(content)}</div>
+              </div>
+            `;
+          })
+          .join("");
+
+        lastOutputText = items
+          .map(([label, content]) => `${label}\n${content}`)
+          .join("\n\n");
+
+        resultEl.classList.add("show");
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function setStatus(message, isError = false) {
+        statusEl.textContent = message;
+        statusEl.style.color = isError ? "#c62828" : "var(--muted)";
+      }
+
+      function generate() {
+        const raw = ideaEl.value || "";
+        const topic = normalizeTopic(raw);
+
+        if (!topic) {
+          const lang = detectLanguage(raw);
+          applyLanguage(lang);
+          setStatus(i18n[lang].empty, true);
+          resultEl.classList.remove("show");
+          return;
+        }
+
+        const { data } = buildThread(topic);
+        renderThread(data);
+        setStatus("");
+      }
+
+      function clearAll() {
+        ideaEl.value = "";
+        lastOutputText = "";
+        resultEl.classList.remove("show");
+        setStatus("");
+        applyLanguage("en");
+        ideaEl.focus();
+      }
+
+      async function copyOutput() {
+        if (!lastOutputText) return;
+
+        try {
+          await navigator.clipboard.writeText(lastOutputText);
+          setStatus(i18n[currentLanguage].copied);
+        } catch (err) {
+          const temp = document.createElement("textarea");
+          temp.value = lastOutputText;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+          setStatus(i18n[currentLanguage].copied);
+        }
+      }
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          setStatus(i18n[currentLanguage].unsupportedVoice);
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          isListening = true;
+          voiceBtn.textContent = i18n[currentLanguage].voiceStop;
+          setStatus(i18n[currentLanguage].listening);
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || "";
+          ideaEl.value = transcript.trim();
+          const lang = detectLanguage(transcript);
+          applyLanguage(lang);
+          generate();
+        };
+
+        recognition.onerror = function () {
+          isListening = false;
+          voiceBtn.textContent = i18n[currentLanguage].voice;
+          setStatus(i18n[currentLanguage].unsupportedVoice);
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          voiceBtn.textContent = i18n[currentLanguage].voice;
+          if (!statusEl.textContent || statusEl.textContent === i18n[currentLanguage].listening) {
+            setStatus(i18n[currentLanguage].stopped);
+          }
+        };
+      }
+
+      function toggleVoice() {
+        if (!recognition) {
+          setStatus(i18n[currentLanguage].unsupportedVoice);
+          return;
+        }
+
+        if (isListening) {
+          recognition.stop();
+          return;
+        }
+
+        const lang = detectLanguage(ideaEl.value.trim());
+        applyLanguage(lang);
+        recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
+        recognition.start();
+      }
+
+      ideaEl.addEventListener("input", function () {
+        const lang = detectLanguage(ideaEl.value);
+        applyLanguage(lang);
+      });
+
+      ideaEl.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          generate();
+        }
+      });
+
+      generateBtn.addEventListener("click", generate);
+      clearBtn.addEventListener("click", clearAll);
+      copyBtn.addEventListener("click", copyOutput);
+      voiceBtn.addEventListener("click", toggleVoice);
+
+      applyLanguage("en");
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
