@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Emotion → Action | REFRAME Studio</title>
+  <meta name="description" content="Turn a strong emotion into 1–3 small productive next actions." />
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #111827;
+      --accent-soft: #f3f4f6;
+      --success: #14532d;
+      --shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 20px 14px 32px;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover,
+    .back-link:focus {
+      color: var(--text);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.5;
+      resize: vertical;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #9ca3af;
+      box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.15);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 48px;
+      transition: transform 0.02s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      flex: 1 1 220px;
+    }
+
+    .primary:hover,
+    .primary:focus {
+      opacity: 0.94;
+    }
+
+    .secondary {
+      background: var(--accent-soft);
+      color: var(--text);
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+
+    .secondary[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 20px;
+    }
+
+    .result {
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .result.hidden {
+      display: none;
+    }
+
+    .result-title {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .summary {
+      display: inline-block;
+      font-size: 13px;
+      color: var(--success);
+      background: #ecfdf3;
+      border: 1px solid #bbf7d0;
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 12px;
+    }
+
+    .action-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .action-item {
+      border: 1px solid var(--line);
+      background: #fcfcfb;
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .action-number {
+      display: inline-block;
+      min-width: 24px;
+      margin-right: 6px;
+      font-weight: 800;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 12px 28px;
+      }
+      .card {
+        padding: 16px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      textarea {
+        min-height: 130px;
+      }
+      .controls {
+        flex-direction: column;
+      }
+      .primary,
+      .secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1>Emotion → Action</h1>
+      <p class="desc" id="description">
+        Describe what you feel. Get 1–3 small productive next actions.
+      </p>
+
+      <label for="emotionInput" id="inputLabel">What are you feeling right now?</label>
+      <textarea
+        id="emotionInput"
+        placeholder="Example: I feel frustrated because I keep delaying an important task."
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="controls">
+        <button class="primary" id="generateBtn" type="button">Turn Into Action</button>
+        <button class="secondary" id="voiceBtn" type="button" hidden>Voice Input</button>
+      </div>
+
+      <div class="hint" id="hint" aria-live="polite"></div>
+
+      <section class="result hidden" id="result" aria-live="polite">
+        <h2 class="result-title" id="resultTitle">Next actions</h2>
+        <div class="summary" id="summary"></div>
+        <ul class="action-list" id="actionList"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turns a strong emotion into a few small next actions you can take right away.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('emotionInput');
+      const generateBtn = document.getElementById('generateBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const hintEl = document.getElementById('hint');
+      const resultEl = document.getElementById('result');
+      const resultTitleEl = document.getElementById('resultTitle');
+      const actionListEl = document.getElementById('actionList');
+      const summaryEl = document.getElementById('summary');
+      const descriptionEl = document.getElementById('description');
+      const inputLabelEl = document.getElementById('inputLabel');
+
+      function detectLanguage(text) {
+        const t = (text || '').trim();
+        if (!t) return 'en';
+        const hasJapanese = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/.test(t);
+        return hasJapanese ? 'ja' : 'en';
+      }
+
+      function uiText(lang) {
+        if (lang === 'ja') {
+          return {
+            description: '今の感情を書いてください。すぐにできる小さな行動を1〜3個に変換します。',
+            inputLabel: '今、どんな感情がありますか？',
+            placeholder: '例：大事な作業を先延ばししていて、イライラしています。',
+            generate: '行動に変換する',
+            voice: '音声入力',
+            listening: '聞き取り中…',
+            voiceUnsupported: 'このブラウザでは音声入力に対応していません。',
+            voiceReady: '話してください。',
+            voiceStopped: '音声入力を停止しました。',
+            empty: '感情をひとことでも入力してください。',
+            resultTitle: '次の一歩',
+            summary: '感情を止めず、前に進める小さな行動です。',
+            genericTag: '整理中',
+            actions: {
+              breathe: '30秒だけ深呼吸して、体の力を抜く。',
+              writeTrigger: '何に反応したのかを一文で書く。',
+              oneStep: '2分で終わる最初の一歩だけ始める。',
+              delaySend: '強い言葉の返信は10分だけ送らない。',
+              factsOnly: '事実と解釈を分けて3つだけ書く。',
+              askClarify: '相手に1つだけ確認質問を送る。',
+              shrinkTask: '作業を5分サイズに分ける。',
+              pickOne: '今いちばん重いタスクを1つだけ選ぶ。',
+              timerStart: '5分タイマーで着手する。',
+              evidence: '不安を強める想像ではなく、確認できる事実を2つ書く。',
+              decisionRule: '次の判断基準を1つ決める。',
+              tinyTest: '小さく試せる案を1つ実行する。',
+              pauseBody: '水を飲んで、1分だけ席を離れる。',
+              nameNeed: '今足りないものを1語で言う。',
+              protectTime: '今日は1つだけ守る時間を決める。',
+              boundary: '今すぐ断ることを1つ決める。',
+              lowerLoad: '今日やらないことを1つ消す。',
+              support: '一人で抱えず、短く状況共有する。',
+              noteWin: '今日できたことを1つ書く。',
+              resetScope: '期待値を下げて、完了条件を小さくし直す。',
+              chooseNext: '次にやることを1つだけ具体化する。',
+              default1: '今の感情を一文で言い切る。',
+              default2: '次の10分でできることを1つ選ぶ。',
+              default3: '終わったら確認する小さな基準を決める。'
+            },
+            emotionNames: {
+              anger: '怒り',
+              frustration: '苛立ち',
+              anxiety: '不安',
+              doubt: '迷い',
+              sadness: '落ち込み',
+              overwhelm: '圧迫感',
+              guilt: '罪悪感',
+              shame: '恥',
+              stress: 'ストレス',
+              stuck: '停滞感',
+              mixed: '感情'
+            }
+          };
+        }
+
+        return {
+          description: 'Describe what you feel. Get 1–3 small productive next actions.',
+          inputLabel: 'What are you feeling right now?',
+          placeholder: 'Example: I feel frustrated because I keep delaying an important task.',
+          generate: 'Turn Into Action',
+          voice: 'Voice Input',
+          listening: 'Listening…',
+          voiceUnsupported: 'Voice input is not supported in this browser.',
+          voiceReady: 'Speak now.',
+          voiceStopped: 'Voice input stopped.',
+          empty: 'Please enter at least a few words about your emotion.',
+          resultTitle: 'Next actions',
+          summary: 'Small moves that help you use the emotion productively.',
+          genericTag: 'Processing',
+          actions: {
+            breathe: 'Take 30 seconds to breathe slowly and release tension in your body.',
+            writeTrigger: 'Write one sentence: what exactly triggered this feeling?',
+            oneStep: 'Start only the first step that takes under 2 minutes.',
+            delaySend: 'Do not send a sharp reply for 10 minutes.',
+            factsOnly: 'Write 3 facts and separate them from your interpretation.',
+            askClarify: 'Send one clarifying question instead of reacting fast.',
+            shrinkTask: 'Break the task into a 5-minute version.',
+            pickOne: 'Choose only one heavy task to move today.',
+            timerStart: 'Set a 5-minute timer and begin.',
+            evidence: 'Write 2 facts you can verify, not imagined worst-case outcomes.',
+            decisionRule: 'Choose one rule for the next decision.',
+            tinyTest: 'Run one small test instead of deciding everything now.',
+            pauseBody: 'Drink water and step away for 1 minute.',
+            nameNeed: 'Name what you need most right now in one word.',
+            protectTime: 'Block one short protected time slot today.',
+            boundary: 'Decide one thing you will not say yes to right now.',
+            lowerLoad: 'Remove one non-essential task from today.',
+            support: 'Share the situation briefly with one trusted person.',
+            noteWin: 'Write down one thing you handled better than yesterday.',
+            resetScope: 'Reduce the success condition and make the task smaller.',
+            chooseNext: 'Define one concrete next step.',
+            default1: 'State the emotion in one clear sentence.',
+            default2: 'Pick one action you can do in the next 10 minutes.',
+            default3: 'Set one small check for done.'
+          },
+          emotionNames: {
+            anger: 'anger',
+            frustration: 'frustration',
+            anxiety: 'anxiety',
+            doubt: 'doubt',
+            sadness: 'sadness',
+            overwhelm: 'overwhelm',
+            guilt: 'guilt',
+            shame: 'shame',
+            stress: 'stress',
+            stuck: 'stuckness',
+            mixed: 'emotion'
+          }
+        };
+      }
+
+      function updateUIText(lang) {
+        const t = uiText(lang);
+        descriptionEl.textContent = t.description;
+        inputLabelEl.textContent = t.inputLabel;
+        inputEl.placeholder = t.placeholder;
+        generateBtn.textContent = t.generate;
+        if (!voiceBtn.hidden) voiceBtn.textContent = t.voice;
+        resultTitleEl.textContent = t.resultTitle;
+      }
+
+      function classifyEmotion(text) {
+        const s = (text || '').toLowerCase();
+
+        const checks = [
+          {
+            type: 'anger',
+            patterns: [
+              /angry|mad|furious|rage|annoyed|irritated|pissed/,
+              /怒|腹が立|ムカつ|いらいら|イライラ|キレ|頭にくる/
+            ]
+          },
+          {
+            type: 'frustration',
+            patterns: [
+              /frustrat|stuck|blocked|can't move|delaying|procrastinat/,
+              /もやもや|進まない|停滞|先延ばし|うまくいかない|詰ま/
+            ]
+          },
+          {
+            type: 'anxiety',
+            patterns: [
+              /anxious|anxiety|worried|panic|afraid|fear|nervous/,
+              /不安|心配|怖い|こわい|焦り|緊張|パニック/
+            ]
+          },
+          {
+            type: 'doubt',
+            patterns: [
+              /doubt|unsure|uncertain|confused|indecisive/,
+              /迷い|迷って|決められない|自信がない|疑問/
+            ]
+          },
+          {
+            type: 'sadness',
+            patterns: [
+              /sad|down|hurt|lonely|grief|disappointed/,
+              /悲しい|つらい|辛い|落ち込|しんどい|寂しい/
+            ]
+          },
+          {
+            type: 'overwhelm',
+            patterns: [
+              /overwhelmed|too much|exhausted|burned out|drained/,
+              /いっぱいいっぱい| overwhelmed |圧倒|疲れた|消耗|限界/
+            ]
+          },
+          {
+            type: 'guilt',
+            patterns: [
+              /guilty|regret|ashamed of what i did/,
+              /罪悪感|後悔|申し訳ない/
+            ]
+          },
+          {
+            type: 'shame',
+            patterns: [
+              /shame|embarrassed|humiliated|not good enough/,
+              /恥ずかしい|恥|みっともない|情けない/
+            ]
+          },
+          {
+            type: 'stress',
+            patterns: [
+              /stress|pressured|pressure|tense/,
+              /ストレス|プレッシャー|張りつめ|しんどい/
+            ]
+          }
+        ];
+
+        const scores = {};
+        for (const item of checks) {
+          scores[item.type] = 0;
+          for (const p of item.patterns) {
+            if (p.test(s)) scores[item.type] += 1;
+          }
+        }
+
+        let bestType = 'mixed';
+        let bestScore = 0;
+        for (const key in scores) {
+          if (scores[key] > bestScore) {
+            bestScore = scores[key];
+            bestType = key;
+          }
+        }
+
+        return bestScore > 0 ? bestType : 'mixed';
+      }
+
+      function makeActions(type, lang) {
+        const t = uiText(lang).actions;
+
+        const map = {
+          anger: [t.pauseBody, t.delaySend, t.factsOnly],
+          frustration: [t.writeTrigger, t.shrinkTask, t.timerStart],
+          anxiety: [t.breathe, t.evidence, t.decisionRule],
+          doubt: [t.writeTrigger, t.decisionRule, t.tinyTest],
+          sadness: [t.pauseBody, t.nameNeed, t.chooseNext],
+          overwhelm: [t.lowerLoad, t.pickOne, t.protectTime],
+          guilt: [t.writeTrigger, t.boundary, t.support],
+          shame: [t.noteWin, t.resetScope, t.support],
+          stress: [t.breathe, t.lowerLoad, t.pickOne],
+          mixed: [t.default1, t.default2, t.default3]
+        };
+
+        return map[type] || map.mixed;
+      }
+
+      function uniqueList(items) {
+        const seen = new Set();
+        return items.filter(function (item) {
+          if (seen.has(item)) return false;
+          seen.add(item);
+          return true;
+        });
+      }
+
+      function renderResult(text) {
+        const lang = detectLanguage(text);
+        const t = uiText(lang);
+        updateUIText(lang);
+
+        const clean = (text || '').trim();
+        if (!clean) {
+          hintEl.textContent = t.empty;
+          resultEl.classList.add('hidden');
+          return;
+        }
+
+        const emotionType = classifyEmotion(clean);
+        const actions = uniqueList(makeActions(emotionType, lang)).slice(0, 3);
+        const emotionLabel = uiText(lang).emotionNames[emotionType] || uiText(lang).emotionNames.mixed;
+
+        actionListEl.innerHTML = '';
+        actions.forEach(function (action, index) {
+          const li = document.createElement('li');
+          li.className = 'action-item';
+
+          const num = document.createElement('span');
+          num.className = 'action-number';
+          num.textContent = (index + 1) + '.';
+
+          const textNode = document.createElement('span');
+          textNode.textContent = action;
+
+          li.appendChild(num);
+          li.appendChild(textNode);
+          actionListEl.appendChild(li);
+        });
+
+        summaryEl.textContent = lang === 'ja'
+          ? '検出した感情: ' + emotionLabel
+          : 'Detected emotion: ' + emotionLabel;
+
+        hintEl.textContent = '';
+        resultTitleEl.textContent = t.resultTitle;
+        resultEl.classList.remove('hidden');
+      }
+
+      generateBtn.addEventListener('click', function () {
+        renderResult(inputEl.value);
+      });
+
+      inputEl.addEventListener('input', function () {
+        const lang = detectLanguage(inputEl.value);
+        updateUIText(lang);
+        if (!inputEl.value.trim()) {
+          hintEl.textContent = '';
+          resultEl.classList.add('hidden');
+        }
+      });
+
+      inputEl.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          renderResult(inputEl.value);
+        }
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let listening = false;
+
+      if (SpeechRecognition) {
+        voiceBtn.hidden = false;
+        voiceBtn.textContent = uiText(detectLanguage(inputEl.value)).voice;
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        recognition.onstart = function () {
+          listening = true;
+          const lang = detectLanguage(inputEl.value);
+          const t = uiText(lang);
+          voiceBtn.textContent = t.listening;
+          hintEl.textContent = t.voiceReady;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results && event.results[0] && event.results[0][0]
+            ? event.results[0][0].transcript
+            : '';
+          if (transcript) {
+            inputEl.value = inputEl.value.trim()
+              ? (inputEl.value.trim() + ' ' + transcript)
+              : transcript;
+          }
+          const lang = detectLanguage(inputEl.value || transcript);
+          updateUIText(lang);
+          hintEl.textContent = '';
+          renderResult(inputEl.value);
+        };
+
+        recognition.onerror = function () {
+          const lang = detectLanguage(inputEl.value);
+          const t = uiText(lang);
+          hintEl.textContent = t.voiceUnsupported;
+          listening = false;
+          voiceBtn.textContent = t.voice;
+        };
+
+        recognition.onend = function () {
+          const lang = detectLanguage(inputEl.value);
+          const t = uiText(lang);
+          listening = false;
+          voiceBtn.textContent = t.voice;
+        };
+
+        voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(inputEl.value);
+          const t = uiText(lang);
+          recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+
+          if (listening) {
+            recognition.stop();
+            hintEl.textContent = t.voiceStopped;
+            return;
+          }
+
+          try {
+            recognition.start();
+          } catch (err) {
+            hintEl.textContent = t.voiceUnsupported;
+          }
+        });
+      } else {
+        voiceBtn.hidden = true;
+      }
+
+      updateUIText('en');
+    })();
+  </script>
+</body>
+</html>
