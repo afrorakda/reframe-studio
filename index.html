@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -8,221 +10,190 @@
 <meta name="description" content="Ultra-simple browser tools that solve small everyday friction problems.">
 
 <style>
-:root{
-  --bg:#f5f5f5;
-  --card:#ffffff;
-  --text:#111111;
-  --muted:#666666;
-  --line:#dddddd;
-}
-
-*{
-  box-sizing:border-box;
-}
 
 body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:24px;
+font-family:Arial, Helvetica, sans-serif;
+background:#ffffff;
+color:#111;
+max-width:720px;
+margin:auto;
+padding:24px;
 }
 
 h1{
-  font-size:32px;
-  margin:0 0 8px 0;
+font-size:36px;
+margin-bottom:6px;
 }
 
 .tagline{
-  color:var(--muted);
-  margin-bottom:24px;
-  line-height:1.45;
+color:#555;
+margin-bottom:24px;
 }
 
-.status{
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:14px;
+.count{
+color:#777;
+margin-bottom:20px;
 }
 
-.tool{
-  display:block;
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:16px;
-  text-decoration:none;
-  color:var(--text);
-  background:var(--card);
+.card{
+border:1px solid #e5e5e5;
+border-radius:14px;
+padding:20px;
+margin-bottom:18px;
+background:#fafafa;
 }
 
-.tool:hover{
-  background:#fafafa;
+.card h2{
+margin:0 0 6px 0;
+font-size:22px;
 }
 
-.tool h2{
-  margin:0 0 8px 0;
-  font-size:22px;
-  line-height:1.25;
+.card p{
+margin:0;
+color:#555;
 }
 
-.tool p{
-  margin:0;
-  color:#555;
-  line-height:1.5;
+.card a{
+text-decoration:none;
+color:inherit;
+display:block;
 }
 
 .footer{
-  margin-top:40px;
-  font-size:12px;
-  color:#666;
-  line-height:1.6;
+margin-top:40px;
+font-size:12px;
+color:#666;
+line-height:1.6;
 }
+
+.about{
+margin-top:30px;
+font-size:14px;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<div class="wrap">
-  <h1>REFRAME Studio</h1>
+<h1>REFRAME Studio</h1>
 
-  <div class="tagline">
-    Ultra-simple browser tools that solve small everyday friction problems.
-  </div>
-
-  <div id="status" class="status">Loading tools...</div>
-  <div id="tools"></div>
-
-  <div class="footer">
-    <strong>Built by REFRAME Studio</strong>
-    <br><br>
-    Open-source style tools. Simple. Private. Fast.
-    <br><br>
-    No login. No tracking. No personal data collected.<br>
-    Runs entirely in your browser.
-  </div>
+<div class="tagline">
+Ultra-simple browser tools that solve small everyday friction problems.
 </div>
 
-<script>
-const OWNER = "afrorakda";
-const REPO = "reframe-studio";
-const BRANCH = "main";
+<div class="count">
+12 tools
+</div>
 
-const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
-const rawBase = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/`;
+<div class="card">
+<a href="comment-to-content.html">
+<h2>Comment → Content</h2>
+<p>Turn critical comments into practical content angles.</p>
+</a>
+</div>
 
-const excludedFiles = [
-  "index.html",
-  "reframe_tool_factory.html"
-];
+<div class="card">
+<a href="complexity-cleaner.html">
+<h2>Complexity Cleaner</h2>
+<p>Simplify complicated explanations into a simple version, bullet version, and short version.</p>
+</a>
+</div>
 
-function escapeHtml(str){
-  return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
-}
+<div class="card">
+<a href="draft-fixer.html">
+<h2>Draft Fixer</h2>
+<p>Turn messy drafts into clearer, structured text.</p>
+</a>
+</div>
 
-function cleanTitle(title){
-  return title
-    .replace(/\s*\|\s*REFRAME Studio\s*$/i,"")
-    .replace(/\s*–\s*REFRAME Studio\s*$/i,"")
-    .trim();
-}
+<div class="card">
+<a href="hook-generator.html">
+<h2>Hook Generator</h2>
+<p>Generate strong opening hooks for a post.</p>
+</a>
+</div>
 
-function filenameToTitle(filename){
-  return filename
-    .replace(".html","")
-    .split("-")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+<div class="card">
+<a href="idea-to-post-angles.html">
+<h2>Idea → Post Angles</h2>
+<p>Turn a small idea into multiple post angles.</p>
+</a>
+</div>
 
-function extractTitle(html, fallback){
-  const match = html.match(/<title>(.*?)<\/title>/i);
-  if(!match) return fallback;
-  const title = cleanTitle(match[1]);
-  return title || fallback;
-}
+<div class="card">
+<a href="idea-to-debate.html">
+<h2>Idea to Debate</h2>
+<p>Turn an idea into a debate prompt with arguments on both sides.</p>
+</a>
+</div>
 
-function extractDescription(html){
-  const match = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
-  if(!match) return "Small browser tool by REFRAME Studio.";
-  return match[1].trim();
-}
+<div class="card">
+<a href="next-step-finder.html">
+<h2>Next Step Finder</h2>
+<p>Turn vague goals into one concrete next step.</p>
+</a>
+</div>
 
-function buildToolCard(file, title, description){
-  return `
-    <a class="tool" href="${escapeHtml(file)}">
-      <h2>${escapeHtml(title)}</h2>
-      <p>${escapeHtml(description)}</p>
-    </a>
-  `;
-}
+<div class="card">
+<a href="overthinking-breaker.html">
+<h2>Overthinking Breaker</h2>
+<p>Stop overthinking and focus on the next small step.</p>
+</a>
+</div>
 
-async function loadTools(){
-  const statusEl = document.getElementById("status");
-  const toolsEl = document.getElementById("tools");
+<div class="card">
+<a href="reframe-studio.html">
+<h2>REFRAME Studio</h2>
+<p>Turn harsh comments into useful feedback.</p>
+</a>
+</div>
 
-  try{
-    const repoRes = await fetch(apiUrl);
-    if(!repoRes.ok) throw new Error("Failed to fetch repository contents");
+<div class="card">
+<a href="thread-navigator.html">
+<h2>Thread Navigator</h2>
+<p>Save and resume AI threads across ChatGPT, Claude, and Gemini.</p>
+</a>
+</div>
 
-    const files = await repoRes.json();
+<div class="card">
+<a href="title-refiner.html">
+<h2>Title Refiner</h2>
+<p>Improve a weak title and generate stronger alternatives.</p>
+</a>
+</div>
 
-    const htmlFiles = files
-      .filter(file => file.type === "file")
-      .filter(file => file.name.endsWith(".html"))
-      .filter(file => !excludedFiles.includes(file.name));
+<div class="card">
+<a href="tweet-polisher.html">
+<h2>Tweet Polisher</h2>
+<p>Turn a rough draft into clearer, shorter, stronger posts.</p>
+</a>
+</div>
 
-    const toolData = [];
+<div class="about">
+<a href="about.html">About REFRAME Studio</a>
+</div>
 
-    for(const file of htmlFiles){
-      try{
-        const rawRes = await fetch(rawBase + file.name);
-        if(!rawRes.ok) throw new Error("Failed to fetch raw html");
+<div class="footer">
 
-        const html = await rawRes.text();
+<p><strong>Built by REFRAME Studio</strong></p>
 
-        const fallbackTitle = filenameToTitle(file.name);
-        const title = extractTitle(html, fallbackTitle);
-        const description = extractDescription(html);
+<p>
+Tiny thinking tools for creators and builders.<br>
+#Reframed
+</p>
 
-        toolData.push({
-          file: file.name,
-          title,
-          description
-        });
-      }catch(error){
-        toolData.push({
-          file: file.name,
-          title: filenameToTitle(file.name),
-          description: "Small browser tool by REFRAME Studio."
-        });
-      }
-    }
+<p>
+Open-source style tools. Simple. Private. Fast.
+</p>
 
-    toolData.sort((a,b) => a.title.localeCompare(b.title));
+<p>
+No login. No tracking. No personal data collected.<br>
+Runs entirely in your browser.
+</p>
 
-    toolsEl.innerHTML = toolData.map(tool =>
-      buildToolCard(tool.file, tool.title, tool.description)
-    ).join("");
-
-    statusEl.textContent = `${toolData.length} tools`;
-  }catch(error){
-    statusEl.textContent = "Could not load tools.";
-  }
-}
-
-loadTools();
-</script>
+</div>
 
 </body>
 </html>
