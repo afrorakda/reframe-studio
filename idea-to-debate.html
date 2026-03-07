@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Idea to Debate | REFRAME Studio</title>
+  <meta
+    name="description"
+    content="Turn a simple idea into a useful debate prompt with reasons people agree, reasons people disagree, and the key tension."
+  />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#666;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --accent-2:#f3f4f6;
+      --shadow:0 10px 30px rgba(0,0,0,.06);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+    }
+    body{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      padding:20px;
+    }
+    .app{
+      width:100%;
+      max-width:760px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    h1{
+      font-size:clamp(24px,4vw,34px);
+      line-height:1.15;
+      margin:0 0 8px;
+      letter-spacing:-0.02em;
+    }
+    .sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+    .label{
+      display:block;
+      font-size:14px;
+      margin-bottom:8px;
+      font-weight:600;
+    }
+    textarea{
+      width:100%;
+      min-height:132px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+      font:inherit;
+      line-height:1.6;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    textarea:focus{
+      border-color:#9ca3af;
+      box-shadow:0 0 0 4px rgba(17,24,39,.06);
+    }
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{ transform:translateY(1px); }
+    .primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .secondary{
+      background:var(--accent-2);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .ghost{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .result{
+      margin-top:18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:16px;
+      min-height:120px;
+    }
+    .result.hidden{ display:none; }
+    .section{
+      padding:12px 0;
+      border-bottom:1px solid var(--line);
+    }
+    .section:last-child{ border-bottom:none; padding-bottom:0; }
+    .section h2{
+      margin:0 0 8px;
+      font-size:15px;
+      line-height:1.4;
+    }
+    .section p{
+      margin:0;
+      color:#2f343a;
+      line-height:1.7;
+      white-space:pre-wrap;
+    }
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    .status{
+      min-height:20px;
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .examples{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      cursor:pointer;
+    }
+    .chip:hover{
+      background:#fafafa;
+    }
+    @media (max-width:640px){
+      .card{ padding:16px; }
+      .actions > button{
+        flex:1 1 auto;
+      }
+      .meta{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <h1 id="title">Idea to Debate</h1>
+      <p class="sub" id="subtitle">
+        Turn one idea into a useful debate prompt: why people agree, why people disagree, and where the real tension is.
+      </p>
+
+      <label class="label" for="ideaInput" id="inputLabel">Idea</label>
+      <textarea
+        id="ideaInput"
+        placeholder="Example: Schools should ban smartphones in class"
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="actions">
+        <button class="primary" id="generateBtn" type="button">Generate Debate</button>
+        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+        <button class="ghost" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="status" id="status" aria-live="polite"></div>
+
+      <div class="examples" id="examples">
+        <button class="chip" type="button" data-example="Remote work should be the default.">Remote work should be the default.</button>
+        <button class="chip" type="button" data-example="AI should help students write first drafts.">AI should help students write first drafts.</button>
+        <button class="chip" type="button" data-example="Cities should prioritize bikes over cars.">Cities should prioritize bikes over cars.</button>
+      </div>
+
+      <div class="hint" id="hint">
+        Works fully in your browser. Japanese and English are detected automatically.
+      </div>
+
+      <section class="result hidden" id="result" aria-live="polite">
+        <div class="section">
+          <h2 id="agreeTitle">Why people agree</h2>
+          <p id="agreeText"></p>
+        </div>
+        <div class="section">
+          <h2 id="disagreeTitle">Why people disagree</h2>
+          <p id="disagreeText"></p>
+        </div>
+        <div class="section">
+          <h2 id="tensionTitle">The interesting tension</h2>
+          <p id="tensionText"></p>
+        </div>
+        <div class="meta">
+          <span id="langLabel">Language: English</span>
+          <span id="privacyLabel">Private by design: nothing leaves your browser.</span>
+        </div>
+      </section>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Turn a rough idea into a clean debate frame with reasons for agreement, reasons for disagreement, and the core tension worth discussing.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const ideaInput = document.getElementById('ideaInput');
+      const generateBtn = document.getElementById('generateBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const result = document.getElementById('result');
+      const status = document.getElementById('status');
+
+      const title = document.getElementById('title');
+      const subtitle = document.getElementById('subtitle');
+      const inputLabel = document.getElementById('inputLabel');
+      const hint = document.getElementById('hint');
+      const langLabel = document.getElementById('langLabel');
+      const privacyLabel = document.getElementById('privacyLabel');
+
+      const agreeTitle = document.getElementById('agreeTitle');
+      const disagreeTitle = document.getElementById('disagreeTitle');
+      const tensionTitle = document.getElementById('tensionTitle');
+
+      const agreeText = document.getElementById('agreeText');
+      const disagreeText = document.getElementById('disagreeText');
+      const tensionText = document.getElementById('tensionText');
+
+      const examplesWrap = document.getElementById('examples');
+
+      const copy = {
+        en: {
+          pageTitle: 'Idea to Debate',
+          subtitle: 'Turn one idea into a useful debate prompt: why people agree, why people disagree, and where the real tension is.',
+          inputLabel: 'Idea',
+          placeholder: 'Example: Schools should ban smartphones in class',
+          generate: 'Generate Debate',
+          voice: 'Voice Input',
+          voiceUnsupported: 'Voice input is not supported in this browser.',
+          voiceReady: 'Voice input ready. Speak now.',
+          voiceListening: 'Listening...',
+          voiceDone: 'Voice input captured.',
+          clear: 'Clear',
+          hint: 'Works fully in your browser. Japanese and English are detected automatically.',
+          agreeTitle: 'Why people agree',
+          disagreeTitle: 'Why people disagree',
+          tensionTitle: 'The interesting tension',
+          lang: 'Language: English',
+          privacy: 'Private by design: nothing leaves your browser.',
+          empty: 'Enter one clear idea first.',
+          examples: [
+            'Remote work should be the default.',
+            'AI should help students write first drafts.',
+            'Cities should prioritize bikes over cars.'
+          ]
+        },
+        ja: {
+          pageTitle: 'アイデア → 議論ネタ',
+          subtitle: 'ひとつのアイデアを、賛成理由・反対理由・面白い緊張関係に整理します。',
+          inputLabel: 'アイデア',
+          placeholder: '例：授業中のスマホは学校で禁止すべきだ',
+          generate: '議論ネタを作る',
+          voice: '音声入力',
+          voiceUnsupported: 'このブラウザでは音声入力に対応していません。',
+          voiceReady: '音声入力の準備ができました。話してください。',
+          voiceListening: '聞き取り中...',
+          voiceDone: '音声入力を反映しました。',
+          clear: 'クリア',
+          hint: 'このツールはブラウザ内だけで動作します。日本語と英語を自動判定します。',
+          agreeTitle: 'なぜ賛成されるか',
+          disagreeTitle: 'なぜ反対されるか',
+          tensionTitle: '面白い緊張関係',
+          lang: '言語：日本語',
+          privacy: 'プライバシー重視：入力はブラウザ外に送信されません。',
+          empty: 'まずは短くてもよいのでアイデアを入力してください。',
+          examples: [
+            'リモートワークを標準にすべきだ',
+            'AIは学生の下書き作成を助けるべきだ',
+            '都市は車より自転車を優先すべきだ'
+          ]
+        }
+      };
+
+      const keywordThemes = {
+        en: [
+          { re: /(ai|artificial intelligence|automation|algorithm|chatgpt|machine learning|robot)/i, agree: 'It promises speed, scale, and lower effort.', disagree: 'It may reduce human judgment, originality, or accountability.', tension: 'Efficiency rises when judgment is delegated, but trust falls when people feel control is lost.' },
+          { re: /(school|student|teacher|class|education|homework|learning|exam)/i, agree: 'It could improve focus, fairness, or learning outcomes.', disagree: 'It may limit autonomy, creativity, or real-world adaptation.', tension: 'The debate is often between structure that helps many and freedom that helps some thrive.' },
+          { re: /(remote work|hybrid|office|work from home|wfh)/i, agree: 'It can improve flexibility, reduce commute waste, and widen hiring access.', disagree: 'It can weaken collaboration, culture, and informal learning.', tension: 'Freedom for individuals can conflict with shared cohesion for teams.' },
+          { re: /(city|cities|bike|bikes|car|cars|transport|transit|traffic|road)/i, agree: 'It can make daily life safer, cleaner, and more efficient.', disagree: 'It may disrupt convenience, habits, or existing infrastructure.', tension: 'Long-term public benefit often clashes with short-term personal convenience.' },
+          { re: /(social media|internet|phone|smartphone|screen|app|tiktok|instagram)/i, agree: 'It may protect attention, reduce distraction, or improve wellbeing.', disagree: 'It may feel paternalistic or unrealistic in a connected world.', tension: 'Protection and freedom both sound reasonable, but they pull policy in opposite directions.' },
+          { re: /(climate|carbon|energy|solar|wind|oil|gas|sustainab)/i, agree: 'It supports long-term resilience and shared responsibility.', disagree: 'It can create near-term cost, friction, or inequality.', tension: 'People support future stability until the present cost becomes personal.' }
+        ],
+        ja: [
+          { re: /(AI|人工知能|自動化|アルゴリズム|チャットGPT|機械学習|ロボット)/i, agree: '速さ・規模・省力化が期待できるからです。', disagree: '人間の判断、独自性、責任の所在が弱くなる不安があるからです。', tension: '判断を委ねるほど効率は上がりますが、主体感が下がるほど信頼は揺らぎます。' },
+          { re: /(学校|学生|先生|授業|教育|宿題|学習|試験|受験)/i, agree: '集中力、公平性、学習効果の改善が期待できるからです。', disagree: '自律性、創造性、現実への適応力を狭めると感じる人がいるからです。', tension: '多くの人を支えるルールと、一部の人を伸ばす自由がぶつかりやすいテーマです。' },
+          { re: /(リモート|在宅勤務|出社|ハイブリッド|テレワーク|オフィス)/i, agree: '柔軟性が上がり、通勤負担が減り、採用の幅も広がるからです。', disagree: '連携、文化、偶発的な学びが弱くなる懸念があるからです。', tension: '個人の自由と、チームとしての一体感は同時に最大化しにくいです。' },
+          { re: /(都市|自転車|車|交通|道路|渋滞|公共交通)/i, agree: '安全性、快適性、環境面での改善が見込めるからです。', disagree: '利便性の低下や既存インフラとの摩擦が起こるからです。', tension: '社会全体の長期利益と、個人の短期的な便利さが衝突しやすい論点です。' },
+          { re: /(SNS|スマホ|スマートフォン|画面|アプリ|TikTok|Instagram|ネット)/i, agree: '注意力の保護や依存・分散の軽減につながるからです。', disagree: '過干渉で現実離れしていると感じる人がいるからです。', tension: '守ることと自由を残すことの両方が正しく見えるため、線引きが難しいです。' },
+          { re: /(気候|炭素|エネルギー|再生可能|太陽光|風力|石油|ガス|サステナ)/i, agree: '長期的な持続性と社会的責任に合致するからです。', disagree: '短期的なコスト増や負担の偏りを生む可能性があるからです。', tension: '未来への合理性は、目先の負担が個人に落ちると一気に揺らぎます。' }
+        ]
+      };
+
+      function detectLanguage(text) {
+        const jaChars = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+        return jaChars.test(text) ? 'ja' : 'en';
+      }
+
+      function normalizeIdea(text) {
+        return text.replace(/\s+/g, ' ').trim();
+      }
+
+      function firstMeaningfulWords(text, maxWords = 7) {
+        const cleaned = text.replace(/[.。!?！？]/g, '').trim();
+        const words = cleaned.split(/\s+/).filter(Boolean);
+        return words.slice(0, maxWords).join(' ');
+      }
+
+      function getTheme(lang, idea) {
+        const list = keywordThemes[lang];
+        for (const item of list) {
+          if (item.re.test(idea)) return item;
+        }
+        if (lang === 'ja') {
+          return {
+            agree: '現状の不満を改善し、より良い方向へ進める可能性があるからです。',
+            disagree: '副作用や想定外の不公平が生まれるかもしれないからです。',
+            tension: '変化の価値は魅力的ですが、変化のコストと責任を誰が負うかで評価が割れます。'
+          };
+        }
+        return {
+          agree: 'It sounds like a path to improvement over the current situation.',
+          disagree: 'It may create side effects, trade-offs, or unfair outcomes.',
+          tension: 'The idea feels attractive in principle, but support changes once the cost and responsibility become concrete.'
+        };
+      }
+
+      function buildOutput(lang, idea) {
+        const theme = getTheme(lang, idea);
+        const shortIdea = firstMeaningfulWords(idea);
+        const subject = shortIdea || idea;
+
+        if (lang === 'ja') {
+          return {
+            agree:
+              `「${subject}」に賛成する人は、${theme.agree} また、現状のムダや不満を減らし、判断をシンプルにできると考えます。`,
+            disagree:
+              `一方で反対する人は、${theme.disagree} 理想論に見えたり、現場ごとの事情を無視していると受け取る場合もあります。`,
+            tension:
+              `${theme.tension} つまり論点は「このアイデアが正しいか」だけではなく、「誰に利益があり、誰に負担が出るのか」です。`
+          };
+        }
+
+        return {
+          agree:
+            `People who support "${subject}" usually see it as practical because ${theme.agree} They also tend to believe it can reduce friction, waste, or confusion in the current system.`,
+          disagree:
+            `People who oppose it usually worry that ${theme.disagree} It can also sound too idealistic or too blunt for messy real-life situations.`,
+          tension:
+            `${theme.tension} The real debate is not only whether the idea is good, but who benefits first and who carries the downside.`
+        };
+      }
+
+      function setLanguageUI(lang) {
+        const c = copy[lang];
+        document.documentElement.lang = lang === 'ja' ? 'ja' : 'en';
+        title.textContent = c.pageTitle;
+        subtitle.textContent = c.subtitle;
+        inputLabel.textContent = c.inputLabel;
+        ideaInput.placeholder = c.placeholder;
+        generateBtn.textContent = c.generate;
+        voiceBtn.textContent = c.voice;
+        clearBtn.textContent = c.clear;
+        hint.textContent = c.hint;
+        agreeTitle.textContent = c.agreeTitle;
+        disagreeTitle.textContent = c.disagreeTitle;
+        tensionTitle.textContent = c.tensionTitle;
+        langLabel.textContent = c.lang;
+        privacyLabel.textContent = c.privacy;
+
+        const chips = examplesWrap.querySelectorAll('.chip');
+        c.examples.forEach((text, i) => {
+          if (chips[i]) chips[i].textContent = text;
+          if (chips[i]) chips[i].dataset.example = text;
+        });
+      }
+
+      function render() {
+        const raw = ideaInput.value;
+        const idea = normalizeIdea(raw);
+        const lang = detectLanguage(idea || ideaInput.placeholder);
+        setLanguageUI(lang);
+        status.textContent = '';
+
+        if (!idea) {
+          status.textContent = copy[lang].empty;
+          result.classList.add('hidden');
+          return;
+        }
+
+        const output = buildOutput(lang, idea);
+        agreeText.textContent = output.agree;
+        disagreeText.textContent = output.disagree;
+        tensionText.textContent = output.tension;
+        result.classList.remove('hidden');
+      }
+
+      function clearAll() {
+        const lang = detectLanguage(ideaInput.value || '');
+        ideaInput.value = '';
+        setLanguageUI(lang === 'ja' ? 'ja' : 'en');
+        result.classList.add('hidden');
+        status.textContent = '';
+        ideaInput.focus();
+      }
+
+      generateBtn.addEventListener('click', render);
+
+      ideaInput.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          render();
+        }
+      });
+
+      clearBtn.addEventListener('click', clearAll);
+
+      examplesWrap.addEventListener('click', function (e) {
+        const target = e.target.closest('.chip');
+        if (!target) return;
+        ideaInput.value = target.dataset.example || '';
+        render();
+      });
+
+      ideaInput.addEventListener('input', function () {
+        const lang = detectLanguage(ideaInput.value || '');
+        setLanguageUI(lang);
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let isListening = false;
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(ideaInput.value || navigator.language || '');
+          setLanguageUI(lang);
+
+          if (isListening) {
+            recognition.stop();
+            return;
+          }
+
+          recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+          try {
+            recognition.start();
+          } catch (err) {
+            status.textContent = copy[lang].voiceUnsupported;
+          }
+        });
+
+        recognition.addEventListener('start', function () {
+          isListening = true;
+          const lang = detectLanguage(ideaInput.value || '');
+          status.textContent = copy[lang].voiceListening;
+          voiceBtn.style.opacity = '0.85';
+        });
+
+        recognition.addEventListener('result', function (event) {
+          const transcript = Array.from(event.results)
+            .map(result => result[0] && result[0].transcript ? result[0].transcript : '')
+            .join(' ')
+            .trim();
+
+          if (transcript) {
+            ideaInput.value = transcript;
+            const lang = detectLanguage(transcript);
+            setLanguageUI(lang);
+            status.textContent = copy[lang].voiceDone;
+            render();
+          }
+        });
+
+        recognition.addEventListener('end', function () {
+          isListening = false;
+          voiceBtn.style.opacity = '1';
+        });
+
+        recognition.addEventListener('error', function () {
+          isListening = false;
+          voiceBtn.style.opacity = '1';
+          const lang = detectLanguage(ideaInput.value || '');
+          status.textContent = copy[lang].voiceUnsupported;
+        });
+      } else {
+        voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(ideaInput.value || '');
+          setLanguageUI(lang);
+          status.textContent = copy[lang].voiceUnsupported;
+        });
+      }
+
+      setLanguageUI('en');
+    })();
+  </script>
+</body>
+</html>
