@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tweet Polisher | REFRAME Studio</title>
+  <meta name="description" content="Turn a rough draft into three clearer, shorter, and stronger post versions instantly in your browser." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#161616;
+      --muted:#666;
+      --line:#e7e5df;
+      --accent:#111;
+      --soft:#f1efe9;
+      --shadow:0 10px 30px rgba(0,0,0,0.06);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif}
+    body{min-height:100vh}
+    .wrap{
+      width:min(920px, calc(100% - 24px));
+      margin:0 auto;
+      padding:28px 0 40px;
+    }
+    .hero{
+      margin-bottom:18px;
+    }
+    .eyebrow{
+      display:inline-block;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,42px);
+      line-height:1.05;
+      letter-spacing:-0.03em;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.7;
+      max-width:720px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-top:18px;
+    }
+    .input-area{
+      display:grid;
+      gap:12px;
+    }
+    label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    textarea{
+      width:100%;
+      min-height:170px;
+      resize:vertical;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.65;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+      transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    textarea:focus{
+      border-color:#bbb4a8;
+      box-shadow:0 0 0 4px rgba(0,0,0,.04);
+    }
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .left-actions,.right-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .secondary{
+      background:var(--soft);
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .ghost{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid var(--line);
+    }
+    .ghost[disabled], .secondary[disabled]{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .meta{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .badge{
+      padding:7px 10px;
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:999px;
+    }
+    .results{
+      margin-top:18px;
+      display:grid;
+      gap:14px;
+    }
+    .result-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .result-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .result-title{
+      margin:0;
+      font-size:16px;
+      line-height:1.3;
+    }
+    .result-meta{
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .result-body{
+      padding:14px;
+      background:#fcfcfb;
+      border:1px solid var(--line);
+      border-radius:14px;
+      line-height:1.75;
+      white-space:pre-wrap;
+      word-break:break-word;
+      min-height:74px;
+    }
+    .copy-btn{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:700;
+    }
+    .empty{
+      color:var(--muted);
+      border:1px dashed var(--line);
+      border-radius:18px;
+      padding:24px 16px;
+      text-align:center;
+      background:rgba(255,255,255,.55);
+    }
+    .sr-only{
+      position:absolute!important;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+    @media (max-width:640px){
+      .wrap{width:min(100% - 16px, 920px); padding-top:16px}
+      .panel,.result-card{padding:14px}
+      .toolbar{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .left-actions,.right-actions{
+        width:100%;
+      }
+      .left-actions button,.right-actions button{
+        flex:1 1 auto;
+      }
+      .result-head{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      textarea{min-height:150px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow" id="eyebrow">REFRAME Studio</div>
+      <h1 id="titleText">Tweet Polisher</h1>
+      <p class="sub" id="subtitleText">Turn a rough draft into three clearer, shorter, and stronger post versions instantly.</p>
+    </section>
+
+    <section class="panel">
+      <div class="input-area">
+        <label for="draft" id="inputLabel">Draft post</label>
+        <textarea id="draft" placeholder="Write your rough post here..."></textarea>
+
+        <div class="toolbar">
+          <div class="left-actions">
+            <button class="primary" id="polishBtn">Polish</button>
+            <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+            <button class="ghost" id="clearBtn" type="button">Clear</button>
+          </div>
+          <div class="right-actions meta">
+            <span class="badge" id="langBadge">Language: Auto</span>
+            <span class="badge" id="charBadge">0 chars</span>
+          </div>
+        </div>
+
+        <div class="hint" id="hintText">Paste a rough post. The tool will generate 3 improved versions in the same language.</div>
+      </div>
+    </section>
+
+    <section class="results" id="results">
+      <div class="empty" id="emptyState">Your polished versions will appear here.</div>
+    </section>
+
+    <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Tweet Polisher helps you turn a rough draft into clearer, shorter, and stronger post options instantly.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const els = {
+        draft: document.getElementById('draft'),
+        polishBtn: document.getElementById('polishBtn'),
+        voiceBtn: document.getElementById('voiceBtn'),
+        clearBtn: document.getElementById('clearBtn'),
+        results: document.getElementById('results'),
+        emptyState: document.getElementById('emptyState'),
+        langBadge: document.getElementById('langBadge'),
+        charBadge: document.getElementById('charBadge'),
+        eyebrow: document.getElementById('eyebrow'),
+        titleText: document.getElementById('titleText'),
+        subtitleText: document.getElementById('subtitleText'),
+        inputLabel: document.getElementById('inputLabel'),
+        hintText: document.getElementById('hintText')
+      };
+
+      const uiText = {
+        en: {
+          title: 'Tweet Polisher',
+          subtitle: 'Turn a rough draft into three clearer, shorter, and stronger post versions instantly.',
+          inputLabel: 'Draft post',
+          placeholder: 'Write your rough post here...',
+          polish: 'Polish',
+          voice: 'Voice Input',
+          voiceStop: 'Stop',
+          clear: 'Clear',
+          langAuto: 'Language: Auto',
+          langEn: 'Language: English',
+          langJa: 'Language: Japanese',
+          hint: 'Paste a rough post. The tool will generate 3 improved versions in the same language.',
+          empty: 'Your polished versions will appear here.',
+          clearer: 'Clearer version',
+          shorter: 'Shorter version',
+          stronger: 'Stronger version',
+          copy: 'Copy',
+          copied: 'Copied',
+          chars: 'chars',
+          unsupported: 'Voice input is not supported in this browser.',
+          listening: 'Listening...',
+          sampleLead: 'Here are three polished versions.'
+        },
+        ja: {
+          title: 'Tweet Polisher',
+          subtitle: '下書きを、より明確で短く強い3つの投稿案に整えます。',
+          inputLabel: '下書き投稿',
+          placeholder: '下書きを入力してください…',
+          polish: '整える',
+          voice: '音声入力',
+          voiceStop: '停止',
+          clear: 'クリア',
+          langAuto: '言語：自動判定',
+          langEn: '言語：英語',
+          langJa: '言語：日本語',
+          hint: '下書きを貼り付けると、同じ言語で3つの改善案を表示します。',
+          empty: 'ここに改善案が表示されます。',
+          clearer: 'より明確な版',
+          shorter: 'より短い版',
+          stronger: 'より強い版',
+          copy: 'コピー',
+          copied: 'コピーしました',
+          chars: '文字',
+          unsupported: 'このブラウザでは音声入力に対応していません。',
+          listening: '音声を聞き取っています…',
+          sampleLead: '3つの改善案を生成しました。'
+        }
+      };
+
+      let recognition = null;
+      let isListening = false;
+
+      function detectLanguage(text) {
+        const trimmed = (text || '').trim();
+        if (!trimmed) {
+          const nav = (navigator.language || '').toLowerCase();
+          return nav.startsWith('ja') ? 'ja' : 'en';
+        }
+        const jaChars = (trimmed.match(/[\u3040-\u30ff\u3400-\u9fff]/g) || []).length;
+        const latinChars = (trimmed.match(/[A-Za-z]/g) || []).length;
+        return jaChars > latinChars * 0.15 ? 'ja' : 'en';
+      }
+
+      function setUI(lang) {
+        const t = uiText[lang];
+        els.titleText.textContent = t.title;
+        els.subtitleText.textContent = t.subtitle;
+        els.inputLabel.textContent = t.inputLabel;
+        els.draft.placeholder = t.placeholder;
+        els.polishBtn.textContent = t.polish;
+        els.voiceBtn.textContent = isListening ? t.voiceStop : t.voice;
+        els.clearBtn.textContent = t.clear;
+        els.hintText.textContent = t.hint;
+        if (!els.draft.value.trim()) {
+          els.langBadge.textContent = t.langAuto;
+          els.emptyState.textContent = t.empty;
+        }
+        updateMeta();
+      }
+
+      function updateMeta() {
+        const text = els.draft.value || '';
+        const lang = detectLanguage(text);
+        const t = uiText[lang];
+        const count = Array.from(text).length;
+        els.charBadge.textContent = `${count} ${t.chars}`;
+        els.langBadge.textContent = text.trim()
+          ? (lang === 'ja' ? t.langJa : t.langEn)
+          : t.langAuto;
+      }
+
+      function normalizeCommon(text) {
+        return text
+          .replace(/\r\n/g, '\n')
+          .replace(/[ \t]+/g, ' ')
+          .replace(/\n{3,}/g, '\n\n')
+          .replace(/[!?！？]{2,}/g, m => m[0])
+          .replace(/\.{4,}/g, '...')
+          .trim();
+      }
+
+      function splitSentencesEn(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .split(/(?<=[.!?])\s+/)
+          .map(s => s.trim())
+          .filter(Boolean);
+      }
+
+      function splitSentencesJa(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .split(/(?<=[。！？])/)
+          .map(s => s.trim())
+          .filter(Boolean);
+      }
+
+      function capitalizeSentence(s) {
+        if (!s) return s;
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
+
+      function titleCaseStart(text) {
+        return text.replace(/^\s*[a-z]/, m => m.toUpperCase());
+      }
+
+      function dedupeRepeatedPhrases(text, lang) {
+        if (lang === 'ja') {
+          return text
+            .replace(/(本当に|かなり|めっちゃ|すごく|とても)\1+/g, '$1')
+            .replace(/(です。)\1+/g, '$1')
+            .replace(/(ます。)\1+/g, '$1');
+        }
+        return text
+          .replace(/\b(really|very|super|literally)\s+\1\b/gi, '$1')
+          .replace(/\b(\w+)( \1\b){2,}/gi, '$1');
+      }
+
+      function polishEn(input) {
+        let text = normalizeCommon(input);
+        text = dedupeRepeatedPhrases(text, 'en');
+
+        const fillerPatterns = [
+          /\b(just|basically|actually|literally|kind of|sort of|really|very)\b/gi,
+          /\bI think\b/gi,
+          /\bmaybe\b/gi
+        ];
+
+        const clearer = (() => {
+          let t = text;
+          fillerPatterns.forEach(rx => { t = t.replace(rx, ''); });
+          t = t.replace(/\s{2,}/g, ' ').trim();
+          const s = splitSentencesEn(t).map(capitalizeSentence);
+          let out = s.join(' ');
+          out = out.replace(/\s+([,.!?;:])/g, '$1');
+          out = titleCaseStart(out);
+          return out;
+        })();
+
+        const shorter = (() => {
+          let t = clearer
+            .replace(/\b(that|quite|pretty|perhaps|probably)\b/gi, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+          let s = splitSentencesEn(t);
+          if (s.length > 2) s = s.slice(0, 2);
+          t = s.join(' ');
+          if (t.length > 150) {
+            t = t.slice(0, 147).replace(/[ ,;:]+$/,'') + '...';
+          }
+          return t;
+        })();
+
+        const stronger = (() => {
+          let t = clearer;
+          t = t.replace(/\bI think\b/gi, '');
+          t = t.replace(/\bmaybe\b/gi, '');
+          t = t.replace(/\btrying to\b/gi, 'building');
+          t = t.replace(/\bwant to\b/gi, 'will');
+          t = t.replace(/\bcan\b/gi, 'can');
+          t = t.replace(/\s{2,}/g, ' ').trim();
+
+          const s = splitSentencesEn(t);
+          let first = s[0] || t;
+          first = first
+            .replace(/^I[' ]?m /i, 'I’m ')
+            .replace(/^We[' ]?re /i, 'We’re ');
+
+          if (!/[.!?]$/.test(first)) first += '.';
+          if (s.length > 1) {
+            const rest = s.slice(1).join(' ');
+            return `${first} ${rest}`.trim();
+          }
+          return first;
+        })();
+
+        return { clearer, shorter, stronger };
+      }
+
+      function polishJa(input) {
+        let text = normalizeCommon(input);
+        text = dedupeRepeatedPhrases(text, 'ja');
+
+        const clearer = (() => {
+          let t = text
+            .replace(/(なんか|ちょっと|一応|とりあえず|たぶん|多分|まあ|ほんとに|本当に|かなり|めっちゃ|すごく)/g, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+
+          t = t
+            .replace(/っていう/g, 'という')
+            .replace(/みたいな/g, '')
+            .replace(/〜/g, 'ー')
+            .replace(/。+/g, '。');
+
+          const s = splitSentencesJa(t);
+          let out = s.join('');
+          out = out.replace(/\s+/g, ' ').trim();
+          return out;
+        })();
+
+        const shorter = (() => {
+          let t = clearer
+            .replace(/と思います/g, 'です')
+            .replace(/ということです/g, 'です')
+            .replace(/という感じです/g, 'です')
+            .trim();
+
+          if (t.length > 90) {
+            const parts = splitSentencesJa(t);
+            t = parts.slice(0, 2).join('');
+          }
+          if (t.length > 120) {
+            t = t.slice(0, 118).replace(/[、。 ]+$/,'') + '…';
+          }
+          return t;
+        })();
+
+        const stronger = (() => {
+          let t = clearer
+            .replace(/したいです/g, 'します')
+            .replace(/したいと思います/g, 'します')
+            .replace(/できれば/g, '')
+            .replace(/かもしれません/g, 'です')
+            .replace(/と思います/g, 'です')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+
+          if (!/[。！？]$/.test(t)) t += '。';
+          return t;
+        })();
+
+        return { clearer, shorter, stronger };
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function resultCard(title, body, meta, copyLabel) {
+        return `
+          <article class="result-card">
+            <div class="result-head">
+              <h2 class="result-title">${escapeHtml(title)}</h2>
+              <div class="result-meta">${escapeHtml(meta)}</div>
+            </div>
+            <div class="result-body">${escapeHtml(body)}</div>
+            <button class="secondary copy-btn" data-copy="${escapeHtml(body).replace(/&quot;/g,'"')}">${escapeHtml(copyLabel)}</button>
+          </article>
+        `;
+      }
+
+      function renderResults() {
+        const raw = els.draft.value.trim();
+        const lang = detectLanguage(raw);
+        setUI(lang);
+        updateMeta();
+
+        if (!raw) {
+          els.results.innerHTML = `<div class="empty" id="emptyState">${uiText[lang].empty}</div>`;
+          return;
+        }
+
+        const polished = lang === 'ja' ? polishJa(raw) : polishEn(raw);
+        const t = uiText[lang];
+        const metrics = v => `${Array.from(v).length} ${t.chars}`;
+
+        els.results.innerHTML =
+          resultCard(t.clearer, polished.clearer, metrics(polished.clearer), t.copy) +
+          resultCard(t.shorter, polished.shorter, metrics(polished.shorter), t.copy) +
+          resultCard(t.stronger, polished.stronger, metrics(polished.stronger), t.copy);
+
+        els.results.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const value = btn.getAttribute('data-copy');
+            try {
+              await navigator.clipboard.writeText(value);
+              const original = btn.textContent;
+              btn.textContent = t.copied;
+              setTimeout(() => { btn.textContent = original; }, 1200);
+            } catch (_) {
+              btn.textContent = t.copied;
+              setTimeout(() => { btn.textContent = t.copy; }, 1200);
+            }
+          });
+        });
+      }
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          els.voiceBtn.disabled = true;
+          const lang = detectLanguage(els.draft.value);
+          els.voiceBtn.title = uiText[lang].unsupported;
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = true;
+        recognition.continuous = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => {
+          isListening = true;
+          const lang = detectLanguage(els.draft.value);
+          els.voiceBtn.textContent = uiText[lang].voiceStop;
+          els.voiceBtn.setAttribute('aria-pressed', 'true');
+        };
+
+        recognition.onend = () => {
+          isListening = false;
+          const lang = detectLanguage(els.draft.value);
+          els.voiceBtn.textContent = uiText[lang].voice;
+          els.voiceBtn.setAttribute('aria-pressed', 'false');
+        };
+
+        recognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          els.draft.value = transcript.trim();
+          updateMeta();
+        };
+
+        recognition.onerror = () => {
+          isListening = false;
+          const lang = detectLanguage(els.draft.value);
+          els.voiceBtn.textContent = uiText[lang].voice;
+          els.voiceBtn.setAttribute('aria-pressed', 'false');
+        };
+
+        els.voiceBtn.addEventListener('click', () => {
+          if (!recognition) return;
+          if (isListening) {
+            recognition.stop();
+            return;
+          }
+          const inputLang = detectLanguage(els.draft.value);
+          recognition.lang = inputLang === 'ja' ? 'ja-JP' : 'en-US';
+          recognition.start();
+        });
+      }
+
+      els.draft.addEventListener('input', () => {
+        const lang = detectLanguage(els.draft.value);
+        setUI(lang);
+        updateMeta();
+      });
+
+      els.polishBtn.addEventListener('click', renderResults);
+
+      els.clearBtn.addEventListener('click', () => {
+        els.draft.value = '';
+        const lang = detectLanguage('');
+        setUI(lang);
+        updateMeta();
+        renderResults();
+        els.draft.focus();
+      });
+
+      setUI(detectLanguage(''));
+      updateMeta();
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
