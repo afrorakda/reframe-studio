@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confusion → Question | REFRAME Studio</title>
+  <meta name="description" content="Turn vague thoughts into 1–3 clear, structured questions you can act on immediately." />
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --card: #ffffff;
+      --text: #171717;
+      --muted: #666;
+      --line: #e7e5df;
+      --accent: #111;
+      --accent-2: #2f6fed;
+      --shadow: 0 8px 24px rgba(0,0,0,0.06);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+      line-height: 1.5;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back:hover,
+    .back:focus {
+      color: var(--text);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(47,111,237,0.12);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      flex: 1 1 220px;
+    }
+
+    .secondary {
+      background: #f0f0ee;
+      color: var(--text);
+      flex: 0 0 auto;
+    }
+
+    .secondary[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 20px;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fcfcfb;
+    }
+
+    .result h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .question-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .question-list li {
+      margin-bottom: 10px;
+      padding-left: 2px;
+    }
+
+    .question-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .mini {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 24px; }
+      .card { padding: 16px; }
+      .actions { flex-direction: column; }
+      .primary, .secondary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <section class="card">
+      <h1 id="title">Confusion → Question</h1>
+      <p class="desc" id="desc">Turn a vague thought into 1–3 clear questions.</p>
+
+      <label for="input" id="inputLabel">Your thought</label>
+      <textarea id="input" placeholder="Type a confusing thought or unclear idea..."></textarea>
+
+      <div class="actions">
+        <button class="primary" id="generateBtn">Turn into Questions</button>
+        <button class="secondary" id="voiceBtn" type="button" hidden>Voice Input</button>
+        <button class="secondary" id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <div class="hint" id="hint" aria-live="polite"></div>
+
+      <section class="result" aria-live="polite" aria-atomic="true">
+        <h2 id="resultTitle">Questions</h2>
+        <div id="resultContent" class="empty">Your questions will appear here.</div>
+      </section>
+
+      <div class="mini" id="miniNote">Private by default. Runs in your browser only.</div>
+    </section>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turns vague thoughts into clear, structured questions you can use right away.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      var inputEl = document.getElementById('input');
+      var generateBtn = document.getElementById('generateBtn');
+      var clearBtn = document.getElementById('clearBtn');
+      var voiceBtn = document.getElementById('voiceBtn');
+      var hintEl = document.getElementById('hint');
+      var resultContent = document.getElementById('resultContent');
+
+      var titleEl = document.getElementById('title');
+      var descEl = document.getElementById('desc');
+      var inputLabelEl = document.getElementById('inputLabel');
+      var resultTitleEl = document.getElementById('resultTitle');
+      var miniNoteEl = document.getElementById('miniNote');
+
+      var recognition = null;
+      var isListening = false;
+
+      function detectLanguage(text) {
+        var hasJapanese = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+        return hasJapanese ? 'ja' : 'en';
+      }
+
+      function setUIText(lang) {
+        if (lang === 'ja') {
+          document.documentElement.lang = 'ja';
+          titleEl.textContent = 'Confusion → Question';
+          descEl.textContent = 'あいまいな考えを、1〜3個の明確な問いに変えます。';
+          inputLabelEl.textContent = '考えていること';
+          inputEl.placeholder = 'モヤモヤしていることや、うまく言えない考えを書いてください...';
+          generateBtn.textContent = '問いに変える';
+          clearBtn.textContent = 'クリア';
+          resultTitleEl.textContent = '問い';
+          miniNoteEl.textContent = 'プライベート設計。処理はブラウザ内で完結します。';
+          if (voiceBtnSupported()) voiceBtn.textContent = isListening ? '停止' : '音声入力';
+        } else {
+          document.documentElement.lang = 'en';
+          titleEl.textContent = 'Confusion → Question';
+          descEl.textContent = 'Turn a vague thought into 1–3 clear questions.';
+          inputLabelEl.textContent = 'Your thought';
+          inputEl.placeholder = 'Type a confusing thought or unclear idea...';
+          generateBtn.textContent = 'Turn into Questions';
+          clearBtn.textContent = 'Clear';
+          resultTitleEl.textContent = 'Questions';
+          miniNoteEl.textContent = 'Private by default. Runs in your browser only.';
+          if (voiceBtnSupported()) voiceBtn.textContent = isListening ? 'Stop' : 'Voice Input';
+        }
+      }
+
+      function voiceBtnSupported() {
+        return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+      }
+
+      function setHint(message) {
+        hintEl.textContent = message || '';
+      }
+
+      function sanitizeText(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .trim();
+      }
+
+      function splitIdeas(text, lang) {
+        var normalized = text
+          .replace(/\n+/g, ' ')
+          .replace(/[。！？]/g, '。')
+          .replace(/[!?]/g, '.');
+
+        var parts = lang === 'ja'
+          ? normalized.split(/[。]/)
+          : normalized.split(/[.]/);
+
+        var cleaned = [];
+        for (var i = 0; i < parts.length; i++) {
+          var p = sanitizeText(parts[i]);
+          if (p.length >= 4) cleaned.push(p);
+        }
+
+        if (!cleaned.length && text.trim()) cleaned.push(sanitizeText(text));
+        return cleaned.slice(0, 3);
+      }
+
+      function stripLead(text, lang) {
+        if (lang === 'ja') {
+          return text
+            .replace(/^(なんか|なんとなく|ちょっと|ただ|でも|つまり|要するに|たぶん|正直)\s*/i, '')
+            .replace(/\s*(気がする|かもしれない|ような気がする)$/i, '')
+            .trim();
+        }
+        return text
+          .replace(/^(kind of|sort of|maybe|i think|i feel like|honestly|basically|just)\s+/i, '')
+          .replace(/\s+(maybe|perhaps|i guess)$/i, '')
+          .trim();
+      }
+
+      function extractFocus(text, lang) {
+        var t = stripLead(text, lang);
+
+        if (lang === 'ja') {
+          t = t
+            .replace(/^(私は|僕は|自分は)/, '')
+            .replace(/(について|に関して|のこと)$/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          if (t.length > 38) t = t.slice(0, 38).trim();
+          return t || 'このこと';
+        }
+
+        t = t
+          .replace(/^(i am|i'm|i feel|i keep|i want|i don't know if|i do not know if)\s+/i, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        if (t.length > 48) t = t.slice(0, 48).trim();
+        return t || 'this';
+      }
+
+      function buildQuestions(text, lang) {
+        var ideas = splitIdeas(text, lang);
+        var focus = extractFocus(ideas[0] || text, lang);
+        var questions = [];
+
+        if (lang === 'ja') {
+          questions.push('いま一番はっきりさせたいのは「' + focus + '」の何ですか？');
+          questions.push('この件で、事実として分かっていることと、推測していることは何ですか？');
+          questions.push('次の一歩を決めるために、いま答えるべき最小の問いは何ですか？');
+        } else {
+          questions.push('What exactly about "' + focus + '" needs to become clear first?');
+          questions.push('What do I know for sure here, and what am I only assuming?');
+          questions.push('What is the smallest useful question that helps me decide the next step?');
+        }
+
+        var lower = text.toLowerCase();
+
+        if (lang === 'ja') {
+          if (/(仕事|転職|キャリア|会社|働き方)/.test(text)) {
+            questions[2] = 'これは「仕事内容」の問題ですか、それとも「環境・役割」の問題ですか？';
+          } else if (/(人間関係|相手|会話|伝える|言えない|関係)/.test(text)) {
+            questions[1] = '相手に確認すべきことと、自分の中で整理すべきことは何ですか？';
+          } else if (/(迷う|選べない|決められない|決断)/.test(text)) {
+            questions[2] = 'いまの判断基準は何で、その基準は本当に必要ですか？';
+          } else if (/(不安|怖い|心配|モヤモヤ)/.test(text)) {
+            questions[1] = 'この不安は「実際のリスク」ですか、それとも「まだ言語化できていない違和感」ですか？';
+          }
+        } else {
+          if (/(job|work|career|company|role)/.test(lower)) {
+            questions[2] = 'Is this mainly a problem with the work itself, or with the environment and role around it?';
+          } else if (/(relationship|friend|partner|talk|say|conversation|people)/.test(lower)) {
+            questions[1] = 'What needs to be clarified with the other person, and what needs to be clarified inside myself?';
+          } else if (/(decide|decision|choose|choice|stuck)/.test(lower)) {
+            questions[2] = 'What decision rule am I using right now, and does that rule actually fit this situation?';
+          } else if (/(anxious|anxiety|worried|afraid|fear|uneasy)/.test(lower)) {
+            questions[1] = 'Is this fear pointing to a real risk, or to something that still feels unnamed?';
+          }
+        }
+
+        return questions.slice(0, 3);
+      }
+
+      function renderQuestions(questions) {
+        if (!questions || !questions.length) {
+          resultContent.className = 'empty';
+          resultContent.textContent = '';
+          return;
+        }
+
+        var ol = document.createElement('ol');
+        ol.className = 'question-list';
+
+        for (var i = 0; i < questions.length; i++) {
+          var li = document.createElement('li');
+          li.textContent = questions[i];
+          ol.appendChild(li);
+        }
+
+        resultContent.className = '';
+        resultContent.innerHTML = '';
+        resultContent.appendChild(ol);
+      }
+
+      function generate() {
+        var raw = inputEl.value || '';
+        var text = sanitizeText(raw);
+        var lang = detectLanguage(text || '');
+
+        setUIText(lang);
+
+        if (!text) {
+          renderQuestions([]);
+          resultContent.className = 'empty';
+          resultContent.textContent = lang === 'ja'
+            ? 'まずは、頭の中で引っかかっていることを1つ書いてください。'
+            : 'Start by typing one thought that feels unclear or tangled.';
+          setHint(lang === 'ja' ? '入力が空です。' : 'Input is empty.');
+          return;
+        }
+
+        var questions = buildQuestions(text, lang);
+        renderQuestions(questions);
+        setHint(lang === 'ja' ? '問いに変換しました。' : 'Converted into questions.');
+      }
+
+      function clearAll() {
+        var lang = detectLanguage(inputEl.value || '');
+        inputEl.value = '';
+        setUIText(lang === 'ja' ? 'ja' : 'en');
+        resultContent.className = 'empty';
+        resultContent.textContent = lang === 'ja'
+          ? 'ここに問いが表示されます。'
+          : 'Your questions will appear here.';
+        setHint('');
+        inputEl.focus();
+      }
+
+      function initVoice() {
+        if (!voiceBtnSupported()) return;
+
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SR();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        voiceBtn.hidden = false;
+
+        recognition.onstart = function () {
+          isListening = true;
+          var lang = detectLanguage(inputEl.value || '');
+          recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+          setUIText(lang);
+          setHint(lang === 'ja' ? '音声を聞いています…' : 'Listening…');
+        };
+
+        recognition.onresult = function (event) {
+          var transcript = '';
+          if (event.results && event.results[0] && event.results[0][0]) {
+            transcript = event.results[0][0].transcript || '';
+          }
+          if (transcript) {
+            inputEl.value = inputEl.value
+              ? (inputEl.value.trim() + ' ' + transcript.trim())
+              : transcript.trim();
+          }
+          var lang = detectLanguage(inputEl.value || '');
+          setUIText(lang);
+          setHint(lang === 'ja' ? '音声を入力しました。' : 'Voice captured.');
+        };
+
+        recognition.onerror = function () {
+          var lang = detectLanguage(inputEl.value || '');
+          setUIText(lang);
+          setHint(lang === 'ja'
+            ? 'このブラウザでは音声入力が使えない場合があります。'
+            : 'Voice input may not be available in this browser.');
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          var lang = detectLanguage(inputEl.value || '');
+          setUIText(lang);
+        };
+
+        voiceBtn.addEventListener('click', function () {
+          var lang = detectLanguage(inputEl.value || '');
+          setUIText(lang);
+
+          if (!recognition) return;
+
+          try {
+            if (isListening) {
+              recognition.stop();
+            } else {
+              recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+              recognition.start();
+            }
+          } catch (e) {
+            setHint(lang === 'ja'
+              ? '音声入力を開始できませんでした。'
+              : 'Could not start voice input.');
+          }
+        });
+      }
+
+      generateBtn.addEventListener('click', generate);
+      clearBtn.addEventListener('click', clearAll);
+
+      inputEl.addEventListener('input', function () {
+        var lang = detectLanguage(inputEl.value || '');
+        setUIText(lang);
+        setHint('');
+      });
+
+      inputEl.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          generate();
+        }
+      });
+
+      setUIText('en');
+      resultContent.textContent = 'Your questions will appear here.';
+      initVoice();
+    })();
+  </script>
+</body>
+</html>
