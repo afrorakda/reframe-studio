@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Criticism → Idea | REFRAME Studio</title>
+  <meta name="description" content="Turn critical comments into 3 useful content ideas instantly, privately, and entirely in your browser." />
+  <style>
+    :root{
+      --bg:#fcfcfd;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#111827;
+      --accent-2:#f3f4f6;
+      --danger:#b91c1c;
+      --shadow:0 8px 24px rgba(17,24,39,.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}
+    body{line-height:1.5}
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+      padding:20px 16px 40px;
+    }
+    .back{
+      display:inline-block;
+      margin-bottom:18px;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+    }
+    .back:active,.back:hover{color:var(--text)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    h1{
+      font-size:28px;
+      line-height:1.15;
+      margin:0 0 10px;
+      letter-spacing:-0.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+    textarea{
+      width:100%;
+      min-height:140px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#9ca3af;
+      box-shadow:0 0 0 3px rgba(17,24,39,.06);
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      margin-bottom:8px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      min-height:48px;
+    }
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:var(--accent-2);
+      color:var(--text);
+      flex:0 0 auto;
+    }
+    .secondary[hidden]{display:none}
+    .hint,.error,.status{
+      font-size:13px;
+      margin-top:8px;
+    }
+    .hint,.status{color:var(--muted)}
+    .error{color:var(--danger)}
+    .results{
+      margin-top:18px;
+      display:grid;
+      gap:12px;
+    }
+    .result-card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+    }
+    .result-title{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:700;
+    }
+    .result-main{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .result-bullets{
+      margin:0;
+      padding-left:18px;
+      color:#374151;
+      font-size:14px;
+    }
+    .empty{
+      margin-top:18px;
+      padding:14px;
+      border:1px dashed var(--line);
+      border-radius:14px;
+      color:var(--muted);
+      font-size:14px;
+      background:#fff;
+    }
+    footer{
+      margin-top:40px;
+      font-size:12px;
+      color:#666;
+      line-height:1.6;
+    }
+    @media (max-width: 480px){
+      h1{font-size:24px}
+      .card{padding:16px}
+      textarea{min-height:120px}
+      .controls{gap:8px}
+      button{width:100%}
+      .secondary{flex:1 1 auto}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <section class="card">
+      <h1 id="title">Criticism → Idea</h1>
+      <p class="desc" id="description">Paste a critical comment and get 3 useful content ideas you can create from it.</p>
+
+      <label for="input" id="inputLabel">Critical comment or negative feedback</label>
+      <textarea id="input" placeholder="Example: Your videos are interesting, but they are too long and hard to follow."></textarea>
+
+      <div class="controls">
+        <button class="primary" id="generateBtn" type="button">Generate 3 Ideas</button>
+        <button class="secondary" id="voiceBtn" type="button" hidden>Voice Input</button>
+      </div>
+
+      <div class="hint" id="hint">Private and local only. Nothing leaves your browser.</div>
+      <div class="status" id="status" aria-live="polite"></div>
+      <div class="error" id="error" aria-live="polite"></div>
+
+      <div id="output">
+        <div class="empty" id="emptyState">Your 3 content ideas will appear here.</div>
+        <div class="results" id="results" hidden></div>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turn criticism into 3 practical content ideas you can use right away.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('input');
+      const generateBtn = document.getElementById('generateBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const statusEl = document.getElementById('status');
+      const errorEl = document.getElementById('error');
+      const emptyStateEl = document.getElementById('emptyState');
+      const resultsEl = document.getElementById('results');
+
+      const ui = {
+        en: {
+          title: 'Criticism → Idea',
+          description: 'Paste a critical comment and get 3 useful content ideas you can create from it.',
+          inputLabel: 'Critical comment or negative feedback',
+          placeholder: 'Example: Your videos are interesting, but they are too long and hard to follow.',
+          generate: 'Generate 3 Ideas',
+          voice: 'Voice Input',
+          listening: 'Listening...',
+          unsupported: 'Voice input is not supported in this browser.',
+          empty: 'Please enter a comment first.',
+          emptyState: 'Your 3 content ideas will appear here.',
+          hint: 'Private and local only. Nothing leaves your browser.',
+          cards: ['Idea 1', 'Idea 2', 'Idea 3'],
+          bullets: ['Angle', 'Format', 'Why it works']
+        },
+        ja: {
+          title: '批判 → アイデア',
+          description: '批判コメントを入れると、使えるコンテンツ案を3つ出します。',
+          inputLabel: '批判コメント・ネガティブなフィードバック',
+          placeholder: '例：内容はいいけど、動画が長すぎて何を言いたいのか分かりにくい。',
+          generate: '3つの案を出す',
+          voice: '音声入力',
+          listening: '聞き取り中…',
+          unsupported: 'このブラウザでは音声入力に対応していません。',
+          empty: 'まずコメントを入力してください。',
+          emptyState: 'ここに3つのコンテンツ案が表示されます。',
+          hint: '完全ローカル動作。入力は外部に送信されません。',
+          cards: ['案 1', '案 2', '案 3'],
+          bullets: ['切り口', '形式', '使える理由']
+        }
+      };
+
+      function detectLanguage(text) {
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/.test(text) ? 'ja' : 'en';
+      }
+
+      function setLanguage(lang) {
+        const t = ui[lang];
+        document.documentElement.lang = lang;
+        document.getElementById('title').textContent = t.title;
+        document.getElementById('description').textContent = t.description;
+        document.getElementById('inputLabel').textContent = t.inputLabel;
+        inputEl.placeholder = t.placeholder;
+        generateBtn.textContent = t.generate;
+        voiceBtn.textContent = t.voice;
+        document.getElementById('hint').textContent = t.hint;
+        if (!resultsEl.hidden) renderResults(lastIdeas, lang);
+        if (emptyStateEl && !emptyStateEl.hidden) emptyStateEl.textContent = t.emptyState;
+      }
+
+      function normalizeText(text) {
+        return text.replace(/\s+/g, ' ').trim();
+      }
+
+      function extractKeywords(text, lang) {
+        const lower = text.toLowerCase();
+        const rules = [
+          { key: 'too long', tags: { en: ['too long', 'length'], ja: ['長い', '長すぎ'] } },
+          { key: 'unclear', tags: { en: ['confusing', 'unclear', 'hard to follow', 'not clear'], ja: ['分かりにくい', '伝わらない', '不明確'] } },
+          { key: 'boring', tags: { en: ['boring', 'dull', 'not engaging'], ja: ['つまらない', '退屈', '刺さらない'] } },
+          { key: 'generic', tags: { en: ['generic', 'basic', 'nothing new'], ja: ['ありきたり', '普通', '新しさがない'] } },
+          { key: 'too salesy', tags: { en: ['salesy', 'pushy', 'too promotional'], ja: ['売り込み', '営業っぽい', '宣伝っぽい'] } },
+          { key: 'not practical', tags: { en: ['not practical', 'too abstract', 'vague'], ja: ['抽象的', '具体性がない', '実践的じゃない'] } },
+          { key: 'too difficult', tags: { en: ['too difficult', 'too advanced', 'complex'], ja: ['難しい', '高度すぎる', '複雑'] } },
+          { key: 'too simple', tags: { en: ['too simple', 'too basic'], ja: ['簡単すぎる', '浅い'] } },
+          { key: 'too slow', tags: { en: ['too slow', 'slow pace'], ja: ['テンポが遅い', '遅い'] } },
+          { key: 'no examples', tags: { en: ['no examples', 'needs examples'], ja: ['例がない', '具体例がほしい'] } }
+        ];
+
+        const matched = [];
+        rules.forEach(rule => {
+          const tags = lang === 'ja' ? rule.tags.ja : rule.tags.en;
+          if (tags.some(tag => lower.includes(tag))) matched.push(rule.key);
+        });
+
+        return matched.length ? matched : ['general'];
+      }
+
+      function summarizeFocus(text, lang) {
+        const clean = text.replace(/[.!?。！？]/g, ' ').trim();
+        const parts = clean.split(/,|、|;|：|:| but | でも | however |ただ|けど/).map(s => s.trim()).filter(Boolean);
+        const sample = (parts[0] || clean).slice(0, 42);
+        if (lang === 'ja') {
+          return sample.length > 0 ? '「' + sample + '」への反応' : '批判コメント';
+        }
+        return sample.length > 0 ? 'Response to "' + sample + '"' : 'Critical feedback';
+      }
+
+      function buildIdeas(text, lang) {
+        const focus = summarizeFocus(text, lang);
+        const keys = extractKeywords(text, lang);
+
+        const library = {
+          en: {
+            general: [
+              {
+                title: 'Turn the criticism into a quick fix post',
+                angle: 'Show one thing you would improve immediately based on the feedback.',
+                format: 'Short post or 30-second video',
+                why: 'It shows you listen and gives your audience a practical update.'
+              },
+              {
+                title: 'Explain the reason behind your choice',
+                angle: 'Break down why you made it that way, and where the trade-off was.',
+                format: 'Carousel or simple thread',
+                why: 'Useful when the criticism points to a gap in understanding.'
+              },
+              {
+                title: 'Ask the audience to choose the next version',
+                angle: 'Offer 2 better directions and let people vote.',
+                format: 'Poll + follow-up post',
+                why: 'Turns passive criticism into active co-creation.'
+              }
+            ],
+            'too long': [
+              {
+                title: 'Make a short version series',
+                angle: 'Turn the same idea into a 30-second, 1-minute, and 3-minute version.',
+                format: 'Mini content series',
+                why: 'Directly answers the complaint about length.'
+              },
+              {
+                title: 'Create a “start here” summary',
+                angle: 'Give the core takeaway first, then link to the full version.',
+                format: 'Summary post',
+                why: 'Helps people get value fast.'
+              },
+              {
+                title: 'Edit with a ruthless cut rule',
+                angle: 'Show before/after examples of what you removed.',
+                format: 'Behind-the-scenes post',
+                why: 'Teaches clarity while proving you improve.'
+              }
+            ],
+            unclear: [
+              {
+                title: 'Explain it in 3 steps',
+                angle: 'Turn the message into step 1, step 2, step 3.',
+                format: 'Checklist or carousel',
+                why: 'Makes the idea easier to follow.'
+              },
+              {
+                title: 'Use one concrete example',
+                angle: 'Teach the same point through one real scenario.',
+                format: 'Example-based post',
+                why: 'Examples reduce confusion fast.'
+              },
+              {
+                title: 'Answer “What do you mean?”',
+                angle: 'Take the vague part and define it in plain language.',
+                format: 'FAQ-style post',
+                why: 'Good criticism often reveals unclear wording.'
+              }
+            ],
+            boring: [
+              {
+                title: 'Turn the point into a strong opinion',
+                angle: 'Say what you disagree with and why.',
+                format: 'Opinion post',
+                why: 'Sharper contrast creates more interest.'
+              },
+              {
+                title: 'Tell the story behind the lesson',
+                angle: 'Use a failure, surprise, or mistake as the entry point.',
+                format: 'Short story post',
+                why: 'Stories carry attention better than explanations.'
+              },
+              {
+                title: 'Create a myth vs truth post',
+                angle: 'Challenge one common belief related to the topic.',
+                format: 'Carousel or short video',
+                why: 'Conflict makes content more memorable.'
+              }
+            ],
+            generic: [
+              {
+                title: 'Share your non-obvious take',
+                angle: 'Say what most people miss about this topic.',
+                format: 'Hot take post',
+                why: 'Specific perspective beats generic advice.'
+              },
+              {
+                title: 'Use a niche case study',
+                angle: 'Apply the advice to one narrow audience or situation.',
+                format: 'Case study post',
+                why: 'Specificity makes the idea feel fresh.'
+              },
+              {
+                title: 'Show what changed your mind',
+                angle: 'Explain how your view evolved from version 1 to version 2.',
+                format: 'Reflection post',
+                why: 'Originality often comes from changed thinking.'
+              }
+            ],
+            'too salesy': [
+              {
+                title: 'Teach without pitching',
+                angle: 'Give one useful lesson with no call to action.',
+                format: 'Value-first post',
+                why: 'Builds trust by removing pressure.'
+              },
+              {
+                title: 'Show the problem before the product',
+                angle: 'Focus only on the real pain point your audience faces.',
+                format: 'Problem-focused post',
+                why: 'Makes the content feel relevant, not promotional.'
+              },
+              {
+                title: 'Share a customer mistake instead of a feature',
+                angle: 'Teach through what people usually get wrong.',
+                format: 'Educational post',
+                why: 'It shifts attention from selling to helping.'
+              }
+            ],
+            'not practical': [
+              {
+                title: 'Make a 10-minute action version',
+                angle: 'Turn the idea into one step someone can do today.',
+                format: 'Action checklist',
+                why: 'Practical content removes friction fast.'
+              },
+              {
+                title: 'Give a template people can copy',
+                angle: 'Provide a script, framework, or fill-in-the-blank version.',
+                format: 'Template post',
+                why: 'Concrete tools are instantly useful.'
+              },
+              {
+                title: 'Show one real example from start to finish',
+                angle: 'Walk through how the idea works in practice.',
+                format: 'Example breakdown',
+                why: 'Execution makes abstract advice believable.'
+              }
+            ],
+            'too difficult': [
+              {
+                title: 'Create a beginner version',
+                angle: 'Explain the same topic for someone starting from zero.',
+                format: 'Starter guide',
+                why: 'Expands reach and reduces intimidation.'
+              },
+              {
+                title: 'Break it into levels',
+                angle: 'Separate beginner, intermediate, and advanced steps.',
+                format: 'Level-based post',
+                why: 'Lets people enter at the right depth.'
+              },
+              {
+                title: 'Define the 5 words people get stuck on',
+                angle: 'Simplify the vocabulary before the lesson.',
+                format: 'Glossary post',
+                why: 'Often the difficulty is language, not the idea.'
+              }
+            ],
+            'too simple': [
+              {
+                title: 'Make an advanced follow-up',
+                angle: 'Answer the next-level question after the basics.',
+                format: 'Deep dive post',
+                why: 'Keeps experienced people engaged.'
+              },
+              {
+                title: 'Compare beginner advice vs expert reality',
+                angle: 'Show where the simple version stops working.',
+                format: 'Comparison post',
+                why: 'Adds nuance without losing clarity.'
+              },
+              {
+                title: 'Share edge cases',
+                angle: 'Explain when the standard advice fails.',
+                format: 'Exception post',
+                why: 'Advanced audiences value limits and trade-offs.'
+              }
+            ],
+            'too slow': [
+              {
+                title: 'Create a punchier version',
+                angle: 'Lead with the conclusion, then give one proof.',
+                format: 'Fast hook post',
+                why: 'Improves pace and retention.'
+              },
+              {
+                title: 'Cut the setup, keep the payoff',
+                angle: 'Remove background and go straight to the useful part.',
+                format: 'Short-form rewrite',
+                why: 'Fixes slow pacing directly.'
+              },
+              {
+                title: 'Use a countdown structure',
+                angle: 'Organize the point into 3 quick beats.',
+                format: 'List post',
+                why: 'Structure makes content feel faster.'
+              }
+            ],
+            'no examples': [
+              {
+                title: 'Add one real-world example',
+                angle: 'Show the idea with an actual scenario people recognize.',
+                format: 'Example post',
+                why: 'Examples make advice easier to trust and use.'
+              },
+              {
+                title: 'Before vs after breakdown',
+                angle: 'Compare a weak version with a stronger version.',
+                format: 'Transformation post',
+                why: 'People learn quickly through contrast.'
+              },
+              {
+                title: 'Mini case study',
+                angle: 'Show the problem, action, and result in 3 parts.',
+                format: 'Case study',
+                why: 'Turns theory into evidence.'
+              }
+            ]
+          },
+          ja: {
+            general: [
+              {
+                title: '批判をそのまま改善ネタにする',
+                angle: '指摘された点を1つだけ直すなら何かを示す。',
+                format: '短文投稿・短い動画',
+                why: '「ちゃんと聞いている」が伝わり、すぐ使える。'
+              },
+              {
+                title: 'なぜそうしたのかを分解する',
+                angle: 'その表現や構成にした理由と、その代償を説明する。',
+                format: 'カルーセル投稿・スレッド',
+                why: '誤解されている部分をコンテンツ化できる。'
+              },
+              {
+                title: '次の改善案を選んでもらう',
+                angle: '改善案を2つ出し、どちらがよいか反応を集める。',
+                format: '投票投稿＋追記',
+                why: '批判を参加型の反応に変えられる。'
+              }
+            ],
+            'too long': [
+              {
+                title: '短尺版に作り直す',
+                angle: '同じ内容を30秒・1分・3分で出し分ける。',
+                format: '短尺シリーズ',
+                why: '「長い」という不満にそのまま応えられる。'
+              },
+              {
+                title: '最初に結論だけ出す',
+                angle: '本編の前に要点3つだけ先に見せる。',
+                format: '要約投稿',
+                why: 'すぐ価値が伝わり、離脱を減らせる。'
+              },
+              {
+                title: 'どこを削ったか見せる',
+                angle: '削る前と後を比較して編集の基準を見せる。',
+                format: '裏側コンテンツ',
+                why: '改善姿勢と編集力の両方が伝わる。'
+              }
+            ],
+            unclear: [
+              {
+                title: '3ステップで言い直す',
+                angle: '伝えたいことを1→2→3の順で並べる。',
+                format: 'チェックリスト投稿',
+                why: '分かりにくさを構造で解消しやすい。'
+              },
+              {
+                title: '具体例ひとつで説明する',
+                angle: '抽象論をやめて、1つの場面で語る。',
+                format: '具体例投稿',
+                why: '理解が一気に進みやすい。'
+              },
+              {
+                title: '「つまり何？」に答える',
+                angle: '曖昧だった言葉を平易な表現で定義し直す。',
+                format: 'FAQ投稿',
+                why: '批判は曖昧語の発見に使える。'
+              }
+            ],
+            boring: [
+              {
+                title: 'あえて強い立場を出す',
+                angle: '何に反対なのかを明確にする。',
+                format: '意見投稿',
+                why: '輪郭が出ると退屈さが減る。'
+              },
+              {
+                title: '失敗談から入る',
+                angle: '学びではなく失敗やズレを入口にする。',
+                format: 'ストーリー投稿',
+                why: '説明よりも感情で読まれやすい。'
+              },
+              {
+                title: 'よくある誤解を壊す',
+                angle: 'このテーマの思い込みを1つ崩す。',
+                format: '誤解→真実投稿',
+                why: '意外性が記憶に残る。'
+              }
+            ],
+            generic: [
+              {
+                title: 'あなた独自の視点を出す',
+                angle: '多くの人が見落とす点だけに絞る。',
+                format: '視点投稿',
+                why: '一般論ではなく解像度で差が出る。'
+              },
+              {
+                title: 'ニッチな事例に当てる',
+                angle: '特定の業種や立場に限定して語る。',
+                format: '事例投稿',
+                why: '具体性が新しさになる。'
+              },
+              {
+                title: '考えが変わった理由を話す',
+                angle: '以前の自分と今の自分の違いを見せる。',
+                format: '変化の記録',
+                why: '独自性は変化の履歴に出やすい。'
+              }
+            ],
+            'too salesy': [
+              {
+                title: '売り込みを消して教える',
+                angle: 'CTAなしで1つだけ役立つことを渡す。',
+                format: '価値先出し投稿',
+                why: '押し感が消え、信頼が上がる。'
+              },
+              {
+                title: '商品ではなく問題を語る',
+                angle: '相手が困っている状況だけを深掘る。',
+                format: '課題整理投稿',
+                why: '宣伝臭さを減らして共感を作れる。'
+              },
+              {
+                title: '機能ではなく失敗例を出す',
+                angle: 'よくある間違いを1つ解説する。',
+                format: '教育投稿',
+                why: '売るより助ける流れに変わる。'
+              }
+            ],
+            'not practical': [
+              {
+                title: '今日できる一歩に落とす',
+                angle: '10分でできる行動1つに変換する。',
+                format: '実行リスト',
+                why: '抽象批判を即行動に変えられる。'
+              },
+              {
+                title: 'コピペできる型を出す',
+                angle: 'テンプレートや穴埋め形式で見せる。',
+                format: 'テンプレ投稿',
+                why: 'すぐ使える形が最も実用的。'
+              },
+              {
+                title: '最初から最後まで見せる',
+                angle: '実例を手順順に追う。',
+                format: '実践分解投稿',
+                why: '理屈より再現が伝わる。'
+              }
+            ],
+            'too difficult': [
+              {
+                title: '初心者向けに言い換える',
+                angle: 'ゼロからの人向けに前提ごと説明する。',
+                format: '入門投稿',
+                why: '難しさの壁を下げられる。'
+              },
+              {
+                title: 'レベル別に分ける',
+                angle: '初級・中級・上級で内容を分離する。',
+                format: 'レベル別投稿',
+                why: '読む人が自分の位置を選べる。'
+              },
+              {
+                title: 'つまずく言葉だけ先に解説する',
+                angle: '難しい単語を5つだけ先にほどく。',
+                format: '用語整理投稿',
+                why: '難しさの原因が言葉にあることは多い。'
+              }
+            ],
+            'too simple': [
+              {
+                title: '上級編を出す',
+                angle: '基礎の次に来る問いに答える。',
+                format: '深掘り投稿',
+                why: '物足りなさを次の価値に変えられる。'
+              },
+              {
+                title: '初心者向けとの違いを見せる',
+                angle: '基礎で足りる場面と足りない場面を比較する。',
+                format: '比較投稿',
+                why: 'シンプルさを保ちながら深さを足せる。'
+              },
+              {
+                title: '例外条件を扱う',
+                angle: 'いつその方法が通用しないかを話す。',
+                format: '例外投稿',
+                why: '理解の深さが出やすい。'
+              }
+            ],
+            'too slow': [
+              {
+                title: '結論ファースト版にする',
+                angle: '最初に答え、その後に理由を1つだけ付ける。',
+                format: '短尺投稿',
+                why: 'テンポの遅さをすぐ改善できる。'
+              },
+              {
+                title: '前置きを全部削る',
+                angle: '背景説明を減らして有益部分だけ残す。',
+                format: '再編集投稿',
+                why: '体感速度が上がる。'
+              },
+              {
+                title: '3点だけに絞る',
+                angle: '論点を3つに限定して再構成する。',
+                format: '箇条書き投稿',
+                why: '流れが見えやすくなる。'
+              }
+            ],
+            'no examples': [
+              {
+                title: '現実の1例で見せる',
+                angle: '誰でも想像できる場面に当てはめる。',
+                format: '具体例投稿',
+                why: '理解と納得が一気に進む。'
+              },
+              {
+                title: '悪い例と良い例を並べる',
+                angle: '弱いパターンと改善後を比較する。',
+                format: '比較投稿',
+                why: '差分があると学びやすい。'
+              },
+              {
+                title: 'ミニ事例にする',
+                angle: '問題→対応→結果の3つで見せる。',
+                format: '事例投稿',
+                why: '抽象論を証拠に変えられる。'
+              }
+            ]
+          }
+        };
+
+        const chosen = [];
+        keys.forEach(key => {
+          const group = library[lang][key];
+          if (group) {
+            group.forEach(item => {
+              if (chosen.length < 3) chosen.push(item);
+            });
+          }
+        });
+
+        const fallback = library[lang].general;
+        let i = 0;
+        while (chosen.length < 3 && i < fallback.length) {
+          chosen.push(fallback[i]);
+          i++;
+        }
+
+        return chosen.slice(0, 3).map((item, idx) => ({
+          label: ui[lang].cards[idx],
+          title: item.title,
+          angle: item.angle + (lang === 'ja' ? ' ' : ' ') + '(' + focus + ')',
+          format: item.format,
+          why: item.why
+        }));
+      }
+
+      let lastIdeas = [];
+      let currentLang = 'en';
+
+      function renderResults(ideas, lang) {
+        const t = ui[lang];
+        resultsEl.innerHTML = '';
+        ideas.forEach((idea) => {
+          const card = document.createElement('section');
+          card.className = 'result-card';
+
+          const label = document.createElement('div');
+          label.className = 'result-title';
+          label.textContent = idea.label;
+
+          const main = document.createElement('div');
+          main.className = 'result-main';
+          main.textContent = idea.title;
+
+          const list = document.createElement('ul');
+          list.className = 'result-bullets';
+
+          const items = [
+            t.bullets[0] + ': ' + idea.angle,
+            t.bullets[1] + ': ' + idea.format,
+            t.bullets[2] + ': ' + idea.why
+          ];
+
+          items.forEach(text => {
+            const li = document.createElement('li');
+            li.textContent = text;
+            list.appendChild(li);
+          });
+
+          card.appendChild(label);
+          card.appendChild(main);
+          card.appendChild(list);
+          resultsEl.appendChild(card);
+        });
+
+        emptyStateEl.hidden = true;
+        resultsEl.hidden = false;
+      }
+
+      function clearMessages() {
+        errorEl.textContent = '';
+        statusEl.textContent = '';
+      }
+
+      function generateIdeas() {
+        clearMessages();
+        const raw = normalizeText(inputEl.value);
+        currentLang = detectLanguage(raw || inputEl.placeholder);
+        setLanguage(currentLang);
+
+        if (!raw) {
+          errorEl.textContent = ui[currentLang].empty;
+          resultsEl.hidden = true;
+          emptyStateEl.hidden = false;
+          emptyStateEl.textContent = ui[currentLang].emptyState;
+          return;
+        }
+
+        lastIdeas = buildIdeas(raw, currentLang);
+        renderResults(lastIdeas, currentLang);
+      }
+
+      generateBtn.addEventListener('click', generateIdeas);
+
+      inputEl.addEventListener('input', function () {
+        const lang = detectLanguage(inputEl.value || inputEl.placeholder);
+        if (lang !== currentLang) {
+          currentLang = lang;
+          setLanguage(currentLang);
+        }
+      });
+
+      inputEl.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          generateIdeas();
+        }
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        voiceBtn.hidden = false;
+        const recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        let listening = false;
+
+        voiceBtn.addEventListener('click', function () {
+          clearMessages();
+          if (!listening) {
+            const lang = detectLanguage(inputEl.value || navigator.language || '');
+            recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+            try {
+              recognition.start();
+            } catch (e) {}
+          } else {
+            recognition.stop();
+          }
+        });
+
+        recognition.onstart = function () {
+          listening = true;
+          const lang = detectLanguage(inputEl.value || navigator.language || '');
+          currentLang = lang;
+          setLanguage(currentLang);
+          statusEl.textContent = ui[currentLang].listening;
+          voiceBtn.textContent = ui[currentLang].listening;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = (event.results[0] && event.results[0][0] && event.results[0][0].transcript) || '';
+          inputEl.value = normalizeText((inputEl.value ? inputEl.value + ' ' : '') + transcript);
+          currentLang = detectLanguage(inputEl.value);
+          setLanguage(currentLang);
+          generateIdeas();
+        };
+
+        recognition.onerror = function () {
+          clearMessages();
+        };
+
+        recognition.onend = function () {
+          listening = false;
+          const lang = detectLanguage(inputEl.value || navigator.language || '');
+          currentLang = lang;
+          setLanguage(currentLang);
+          statusEl.textContent = '';
+        };
+      } else {
+        voiceBtn.hidden = false;
+        voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(inputEl.value || navigator.language || '');
+          currentLang = lang;
+          setLanguage(currentLang);
+          errorEl.textContent = ui[currentLang].unsupported;
+        });
+      }
+
+      setLanguage('en');
+    })();
+  </script>
+</body>
+</html>
