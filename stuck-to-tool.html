@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stuck → Best Tool</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(255, 255, 255, 0.08);
+      --panel-strong: rgba(255, 255, 255, 0.12);
+      --text: #f3f6ff;
+      --muted: #b9c3e0;
+      --accent: #8b5cf6;
+      --accent-2: #22c55e;
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.16), transparent 28%),
+        linear-gradient(180deg, #0b1020 0%, #121933 100%);
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 28px 20px 18px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+      max-width: 720px;
+    }
+
+    .main {
+      padding: 0 20px 20px;
+    }
+
+    .input-wrap {
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border: none;
+      outline: none;
+      resize: vertical;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    textarea::placeholder {
+      color: #c9d1ee;
+      opacity: 0.72;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font: inherit;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), #6d28d9);
+      box-shadow: 0 12px 28px rgba(139, 92, 246, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .results {
+      margin-top: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .tool-card {
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tool-name {
+      font-size: 1.02rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .pill {
+      flex-shrink: 0;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: rgba(34, 197, 94, 0.14);
+      color: #c8ffd9;
+      border: 1px solid rgba(34, 197, 94, 0.22);
+    }
+
+    .empty {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 14px; }
+      .hero { padding: 22px 16px 14px; }
+      .main { padding: 0 16px 16px; }
+      .tool-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .pill { align-self: flex-start; }
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+      .actions {
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="hero">
+        <h1>Stuck → Best Tool</h1>
+        <p class="desc">
+          Describe where you're stuck. This tool suggests which REFRAME Studio tools may help next.
+        </p>
+      </div>
+
+      <div class="main">
+        <div class="input-wrap">
+          <textarea
+            id="input"
+            placeholder="I have an idea but I can't explain it clearly.
+アイデアはあるけど、うまく説明できない。"
+            aria-label="Describe where you're stuck"
+          ></textarea>
+
+          <div class="actions">
+            <div class="meta" id="status">Ready</div>
+            <button id="suggestBtn" type="button">Suggest tools</button>
+          </div>
+        </div>
+
+        <div id="results" class="results" aria-live="polite"></div>
+
+        <div id="empty" class="empty">
+          Type a short description, then get a tool suggestion based on what feels stuck.
+        </div>
+
+        <div class="footer-note">
+          Fully client-side. No data leaves your device.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('input');
+      const btnEl = document.getElementById('suggestBtn');
+      const resultsEl = document.getElementById('results');
+      const statusEl = document.getElementById('status');
+      const emptyEl = document.getElementById('empty');
+
+      const TOOL_MAP = {
+        en: {
+          idea: [
+            'Idea → 3 Angles',
+            'Idea → Assumptions',
+            'Idea → Test Plan'
+          ],
+          writing: [
+            'Draft → Shorter',
+            'Hook Generator',
+            'Tweet Polisher'
+          ],
+          confusion: [
+            'Confusion → Better Question',
+            'Problem → Options',
+            'Idea → 3 Angles'
+          ],
+          problem: [
+            'Problem → Options',
+            'Problem → Root Causes',
+            'Problem → Constraints'
+          ],
+          default: [
+            'Confusion → Better Question',
+            'Idea → 3 Angles',
+            'Problem → Options'
+          ],
+          resultBadge: 'Suggested tool',
+          statusReady: 'Ready',
+          statusJapanese: 'Detected: Japanese',
+          statusEnglish: 'Detected: English',
+          statusEmpty: 'Please enter a few words.',
+          emptyText: 'Type a short description, then get a tool suggestion based on what feels stuck.'
+        },
+        ja: {
+          idea: [
+            'アイデア → 3つの切り口',
+            'アイデア → 前提の見直し',
+            'アイデア → テスト計画'
+          ],
+          writing: [
+            '下書き → もっと短く',
+            'フック生成',
+            'ツイート磨き'
+          ],
+          confusion: [
+            'モヤモヤ → より良い問い',
+            '問題 → 選択肢',
+            'アイデア → 3つの切り口'
+          ],
+          problem: [
+            '問題 → 選択肢',
+            '問題 → 根本原因',
+            '問題 → 制約'
+          ],
+          default: [
+            'モヤモヤ → より良い問い',
+            'アイデア → 3つの切り口',
+            '問題 → 選択肢'
+          ],
+          resultBadge: 'おすすめ',
+          statusReady: '準備完了',
+          statusJapanese: '判定: 日本語',
+          statusEnglish: '判定: English',
+          statusEmpty: '数語だけでも入力してください。',
+          emptyText: '短く状況を書いてから、次に使うツールの候補を見つけてください。'
+        }
+      };
+
+      const PATTERNS = {
+        idea: [
+          /\bidea\b/i,
+          /\bconcept\b/i,
+          /アイデア/,
+          /コンセプト/
+        ],
+        writing: [
+          /\bdraft\b/i,
+          /\bpost\b/i,
+          /\btweet\b/i,
+          /文章/,
+          /下書き/,
+          /投稿/,
+          /ツイート/
+        ],
+        confusion: [
+          /\bconfused\b/i,
+          /\bunclear\b/i,
+          /わからない/,
+          /分からない/,
+          /よくわからない/,
+          /不明/,
+          /曖昧/
+        ],
+        problem: [
+          /\bproblem\b/i,
+          /\bissue\b/i,
+          /問題/,
+          /課題/,
+          /不具合/
+        ]
+      };
+
+      function detectLanguage(text) {
+        const hasJapanese = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+        return hasJapanese ? 'ja' : 'en';
+      }
+
+      function detectCategory(text) {
+        for (const key of ['idea', 'writing', 'confusion', 'problem']) {
+          if (PATTERNS[key].some((pattern) => pattern.test(text))) {
+            return key;
+          }
+        }
+        return 'default';
+      }
+
+      function clearResults() {
+        resultsEl.innerHTML = '';
+      }
+
+      function renderResults(items, lang) {
+        clearResults();
+        emptyEl.style.display = 'none';
+
+        const labels = TOOL_MAP[lang];
+        items.forEach((item) => {
+          const card = document.createElement('div');
+          card.className = 'tool-card';
+
+          const name = document.createElement('div');
+          name.className = 'tool-name';
+          name.textContent = item;
+
+          const pill = document.createElement('div');
+          pill.className = 'pill';
+          pill.textContent = labels.resultBadge;
+
+          card.appendChild(name);
+          card.appendChild(pill);
+          resultsEl.appendChild(card);
+        });
+      }
+
+      function updateStatus(text) {
+        statusEl.textContent = text;
+      }
+
+      function runSuggestion() {
+        const raw = inputEl.value.trim();
+        const liveLang = detectLanguage(raw || '');
+        const labels = TOOL_MAP[liveLang];
+
+        if (!raw) {
+          clearResults();
+          emptyEl.style.display = 'block';
+          emptyEl.textContent = labels.statusEmpty;
+          updateStatus(labels.statusEmpty);
+          return;
+        }
+
+        const category = detectCategory(raw);
+        const suggestions = TOOL_MAP[liveLang][category];
+
+        renderResults(suggestions, liveLang);
+        updateStatus(liveLang === 'ja' ? labels.statusJapanese : labels.statusEnglish);
+      }
+
+      inputEl.addEventListener('input', () => {
+        const raw = inputEl.value.trim();
+        const lang = detectLanguage(raw || '');
+        const labels = TOOL_MAP[lang];
+
+        if (!raw) {
+          updateStatus(labels.statusReady);
+          clearResults();
+          emptyEl.style.display = 'block';
+          emptyEl.textContent = labels.emptyText;
+          return;
+        }
+
+        updateStatus(lang === 'ja' ? labels.statusJapanese : labels.statusEnglish);
+      });
+
+      btnEl.addEventListener('click', runSuggestion);
+
+      inputEl.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          runSuggestion();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
