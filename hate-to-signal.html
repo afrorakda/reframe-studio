@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hate → Signal | REFRAME Studio</title>
+  <meta name="description" content="Extract useful signals and hidden requests from harsh or emotional comments." />
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --card: #ffffff;
+      --text: #161616;
+      --muted: #666;
+      --line: #e7e7e2;
+      --accent: #111;
+      --accent-2: #2f6fed;
+      --soft: #f1f4ff;
+      --danger: #a33;
+      --radius: 16px;
+      --shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      padding: 16px;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      background: #fff;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #c9d7ff;
+      box-shadow: 0 0 0 4px rgba(47, 111, 237, 0.10);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      flex: 1 1 220px;
+    }
+
+    .secondary {
+      background: #f1f1ee;
+      color: var(--text);
+      flex: 0 0 auto;
+    }
+
+    .secondary[disabled] {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 20px;
+    }
+
+    .results {
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .results h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-item {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-2);
+      background: var(--soft);
+      border-radius: 999px;
+      padding: 6px 9px;
+      margin-bottom: 8px;
+    }
+
+    .signal-title {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .signal-text {
+      margin: 0;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      background: #fcfcfb;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 24px; }
+      .card { padding: 16px; }
+      textarea { min-height: 130px; }
+      .controls { flex-direction: column; }
+      .primary, .secondary { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="pageTitle">Hate → Signal</h1>
+      <p class="desc" id="pageDesc">Turn a harsh comment into a few useful signals you can act on.</p>
+
+      <label id="inputLabel" for="commentInput">Comment</label>
+      <textarea id="commentInput" placeholder="Paste a harsh or emotional comment here..."></textarea>
+
+      <div class="controls">
+        <button class="primary" id="analyzeBtn" type="button">Extract Signal</button>
+        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
+      </div>
+
+      <div class="hint" id="statusText"></div>
+
+      <section class="results" aria-live="polite">
+        <h2 id="resultHeading">Hidden signals</h2>
+        <div id="resultArea">
+          <div class="empty" id="emptyState">
+            Add one comment, then extract the likely request or need hidden underneath.
+          </div>
+        </div>
+        <p class="note" id="noteText">This tool looks for likely signals, not absolute truth.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Extracts practical signals and likely requests hidden inside harsh comments.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const input = document.getElementById('commentInput');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const resultArea = document.getElementById('resultArea');
+      const statusText = document.getElementById('statusText');
+
+      const pageTitle = document.getElementById('pageTitle');
+      const pageDesc = document.getElementById('pageDesc');
+      const inputLabel = document.getElementById('inputLabel');
+      const resultHeading = document.getElementById('resultHeading');
+      const noteText = document.getElementById('noteText');
+
+      const uiText = {
+        en: {
+          title: 'Hate → Signal',
+          desc: 'Turn a harsh comment into a few useful signals you can act on.',
+          label: 'Comment',
+          placeholder: 'Paste a harsh or emotional comment here...',
+          analyze: 'Extract Signal',
+          voice: 'Voice Input',
+          voiceUnsupported: 'Voice input is not supported in this browser.',
+          listening: 'Listening...',
+          stopped: 'Voice input stopped.',
+          empty: 'Add one comment, then extract the likely request or need hidden underneath.',
+          results: 'Hidden signals',
+          note: 'This tool looks for likely signals, not absolute truth.',
+          emptyInput: 'Enter a comment first.',
+          maybe: 'Possible signal',
+          fallback1: { tag: 'Signal', title: 'Need to be heard', text: 'They may want acknowledgment before any solution.' },
+          fallback2: { tag: 'Signal', title: 'Need for clarity', text: 'They may want a clearer explanation, expectation, or next step.' },
+          fallback3: { tag: 'Signal', title: 'Need for action', text: 'They may want a concrete fix, response, or decision soon.' }
+        },
+        ja: {
+          title: 'Hate → Signal',
+          desc: '強い言い方のコメントから、使えるシグナルを短く抽出します。',
+          label: 'コメント',
+          placeholder: 'きついコメントや感情的な言葉を入力してください…',
+          analyze: 'シグナル抽出',
+          voice: '音声入力',
+          voiceUnsupported: 'このブラウザでは音声入力に対応していません。',
+          listening: '聞き取り中…',
+          stopped: '音声入力を停止しました。',
+          empty: 'コメントを1つ入れると、その奥にある要求やニーズを推定します。',
+          results: '隠れたシグナル',
+          note: 'これは推定です。絶対的な正解ではありません。',
+          emptyInput: 'まずコメントを入力してください。',
+          maybe: '考えられるシグナル',
+          fallback1: { tag: 'シグナル', title: 'まず聞いてほしい', text: '解決策より先に、気持ちや不満を受け止めてほしい可能性があります。' },
+          fallback2: { tag: 'シグナル', title: 'もっと明確にしてほしい', text: '説明、期待値、次の一歩をもっと分かりやすくしてほしい可能性があります。' },
+          fallback3: { tag: 'シグナル', title: '具体的に動いてほしい', text: '早めの対応、修正、返答、判断を求めている可能性があります。' }
+        }
+      };
+
+      const signals = {
+        en: [
+          {
+            id: 'clarity',
+            tag: 'Signal',
+            title: 'Need for clarity',
+            text: 'They may be asking for simpler wording, clearer expectations, or less confusion.',
+            patterns: [
+              'confusing', 'unclear', 'what does this mean', 'doesn\\'t make sense', 'make no sense',
+              'hard to understand', 'complicated', 'vague', 'unclear instructions', 'not clear'
+            ]
+          },
+          {
+            id: 'speed',
+            tag: 'Signal',
+            title: 'Need for speed',
+            text: 'They may want a faster response, shorter delay, or quicker turnaround.',
+            patterns: [
+              'slow', 'too late', 'late', 'waiting', 'still waiting', 'takes forever',
+              'why is this taking so long', 'delayed', 'delay', 'no response yet'
+            ]
+          },
+          {
+            id: 'fix',
+            tag: 'Signal',
+            title: 'Need for a fix',
+            text: 'They may want the broken part repaired, stabilized, or made reliable.',
+            patterns: [
+              'broken', 'doesn\\'t work', 'not working', 'bug', 'error', 'issue',
+              'failed', 'failure', 'glitch', 'crash', 'wrong', 'useless'
+            ]
+          },
+          {
+            id: 'support',
+            tag: 'Signal',
+            title: 'Need for response',
+            text: 'They may want help, follow-up, or a sign that someone is actively handling this.',
+            patterns: [
+              'ignored', 'no one replied', 'nobody replied', 'no reply', 'no response',
+              'help me', 'support', 'answer me', 'reply', 'ghosted'
+            ]
+          },
+          {
+            id: 'fit',
+            tag: 'Signal',
+            title: 'Need for better fit',
+            text: 'They may be saying this does not match what they expected, needed, or asked for.',
+            patterns: [
+              'not what i asked', 'not what i wanted', 'not what i expected', 'wrong thing',
+              'missed the point', 'irrelevant', 'off topic', 'this isn\\'t it'
+            ]
+          },
+          {
+            id: 'value',
+            tag: 'Signal',
+            title: 'Need for fair value',
+            text: 'They may want lower cost, clearer value, or proof that the effort is worth it.',
+            patterns: [
+              'expensive', 'overpriced', 'waste of money', 'not worth it', 'ripoff',
+              'too much', 'cost too much', 'waste'
+            ]
+          },
+          {
+            id: 'respect',
+            tag: 'Signal',
+            title: 'Need for respect',
+            text: 'They may want to feel taken seriously, treated fairly, or not dismissed.',
+            patterns: [
+              'rude', 'disrespect', 'insult', 'stupid', 'idiot', 'useless people',
+              'you never listen', 'nobody cares', 'treated badly'
+            ]
+          },
+          {
+            id: 'trust',
+            tag: 'Signal',
+            title: 'Need for trust',
+            text: 'They may be worried about honesty, consistency, or whether they can rely on this.',
+            patterns: [
+              'scam', 'lied', 'liar', 'fake', 'can\\'t trust', 'dishonest', 'misleading',
+              'bait and switch'
+            ]
+          },
+          {
+            id: 'control',
+            tag: 'Signal',
+            title: 'Need for control',
+            text: 'They may want more choice, flexibility, or a way to undo or change direction.',
+            patterns: [
+              'can\\'t', 'forced', 'stuck', 'no option', 'impossible', 'why can\\'t i',
+              'let me', 'give me an option'
+            ]
+          },
+          {
+            id: 'quality',
+            tag: 'Signal',
+            title: 'Need for quality',
+            text: 'They may want higher standards, more accuracy, or a better finished result.',
+            patterns: [
+              'bad quality', 'sloppy', 'cheap', 'poor', 'terrible', 'awful',
+              'inaccurate', 'low quality', 'half-baked'
+            ]
+          }
+        ],
+        ja: [
+          {
+            id: 'clarity',
+            tag: 'シグナル',
+            title: 'もっと分かりやすくしてほしい',
+            text: '説明、意図、手順、期待値をもっと明確にしてほしい可能性があります。',
+            patterns: ['わかりにく', '意味不明', '意味がわから', '伝わら', '不明確', '曖昧', '複雑', 'ややこし', '説明不足']
+          },
+          {
+            id: 'speed',
+            tag: 'シグナル',
+            title: 'もっと早くしてほしい',
+            text: '返答、対応、進行、処理速度を早めてほしい可能性があります。',
+            patterns: ['遅い', '遅すぎ', 'まだ', '待たせ', '時間かかりすぎ', 'いつまで', '返事ない', '対応が遅', '遅延']
+          },
+          {
+            id: 'fix',
+            tag: 'シグナル',
+            title: 'ちゃんと直してほしい',
+            text: '壊れている点、動かない点、ズレている点を修正してほしい可能性があります。',
+            patterns: ['壊れ', '動かな', '不具合', 'バグ', 'エラー', '使えない', 'おかしい', '間違', '故障']
+          },
+          {
+            id: 'support',
+            tag: 'シグナル',
+            title: 'ちゃんと反応してほしい',
+            text: '無視せず、返答やフォローや助けを見せてほしい可能性があります。',
+            patterns: ['無視', '返信ない', '返事ない', '反応ない', '助けて', 'サポート', '回答して', '連絡ない']
+          },
+          {
+            id: 'fit',
+            tag: 'シグナル',
+            title: '求めていたものと違う',
+            text: '期待、依頼内容、必要としていた方向とズレている可能性があります。',
+            patterns: ['求めてたのと違', '頼んだのと違', '期待外れ', 'ズレて', '的外れ', '違う', '求めてない']
+          },
+          {
+            id: 'value',
+            tag: 'シグナル',
+            title: '見合う価値を示してほしい',
+            text: '価格、手間、効果のバランスに納得したい可能性があります。',
+            patterns: ['高い', '高すぎ', 'コスパ', '値段に見合', '無駄', '損した', 'ぼったくり']
+          },
+          {
+            id: 'respect',
+            tag: 'シグナル',
+            title: '軽く扱わないでほしい',
+            text: 'ちゃんと聞かれたい、尊重されたい、雑に扱われたくない可能性があります。',
+            patterns: ['失礼', '舐めて', 'バカに', 'ちゃんと聞け', '聞いてない', '雑', '態度悪', 'ふざけ']
+          },
+          {
+            id: 'trust',
+            tag: 'シグナル',
+            title: '信用できる状態にしてほしい',
+            text: '誠実さ、一貫性、説明責任がほしい可能性があります。',
+            patterns: ['信用でき', '嘘', '詐欺', '怪しい', '騙', '不誠実', '信用ない']
+          },
+          {
+            id: 'control',
+            tag: 'シグナル',
+            title: '選べる余地がほしい',
+            text: '選択肢、自由度、やり直しの余地を求めている可能性があります。',
+            patterns: ['できない', '無理', '選べない', '強制', '勝手に', '変更できない', '戻せない']
+          },
+          {
+            id: 'quality',
+            tag: 'シグナル',
+            title: '品質を上げてほしい',
+            text: '完成度、精度、丁寧さをもっと高めてほしい可能性があります。',
+            patterns: ['質が悪い', '雑', 'ひどい', '最悪', '適当', '精度低', 'クオリティ低', 'しょぼい']
+          }
+        ]
+      };
+
+      function detectLanguage(text) {
+        return /[\u3040-\u30ff\u3400-\u9fff]/.test(text) ? 'ja' : 'en';
+      }
+
+      function setLanguage(lang) {
+        const t = uiText[lang];
+        document.documentElement.lang = lang;
+        pageTitle.textContent = t.title;
+        pageDesc.textContent = t.desc;
+        inputLabel.textContent = t.label;
+        input.placeholder = t.placeholder;
+        analyzeBtn.textContent = t.analyze;
+        voiceBtn.textContent = t.voice;
+        resultHeading.textContent = t.results;
+        noteText.textContent = t.note;
+
+        const empty = document.getElementById('emptyState');
+        if (empty) empty.textContent = t.empty;
+      }
+
+      function normalize(text, lang) {
+        let s = text.trim();
+        if (lang === 'en') s = s.toLowerCase();
+        return s.replace(/\s+/g, ' ');
+      }
+
+      function scoreSignals(text, lang) {
+        const list = signals[lang];
+        const scored = [];
+
+        for (const item of list) {
+          let score = 0;
+          for (const pattern of item.patterns) {
+            const regex = new RegExp(pattern, lang === 'en' ? 'i' : '');
+            if (regex.test(text)) score += 2;
+          }
+
+          if (lang === 'en') {
+            if (/[A-Z]{4,}/.test(text)) score += item.id === 'respect' ? 1 : 0;
+            if ((text.match(/!/g) || []).length >= 2) score += 1;
+          } else {
+            if ((text.match(/[！!]/g) || []).length >= 2) score += 1;
+          }
+
+          if (/(never|always|worst|hate|terrible|awful|最悪|ほんとに|マジで|ありえない)/i.test(text)) {
+            if (item.id === 'respect' || item.id === 'support') score += 1;
+          }
+
+          if (score > 0) {
+            scored.push({ ...item, score });
+          }
+        }
+
+        scored.sort((a, b) => b.score - a.score);
+
+        const top = [];
+        const used = new Set();
+        for (const item of scored) {
+          if (!used.has(item.id)) {
+            top.push(item);
+            used.add(item.id);
+          }
+          if (top.length === 3) break;
+        }
+
+        if (top.length === 0) {
+          const t = uiText[lang];
+          return [t.fallback1, t.fallback2, t.fallback3];
+        }
+
+        if (top.length === 1) {
+          const t = uiText[lang];
+          top.push(t.fallback2, t.fallback3);
+        } else if (top.length === 2) {
+          const t = uiText[lang];
+          top.push(t.fallback3);
+        }
+
+        return top.slice(0, 3);
+      }
+
+      function renderResults(items, lang) {
+        const t = uiText[lang];
+        const html = items.map((item, index) => {
+          return `
+            <div class="result-item">
+              <div class="tag">${item.tag || t.maybe} ${index + 1}</div>
+              <h3 class="signal-title">${escapeHtml(item.title)}</h3>
+              <p class="signal-text">${escapeHtml(item.text)}</p>
+            </div>
+          `;
+        }).join('');
+        resultArea.innerHTML = `<div class="result-list">${html}</div>`;
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function analyze() {
+        const raw = input.value.trim();
+        const lang = detectLanguage(raw || input.value);
+        setLanguage(lang);
+        statusText.textContent = '';
+
+        if (!raw) {
+          const t = uiText[lang];
+          resultArea.innerHTML = `<div class="empty">${t.emptyInput}</div>`;
+          return;
+        }
+
+        const normalized = normalize(raw, lang);
+        const items = scoreSignals(normalized, lang);
+        renderResults(items, lang);
+      }
+
+      input.addEventListener('input', function () {
+        const lang = detectLanguage(input.value);
+        setLanguage(lang);
+      });
+
+      analyzeBtn.addEventListener('click', analyze);
+
+      input.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          analyze();
+        }
+      });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let listening = false;
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(input.value);
+          setLanguage(lang);
+
+          if (listening) {
+            recognition.stop();
+            return;
+          }
+
+          recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
+          try {
+            recognition.start();
+          } catch (e) {
+            // Ignore repeated start errors.
+          }
+        });
+
+        recognition.onstart = function () {
+          listening = true;
+          const lang = detectLanguage(input.value);
+          statusText.textContent = uiText[lang].listening;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || '';
+          input.value = input.value ? (input.value + ' ' + transcript).trim() : transcript.trim();
+          const lang = detectLanguage(input.value);
+          setLanguage(lang);
+          analyze();
+        };
+
+        recognition.onend = function () {
+          listening = false;
+          const lang = detectLanguage(input.value);
+          statusText.textContent = uiText[lang].stopped;
+          setTimeout(() => {
+            if (statusText.textContent === uiText[lang].stopped) statusText.textContent = '';
+          }, 1200);
+        };
+
+        recognition.onerror = function () {
+          listening = false;
+          statusText.textContent = '';
+        };
+      } else {
+        voiceBtn.disabled = true;
+        voiceBtn.addEventListener('click', function () {
+          const lang = detectLanguage(input.value);
+          setLanguage(lang);
+          statusText.textContent = uiText[lang].voiceUnsupported;
+        });
+      }
+
+      setLanguage('en');
+    })();
+  </script>
+</body>
+</html>
