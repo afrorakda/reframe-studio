@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Idea → Counterargument | REFRAME Studio</title>
+  <meta
+    name="description"
+    content="Generate 1–3 concise counterarguments to an idea or opinion in English or Japanese, entirely in your browser."
+  />
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --card: #ffffff;
+      --text: #1f2328;
+      --muted: #666;
+      --line: #d9d9d4;
+      --accent: #111;
+      --accent-2: #2f6fed;
+      --soft: #f0f2f5;
+      --danger: #b42318;
+      --radius: 16px;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans",
+        "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:focus,
+    .back-link:hover {
+      color: var(--text);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.2;
+      margin: 0 0 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.5;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12);
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      min-height: 48px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.02s ease, opacity 0.2s ease, background 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+      flex: 1 1 220px;
+    }
+
+    .secondary {
+      background: var(--soft);
+      color: var(--text);
+      flex: 1 1 140px;
+    }
+
+    .voice {
+      background: #eef4ff;
+      color: #1947b8;
+      flex: 1 1 140px;
+    }
+
+    .status {
+      min-height: 20px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .result-wrap {
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .result-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .lang-badge {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--soft);
+      border-radius: 999px;
+      padding: 6px 10px;
+    }
+
+    .result {
+      background: #fcfcfb;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 120px;
+    }
+
+    .result.placeholder {
+      color: var(--muted);
+    }
+
+    .result ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .result li {
+      margin: 0 0 10px;
+      line-height: 1.6;
+    }
+
+    .result li:last-child {
+      margin-bottom: 0;
+    }
+
+    .copy-row {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 480px) {
+      .wrap {
+        padding: 16px 12px 28px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back-link" href="./">← Back to REFRAME Studio</a>
+
+    <section class="card">
+      <h1 id="title">Idea → Counterargument</h1>
+      <p class="desc" id="description">
+        Paste an idea or opinion, then get 1–3 concise opposing views to pressure-test it.
+      </p>
+
+      <label for="ideaInput" id="inputLabel">Your idea or opinion</label>
+      <textarea
+        id="ideaInput"
+        placeholder="Example: Remote work should be the default for most knowledge teams."
+        autocomplete="off"
+        autocapitalize="sentences"
+        spellcheck="true"
+      ></textarea>
+
+      <div class="row">
+        <button class="primary" id="generateBtn" type="button">Generate counterarguments</button>
+      </div>
+
+      <div class="row">
+        <button class="secondary" id="exampleBtn" type="button">Try example</button>
+        <button class="voice" id="voiceBtn" type="button" hidden>Voice Input</button>
+      </div>
+
+      <div class="status" id="status" aria-live="polite"></div>
+
+      <div class="result-wrap">
+        <div class="result-head">
+          <p class="result-title" id="resultTitle">Result</p>
+          <span class="lang-badge" id="langBadge">Language: Auto</span>
+        </div>
+
+        <div class="result placeholder" id="result" aria-live="polite">
+          Add an idea above to see short counterarguments here.
+        </div>
+
+        <div class="copy-row">
+          <button class="secondary" id="copyBtn" type="button">Copy result</button>
+        </div>
+
+        <p class="small" id="smallNote">
+          Private by default. Everything runs in your browser.
+        </p>
+      </div>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Generate short opposing views against an idea so you can test assumptions and sharpen your thinking quickly.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var inputEl = document.getElementById("ideaInput");
+      var generateBtn = document.getElementById("generateBtn");
+      var exampleBtn = document.getElementById("exampleBtn");
+      var copyBtn = document.getElementById("copyBtn");
+      var voiceBtn = document.getElementById("voiceBtn");
+      var resultEl = document.getElementById("result");
+      var statusEl = document.getElementById("status");
+      var langBadgeEl = document.getElementById("langBadge");
+
+      var titleEl = document.getElementById("title");
+      var descriptionEl = document.getElementById("description");
+      var inputLabelEl = document.getElementById("inputLabel");
+      var resultTitleEl = document.getElementById("resultTitle");
+      var smallNoteEl = document.getElementById("smallNote");
+
+      var recognition = null;
+      var isListening = false;
+      var lastPlainText = "";
+
+      var uiText = {
+        en: {
+          title: "Idea → Counterargument",
+          description: "Paste an idea or opinion, then get 1–3 concise opposing views to pressure-test it.",
+          inputLabel: "Your idea or opinion",
+          placeholder: "Example: Remote work should be the default for most knowledge teams.",
+          generate: "Generate counterarguments",
+          example: "Try example",
+          voice: "Voice Input",
+          voiceStop: "Stop voice input",
+          resultTitle: "Result",
+          resultPlaceholder: "Add an idea above to see short counterarguments here.",
+          copy: "Copy result",
+          copied: "Copied.",
+          empty: "Please enter an idea or opinion.",
+          listening: "Listening… speak now.",
+          voiceUnsupported: "Voice input is not supported in this browser.",
+          voiceDenied: "Voice input could not start.",
+          privateNote: "Private by default. Everything runs in your browser.",
+          langAuto: "Language: English",
+          exampleText: "Remote work should be the default for most knowledge teams."
+        },
+        ja: {
+          title: "Idea → Counterargument",
+          description: "アイデアや意見を入れると、考えを磨くための短い反対意見を1〜3個出します。",
+          inputLabel: "アイデア・意見",
+          placeholder: "例：多くのナレッジワークのチームでは、リモートワークを基本にすべきだ。",
+          generate: "反対意見を生成",
+          example: "例を試す",
+          voice: "音声入力",
+          voiceStop: "音声入力を停止",
+          resultTitle: "結果",
+          resultPlaceholder: "上にアイデアや意見を入れると、ここに短い反対意見が表示されます。",
+          copy: "結果をコピー",
+          copied: "コピーしました。",
+          empty: "アイデアか意見を入力してください。",
+          listening: "聞き取り中…話してください。",
+          voiceUnsupported: "このブラウザでは音声入力に対応していません。",
+          voiceDenied: "音声入力を開始できませんでした。",
+          privateNote: "プライベート設計。すべてブラウザ内で動作します。",
+          langAuto: "言語: 日本語",
+          exampleText: "多くのナレッジワークのチームでは、リモートワークを基本にすべきだ。"
+        }
+      };
+
+      function detectLanguage(text) {
+        if (!text) return "en";
+        var jaChars = text.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/g);
+        var latinChars = text.match(/[A-Za-z]/g);
+        var jaCount = jaChars ? jaChars.length : 0;
+        var latinCount = latinChars ? latinChars.length : 0;
+        return jaCount > latinCount ? "ja" : "en";
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, function (m) {
+          return ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          })[m];
+        });
+      }
+
+      function setStatus(message, isError) {
+        statusEl.textContent = message || "";
+        statusEl.className = isError ? "status error" : "status";
+      }
+
+      function setUI(lang) {
+        var t = uiText[lang] || uiText.en;
+        document.documentElement.lang = lang === "ja" ? "ja" : "en";
+        titleEl.textContent = t.title;
+        descriptionEl.textContent = t.description;
+        inputLabelEl.textContent = t.inputLabel;
+        if (!inputEl.value) {
+          inputEl.placeholder = t.placeholder;
+        }
+        generateBtn.textContent = t.generate;
+        exampleBtn.textContent = t.example;
+        voiceBtn.textContent = isListening ? t.voiceStop : t.voice;
+        resultTitleEl.textContent = t.resultTitle;
+        copyBtn.textContent = t.copy;
+        smallNoteEl.textContent = t.privateNote;
+        langBadgeEl.textContent = t.langAuto;
+      }
+
+      function extractTopic(text, lang) {
+        var clean = text.trim().replace(/\s+/g, " ");
+        if (!clean) return lang === "ja" ? "この意見" : "this idea";
+        if (clean.length <= 60) return clean;
+        return clean.slice(0, 60) + (lang === "ja" ? "…" : "...");
+      }
+
+      function uniqueItems(items) {
+        var seen = {};
+        return items.filter(function (item) {
+          var key = item.toLowerCase().replace(/[^\w\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]+/g, "");
+          if (seen[key]) return false;
+          seen[key] = true;
+          return true;
+        });
+      }
+
+      function generateCounterarguments(input, lang) {
+        var text = input.trim();
+        var lower = text.toLowerCase();
+        var topic = extractTopic(text, lang);
+        var items = [];
+
+        var hasAbsolute = /\b(always|never|everyone|no one|must|best|worst|only|default|impossible|all|none)\b/.test(lower) ||
+          /（?必ず|絶対|みんな|誰も|べき|しかない|最善|最悪|全て|完全に|絶対に）/.test(text);
+
+        var hasShould = /\b(should|need to|must)\b/.test(lower) || /(べき|必要がある|しなければならない)/.test(text);
+        var hasBetter = /\b(better|more effective|more efficient|faster|cheaper)\b/.test(lower) ||
+          /(より良い|より効果的|効率的|速い|安い)/.test(text);
+
+        if (lang === "ja") {
+          items.push("前提が強すぎるかもしれません。状況や立場が変わると、" + topic + " が当てはまらないケースがあります。");
+          if (hasShould) {
+            items.push("「そうすべき」という主張ですが、実行コストや現場負荷が見積もられていない可能性があります。");
+          }
+          if (hasBetter) {
+            items.push("短期では良く見えても、長期では信頼・品質・柔軟性を損なう可能性があります。");
+          }
+          if (hasAbsolute) {
+            items.push("例外を無視すると、少数の重要なケースを取りこぼすかもしれません。");
+          }
+          items.push("賛成する人の視点に寄りすぎていて、影響を受ける別の当事者の不利益が見えていない可能性があります。");
+          items.push("問題の解き方を決める前に、そもそもの課題設定がずれている可能性があります。");
+        } else {
+          items.push("The claim may be too broad. In different contexts, " + topic + " may not hold up.");
+          if (hasShould) {
+            items.push("It argues for what should happen, but it may underestimate implementation cost and real-world friction.");
+          }
+          if (hasBetter) {
+            items.push("It may improve short-term efficiency while weakening trust, quality, or resilience over time.");
+          }
+          if (hasAbsolute) {
+            items.push("The absolute framing may ignore edge cases that matter more than the average case.");
+          }
+          items.push("It may reflect the priorities of supporters while overlooking the trade-offs for other stakeholders.");
+          items.push("It may be solving the wrong problem; the root issue could sit one level deeper than the proposal itself.");
+        }
+
+        return uniqueItems(items).slice(0, 3);
+      }
+
+      function renderResult(items, lang) {
+        if (!items || !items.length) {
+          resultEl.className = "result placeholder";
+          resultEl.textContent = uiText[lang].resultPlaceholder;
+          lastPlainText = "";
+          return;
+        }
+
+        resultEl.className = "result";
+        var html = "<ul>";
+        var plain = [];
+        for (var i = 0; i < items.length; i++) {
+          html += "<li>" + escapeHtml(items[i]) + "</li>";
+          plain.push("• " + items[i]);
+        }
+        html += "</ul>";
+        resultEl.innerHTML = html;
+        lastPlainText = plain.join("\n");
+      }
+
+      function runGeneration() {
+        var value = inputEl.value.trim();
+        var lang = detectLanguage(value);
+        setUI(lang);
+
+        if (!value) {
+          setStatus(uiText[lang].empty, true);
+          renderResult([], lang);
+          return;
+        }
+
+        setStatus("", false);
+        var items = generateCounterarguments(value, lang);
+        renderResult(items, lang);
+      }
+
+      function applyExample() {
+        var current = inputEl.value.trim();
+        var lang = detectLanguage(current);
+        var chosenLang = current ? lang : (navigator.language && navigator.language.toLowerCase().indexOf("ja") === 0 ? "ja" : "en");
+        var text = uiText[chosenLang].exampleText;
+        inputEl.value = text;
+        setUI(chosenLang);
+        runGeneration();
+        inputEl.focus();
+      }
+
+      function copyResult() {
+        var lang = detectLanguage(inputEl.value.trim());
+        setUI(lang);
+
+        if (!lastPlainText) {
+          setStatus(uiText[lang].empty, true);
+          return;
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(lastPlainText).then(function () {
+            setStatus(uiText[lang].copied, false);
+          }).catch(function () {
+            fallbackCopy(lang);
+          });
+        } else {
+          fallbackCopy(lang);
+        }
+      }
+
+      function fallbackCopy(lang) {
+        var temp = document.createElement("textarea");
+        temp.value = lastPlainText;
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+          document.execCommand("copy");
+          setStatus(uiText[lang].copied, false);
+        } catch (e) {
+          setStatus("Copy failed.", true);
+        }
+        document.body.removeChild(temp);
+      }
+
+      function setupVoice() {
+        var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          return;
+        }
+
+        voiceBtn.hidden = false;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          isListening = true;
+          var lang = detectLanguage(inputEl.value.trim() || (navigator.language || ""));
+          recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
+          setUI(lang);
+          setStatus(uiText[lang].listening, false);
+        };
+
+        recognition.onresult = function (event) {
+          var text = "";
+          for (var i = 0; i < event.results.length; i++) {
+            text += event.results[i][0].transcript;
+          }
+          inputEl.value = text.trim();
+          var lang = detectLanguage(inputEl.value);
+          setUI(lang);
+          setStatus("", false);
+          runGeneration();
+        };
+
+        recognition.onerror = function () {
+          var lang = detectLanguage(inputEl.value.trim() || (navigator.language || ""));
+          setStatus(uiText[lang].voiceDenied, true);
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          var lang = detectLanguage(inputEl.value.trim() || (navigator.language || ""));
+          setUI(lang);
+        };
+
+        voiceBtn.addEventListener("click", function () {
+          var lang = detectLanguage(inputEl.value.trim() || (navigator.language || ""));
+          setUI(lang);
+
+          if (!recognition) {
+            setStatus(uiText[lang].voiceUnsupported, true);
+            return;
+          }
+
+          try {
+            if (isListening) {
+              recognition.stop();
+            } else {
+              recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
+              recognition.start();
+            }
+          } catch (e) {
+            setStatus(uiText[lang].voiceDenied, true);
+          }
+        });
+      }
+
+      function loadInputFromURL() {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var inputValue = params.get("input");
+          if (inputValue) {
+            inputEl.value = inputValue;
+            var lang = detectLanguage(inputValue);
+            setUI(lang);
+            runGeneration();
+          }
+        } catch (e) {
+          // Fail silently
+        }
+      }
+
+      generateBtn.addEventListener("click", runGeneration);
+      exampleBtn.addEventListener("click", applyExample);
+      copyBtn.addEventListener("click", copyResult);
+
+      inputEl.addEventListener("input", function () {
+        var lang = detectLanguage(inputEl.value.trim() || (navigator.language || ""));
+        setUI(lang);
+        setStatus("", false);
+      });
+
+      inputEl.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          runGeneration();
+        }
+      });
+
+      var initialLang = navigator.language && navigator.language.toLowerCase().indexOf("ja") === 0 ? "ja" : "en";
+      setUI(initialLang);
+      renderResult([], initialLang);
+      setupVoice();
+      loadInputFromURL();
+    })();
+  </script>
+</body>
+</html>
