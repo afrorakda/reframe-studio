@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draft Fixer</title>
+  <style>
+    :root{
+      --bg:#f5f5f2;
+      --card:#ffffff;
+      --text:#111111;
+      --muted:#666666;
+      --line:#e5e5df;
+      --accent:#111111;
+      --soft:#f0efe9;
+      --ok:#0f766e;
+      --radius:18px;
+      --shadow:0 8px 24px rgba(0,0,0,.06);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;
+    }
+    body{
+      padding:20px;
+    }
+    .wrap{
+      max-width:820px;
+      margin:0 auto;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .header{
+      padding:24px 20px 14px;
+      margin-bottom:16px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,5vw,40px);
+      line-height:1.05;
+      letter-spacing:-0.03em;
+    }
+    .sub{
+      margin:0;
+      font-size:14px;
+      line-height:1.6;
+      color:var(--muted);
+    }
+    .main{
+      padding:16px;
+    }
+    .topbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:12px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--line);
+      background:var(--soft);
+      color:var(--muted);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:12px;
+    }
+    .spacer{flex:1}
+    textarea{
+      width:100%;
+      min-height:190px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+      font-size:16px;
+      line-height:1.65;
+      resize:vertical;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#bdbdb3;
+      box-shadow:0 0 0 4px rgba(0,0,0,.04);
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      border-radius:12px;
+      padding:12px 16px;
+      font:inherit;
+      font-size:14px;
+      font-weight:700;
+      transition:.18s ease;
+    }
+    .primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    button:hover{
+      transform:translateY(-1px);
+    }
+    button:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .status{
+      min-height:18px;
+      margin-top:8px;
+      font-size:12px;
+      color:var(--ok);
+    }
+    .results{
+      margin-top:16px;
+      display:grid;
+      gap:12px;
+    }
+    .result{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      background:#fff;
+    }
+    .result h2{
+      margin:0 0 10px;
+      font-size:13px;
+      color:var(--muted);
+      letter-spacing:.01em;
+    }
+    .result p{
+      margin:0;
+      white-space:pre-wrap;
+      word-break:break-word;
+      line-height:1.7;
+      font-size:16px;
+    }
+    .copy-row{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:10px;
+    }
+    .copy-btn{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      font-weight:600;
+    }
+    .empty{
+      border:1px dashed var(--line);
+      border-radius:16px;
+      padding:18px;
+      text-align:center;
+      font-size:14px;
+      color:var(--muted);
+      background:#fcfcfa;
+    }
+    @media (max-width:640px){
+      body{padding:14px}
+      .header{padding:20px 16px 12px}
+      .main{padding:14px}
+      .actions button{width:100%}
+      .spacer{display:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card header">
+      <h1 id="title">Draft Fixer</h1>
+      <p id="subtitle" class="sub">Turn a weak draft into a clearer post, a stronger hook, and a shorter version.</p>
+    </section>
+
+    <section class="card main">
+      <div class="topbar">
+        <div class="pill"><span id="langLabel">Language</span>: <strong id="langValue">Auto</strong></div>
+        <div class="pill"><span id="voiceLabel">Voice</span>: <strong id="voiceValue">Checking…</strong></div>
+        <div class="spacer"></div>
+        <button id="voiceBtn" class="secondary" type="button" style="display:none">Voice Input</button>
+      </div>
+
+      <p id="inputLabel" class="sub" style="margin-bottom:8px;">Draft post</p>
+      <textarea id="input" placeholder="Write or paste your draft here..."></textarea>
+
+      <div class="actions">
+        <button id="fixBtn" class="primary" type="button">Fix Draft</button>
+        <button id="clearBtn" class="secondary" type="button">Clear</button>
+      </div>
+
+      <div id="status" class="status"></div>
+
+      <div id="results" class="results">
+        <div id="empty" class="empty">Your results will appear here.</div>
+      </div>
+
+      <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+        <p><strong>Built by REFRAME Studio</strong></p>
+        <p>
+          Turn a rough draft post into a clearer version, a stronger hook, and a shorter version in seconds.<br>
+          #Reframed
+        </p>
+        <p>
+          Open-source style tools. Simple. Private. Fast.
+        </p>
+        <p>
+          No login. No tracking. No personal data collected.<br>
+          Runs entirely in your browser.
+        </p>
+      </footer>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      const ui = {
+        en: {
+          title: "Draft Fixer",
+          subtitle: "Turn a weak draft into a clearer post, a stronger hook, and a shorter version.",
+          langLabel: "Language",
+          voiceLabel: "Voice",
+          auto: "Auto",
+          available: "Available",
+          unsupported: "Not supported",
+          listening: "Listening…",
+          inputLabel: "Draft post",
+          placeholder: "Write or paste your draft here...",
+          fix: "Fix Draft",
+          clear: "Clear",
+          voiceBtn: "Voice Input",
+          empty: "Your results will appear here.",
+          clearer: "Clearer version",
+          hook: "Stronger hook",
+          shorter: "Shorter version",
+          copy: "Copy",
+          copied: "Copied",
+          needText: "Write or paste a draft first.",
+          listeningStatus: "Voice input is on.",
+          stoppedStatus: "Voice input stopped."
+        },
+        ja: {
+          title: "Draft Fixer",
+          subtitle: "弱い下書きを、より伝わる投稿・強いフック・短い版に整えます。",
+          langLabel: "言語",
+          voiceLabel: "音声",
+          auto: "自動",
+          available: "利用可能",
+          unsupported: "未対応",
+          listening: "聞き取り中…",
+          inputLabel: "投稿の下書き",
+          placeholder: "ここに投稿の下書きを入力または貼り付けしてください…",
+          fix: "下書きを整える",
+          clear: "クリア",
+          voiceBtn: "音声入力",
+          empty: "ここに結果が表示されます。",
+          clearer: "より伝わる版",
+          hook: "強いフック",
+          shorter: "短い版",
+          copy: "コピー",
+          copied: "コピー済み",
+          needText: "先に下書きを入力してください。",
+          listeningStatus: "音声入力中です。",
+          stoppedStatus: "音声入力を停止しました。"
+        }
+      };
+
+      const els = {
+        title: document.getElementById("title"),
+        subtitle: document.getElementById("subtitle"),
+        langLabel: document.getElementById("langLabel"),
+        voiceLabel: document.getElementById("voiceLabel"),
+        langValue: document.getElementById("langValue"),
+        voiceValue: document.getElementById("voiceValue"),
+        voiceBtn: document.getElementById("voiceBtn"),
+        inputLabel: document.getElementById("inputLabel"),
+        input: document.getElementById("input"),
+        fixBtn: document.getElementById("fixBtn"),
+        clearBtn: document.getElementById("clearBtn"),
+        results: document.getElementById("results"),
+        empty: document.getElementById("empty"),
+        status: document.getElementById("status")
+      };
+
+      const browserDefault = /^ja\b/i.test(navigator.language || "") ? "ja" : "en";
+      let currentLang = browserDefault;
+
+      function detectLanguage(text) {
+        const value = (text || "").trim();
+        if (!value) return browserDefault;
+        const ja = (value.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/g) || []).length;
+        const en = (value.match(/[A-Za-z]/g) || []).length;
+        return ja > en * 0.2 ? "ja" : "en";
+      }
+
+      function setUI(lang) {
+        currentLang = lang;
+        const t = ui[lang];
+        els.title.textContent = t.title;
+        els.subtitle.textContent = t.subtitle;
+        els.langLabel.textContent = t.langLabel;
+        els.voiceLabel.textContent = t.voiceLabel;
+        els.inputLabel.textContent = t.inputLabel;
+        els.input.placeholder = t.placeholder;
+        els.fixBtn.textContent = t.fix;
+        els.clearBtn.textContent = t.clear;
+        els.voiceBtn.textContent = t.voiceBtn;
+        if (!els.results.children.length || (els.results.children.length === 1 && els.results.firstChild.id === "empty")) {
+          els.empty.textContent = t.empty;
+        }
+      }
+
+      function normalize(text) {
+        return (text || "")
+          .replace(/\r/g, "\n")
+          .replace(/[ \t]+/g, " ")
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+      }
+
+      function cleanJapanese(text) {
+        return normalize(text)
+          .replace(/なんか|ちょっと|一応|とりあえず|まぁ|そのうち|みたいな|って感じ/g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function cleanEnglish(text) {
+        return normalize(text)
+          .replace(/\b(?:really|very|just|kind of|sort of|maybe|probably|basically|actually)\b/gi, "")
+          .replace(/\s{2,}/g, " ")
+          .trim();
+      }
+
+      function splitJa(text) {
+        return text.split(/(?<=[。！？\n])/).map(s => s.trim()).filter(Boolean);
+      }
+
+      function splitEn(text) {
+        return text.split(/(?<=[.!?\n])\s+/).map(s => s.trim()).filter(Boolean);
+      }
+
+      function unique(items) {
+        const seen = new Set();
+        return items.filter(item => {
+          const key = item.replace(/\s+/g, "").toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
+      function shortenJa(text, limit) {
+        const v = text.replace(/\n+/g, " ").replace(/\s+/g, " ").trim();
+        if (v.length <= limit) return v;
+        const cut = v.slice(0, limit);
+        const point = Math.max(cut.lastIndexOf("。"), cut.lastIndexOf("、"), cut.lastIndexOf(" "));
+        const out = (point > limit * 0.55 ? cut.slice(0, point) : cut).trim();
+        return out.replace(/[、。]$/, "") + "。";
+      }
+
+      function shortenEn(text, limit) {
+        const v = text.replace(/\n+/g, " ").replace(/\s+/g, " ").trim();
+        if (v.length <= limit) return v;
+        const cut = v.slice(0, limit);
+        const point = Math.max(cut.lastIndexOf("."), cut.lastIndexOf(","), cut.lastIndexOf(" "));
+        const out = (point > limit * 0.55 ? cut.slice(0, point) : cut).trim();
+        return out.replace(/[.,]$/, "") + ".";
+      }
+
+      function topicJa(text) {
+        let t = (text.split("\n").find(Boolean) || text).trim();
+        t = t.replace(/[。！？].*$/, "").trim();
+        if (t.length > 24) t = t.slice(0, 24).trim() + "…";
+        return t || "この話";
+      }
+
+      function topicEn(text) {
+        let t = (text.split("\n").find(Boolean) || text).trim();
+        t = t.replace(/[.!?].*$/, "").trim();
+        if (t.length > 36) t = t.slice(0, 36).trim() + "…";
+        return t || "this";
+      }
+
+      function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+      }
+
+      function buildJa(text) {
+        const cleaned = cleanJapanese(text);
+        const sentences = unique(splitJa(cleaned));
+        const first = sentences[0] || cleaned;
+        const second = sentences[1] || "";
+        const t = topicJa(cleaned);
+
+        let clearer = first
+          .replace(/と思います/g, "です")
+          .replace(/かなと/g, "と")
+          .replace(/ですけど|ですが/g, "です。")
+          .trim();
+
+        if (!/[。！？]$/.test(clearer)) clearer += "。";
+
+        if (second) {
+          let s2 = second.replace(/^(でも|ただ|あと)/, "").trim();
+          if (s2) {
+            if (!/[。！？]$/.test(s2)) s2 += "。";
+            clearer += s2;
+          }
+        }
+
+        if (clearer.length < 18) {
+          clearer = `${t}について、要点だけ伝えます。${shortenJa(cleaned, 70)}`;
+        }
+
+        const hookHeads = [
+          `${t}、ここが一番大事です。`,
+          `結論から言うと、${t}は見直す価値があります。`,
+          `見落としがちですが、${t}はかなり重要です。`
+        ];
+        const core = shortenJa(cleaned, 58).replace(/。$/, "");
+        const hook = `${hookHeads[cleaned.length % hookHeads.length]} ${core}。`;
+
+        let shorter = shortenJa(cleaned, 66);
+        if (!/[。！？]$/.test(shorter)) shorter += "。";
+
+        return { clearer, hook, shorter };
+      }
+
+      function buildEn(text) {
+        const cleaned = cleanEnglish(text);
+        const sentences = unique(splitEn(cleaned));
+        const first = sentences[0] || cleaned;
+        const second = sentences[1] || "";
+        const t = topicEn(cleaned);
+
+        let clearer = first
+          .replace(/\bI think\b/gi, "")
+          .replace(/\bmaybe\b/gi, "")
+          .replace(/\s{2,}/g, " ")
+          .trim();
+
+        if (clearer) {
+          clearer = capitalize(clearer);
+          if (!/[.!?]$/.test(clearer)) clearer += ".";
+        }
+
+        if (second) {
+          let s2 = second.replace(/^(But|And|So)\s+/i, "").trim();
+          if (s2) {
+            s2 = capitalize(s2);
+            if (!/[.!?]$/.test(s2)) s2 += ".";
+            clearer += " " + s2;
+          }
+        }
+
+        if (clearer.length < 22) {
+          clearer = `Here is the core point about ${t}: ${shortenEn(cleaned, 88)}`;
+        }
+
+        const hookHeads = [
+          "This matters more than it looks.",
+          "Here is the point most people miss.",
+          "A quick take worth paying attention to."
+        ];
+        const core = capitalize(shortenEn(cleaned, 72).replace(/[.!?]$/, ""));
+        const hook = `${hookHeads[cleaned.length % hookHeads.length]} ${core}.`;
+
+        let shorter = shortenEn(cleaned, 80);
+        if (!/[.!?]$/.test(shorter)) shorter += ".";
+
+        return { clearer, hook, shorter };
+      }
+
+      function makeResult(title, text, lang) {
+        const t = ui[lang];
+        const box = document.createElement("div");
+        box.className = "result";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = title;
+
+        const p = document.createElement("p");
+        p.textContent = text;
+
+        const row = document.createElement("div");
+        row.className = "copy-row";
+
+        const btn = document.createElement("button");
+        btn.className = "copy-btn";
+        btn.type = "button";
+        btn.textContent = t.copy;
+
+        btn.addEventListener("click", async function () {
+          try {
+            await navigator.clipboard.writeText(text);
+            const old = btn.textContent;
+            btn.textContent = t.copied;
+            setTimeout(() => btn.textContent = old, 1000);
+          } catch (e) {}
+        });
+
+        row.appendChild(btn);
+        box.appendChild(h2);
+        box.appendChild(p);
+        box.appendChild(row);
+        return box;
+      }
+
+      function render() {
+        const raw = normalize(els.input.value);
+        const lang = detectLanguage(raw);
+        setUI(lang);
+        els.langValue.textContent = lang === "ja" ? "日本語" : "English";
+
+        if (!raw) {
+          els.status.textContent = ui[lang].needText;
+          els.results.innerHTML = `<div id="empty" class="empty">${ui[lang].empty}</div>`;
+          return;
+        }
+
+        const output = lang === "ja" ? buildJa(raw) : buildEn(raw);
+
+        els.results.innerHTML = "";
+        els.results.appendChild(makeResult(ui[lang].clearer, output.clearer, lang));
+        els.results.appendChild(makeResult(ui[lang].hook, output.hook, lang));
+        els.results.appendChild(makeResult(ui[lang].shorter, output.shorter, lang));
+        els.status.textContent = "";
+      }
+
+      els.fixBtn.addEventListener("click", render);
+
+      els.clearBtn.addEventListener("click", function () {
+        els.input.value = "";
+        setUI(browserDefault);
+        els.langValue.textContent = ui[browserDefault].auto;
+        els.status.textContent = "";
+        els.results.innerHTML = `<div id="empty" class="empty">${ui[browserDefault].empty}</div>`;
+      });
+
+      els.input.addEventListener("input", function () {
+        const lang = detectLanguage(els.input.value);
+        setUI(lang);
+        els.langValue.textContent = lang === "ja" ? "日本語" : "English";
+      });
+
+      els.input.addEventListener("keydown", function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+          render();
+        }
+      });
+
+      setUI(browserDefault);
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let listening = false;
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        els.voiceBtn.style.display = "inline-flex";
+        els.voiceValue.textContent = ui[currentLang].available;
+
+        els.voiceBtn.addEventListener("click", function () {
+          if (!recognition) return;
+
+          if (listening) {
+            recognition.stop();
+            return;
+          }
+
+          const lang = detectLanguage(els.input.value);
+          recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
+
+          try {
+            recognition.start();
+          } catch (e) {}
+        });
+
+        recognition.onstart = function () {
+          listening = true;
+          const lang = detectLanguage(els.input.value);
+          setUI(lang);
+          els.langValue.textContent = lang === "ja" ? "日本語" : "English";
+          els.voiceValue.textContent = ui[lang].available;
+          els.voiceBtn.textContent = ui[lang].listening;
+          els.status.textContent = ui[lang].listeningStatus;
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = Array.from(event.results)
+            .map(result => result[0] ? result[0].transcript : "")
+            .join(" ")
+            .trim();
+
+          if (transcript) {
+            els.input.value = els.input.value.trim()
+              ? els.input.value.trim() + "\n" + transcript
+              : transcript;
+            const lang = detectLanguage(els.input.value);
+            setUI(lang);
+            els.langValue.textContent = lang === "ja" ? "日本語" : "English";
+          }
+        };
+
+        recognition.onend = function () {
+          listening = false;
+          const lang = detectLanguage(els.input.value);
+          setUI(lang);
+          els.langValue.textContent = lang === "ja" ? "日本語" : "English";
+          els.voiceBtn.textContent = ui[lang].voiceBtn;
+          els.status.textContent = ui[lang].stoppedStatus;
+        };
+
+        recognition.onerror = function () {
+          listening = false;
+          const lang = detectLanguage(els.input.value);
+          setUI(lang);
+          els.langValue.textContent = lang === "ja" ? "日本語" : "English";
+          els.voiceBtn.textContent = ui[lang].voiceBtn;
+          els.status.textContent = "";
+        };
+      } else {
+        els.voiceValue.textContent = ui[currentLang].unsupported;
+      }
+    })();
+  </script>
+</body>
+</html>
