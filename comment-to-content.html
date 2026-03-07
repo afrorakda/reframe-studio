@@ -4,250 +4,247 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comment → Content | REFRAME Studio</title>
+  <meta name="description" content="Turn critical comments into practical content angles. Detects Japanese or English input automatically and returns outputs in the same language." />
   <style>
     :root{
-      --bg:#f7f7fb;
+      --bg:#f6f7fb;
       --card:#ffffff;
-      --text:#151515;
+      --text:#111827;
       --muted:#6b7280;
       --line:#e5e7eb;
       --accent:#111827;
-      --accent-2:#2563eb;
-      --soft:#eef2ff;
-      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --accent-soft:#eef2ff;
+      --accent-line:#c7d2fe;
+      --success:#065f46;
+      --success-bg:#ecfdf5;
+      --danger:#b91c1c;
+      --danger-bg:#fef2f2;
+      --shadow:0 12px 32px rgba(17,24,39,.08);
       --radius:18px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0}
     body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      background:linear-gradient(180deg,#f9fafb 0%,#f4f6fb 100%);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Noto Sans JP","Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+      background:linear-gradient(180deg,#fafbff 0%,#f4f6fb 100%);
       color:var(--text);
       line-height:1.6;
     }
     .wrap{
-      width:min(960px,calc(100% - 24px));
+      width:min(860px,calc(100% - 24px));
       margin:0 auto;
       padding:24px 0 40px;
     }
     .hero{
-      padding:24px 0 12px;
+      padding:20px 0 12px;
     }
     .eyebrow{
       display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      border:1px solid var(--accent-line);
+      color:#3730a3;
       font-size:12px;
       font-weight:700;
       letter-spacing:.08em;
       text-transform:uppercase;
-      color:var(--accent-2);
-      background:#eaf2ff;
-      border:1px solid #dbeafe;
-      padding:6px 10px;
-      border-radius:999px;
       margin-bottom:12px;
     }
     h1{
-      font-size:clamp(28px,5vw,44px);
-      line-height:1.15;
       margin:0 0 10px;
+      font-size:clamp(30px,5vw,46px);
+      line-height:1.1;
       letter-spacing:-.02em;
     }
     .sub{
       margin:0;
       color:var(--muted);
       font-size:15px;
-      max-width:760px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:1.05fr .95fr;
-      gap:18px;
-      margin-top:22px;
+      max-width:720px;
     }
     .card{
       background:var(--card);
       border:1px solid rgba(17,24,39,.07);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
+      overflow:hidden;
     }
-    .panel{
+    .section{
       padding:18px;
     }
-    .label{
+    .section + .section{
+      border-top:1px solid var(--line);
+    }
+    .label-row{
       display:flex;
-      align-items:center;
       justify-content:space-between;
       gap:12px;
+      align-items:flex-start;
       margin-bottom:10px;
+    }
+    .label{
       font-size:14px;
       font-weight:700;
     }
     .hint{
-      color:var(--muted);
       font-size:12px;
-      font-weight:500;
+      color:var(--muted);
+      text-align:right;
     }
     textarea{
       width:100%;
-      min-height:220px;
-      resize:vertical;
+      min-height:180px;
       border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
       background:#fff;
       color:var(--text);
-      border-radius:14px;
-      padding:14px 14px 16px;
       font:inherit;
+      resize:vertical;
       outline:none;
-      transition:border-color .2s, box-shadow .2s, transform .08s;
+      transition:border-color .2s, box-shadow .2s;
     }
     textarea:focus{
       border-color:#93c5fd;
       box-shadow:0 0 0 4px rgba(37,99,235,.12);
     }
-    .actions{
+    .action-row{
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin-top:14px;
+      margin-top:12px;
     }
     button{
       appearance:none;
       border:none;
+      background:#fff;
+      color:var(--text);
       border-radius:12px;
-      padding:13px 16px;
+      padding:12px 14px;
       font:inherit;
       font-weight:700;
       cursor:pointer;
-      transition:transform .08s ease, opacity .2s ease, box-shadow .2s ease;
+      border:1px solid var(--line);
+      transition:transform .08s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;
     }
     button:active{transform:translateY(1px)}
     .primary{
       background:var(--accent);
       color:#fff;
+      border-color:var(--accent);
       box-shadow:0 8px 18px rgba(17,24,39,.18);
     }
-    .secondary{
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--line);
+    .voice.active{
+      background:#111827;
+      color:#fff;
+      border-color:#111827;
     }
-    .ghost{
-      background:#f3f4f6;
-      color:#111827;
+    .voice.unsupported{
+      opacity:.55;
+      cursor:not-allowed;
     }
-    .chips{
+    .quick{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
       margin-top:12px;
     }
     .chip{
+      font-size:12px;
+      padding:8px 10px;
+      border-radius:999px;
       border:1px solid var(--line);
       background:#fff;
       color:#374151;
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:12px;
       cursor:pointer;
-      user-select:none;
-    }
-    .result-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:10px;
-    }
-    .result-title{
-      margin:0;
-      font-size:18px;
-      line-height:1.35;
     }
     .status{
+      margin-top:10px;
       font-size:12px;
       color:var(--muted);
-      white-space:nowrap;
+      min-height:18px;
     }
-    .blocks{
+    .result-area{
       display:grid;
       gap:12px;
-      margin-top:6px;
     }
-    .block{
+    .empty{
+      border:1.5px dashed #d1d5db;
+      border-radius:16px;
+      padding:18px;
+      text-align:center;
+      color:var(--muted);
+      background:linear-gradient(180deg,#fff,#fafafa);
+    }
+    .result-block{
       border:1px solid var(--line);
       border-radius:14px;
       padding:14px;
       background:#fff;
     }
-    .block h3{
+    .result-block h3{
       margin:0 0 8px;
-      font-size:13px;
+      font-size:12px;
+      letter-spacing:.08em;
       text-transform:uppercase;
-      letter-spacing:.06em;
       color:#4b5563;
     }
-    .block p{
+    .result-block p{
       margin:0;
       font-size:15px;
       white-space:pre-wrap;
       word-break:break-word;
     }
-    .empty{
-      border:1.5px dashed #d1d5db;
-      background:linear-gradient(180deg,#ffffff,#fafafa);
-      border-radius:16px;
-      padding:18px;
-      color:var(--muted);
-      min-height:180px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-    }
     .meta{
       display:grid;
       grid-template-columns:repeat(3,1fr);
       gap:10px;
-      margin-top:12px;
     }
-    .meta .mini{
-      background:var(--soft);
-      border:1px solid #dbeafe;
+    .meta-box{
+      border:1px solid var(--accent-line);
+      background:var(--accent-soft);
       border-radius:12px;
       padding:12px;
     }
-    .mini .k{
+    .meta-box span{
       display:block;
+    }
+    .meta-k{
       font-size:11px;
-      color:#4b5563;
+      letter-spacing:.06em;
       text-transform:uppercase;
-      letter-spacing:.05em;
+      color:#4b5563;
+      font-weight:700;
       margin-bottom:4px;
-      font-weight:700;
     }
-    .mini .v{
+    .meta-v{
       font-size:14px;
-      color:#111827;
       font-weight:700;
+      color:#111827;
     }
-    .copy-row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-    .copy-note{
+    .notice{
+      padding:10px 12px;
+      border-radius:12px;
       font-size:12px;
-      color:var(--muted);
-      margin-top:8px;
-      min-height:18px;
+      display:none;
     }
-    @media (max-width: 820px){
-      .grid{grid-template-columns:1fr}
+    .notice.show{display:block}
+    .notice.success{
+      background:var(--success-bg);
+      color:var(--success);
+      border:1px solid #a7f3d0;
+    }
+    .notice.error{
+      background:var(--danger-bg);
+      color:var(--danger);
+      border:1px solid #fecaca;
+    }
+    @media (max-width: 720px){
+      .wrap{width:min(100% - 16px,860px)}
+      .section{padding:16px}
       .meta{grid-template-columns:1fr}
-      .wrap{width:min(100% - 16px,960px)}
-      .panel{padding:16px}
-      textarea{min-height:180px}
+      textarea{min-height:160px}
     }
     @media (prefers-reduced-motion: reduce){
       *{scroll-behavior:auto}
@@ -260,98 +257,92 @@
     <section class="hero">
       <div class="eyebrow">REFRAME Studio</div>
       <h1>Comment → Content</h1>
-      <p class="sub">Turn critical comments into content angles. Analyze what people are reacting to and turn that signal into your next post idea.</p>
+      <p class="sub">Turn critical comments into a practical post angle, what people are reacting to, and a content idea. English UI. Japanese input works. Output matches the input language automatically.</p>
     </section>
 
-    <section class="grid" aria-label="Comment to Content tool">
-      <div class="card panel">
-        <label class="label" for="commentInput">
-          <span>Paste a comment</span>
-          <span class="hint">Works entirely in your browser</span>
-        </label>
-        <textarea id="commentInput" placeholder="Example: This sounds idealistic. It feels like something said by someone who has never worked in the real field."></textarea>
-
-        <div class="actions">
-          <button class="primary" id="generateBtn" type="button">Generate</button>
-          <button class="secondary" id="sampleBtn" type="button">Use sample</button>
-          <button class="ghost" id="clearBtn" type="button">Clear</button>
+    <section class="card" aria-label="Comment to Content tool">
+      <div class="section">
+        <div class="label-row">
+          <div class="label">Paste a comment</div>
+          <div class="hint">Auto-detects English or Japanese</div>
         </div>
 
-        <div class="chips" aria-label="Quick examples">
-          <button class="chip" type="button" data-fill="This is just self-indulgent. I don't think it helps anyone.">Called self-indulgent</button>
-          <button class="chip" type="button" data-fill="This is way too idealistic. Real life doesn't work like that.">Called unrealistic</button>
-          <button class="chip" type="button" data-fill="Isn't this just position-talking? Feels like you're pushing your own agenda.">Called self-serving</button>
-          <button class="chip" type="button" data-fill="This is too basic. There's no depth here.">Called shallow</button>
-          <button class="chip" type="button" data-fill="This is too abstract. I can't tell what you're actually trying to say.">Called abstract</button>
+        <textarea id="commentInput" placeholder="Example: This sounds too idealistic. / 例: それって理想論ですよね。"></textarea>
+
+        <div class="action-row">
+          <button id="generateBtn" class="primary" type="button">Generate</button>
+          <button id="voiceBtn" class="voice" type="button">Voice Input</button>
+          <button id="sampleEnBtn" type="button">English Sample</button>
+          <button id="sampleJaBtn" type="button">Japanese Sample</button>
+          <button id="clearBtn" type="button">Clear</button>
         </div>
+
+        <div class="quick" aria-label="Quick examples">
+          <button class="chip" type="button" data-fill="This is way too idealistic. Real life doesn't work like that.">Idealistic</button>
+          <button class="chip" type="button" data-fill="This is too abstract. I can't tell what you're actually trying to say.">Abstract</button>
+          <button class="chip" type="button" data-fill="This feels self-indulgent. I don't think it helps anyone.">Self-indulgent</button>
+          <button class="chip" type="button" data-fill="それって理想論ですよね。現実ではそんなにうまくいきません。">理想論</button>
+          <button class="chip" type="button" data-fill="抽象的すぎて何が言いたいのかわからないです。">抽象的</button>
+          <button class="chip" type="button" data-fill="それは自己満に見えます。誰の役にも立たないと思います。">自己満</button>
+        </div>
+
+        <div id="statusText" class="status" aria-live="polite">Waiting for input.</div>
+        <div id="notice" class="notice" aria-live="polite"></div>
       </div>
 
-      <div class="card panel">
-        <div class="result-head">
-          <div>
-            <h2 class="result-title">Output</h2>
-            <div class="status" id="resultStatus">Waiting for input</div>
-          </div>
-        </div>
-
+      <div class="section">
         <div id="emptyState" class="empty">
-          Paste a comment and click “Generate” to get:<br>
-          a post angle, what people are reacting to, and a content idea.
+          Generate to get three short outputs:<br />
+          possible post angle, what people are reacting to, and content idea.
         </div>
 
-        <div id="resultArea" hidden>
-          <div class="blocks">
-            <section class="block">
-              <h3>Possible post angle</h3>
-              <p id="postAngle"></p>
-            </section>
+        <div id="resultArea" class="result-area" hidden>
+          <div class="result-block">
+            <h3>Possible post angle</h3>
+            <p id="postAngle"></p>
+          </div>
 
-            <section class="block">
-              <h3>What people are reacting to</h3>
-              <p id="reactionTarget"></p>
-            </section>
+          <div class="result-block">
+            <h3>What people are reacting to</h3>
+            <p id="reactionTarget"></p>
+          </div>
 
-            <section class="block">
-              <h3>Content idea</h3>
-              <p id="contentIdea"></p>
-            </section>
+          <div class="result-block">
+            <h3>Content idea</h3>
+            <p id="contentIdea"></p>
           </div>
 
           <div class="meta">
-            <div class="mini">
-              <span class="k">Tone</span>
-              <span class="v" id="metaTone">—</span>
+            <div class="meta-box">
+              <span class="meta-k">Tone</span>
+              <span id="metaTone" class="meta-v">—</span>
             </div>
-            <div class="mini">
-              <span class="k">Focus</span>
-              <span class="v" id="metaFocus">—</span>
+            <div class="meta-box">
+              <span class="meta-k">Focus</span>
+              <span id="metaFocus" class="meta-v">—</span>
             </div>
-            <div class="mini">
-              <span class="k">Format</span>
-              <span class="v" id="metaFormat">—</span>
+            <div class="meta-box">
+              <span class="meta-k">Format</span>
+              <span id="metaFormat" class="meta-v">—</span>
             </div>
           </div>
 
-          <div class="copy-row">
-            <button class="secondary" id="copyAllBtn" type="button">Copy result</button>
+          <div class="action-row">
+            <button id="copyBtn" type="button">Copy Result</button>
           </div>
-          <div class="copy-note" id="copyNote" aria-live="polite"></div>
         </div>
       </div>
     </section>
 
     <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
       <p><strong>Built by REFRAME Studio</strong></p>
-
       <p>
-        Turns critical comments into post angles, reaction insight, and content ideas.<br>
+        Turns critical comments into practical post angles, reaction insight, and content ideas.<br>
         #Reframed
       </p>
-
       <p>
         Open-source style tools. Simple. Private. Fast.
       </p>
-
       <p>
         No login. No tracking. No personal data collected.<br>
         Runs entirely in your browser.
@@ -363,150 +354,244 @@
     (() => {
       const input = document.getElementById('commentInput');
       const generateBtn = document.getElementById('generateBtn');
-      const sampleBtn = document.getElementById('sampleBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const sampleEnBtn = document.getElementById('sampleEnBtn');
+      const sampleJaBtn = document.getElementById('sampleJaBtn');
       const clearBtn = document.getElementById('clearBtn');
+      const copyBtn = document.getElementById('copyBtn');
+
+      const statusText = document.getElementById('statusText');
+      const notice = document.getElementById('notice');
       const emptyState = document.getElementById('emptyState');
       const resultArea = document.getElementById('resultArea');
-      const resultStatus = document.getElementById('resultStatus');
+
       const postAngle = document.getElementById('postAngle');
       const reactionTarget = document.getElementById('reactionTarget');
       const contentIdea = document.getElementById('contentIdea');
       const metaTone = document.getElementById('metaTone');
       const metaFocus = document.getElementById('metaFocus');
       const metaFormat = document.getElementById('metaFormat');
-      const copyAllBtn = document.getElementById('copyAllBtn');
-      const copyNote = document.getElementById('copyNote');
 
-      const sampleComment = 'This sounds idealistic. It feels like something said by someone who has never worked in the real field.';
+      const sampleEn = 'This sounds too idealistic. It feels like something said by someone who has never worked in the real field.';
+      const sampleJa = 'それって理想論ですよね。現場を知らない人の発言に見えます。';
 
-      const keywordRules = [
+      function normalizeText(text) {
+        return (text || '').replace(/\r\n/g, '\n').replace(/\s+/g, ' ').trim();
+      }
+
+      function detectLanguage(text) {
+        const jaMatches = text.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/g) || [];
+        return jaMatches.length > 0 ? 'ja' : 'en';
+      }
+
+      function truncate(text, length) {
+        return text.length > length ? text.slice(0, length) + '…' : text;
+      }
+
+      function quote(text, lang) {
+        const clipped = truncate(normalizeText(text), lang === 'ja' ? 34 : 48);
+        return lang === 'ja' ? `「${clipped}」` : `"${clipped}"`;
+      }
+
+      function hashPick(seed, list) {
+        let hash = 0;
+        for (let i = 0; i < seed.length; i++) {
+          hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+          hash |= 0;
+        }
+        return list[Math.abs(hash) % list.length];
+      }
+
+      const jaRules = [
+        {
+          match: /(理想論|綺麗事|きれいごと|現実じゃない|現実を知らない|甘い)/,
+          angle: '「理想論」と切られる発信ほど、まだ実務言語に翻訳されていない論点を含んでいる',
+          reacting: '相手は正しさそのものより、実装の難しさや自分の現実との距離に反応している',
+          idea: '理想論に見える提案がなぜ拒否されるのかを、前提・経験・再現性の3つで分解する投稿',
+          tone: '冷静',
+          focus: '理想と現実のギャップ',
+          format: '3ポイント解説'
+        },
+        {
+          match: /(自己満|独りよがり|誰の役にも立たない|意味ない)/,
+          angle: '「自己満」という反応は、価値そのものより価値の伝わり方が噛み合っていないサイン',
+          reacting: '相手は内容より、自分との接点や受け取るメリットが見えないことに反応している',
+          idea: '自己満に見える発信が他者価値に変わる条件を、具体例つきで示す投稿',
+          tone: '翻訳的',
+          focus: '価値の伝達',
+          format: 'Before / After比較'
+        },
+        {
+          match: /(浅い|薄い|深さがない|初心者向けすぎる|レベルが低い)/,
+          angle: '「浅い」は内容不足というより、想定読者の深度と期待値がズレているサイン',
+          reacting: '相手は内容が悪いというより、自分向けではないことに反応している可能性が高い',
+          idea: '同じテーマでも初心者向け・実務向け・上級者向けで何が変わるかを整理する投稿',
+          tone: '整理型',
+          focus: '対象読者のズレ',
+          format: 'レベル別マップ'
+        },
+        {
+          match: /(抽象的|ふわっと|わからない|何が言いたい|具体性がない)/,
+          angle: '「抽象的」と言われるときは、思想よりも着地点の設計が不足していることが多い',
+          reacting: '相手は主張を否定しているというより、明日どう使うかが見えないことに反応している',
+          idea: 'ひとつの抽象論を実務レベルまで落とす変換ステップを見せる投稿',
+          tone: '実務的',
+          focus: '抽象から具体への変換',
+          format: 'ステップ解説'
+        },
+        {
+          match: /(ポジショントーク|売り込み|営業|誘導|結局それが言いたい)/,
+          angle: '「ポジショントーク」と見られるときは、主張より先に利害構造が読まれている',
+          reacting: '相手はロジックより、この話で誰が得をするのかに反応している',
+          idea: '正しい話でも信用されない理由を、内容ではなく利害の見え方から解説する投稿',
+          tone: '構造分析',
+          focus: '信頼と利害',
+          format: '構造分解'
+        },
+        {
+          match: /(上から目線|偉そう|説教|押しつけ|決めつけ)/,
+          angle: '反発を生むのは主張の強さより、相手が考える余白の少なさであることが多い',
+          reacting: '相手は正しさではなく、自分の解釈余地を奪われる感覚に反応している',
+          idea: '同じ内容でも反発を生む言い方と届く言い方の差を比較する投稿',
+          tone: '対話的',
+          focus: '伝え方の余白',
+          format: '言い換え比較'
+        },
+        {
+          match: /(攻撃的|感じ悪い|不快|きつい|怖い)/,
+          angle: 'トーンに反応が集まるとき、受け手は論点より心理的安全性を見ている',
+          reacting: '相手は主張の中身より、この人の話を受け取って大丈夫かを見ている',
+          idea: '強い主張を保ちつつ拒絶されにくくする言い換えを示す投稿',
+          tone: 'やわらかい',
+          focus: '温度設計',
+          format: '言い換えテンプレ'
+        }
+      ];
+
+      const enRules = [
         {
           match: /(idealistic|idealism|unrealistic|naive|too optimistic|out of touch)/i,
-          angle: 'The comments that get labeled “idealistic” often touch a real problem that has not been translated into practical language yet',
-          reacting: 'People are not only reacting to whether the idea is right. They are reacting to implementation difficulty and the distance from their lived reality',
-          idea: 'Create a post explaining why useful ideas often get dismissed as idealistic, using three layers: assumptions, experience, and repeatability',
+          angle: 'Comments labeled “idealistic” often point to an idea that has not yet been translated into practical language',
+          reacting: 'People are reacting less to whether it is true and more to implementation difficulty and distance from lived reality',
+          idea: 'Create a post breaking down why useful ideas get dismissed as idealistic through assumptions, experience, and repeatability',
           tone: 'Calm',
           focus: 'Gap between idea and reality',
           format: '3-point breakdown'
         },
         {
           match: /(self-indulgent|self indulgent|self-serving|doesn.t help anyone|pointless|meaningless)/i,
-          angle: 'When something is called self-indulgent, the deeper issue is often that the value has not been translated into a shared context',
-          reacting: 'People react less to the content itself and more to whether they can connect it to their own needs or gain',
-          idea: 'Create a post showing how an idea that looks self-indulgent can become useful once the value is made legible to others',
+          angle: 'When something is called self-indulgent, the deeper issue is often that the value has not been translated clearly enough',
+          reacting: 'People react less to the content itself and more to whether they can connect it to their own needs',
+          idea: 'Create a post showing how something that looks self-indulgent can become useful once the value is made visible',
           tone: 'Translational',
           focus: 'Value communication',
           format: 'Before / After'
         },
         {
           match: /(shallow|basic|too basic|no depth|surface level|beginner)/i,
-          angle: 'When something is called shallow, it often signals a mismatch between the expected depth and the intended audience',
-          reacting: 'The reaction may not be “this is bad.” It may be “this is not for me.”',
-          idea: 'Create a post mapping how the same topic changes for beginner, practitioner, and advanced audiences',
+          angle: '“Shallow” often signals a mismatch between expected depth and intended audience rather than low quality',
+          reacting: 'The reaction may be less “this is bad” and more “this is not for me”',
+          idea: 'Create a post mapping how the same topic changes for beginner, practitioner, and advanced readers',
           tone: 'Structured',
           focus: 'Audience mismatch',
           format: 'Level map'
         },
         {
           match: /(abstract|vague|unclear|what are you trying to say|not specific|too fuzzy)/i,
-          angle: 'When people call something abstract, the issue is often not the idea itself but the lack of a landing point',
-          reacting: 'People are reacting to not knowing how to use the idea tomorrow, not necessarily rejecting the idea itself',
-          idea: 'Create a post that shows how to turn one abstract idea into a practical application step by step',
+          angle: 'When people call something abstract, the issue is often not the idea but the lack of a practical landing point',
+          reacting: 'People are reacting to not knowing how to use the idea tomorrow, not necessarily rejecting it',
+          idea: 'Create a post that turns one abstract idea into a concrete application step by step',
           tone: 'Practical',
           focus: 'Abstract-to-concrete translation',
           format: 'Step-by-step'
         },
         {
           match: /(agenda|position.talking|position talking|pushing something|selling|salesy|biased)/i,
-          angle: 'When content is dismissed as agenda-driven, people are often reading the incentive structure before they read the argument',
-          reacting: 'The reaction is less about the logic and more about who benefits from the message',
-          idea: 'Create a post on why even a correct point can lose trust when the incentive behind it feels too visible',
+          angle: 'When content feels agenda-driven, people often read the incentive structure before they read the argument',
+          reacting: 'The reaction is less about logic and more about who benefits from the message',
+          idea: 'Create a post explaining why even a correct point loses trust when the incentive behind it feels too visible',
           tone: 'Analytical',
           focus: 'Trust and incentives',
           format: 'Structure breakdown'
         },
         {
           match: /(condescending|preachy|pushy|bossy|judgmental|patronizing)/i,
-          angle: 'When something feels condescending, the friction often comes from leaving no room for the reader to interpret or think for themselves',
-          reacting: 'People resist not only being told what is true, but being denied their own agency in the process',
-          idea: 'Create a post comparing two ways of saying the same thing: one that triggers resistance and one that keeps reader agency intact',
+          angle: 'What triggers resistance is often not the message itself but the lack of room for the reader to think',
+          reacting: 'People resist not only being told what is true, but being denied agency in the process',
+          idea: 'Create a post comparing one phrasing that triggers resistance and another that preserves reader agency',
           tone: 'Dialogic',
           focus: 'Space in communication',
           format: 'Rewrite comparison'
         },
         {
           match: /(aggressive|harsh|rude|mean|hostile|offensive|too strong)/i,
-          angle: 'When people react to tone first, they are often evaluating emotional safety before they evaluate the argument',
+          angle: 'When tone becomes the main issue, people are evaluating emotional safety before they evaluate the argument',
           reacting: 'The reaction is less about the claim and more about whether the message feels safe enough to engage with',
-          idea: 'Create a post showing how to keep a strong message while softening the delivery enough to reduce rejection',
+          idea: 'Create a post showing how to keep a strong point while softening delivery enough to reduce rejection',
           tone: 'Gentle',
           focus: 'Tone design',
           format: 'Rewrite template'
         }
       ];
 
-      const fallbackAngles = [
-        'criticism is often less a rejection and more a signal showing where the message catches or creates friction',
-        'strong reactions often reveal an unstated assumption, expectation gap, or trust gap around the message',
-        'the comment may be useful data about what felt unclear, risky, or misaligned to the reader'
-      ];
+      const fallbackJa = {
+        angle: [
+          '批判コメントは否定ではなく、どこで引っかかったかを示す観測データとして使える',
+          '強い反応は、まだ説明されていない前提や期待値のズレを示していることが多い',
+          'コメントの強さは、内容の正誤より相手の不安や利害に触れた度合いを示している'
+        ],
+        reacting: [
+          '人は主張そのものより、価値観のズレや実装不安に反応しやすい',
+          'この反応は反対意見というより、自分の経験と接続しづらいことの表明かもしれない',
+          '表面の言葉より、期待・不信・違和感のポイントに反応している可能性が高い'
+        ],
+        idea: [
+          'この反応がなぜ起きるのかを分解して説明する投稿',
+          '批判の背景にある前提不足や誤解を整理する投稿',
+          '反発されたポイントを起点に、伝え方を改善した具体例を出す投稿'
+        ],
+        tones: ['冷静','実務的','構造分析','翻訳的','対話的'],
+        focuses: ['期待値のズレ','伝え方の設計','信頼と利害','価値の伝達','理想と現実のギャップ'],
+        formats: ['3ポイント解説','ステップ解説','構造分解','Before / After比較','箇条書き投稿']
+      };
 
-      const fallbackReacting = [
-        'People often react not just to the claim itself but to the gap between your framing and their lived experience',
-        'This may be less about disagreement and more about trust, context, or uncertainty about practical use',
-        'The visible criticism may point to a deeper reaction around expectations, incentives, or translation'
-      ];
+      const fallbackEn = {
+        angle: [
+          'criticism is often less a rejection and more a signal showing where the message creates friction',
+          'strong reactions often reveal an expectation gap, trust gap, or unstated assumption',
+          'the comment may be useful data about what felt unclear, risky, or misaligned'
+        ],
+        reacting: [
+          'People often react not only to the claim itself but to the gap between the framing and their lived reality',
+          'This may be less about disagreement and more about trust, context, or uncertainty about practical use',
+          'The visible criticism may point to a deeper reaction around expectations, incentives, or translation'
+        ],
+        idea: [
+          'Create a post that explains why this reaction happens and what hidden assumption sits underneath it',
+          'Create a post that reframes the criticism into a more useful public question',
+          'Create a post that compares the original framing with a revised version that lands better'
+        ],
+        tones: ['Calm','Practical','Analytical','Translational','Dialogic'],
+        focuses: ['Expectation gap','Message design','Trust and incentives','Value communication','Gap between idea and reality'],
+        formats: ['3-point breakdown','Step-by-step','Structure breakdown','Before / After','Bullet post']
+      };
 
-      const fallbackIdeas = [
-        'Create a post that breaks down why this reaction happens and what hidden assumption sits underneath it',
-        'Create a post that reframes the criticism into a more useful question worth exploring publicly',
-        'Create a post that compares the original message with a revised version that better matches reader expectations'
-      ];
-
-      const tones = ['Calm', 'Practical', 'Analytical', 'Translational', 'Dialogic'];
-      const focuses = ['Expectation gap', 'Message design', 'Trust structure', 'Value translation', 'Implementation friction'];
-      const formats = ['3-point breakdown', 'Comparison post', 'Structure breakdown', 'Step-by-step', 'Bullet post'];
-
-      function normalizeText(text) {
-        return (text || '')
-          .replace(/\r\n/g, '\n')
-          .replace(/\s+/g, ' ')
-          .trim();
-      }
-
-      function extractQuotedFragment(text) {
-        const t = normalizeText(text);
-        if (!t) return '';
-        const clipped = t.length > 60 ? t.slice(0, 60) + '…' : t;
-        return `"${clipped}"`;
-      }
-
-      function pickByHash(text, arr) {
-        let hash = 0;
-        for (let i = 0; i < text.length; i++) {
-          hash = ((hash << 5) - hash) + text.charCodeAt(i);
-          hash |= 0;
-        }
-        return arr[Math.abs(hash) % arr.length];
-      }
-
-      function inferRule(text) {
-        for (const rule of keywordRules) {
+      function findRule(text, rules) {
+        for (const rule of rules) {
           if (rule.match.test(text)) return rule;
         }
         return null;
       }
 
-      function buildOutput(rawText) {
-        const text = normalizeText(rawText);
-        const fragment = extractQuotedFragment(text);
-        const rule = inferRule(text);
+      function buildJapaneseOutput(text) {
+        const q = quote(text, 'ja');
+        const rule = findRule(text, jaRules);
 
         if (rule) {
           return {
-            angle: `${fragment} suggests a useful post angle: ${rule.angle}.`,
-            reacting: `In response to ${fragment}, ${rule.reacting}.`,
-            idea: `${rule.idea}. A strong structure is: quote the comment briefly, explain why that reaction happens, then show how to reframe it.`,
+            angle: `${q} から切れる投稿角度：${rule.angle}。`,
+            reacting: `${q} に対して、${rule.reacting}。`,
+            idea: `${rule.idea}。構成は「コメント → 反応の理由 → 読み替え」で十分。`,
             tone: rule.tone,
             focus: rule.focus,
             format: rule.format
@@ -514,47 +599,97 @@
         }
 
         return {
-          angle: `${fragment} is useful not only as criticism, but as feedback about where the message created friction. A strong angle here is that ${pickByHash(text, fallbackAngles)}.`,
-          reacting: `${pickByHash(text.split('').reverse().join(''), fallbackReacting)}.`,
-          idea: `${pickByHash(text + 'idea', fallbackIdeas)}. A simple structure is: the comment → what triggered the reaction → the clearer insight behind it.`,
-          tone: pickByHash(text + 'tone', tones),
-          focus: pickByHash(text + 'focus', focuses),
-          format: pickByHash(text + 'format', formats)
+          angle: `${q} は否定ではなく、反応ポイントを示す材料。投稿角度は「${hashPick(text + 'a', fallbackJa.angle)}」。`,
+          reacting: `${hashPick(text + 'r', fallbackJa.reacting)}。`,
+          idea: `${hashPick(text + 'i', fallbackJa.idea)}。構成は「コメント → 引っかかり → 学び」でまとめる。`,
+          tone: hashPick(text + 't', fallbackJa.tones),
+          focus: hashPick(text + 'f', fallbackJa.focuses),
+          format: hashPick(text + 'm', fallbackJa.formats)
         };
       }
 
-      function renderResult(output) {
-        postAngle.textContent = output.angle;
-        reactionTarget.textContent = output.reacting;
-        contentIdea.textContent = output.idea;
-        metaTone.textContent = output.tone;
-        metaFocus.textContent = output.focus;
-        metaFormat.textContent = output.format;
+      function buildEnglishOutput(text) {
+        const q = quote(text, 'en');
+        const rule = findRule(text, enRules);
+
+        if (rule) {
+          return {
+            angle: `${q} suggests this post angle: ${rule.angle}.`,
+            reacting: `People are reacting to ${q} because ${rule.reacting.charAt(0).toLowerCase() + rule.reacting.slice(1)}.`,
+            idea: `${rule.idea}. A simple structure is: comment → why the reaction happens → better framing.`,
+            tone: rule.tone,
+            focus: rule.focus,
+            format: rule.format
+          };
+        }
+
+        return {
+          angle: `${q} is not only criticism. It is signal. A useful angle is that ${hashPick(text + 'a', fallbackEn.angle)}.`,
+          reacting: `${hashPick(text + 'r', fallbackEn.reacting)}.`,
+          idea: `${hashPick(text + 'i', fallbackEn.idea)}. A simple structure is: comment → friction point → practical takeaway.`,
+          tone: hashPick(text + 't', fallbackEn.tones),
+          focus: hashPick(text + 'f', fallbackEn.focuses),
+          format: hashPick(text + 'm', fallbackEn.formats)
+        };
+      }
+
+      function buildOutput(rawText) {
+        const text = normalizeText(rawText);
+        const lang = detectLanguage(text);
+        return lang === 'ja' ? { lang, ...buildJapaneseOutput(text) } : { lang, ...buildEnglishOutput(text) };
+      }
+
+      function renderResult(result) {
+        postAngle.textContent = result.angle;
+        reactionTarget.textContent = result.reacting;
+        contentIdea.textContent = result.idea;
+        metaTone.textContent = result.tone;
+        metaFocus.textContent = result.focus;
+        metaFormat.textContent = result.format;
 
         emptyState.hidden = true;
         resultArea.hidden = false;
-        resultStatus.textContent = 'Generated';
+        statusText.textContent = result.lang === 'ja' ? '生成しました。' : 'Generated.';
       }
 
       function clearResult() {
         resultArea.hidden = true;
         emptyState.hidden = false;
-        resultStatus.textContent = 'Waiting for input';
-        copyNote.textContent = '';
+        postAngle.textContent = '';
+        reactionTarget.textContent = '';
+        contentIdea.textContent = '';
+        metaTone.textContent = '—';
+        metaFocus.textContent = '—';
+        metaFormat.textContent = '—';
+        statusText.textContent = 'Waiting for input.';
+        hideNotice();
+      }
+
+      function showNotice(message, type) {
+        notice.textContent = message;
+        notice.className = `notice show ${type}`;
+      }
+
+      function hideNotice() {
+        notice.textContent = '';
+        notice.className = 'notice';
       }
 
       function generate() {
         const text = normalizeText(input.value);
+        hideNotice();
+
         if (!text) {
           clearResult();
           input.focus();
           return;
         }
-        const output = buildOutput(text);
-        renderResult(output);
+
+        const result = buildOutput(text);
+        renderResult(result);
       }
 
-      async function copyAll() {
+      async function copyResult() {
         const text = [
           'Possible post angle',
           postAngle.textContent,
@@ -563,26 +698,39 @@
           reactionTarget.textContent,
           '',
           'Content idea',
-          contentIdea.textContent
+          contentIdea.textContent,
+          '',
+          'Tone',
+          metaTone.textContent,
+          '',
+          'Focus',
+          metaFocus.textContent,
+          '',
+          'Format',
+          metaFormat.textContent
         ].join('\n');
 
         try {
           await navigator.clipboard.writeText(text);
-          copyNote.textContent = 'Copied.';
-        } catch (e) {
+          showNotice('Copied.', 'success');
+        } catch (err) {
           const temp = document.createElement('textarea');
           temp.value = text;
           document.body.appendChild(temp);
           temp.select();
           document.execCommand('copy');
           temp.remove();
-          copyNote.textContent = 'Copied.';
+          showNotice('Copied.', 'success');
         }
       }
 
       generateBtn.addEventListener('click', generate);
-      sampleBtn.addEventListener('click', () => {
-        input.value = sampleComment;
+      sampleEnBtn.addEventListener('click', () => {
+        input.value = sampleEn;
+        generate();
+      });
+      sampleJaBtn.addEventListener('click', () => {
+        input.value = sampleJa;
         generate();
       });
       clearBtn.addEventListener('click', () => {
@@ -590,7 +738,7 @@
         clearResult();
         input.focus();
       });
-      copyAllBtn.addEventListener('click', copyAll);
+      copyBtn.addEventListener('click', copyResult);
 
       document.querySelectorAll('.chip').forEach(chip => {
         chip.addEventListener('click', () => {
@@ -605,6 +753,74 @@
           generate();
         }
       });
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let isListening = false;
+
+      function stopListening() {
+        if (recognition && isListening) {
+          recognition.stop();
+        }
+      }
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        recognition.continuous = false;
+
+        voiceBtn.addEventListener('click', () => {
+          hideNotice();
+
+          if (!isListening) {
+            recognition.lang = 'ja-JP';
+            try {
+              recognition.start();
+            } catch (e) {
+              showNotice('Voice input could not start in this browser.', 'error');
+            }
+          } else {
+            stopListening();
+          }
+        });
+
+        recognition.onstart = () => {
+          isListening = true;
+          voiceBtn.classList.add('active');
+          voiceBtn.textContent = 'Listening...';
+          statusText.textContent = 'Listening...';
+        };
+
+        recognition.onresult = (event) => {
+          const transcript = Array.from(event.results)
+            .map(result => result[0] && result[0].transcript ? result[0].transcript : '')
+            .join(' ')
+            .trim();
+
+          if (transcript) {
+            input.value = input.value ? `${input.value} ${transcript}` : transcript;
+            generate();
+          }
+        };
+
+        recognition.onerror = () => {
+          showNotice('Voice input is not available right now.', 'error');
+        };
+
+        recognition.onend = () => {
+          isListening = false;
+          voiceBtn.classList.remove('active');
+          voiceBtn.textContent = 'Voice Input';
+          statusText.textContent = normalizeText(input.value) ? 'Ready.' : 'Waiting for input.';
+        };
+      } else {
+        voiceBtn.classList.add('unsupported');
+        voiceBtn.disabled = true;
+        voiceBtn.textContent = 'Voice Input Unavailable';
+      }
+
+      clearResult();
     })();
   </script>
 </body>
