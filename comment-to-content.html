@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,14 +14,13 @@
       --accent:#111827;
       --accent-2:#2563eb;
       --soft:#eef2ff;
-      --success:#ecfdf5;
       --shadow:0 10px 30px rgba(0,0,0,.08);
       --radius:18px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0}
     body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans JP","Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
       background:linear-gradient(180deg,#f9fafb 0%,#f4f6fb 100%);
       color:var(--text);
       line-height:1.6;
@@ -243,17 +242,6 @@
       margin-top:8px;
       min-height:18px;
     }
-    .sr-only{
-      position:absolute;
-      width:1px;
-      height:1px;
-      padding:0;
-      margin:-1px;
-      overflow:hidden;
-      clip:rect(0,0,0,0);
-      white-space:nowrap;
-      border:0;
-    }
     @media (max-width: 820px){
       .grid{grid-template-columns:1fr}
       .meta{grid-template-columns:1fr}
@@ -272,43 +260,43 @@
     <section class="hero">
       <div class="eyebrow">REFRAME Studio</div>
       <h1>Comment → Content</h1>
-      <p class="sub">批判コメントを、発信の切り口に変えるツール。コメントの背後にある反応を整理し、次の投稿ネタに変換します。</p>
+      <p class="sub">Turn critical comments into content angles. Analyze what people are reacting to and turn that signal into your next post idea.</p>
     </section>
 
     <section class="grid" aria-label="Comment to Content tool">
       <div class="card panel">
         <label class="label" for="commentInput">
-          <span>批判コメントを入力</span>
-          <span class="hint">日本語入力対応</span>
+          <span>Paste a comment</span>
+          <span class="hint">Works entirely in your browser</span>
         </label>
-        <textarea id="commentInput" placeholder="例：それって理想論ですよね。現場を知らない人の発言に見えます。"></textarea>
+        <textarea id="commentInput" placeholder="Example: This sounds idealistic. It feels like something said by someone who has never worked in the real field."></textarea>
 
         <div class="actions">
-          <button class="primary" id="generateBtn" type="button">変換する</button>
-          <button class="secondary" id="sampleBtn" type="button">サンプルを入れる</button>
-          <button class="ghost" id="clearBtn" type="button">クリア</button>
+          <button class="primary" id="generateBtn" type="button">Generate</button>
+          <button class="secondary" id="sampleBtn" type="button">Use sample</button>
+          <button class="ghost" id="clearBtn" type="button">Clear</button>
         </div>
 
         <div class="chips" aria-label="Quick examples">
-          <button class="chip" type="button" data-fill="それってただの自己満ですよね。誰の役にも立たないと思います。">自己満と言われた</button>
-          <button class="chip" type="button" data-fill="綺麗事すぎます。現実ではそんなにうまくいきません。">綺麗事と言われた</button>
-          <button class="chip" type="button" data-fill="結局、あなたもポジショントークしてるだけでは？">ポジショントークと言われた</button>
-          <button class="chip" type="button" data-fill="そんなの初心者向けすぎる。深さがない。">浅いと言われた</button>
-          <button class="chip" type="button" data-fill="抽象的すぎて何が言いたいのかわからないです。">抽象的と言われた</button>
+          <button class="chip" type="button" data-fill="This is just self-indulgent. I don't think it helps anyone.">Called self-indulgent</button>
+          <button class="chip" type="button" data-fill="This is way too idealistic. Real life doesn't work like that.">Called unrealistic</button>
+          <button class="chip" type="button" data-fill="Isn't this just position-talking? Feels like you're pushing your own agenda.">Called self-serving</button>
+          <button class="chip" type="button" data-fill="This is too basic. There's no depth here.">Called shallow</button>
+          <button class="chip" type="button" data-fill="This is too abstract. I can't tell what you're actually trying to say.">Called abstract</button>
         </div>
       </div>
 
       <div class="card panel">
         <div class="result-head">
           <div>
-            <h2 class="result-title">出力結果</h2>
-            <div class="status" id="resultStatus">入力待ち</div>
+            <h2 class="result-title">Output</h2>
+            <div class="status" id="resultStatus">Waiting for input</div>
           </div>
         </div>
 
         <div id="emptyState" class="empty">
-          コメントを入力して「変換する」を押すと、<br>
-          投稿の切り口・反応の正体・投稿アイデアが表示されます。
+          Paste a comment and click “Generate” to get:<br>
+          a post angle, what people are reacting to, and a content idea.
         </div>
 
         <div id="resultArea" hidden>
@@ -345,7 +333,7 @@
           </div>
 
           <div class="copy-row">
-            <button class="secondary" id="copyAllBtn" type="button">結果をコピー</button>
+            <button class="secondary" id="copyAllBtn" type="button">Copy result</button>
           </div>
           <div class="copy-note" id="copyNote" aria-live="polite"></div>
         </div>
@@ -356,7 +344,7 @@
       <p><strong>Built by REFRAME Studio</strong></p>
 
       <p>
-        批判コメントを、発信の切り口・反応の正体・次の投稿アイデアに変換するブラウザ内ツール。<br>
+        Turns critical comments into post angles, reaction insight, and content ideas.<br>
         #Reframed
       </p>
 
@@ -389,95 +377,95 @@
       const copyAllBtn = document.getElementById('copyAllBtn');
       const copyNote = document.getElementById('copyNote');
 
-      const sampleComment = 'それって理想論ですよね。現場を知らない人の発言に見えます。';
+      const sampleComment = 'This sounds idealistic. It feels like something said by someone who has never worked in the real field.';
 
       const keywordRules = [
         {
-          match: /(理想論|綺麗事|きれいごと|現実じゃない|現実を知らない|甘い)/,
-          angle: '「理想論」と言われる発信ほど、まだ言語化されていない現場課題に触れていることがある',
-          reacting: '相手は“内容の正しさ”より、“実装の難しさ”や“自分の現実との距離”に反応している',
-          idea: '「理想論に見える提案が、なぜ現場で拒否されるのか」を3つのズレ（前提・経験・再現性）で解説する投稿',
-          tone: '冷静',
-          focus: '理想と現実のギャップ',
-          format: '3ポイント解説'
+          match: /(idealistic|idealism|unrealistic|naive|too optimistic|out of touch)/i,
+          angle: 'The comments that get labeled “idealistic” often touch a real problem that has not been translated into practical language yet',
+          reacting: 'People are not only reacting to whether the idea is right. They are reacting to implementation difficulty and the distance from their lived reality',
+          idea: 'Create a post explaining why useful ideas often get dismissed as idealistic, using three layers: assumptions, experience, and repeatability',
+          tone: 'Calm',
+          focus: 'Gap between idea and reality',
+          format: '3-point breakdown'
         },
         {
-          match: /(自己満|誰の役にも立たない|独りよがり|意味ない)/,
-          angle: '“自己満”という批判の裏には、価値の受け取り方がまだ一致していないという論点がある',
-          reacting: '人は内容そのものより、「自分に利益があるか」「文脈に接続できるか」に反応している',
-          idea: '「自己満と言われた発信が、どうすれば他者価値に変わるのか」を具体例つきで示す投稿',
-          tone: '翻訳的',
-          focus: '価値の伝達',
-          format: 'Before / After比較'
+          match: /(self-indulgent|self indulgent|self-serving|doesn.t help anyone|pointless|meaningless)/i,
+          angle: 'When something is called self-indulgent, the deeper issue is often that the value has not been translated into a shared context',
+          reacting: 'People react less to the content itself and more to whether they can connect it to their own needs or gain',
+          idea: 'Create a post showing how an idea that looks self-indulgent can become useful once the value is made legible to others',
+          tone: 'Translational',
+          focus: 'Value communication',
+          format: 'Before / After'
         },
         {
-          match: /(浅い|薄い|深さがない|初心者向けすぎる|レベルが低い)/,
-          angle: '“浅い”という批判は、情報量の問題だけでなく、期待していた深度とのズレを示している',
-          reacting: '相手は“内容不足”というより、“自分向けではない”ことに反応している可能性が高い',
-          idea: '「同じテーマでも、初心者向け・実務向け・上級者向けで何が変わるのか」を階層で整理する投稿',
-          tone: '整理型',
-          focus: '対象読者のズレ',
-          format: 'レベル別マップ'
+          match: /(shallow|basic|too basic|no depth|surface level|beginner)/i,
+          angle: 'When something is called shallow, it often signals a mismatch between the expected depth and the intended audience',
+          reacting: 'The reaction may not be “this is bad.” It may be “this is not for me.”',
+          idea: 'Create a post mapping how the same topic changes for beginner, practitioner, and advanced audiences',
+          tone: 'Structured',
+          focus: 'Audience mismatch',
+          format: 'Level map'
         },
         {
-          match: /(抽象的|ふわっと|わからない|何が言いたい|具体性がない)/,
-          angle: '抽象的と言われるときは、メッセージではなく“着地の設計”が不足していることが多い',
-          reacting: '相手は思想自体ではなく、「明日どう使えるか」が見えないことに反応している',
-          idea: '抽象論を実務に落とすための変換ステップを、1つのテーマで具体化して見せる投稿',
-          tone: '実務的',
-          focus: '抽象から具体への変換',
-          format: 'ステップ解説'
+          match: /(abstract|vague|unclear|what are you trying to say|not specific|too fuzzy)/i,
+          angle: 'When people call something abstract, the issue is often not the idea itself but the lack of a landing point',
+          reacting: 'People are reacting to not knowing how to use the idea tomorrow, not necessarily rejecting the idea itself',
+          idea: 'Create a post that shows how to turn one abstract idea into a practical application step by step',
+          tone: 'Practical',
+          focus: 'Abstract-to-concrete translation',
+          format: 'Step-by-step'
         },
         {
-          match: /(ポジショントーク|売り込み|営業|誘導|結局それが言いたい)/,
-          angle: '“ポジショントーク”と見なされる発信は、意見よりも利害関係の見え方が先に読まれている',
-          reacting: '相手は主張の内容ではなく、「誰の得になる話か」という構造に反応している',
-          idea: '「なぜ正しい話でも信用されないのか」を、内容ではなく利害の見え方から解説する投稿',
-          tone: '構造分析',
-          focus: '信頼と利害',
-          format: '構造分解'
+          match: /(agenda|position.talking|position talking|pushing something|selling|salesy|biased)/i,
+          angle: 'When content is dismissed as agenda-driven, people are often reading the incentive structure before they read the argument',
+          reacting: 'The reaction is less about the logic and more about who benefits from the message',
+          idea: 'Create a post on why even a correct point can lose trust when the incentive behind it feels too visible',
+          tone: 'Analytical',
+          focus: 'Trust and incentives',
+          format: 'Structure breakdown'
         },
         {
-          match: /(上から目線|偉そう|説教|押しつけ|決めつけ)/,
-          angle: '“上から目線”という反応は、主張の強さではなく、相手の解釈余地のなさに起因することが多い',
-          reacting: '人は正しさより、“自分で考える余白”を奪われることに強く反応する',
-          idea: '「同じ内容でも反発を生む言い方と届く言い方の差」を比較する投稿',
-          tone: '対話的',
-          focus: '伝え方の余白',
-          format: '言い換え比較'
+          match: /(condescending|preachy|pushy|bossy|judgmental|patronizing)/i,
+          angle: 'When something feels condescending, the friction often comes from leaving no room for the reader to interpret or think for themselves',
+          reacting: 'People resist not only being told what is true, but being denied their own agency in the process',
+          idea: 'Create a post comparing two ways of saying the same thing: one that triggers resistance and one that keeps reader agency intact',
+          tone: 'Dialogic',
+          focus: 'Space in communication',
+          format: 'Rewrite comparison'
         },
         {
-          match: /(攻撃的|感じ悪い|不快|きつい|怖い)/,
-          angle: '批判が“内容”ではなく“温度”に向くとき、受け手は論点より安全性を見ている',
-          reacting: '相手は主張の中身より、「この人の話を受け取って大丈夫か」という心理的安全性に反応している',
-          idea: '「強いメッセージを保ちつつ、拒絶されにくくする言い換え」を例つきで紹介する投稿',
-          tone: 'やわらかい',
-          focus: '温度設計',
-          format: '言い換えテンプレ'
+          match: /(aggressive|harsh|rude|mean|hostile|offensive|too strong)/i,
+          angle: 'When people react to tone first, they are often evaluating emotional safety before they evaluate the argument',
+          reacting: 'The reaction is less about the claim and more about whether the message feels safe enough to engage with',
+          idea: 'Create a post showing how to keep a strong message while softening the delivery enough to reduce rejection',
+          tone: 'Gentle',
+          focus: 'Tone design',
+          format: 'Rewrite template'
         }
       ];
 
       const fallbackAngles = [
-        '批判コメントは“否定”ではなく、“どこに引っかかったか”を示す観測データとして読む',
-        '反発が生まれる場所には、まだ説明されていない前提や期待値のズレが隠れている',
-        'コメントの強さは、テーマの重要性ではなく、受け手の利害や不安に触れた度合いを示している'
+        'criticism is often less a rejection and more a signal showing where the message catches or creates friction',
+        'strong reactions often reveal an unstated assumption, expectation gap, or trust gap around the message',
+        'the comment may be useful data about what felt unclear, risky, or misaligned to the reader'
       ];
 
       const fallbackReacting = [
-        '人は発信内容そのものより、価値観のズレ・立場の違い・再現可能性への不安に反応しやすい',
-        'この反応は「間違っている」より、「自分の経験と接続しづらい」に近い可能性がある',
-        '表面の言葉より、相手の期待・不信・違和感のポイントを読むと次の発信材料になる'
+        'People often react not just to the claim itself but to the gap between your framing and their lived experience',
+        'This may be less about disagreement and more about trust, context, or uncertainty about practical use',
+        'The visible criticism may point to a deeper reaction around expectations, incentives, or translation'
       ];
 
       const fallbackIdeas = [
-        'このコメントを起点に、「なぜそう見えるのか」を分解して説明する投稿',
-        '批判の背景にある誤解・前提不足・期待値のズレを整理する投稿',
-        '“反発されたポイント”をテーマに、伝え方を改善した具体例を出す投稿'
+        'Create a post that breaks down why this reaction happens and what hidden assumption sits underneath it',
+        'Create a post that reframes the criticism into a more useful question worth exploring publicly',
+        'Create a post that compares the original message with a revised version that better matches reader expectations'
       ];
 
-      const tones = ['冷静', '実務的', '構造分析', '翻訳的', '対話的'];
-      const focuses = ['期待値のズレ', '伝え方の設計', '信頼の構造', '価値の翻訳', '実装の難しさ'];
-      const formats = ['3ポイント解説', '比較投稿', '構造分解', 'ステップ解説', '箇条書き投稿'];
+      const tones = ['Calm', 'Practical', 'Analytical', 'Translational', 'Dialogic'];
+      const focuses = ['Expectation gap', 'Message design', 'Trust structure', 'Value translation', 'Implementation friction'];
+      const formats = ['3-point breakdown', 'Comparison post', 'Structure breakdown', 'Step-by-step', 'Bullet post'];
 
       function normalizeText(text) {
         return (text || '')
@@ -489,8 +477,8 @@
       function extractQuotedFragment(text) {
         const t = normalizeText(text);
         if (!t) return '';
-        const clipped = t.length > 44 ? t.slice(0, 44) + '…' : t;
-        return `「${clipped}」`;
+        const clipped = t.length > 60 ? t.slice(0, 60) + '…' : t;
+        return `"${clipped}"`;
       }
 
       function pickByHash(text, arr) {
@@ -516,9 +504,9 @@
 
         if (rule) {
           return {
-            angle: `${fragment} という反応から切り出せる投稿角度：${rule.angle}。`,
-            reacting: `${fragment} に対して、${rule.reacting}。`,
-            idea: `${rule.idea}。冒頭でコメントを一文だけ引用し、次に「その反応が起こる理由」、最後に「どう読み替えるか」を置く構成が使いやすい。`,
+            angle: `${fragment} suggests a useful post angle: ${rule.angle}.`,
+            reacting: `In response to ${fragment}, ${rule.reacting}.`,
+            idea: `${rule.idea}. A strong structure is: quote the comment briefly, explain why that reaction happens, then show how to reframe it.`,
             tone: rule.tone,
             focus: rule.focus,
             format: rule.format
@@ -526,9 +514,9 @@
         }
 
         return {
-          angle: `${fragment} というコメントは、発信そのものより“受け手がどこで引っかかったか”を示している。投稿角度は「${pickByHash(text, fallbackAngles)}」で組み立てる。`,
-          reacting: `${pickByHash(text.split('').reverse().join(''), fallbackReacting)}。つまり、反応の対象は主張そのものだけではなく、前提・立場・受け取り方のズレかもしれない。`,
-          idea: `${pickByHash(text + 'idea', fallbackIdeas)}。構成は「コメントの要点 → 相手が反応したポイント → そこから広げる学び」の順でまとめる。`,
+          angle: `${fragment} is useful not only as criticism, but as feedback about where the message created friction. A strong angle here is that ${pickByHash(text, fallbackAngles)}.`,
+          reacting: `${pickByHash(text.split('').reverse().join(''), fallbackReacting)}.`,
+          idea: `${pickByHash(text + 'idea', fallbackIdeas)}. A simple structure is: the comment → what triggered the reaction → the clearer insight behind it.`,
           tone: pickByHash(text + 'tone', tones),
           focus: pickByHash(text + 'focus', focuses),
           format: pickByHash(text + 'format', formats)
@@ -545,13 +533,13 @@
 
         emptyState.hidden = true;
         resultArea.hidden = false;
-        resultStatus.textContent = '変換済み';
+        resultStatus.textContent = 'Generated';
       }
 
       function clearResult() {
         resultArea.hidden = true;
         emptyState.hidden = false;
-        resultStatus.textContent = '入力待ち';
+        resultStatus.textContent = 'Waiting for input';
         copyNote.textContent = '';
       }
 
@@ -580,7 +568,7 @@
 
         try {
           await navigator.clipboard.writeText(text);
-          copyNote.textContent = '結果をコピーしました。';
+          copyNote.textContent = 'Copied.';
         } catch (e) {
           const temp = document.createElement('textarea');
           temp.value = text;
@@ -588,7 +576,7 @@
           temp.select();
           document.execCommand('copy');
           temp.remove();
-          copyNote.textContent = '結果をコピーしました。';
+          copyNote.textContent = 'Copied.';
         }
       }
 
