@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reaction → Topic | REFRAME Studio</title>
+  <meta name="description" content="Turn a reaction or comment into 3 clear discussion topics in your browser." />
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#ffffff;
+      --text:#1f2328;
+      --muted:#667085;
+      --line:#e6e8ec;
+      --accent:#111827;
+      --accent-2:#2563eb;
+      --soft:#f1f5f9;
+      --danger:#b42318;
+      --success:#067647;
+      --shadow:0 8px 24px rgba(16,24,40,.06);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Hiragino Sans","Yu Gothic UI","Yu Gothic","Meiryo",sans-serif}
+    body{padding:16px}
+    .wrap{max-width:720px;margin:0 auto}
+    .back{
+      display:inline-flex;align-items:center;gap:6px;
+      color:var(--muted);text-decoration:none;font-size:14px;
+      margin:4px 0 18px;
+    }
+    .back:hover{color:var(--text)}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    h1{
+      font-size:28px;line-height:1.15;margin:0 0 8px;
+      letter-spacing:-0.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin:0 0 8px;
+    }
+    textarea{
+      width:100%;
+      min-height:140px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.5;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#b7c7ff;
+      box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    }
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:14px 16px;
+      min-height:48px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .02s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:var(--soft);
+      color:var(--text);
+      flex:1 1 140px;
+    }
+    .secondary[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .status{
+      margin-top:10px;
+      min-height:20px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .status.error{color:var(--danger)}
+    .status.success{color:var(--success)}
+    .result{
+      margin-top:18px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+    }
+    .result-title{
+      font-size:14px;
+      font-weight:700;
+      margin:0 0 12px;
+      color:var(--muted);
+    }
+    .topics{
+      display:grid;
+      gap:10px;
+    }
+    .topic{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fcfcfd;
+    }
+    .topic-num{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:26px;height:26px;
+      border-radius:999px;
+      background:#111827;
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .topic-text{
+      font-size:16px;
+      line-height:1.55;
+      word-break:break-word;
+    }
+    .hint{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    footer{margin-top:40px;font-size:12px;color:#666;line-height:1.6}
+    @media (max-width:480px){
+      h1{font-size:24px}
+      .card{padding:16px}
+      textarea{min-height:130px}
+      .toolbar button{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1 id="title">Reaction → Topic</h1>
+      <p class="desc" id="desc">Turn a reaction or comment into 3 clear discussion topics.</p>
+
+      <label for="input" id="inputLabel">Your reaction or comment</label>
+      <textarea id="input" placeholder="Example: This sounds useful, but I’m not sure it solves the real problem."></textarea>
+
+      <div class="toolbar">
+        <button id="generateBtn" class="primary" type="button">Generate Topics</button>
+        <button id="exampleBtn" class="secondary" type="button">Try example</button>
+        <button id="voiceBtn" class="secondary" type="button">Voice Input</button>
+        <button id="copyBtn" class="secondary" type="button">Copy result</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <section class="result" aria-live="polite">
+        <p class="result-title" id="resultTitle">Discussion topics</p>
+        <div id="topics" class="topics"></div>
+        <p id="hint" class="hint">Paste a reaction, then generate 3 short topics you can discuss next.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turn a reaction or comment into 3 practical discussion topics.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('input');
+      const generateBtn = document.getElementById('generateBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const topicsEl = document.getElementById('topics');
+      const statusEl = document.getElementById('status');
+      const hintEl = document.getElementById('hint');
+
+      const ui = {
+        en: {
+          pageTitle: 'Reaction → Topic',
+          desc: 'Turn a reaction or comment into 3 clear discussion topics.',
+          inputLabel: 'Your reaction or comment',
+          placeholder: 'Example: This sounds useful, but I’m not sure it solves the real problem.',
+          generate: 'Generate Topics',
+          example: 'Try example',
+          voice: 'Voice Input',
+          voiceStop: 'Stop Voice Input',
+          copy: 'Copy result',
+          resultTitle: 'Discussion topics',
+          hint: 'Paste a reaction, then generate 3 short topics you can discuss next.',
+          empty: 'Enter a reaction or comment first.',
+          copied: 'Result copied.',
+          noResult: 'Generate topics first.',
+          listening: 'Listening… speak now.',
+          voiceUnsupported: 'Voice input is not supported in this browser.',
+          voiceError: 'Voice input could not start.',
+          exampleText: 'I like the direction, but it still feels too abstract to act on.',
+          examples: [
+            'I like the direction, but it still feels too abstract to act on.',
+            'This sounds promising, but I worry it adds more work than value.'
+          ]
+        },
+        ja: {
+          pageTitle: 'Reaction → Topic',
+          desc: 'リアクションやコメントを、話し合うための論点3つに変換します。',
+          inputLabel: 'リアクション・コメント',
+          placeholder: '例：方向性は良いと思うけど、まだ抽象的で動きにくいです。',
+          generate: '論点を生成',
+          example: '例を入れる',
+          voice: '音声入力',
+          voiceStop: '音声入力を停止',
+          copy: '結果をコピー',
+          resultTitle: '話し合いの論点',
+          hint: 'リアクションを入れると、次に話すべき論点を3つ表示します。',
+          empty: '先にリアクションやコメントを入力してください。',
+          copied: '結果をコピーしました。',
+          noResult: '先に論点を生成してください。',
+          listening: '音声を聞いています…',
+          voiceUnsupported: 'このブラウザでは音声入力に対応していません。',
+          voiceError: '音声入力を開始できませんでした。',
+          exampleText: '方向性は良いと思うけど、まだ抽象的で動きにくいです。',
+          examples: [
+            '方向性は良いと思うけど、まだ抽象的で動きにくいです。',
+            '面白い提案だけど、本当に今やる優先度が高いのかは気になります。'
+          ]
+        }
+      };
+
+      function containsJapanese(text) {
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+      }
+
+      function getLang(text) {
+        if (text && containsJapanese(text)) return 'ja';
+        const nav = (navigator.language || '').toLowerCase();
+        return nav.startsWith('ja') ? 'ja' : 'en';
+      }
+
+      function applyUI(lang) {
+        const t = ui[lang];
+        document.documentElement.lang = lang;
+        document.getElementById('title').textContent = t.pageTitle;
+        document.getElementById('desc').textContent = t.desc;
+        document.getElementById('inputLabel').textContent = t.inputLabel;
+        document.getElementById('resultTitle').textContent = t.resultTitle;
+        inputEl.placeholder = t.placeholder;
+        generateBtn.textContent = t.generate;
+        exampleBtn.textContent = t.example;
+        copyBtn.textContent = t.copy;
+
+        const isListening = voiceBtn.dataset.listening === '1';
+        voiceBtn.textContent = isListening ? t.voiceStop : t.voice;
+
+        if (!topicsEl.children.length) {
+          hintEl.textContent = t.hint;
+        }
+      }
+
+      function setStatus(message, type) {
+        statusEl.textContent = message || '';
+        statusEl.className = 'status' + (type ? ' ' + type : '');
+      }
+
+      function normalize(text) {
+        return (text || '')
+          .replace(/\s+/g, ' ')
+          .replace(/[“”]/g, '"')
+          .replace(/[‘’]/g, "'")
+          .trim();
+      }
+
+      function extractFocusEn(text) {
+        const cleaned = normalize(text).replace(/[^\w\s'-]/g, ' ');
+        const tokens = cleaned.split(/\s+/).filter(Boolean);
+        const stop = new Set([
+          'i','me','my','mine','we','our','ours','you','your','yours','he','she','they','them','their',
+          'this','that','these','those','it','is','are','was','were','be','been','being','am','do','does',
+          'did','have','has','had','a','an','the','and','or','but','if','then','so','because','as','at',
+          'by','for','from','in','into','of','on','to','with','about','around','really','very','just',
+          'still','too','more','less','not','no','yes','feel','feels','felt','seems','seem','sound',
+          'sounds','looks','look','like','useful','good','bad','great','interesting','important','real',
+          'problem','idea','direction','thing','things'
+        ]);
+        const picked = [];
+        for (const token of tokens) {
+          const w = token.toLowerCase();
+          if (w.length < 3 || stop.has(w)) continue;
+          if (!picked.includes(w)) picked.push(w);
+          if (picked.length === 3) break;
+        }
+        if (picked.length) return picked.join(' ');
+        return 'this reaction';
+      }
+
+      function extractFocusJa(text) {
+        let cleaned = normalize(text)
+          .replace(/[。！？!?,、]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        const quoted = cleaned.match(/「([^」]{2,20})」|『([^』]{2,20})』|"([^"]{2,20})"/);
+        if (quoted) {
+          return quoted[1] || quoted[2] || quoted[3];
+        }
+
+        const markers = ['について', 'に対して', 'の件', 'という', '提案', '方向性', '話', '内容'];
+        for (const m of markers) {
+          const idx = cleaned.indexOf(m);
+          if (idx > 0) {
+            const left = cleaned.slice(Math.max(0, idx - 14), idx).trim();
+            if (left.length >= 2) return left;
+          }
+        }
+
+        cleaned = cleaned.replace(/(と思う|気がする|かもしれない|まだ|ちょっと|かなり|すごく|本当に|なんか|でも|けど|ただ|について|に対して)/g, ' ');
+        cleaned = cleaned.replace(/\s+/g, ' ').trim();
+        if (cleaned.length > 0) return cleaned.slice(0, 16);
+        return 'この反応';
+      }
+
+      function detectToneEn(text) {
+        const s = text.toLowerCase();
+        const negative = ['not sure','too abstract','worry','concern','problem','issue','unclear','confusing','hard','difficult','frustrating','doesn\'t','does not','won\'t','too much','adds more work','risk','skeptical','doubt'];
+        const positive = ['useful','good','great','clear','helpful','promising','like','love','smart','strong','valuable','interesting','exciting'];
+        const mixed = ['but','however','though','yet','still'];
+
+        const neg = negative.some(k => s.includes(k));
+        const pos = positive.some(k => s.includes(k));
+        const mix = mixed.some(k => s.includes(k));
+
+        if ((pos && neg) || (pos && mix)) return 'mixed';
+        if (neg) return 'negative';
+        if (pos) return 'positive';
+        return 'neutral';
+      }
+
+      function detectToneJa(text) {
+        const s = text;
+        const negative = ['不安','懸念','問題','違和感','曖昧','抽象的','難しい','わかりにくい','納得できない','優先度','微妙','足りない','ずれている','心配'];
+        const positive = ['良い','いい','面白い','使えそう','役立つ','期待','納得','明確','便利','有望'];
+        const mixed = ['けど','でも','ただ','一方で','とはいえ'];
+
+        const neg = negative.some(k => s.includes(k));
+        const pos = positive.some(k => s.includes(k));
+        const mix = mixed.some(k => s.includes(k));
+
+        if ((pos && neg) || (pos && mix)) return 'mixed';
+        if (neg) return 'negative';
+        if (pos) return 'positive';
+        return 'neutral';
+      }
+
+      function generateTopicsEn(text) {
+        const tone = detectToneEn(text);
+        const focus = extractFocusEn(text);
+
+        if (tone === 'positive') {
+          return [
+            `What seems to be working well about ${focus}?`,
+            `Which part of ${focus} is most worth expanding or repeating?`,
+            `What next step could turn this positive reaction into action?`
+          ];
+        }
+
+        if (tone === 'negative') {
+          return [
+            `What exactly feels off or frustrating about ${focus}?`,
+            `Which expectation is not being met here?`,
+            `What change would make this feel more useful or acceptable?`
+          ];
+        }
+
+        if (tone === 'mixed') {
+          return [
+            `What part of ${focus} feels promising, and what still feels weak?`,
+            `Which tension or trade-off is creating this mixed reaction?`,
+            `What would make the value of ${focus} easier to judge?`
+          ];
+        }
+
+        return [
+          `What is the core issue or question inside this reaction about ${focus}?`,
+          `Which part needs more context, evidence, or examples?`,
+          `What decision depends on clarifying this reaction?`
+        ];
+      }
+
+      function generateTopicsJa(text) {
+        const tone = detectToneJa(text);
+        const focus = extractFocusJa(text);
+
+        if (tone === 'positive') {
+          return [
+            `「${focus}」の何がうまく機能しているのか？`,
+            `「${focus}」のどの要素を広げる価値があるのか？`,
+            `この前向きな反応を次の行動に変えるには何が必要か？`
+          ];
+        }
+
+        if (tone === 'negative') {
+          return [
+            `「${focus}」のどこに違和感や引っかかりがあるのか？`,
+            `満たされていない期待や前提は何か？`,
+            `受け入れやすくするには何を変えるべきか？`
+          ];
+        }
+
+        if (tone === 'mixed') {
+          return [
+            `「${focus}」の良さと弱さはそれぞれ何か？`,
+            `この反応を生んでいるトレードオフは何か？`,
+            `価値判断をしやすくするために足りない情報は何か？`
+          ];
+        }
+
+        return [
+          `この反応の中核にある論点は何か？`,
+          `「${focus}」について、追加で確認すべき文脈や具体例は何か？`,
+          `この反応を明確にすると、どんな判断がしやすくなるか？`
+        ];
+      }
+
+      function renderTopics(items, lang) {
+        topicsEl.innerHTML = '';
+        items.forEach((item, index) => {
+          const card = document.createElement('div');
+          card.className = 'topic';
+
+          const num = document.createElement('div');
+          num.className = 'topic-num';
+          num.textContent = index + 1;
+
+          const text = document.createElement('div');
+          text.className = 'topic-text';
+          text.textContent = item;
+
+          card.appendChild(num);
+          card.appendChild(text);
+          topicsEl.appendChild(card);
+        });
+
+        hintEl.textContent = lang === 'ja'
+          ? '短く、話し始めやすい論点だけを表示しています。'
+          : 'These are short, discussion-ready prompts.';
+      }
+
+      function generate() {
+        const raw = inputEl.value;
+        const text = normalize(raw);
+        const lang = getLang(text);
+        applyUI(lang);
+        setStatus('');
+
+        if (!text) {
+          setStatus(ui[lang].empty, 'error');
+          topicsEl.innerHTML = '';
+          hintEl.textContent = ui[lang].hint;
+          return;
+        }
+
+        const topics = lang === 'ja' ? generateTopicsJa(text) : generateTopicsEn(text);
+        renderTopics(topics, lang);
+      }
+
+      function getResultText() {
+        const items = [...topicsEl.querySelectorAll('.topic-text')].map((el, i) => `${i + 1}. ${el.textContent}`);
+        return items.join('\n');
+      }
+
+      async function copyResult() {
+        const lang = getLang(inputEl.value);
+        applyUI(lang);
+        const text = getResultText();
+
+        if (!text) {
+          setStatus(ui[lang].noResult, 'error');
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus(ui[lang].copied, 'success');
+        } catch (e) {
+          const fallback = document.createElement('textarea');
+          fallback.value = text;
+          document.body.appendChild(fallback);
+          fallback.select();
+          try {
+            document.execCommand('copy');
+            setStatus(ui[lang].copied, 'success');
+          } catch (err) {
+            setStatus('Copy failed.', 'error');
+          }
+          document.body.removeChild(fallback);
+        }
+      }
+
+      function insertExample() {
+        const currentLang = getLang(inputEl.value);
+        const examples = ui[currentLang].examples;
+        const current = normalize(inputEl.value);
+        const next = current === examples[0] ? examples[1] : examples[0];
+        inputEl.value = next;
+        applyUI(getLang(next));
+        setStatus('');
+        topicsEl.innerHTML = '';
+        hintEl.textContent = ui[getLang(next)].hint;
+        inputEl.focus();
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+
+      function setupVoice() {
+        const lang = getLang(inputEl.value);
+        applyUI(lang);
+
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          setStatus(ui[lang].voiceUnsupported, '');
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.continuous = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          const currentLang = getLang(inputEl.value);
+          voiceBtn.dataset.listening = '1';
+          applyUI(currentLang);
+          setStatus(ui[currentLang].listening, '');
+        };
+
+        recognition.onend = function () {
+          const currentLang = getLang(inputEl.value);
+          voiceBtn.dataset.listening = '0';
+          applyUI(currentLang);
+        };
+
+        recognition.onerror = function () {
+          const currentLang = getLang(inputEl.value);
+          setStatus(ui[currentLang].voiceError, 'error');
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || '';
+          inputEl.value = normalize(transcript);
+          const detectedLang = getLang(inputEl.value);
+          applyUI(detectedLang);
+          setStatus('');
+          generate();
+        };
+      }
+
+      function toggleVoice() {
+        const lang = getLang(inputEl.value);
+        applyUI(lang);
+
+        if (!recognition) {
+          setStatus(ui[lang].voiceUnsupported, '');
+          return;
+        }
+
+        const listening = voiceBtn.dataset.listening === '1';
+
+        if (listening) {
+          recognition.stop();
+          return;
+        }
+
+        recognition.lang = getLang(inputEl.value) === 'ja' ? 'ja-JP' : 'en-US';
+
+        try {
+          recognition.start();
+        } catch (e) {
+          setStatus(ui[lang].voiceError, 'error');
+        }
+      }
+
+      function loadInputFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const value = params.get('input');
+        if (value) {
+          inputEl.value = value;
+        }
+      }
+
+      inputEl.addEventListener('input', function () {
+        applyUI(getLang(inputEl.value));
+        setStatus('');
+      });
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', insertExample);
+      copyBtn.addEventListener('click', copyResult);
+      voiceBtn.addEventListener('click', toggleVoice);
+
+      inputEl.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          generate();
+        }
+      });
+
+      loadInputFromURL();
+      applyUI(getLang(inputEl.value));
+      setupVoice();
+    })();
+  </script>
+</body>
+</html>
