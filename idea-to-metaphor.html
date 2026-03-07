@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Idea → Metaphor | REFRAME Studio</title>
+  <meta name="description" content="Turn an idea or concept into 3 simple metaphors that make it easier to explain." />
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#d9e0ea;
+      --accent:#111827;
+      --soft:#eef2f7;
+      --shadow:0 10px 30px rgba(17,24,39,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+    }
+    body{padding:18px}
+    .wrap{max-width:720px;margin:0 auto}
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#374151;
+      text-decoration:none;
+      font-size:14px;
+      margin:4px 0 18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:28px;
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin:0 0 8px;
+    }
+    textarea{
+      width:100%;
+      min-height:128px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 15px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.5;
+      color:var(--text);
+      background:#fff;
+      resize:vertical;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#9ca3af;
+      box-shadow:0 0 0 4px rgba(17,24,39,.06);
+    }
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:13px 16px;
+      min-height:48px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    button:active{transform:translateY(1px)}
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:var(--soft);
+      color:var(--text);
+      flex:1 1 150px;
+    }
+    .status{
+      margin-top:10px;
+      min-height:22px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .result{
+      margin-top:18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fcfcfd;
+      padding:16px;
+    }
+    .result h2{
+      margin:0 0 10px;
+      font-size:16px;
+    }
+    .empty{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    .list{
+      display:grid;
+      gap:10px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+    .item{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:14px;
+      padding:12px 13px;
+      line-height:1.6;
+      font-size:15px;
+    }
+    .item strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .hint{
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    footer{
+      margin-top:40px;
+      font-size:12px;
+      color:#666;
+      line-height:1.6;
+    }
+    @media (max-width:560px){
+      body{padding:14px}
+      .card{padding:16px}
+      h1{font-size:24px}
+      button{width:100%}
+      .row{gap:8px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1>Idea → Metaphor</h1>
+      <p class="desc">
+        Enter an idea or concept. This tool gives you 3 simple metaphors to explain it more clearly.
+      </p>
+
+      <label id="inputLabel" for="ideaInput">Idea or concept</label>
+      <textarea id="ideaInput" placeholder="Example: Blockchain is a shared digital record that many people can verify."></textarea>
+
+      <div class="row">
+        <button id="generateBtn" class="primary">Generate Metaphors</button>
+        <button id="exampleBtn" class="secondary" type="button">Try example</button>
+        <button id="voiceBtn" class="secondary" type="button">Voice Input</button>
+        <button id="copyBtn" class="secondary" type="button">Copy result</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+
+      <section class="result" aria-live="polite">
+        <h2 id="resultTitle">Metaphors</h2>
+        <div id="resultContent" class="empty">Your result will appear here.</div>
+      </section>
+
+      <div id="hint" class="hint">
+        Works fully in your browser. No login. No tracking.
+      </div>
+    </main>
+
+    <footer style="margin-top:40px;font-size:12px;color:#666;line-height:1.6">
+      <p><strong>Built by REFRAME Studio</strong></p>
+      <p>
+        Turn an idea or concept into 3 simple metaphors that make it easier to explain.<br>
+        #Reframed
+      </p>
+      <p>
+        Open-source style tools. Simple. Private. Fast.
+      </p>
+      <p>
+        No login. No tracking. No personal data collected.<br>
+        Runs entirely in your browser.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const input = document.getElementById('ideaInput');
+      const generateBtn = document.getElementById('generateBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const resultTitle = document.getElementById('resultTitle');
+      const resultContent = document.getElementById('resultContent');
+      const inputLabel = document.getElementById('inputLabel');
+      const status = document.getElementById('status');
+      const hint = document.getElementById('hint');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const preset = urlParams.get('input');
+      if (preset) input.value = preset;
+
+      function isJapanese(text) {
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+      }
+
+      function detectLanguage(text) {
+        return isJapanese(text) ? 'ja' : 'en';
+      }
+
+      function setUILanguage(lang) {
+        if (lang === 'ja') {
+          document.documentElement.lang = 'ja';
+          inputLabel.textContent = 'アイデアや概念';
+          input.placeholder = '例: ブロックチェーンは、みんなで確認できる共有のデジタル台帳です。';
+          generateBtn.textContent = '比喩を生成';
+          exampleBtn.textContent = '例を入れる';
+          voiceBtn.textContent = voiceBtn.dataset.listening === '1' ? '聞き取り中…' : '音声入力';
+          copyBtn.textContent = '結果をコピー';
+          resultTitle.textContent = '比喩';
+          hint.textContent = 'ブラウザ内だけで動作します。ログイン不要。トラッキングなし。';
+          if (!resultContent.dataset.hasResult) {
+            resultContent.textContent = '結果がここに表示されます。';
+            resultContent.className = 'empty';
+          }
+        } else {
+          document.documentElement.lang = 'en';
+          inputLabel.textContent = 'Idea or concept';
+          input.placeholder = 'Example: Blockchain is a shared digital record that many people can verify.';
+          generateBtn.textContent = 'Generate Metaphors';
+          exampleBtn.textContent = 'Try example';
+          voiceBtn.textContent = voiceBtn.dataset.listening === '1' ? 'Listening…' : 'Voice Input';
+          copyBtn.textContent = 'Copy result';
+          resultTitle.textContent = 'Metaphors';
+          hint.textContent = 'Works fully in your browser. No login. No tracking.';
+          if (!resultContent.dataset.hasResult) {
+            resultContent.textContent = 'Your result will appear here.';
+            resultContent.className = 'empty';
+          }
+        }
+      }
+
+      function cleanConcept(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .replace(/[。！？.!?]+$/g, '')
+          .trim();
+      }
+
+      function clip(text, max) {
+        return text.length > max ? text.slice(0, max).trim() : text;
+      }
+
+      function buildMetaphorsEn(concept) {
+        const c = cleanConcept(concept);
+        const lower = c.toLowerCase();
+
+        const pairs = [
+          ['like a bridge that helps people cross something difficult'],
+          ['like a map that makes a complex place easier to navigate'],
+          ['like a flashlight that helps people see what was hidden'],
+          ['like a toolbox that gives the right tool at the right moment'],
+          ['like a translator that turns complexity into something usable'],
+          ['like a garden that grows stronger when you keep tending it'],
+          ['like a compass that helps people choose a direction'],
+          ['like a filter that separates signal from noise'],
+          ['like a control tower that keeps many moving parts coordinated'],
+          ['like a shared notebook that everyone can update and check']
+        ];
+
+        const specific = [];
+        if (/(ai|artificial intelligence|machine learning)/.test(lower)) {
+          specific.push(
+            'It is like a very fast intern that can draft, sort, and summarize, but still needs human judgment.',
+            'It is like a pattern-seeing engine that notices shapes in huge piles of information.',
+            'It is like a power tool: useful on its own, but much better when the user knows what they are building.'
+          );
+        } else if (/(blockchain|crypto|distributed ledger)/.test(lower)) {
+          specific.push(
+            'It is like a shared notebook that many people hold, so changing the record quietly is very hard.',
+            'It is like a chain of sealed pages, where each new page depends on the one before it.',
+            'It is like a public scoreboard everyone can inspect, instead of one referee keeping the score alone.'
+          );
+        } else if (/(brand|branding)/.test(lower)) {
+          specific.push(
+            'It is like a reputation trail that follows you into every room before you speak.',
+            'It is like packaging for trust: people decide how to treat what is inside by what they see outside.',
+            'It is like a shortcut in the mind that helps people recognize what you stand for.'
+          );
+        } else if (/(strategy)/.test(lower)) {
+          specific.push(
+            'It is like choosing a route before a long drive, so not every turn becomes a new debate.',
+            'It is like a lens that helps you ignore distractions and focus on what matters most.',
+            'It is like arranging dominoes on purpose, so small moves create larger effects later.'
+          );
+        } else if (/(leadership)/.test(lower)) {
+          specific.push(
+            'It is like setting the temperature in a room: people feel it before they describe it.',
+            'It is like being a conductor, helping different strengths move in the same rhythm.',
+            'It is like carrying a lantern at the front when the path is still unclear.'
+          );
+        } else if (/(community)/.test(lower)) {
+          specific.push(
+            'It is like a campfire that becomes more valuable as more people gather around it.',
+            'It is like a woven net: each thread matters more because it connects to others.',
+            'It is like a neighborhood garden that grows through shared care.'
+          );
+        }
+
+        if (specific.length) return specific;
+
+        return [
+          '"' + clip(c, 90) + '" is like a map that helps people move through something that once felt confusing.',
+          '"' + clip(c, 90) + '" is like a bridge that connects where people are now to where they want to go.',
+          '"' + clip(c, 90) + '" is like a flashlight that makes the next step easier to see.'
+        ];
+      }
+
+      function buildMetaphorsJa(concept) {
+        const c = cleanConcept(concept);
+        const specific = [];
+
+        if (/(AI|人工知能|機械学習|生成AI)/i.test(c)) {
+          specific.push(
+            'それは「ものすごく仕事が速い下書き担当」のようなものです。たたき台は作れるけれど、最終判断は人が必要です。',
+            'それは「大量の情報の中からパターンを見つける虫眼鏡」のようなものです。',
+            'それは「便利な電動工具」のようなものです。使う人の目的がはっきりしているほど力を発揮します。'
+          );
+        } else if (/(ブロックチェーン|暗号資産|分散台帳)/.test(c)) {
+          specific.push(
+            'それは「みんなで同じノートを持って見張っている台帳」のようなものです。',
+            'それは「前のページとつながっている記録帳」のようなものです。途中だけを書き換えにくいです。',
+            'それは「一人の審判ではなく、全員で確認するスコアボード」のようなものです。'
+          );
+        } else if (/(ブランド|ブランディング)/.test(c)) {
+          specific.push(
+            'それは「会う前から先に届く第一印象」のようなものです。',
+            'それは「信頼に貼られたラベル」のようなものです。中身の受け取られ方を左右します。',
+            'それは「相手の頭の中にできる短い記憶の通り道」のようなものです。'
+          );
+        } else if (/(戦略)/.test(c)) {
+          specific.push(
+            'それは「長い旅の前に決めるルート」のようなものです。途中の迷いを減らします。',
+            'それは「何を見るかを決めるレンズ」のようなものです。大事なもの以外をぼかします。',
+            'それは「小さな一手で後の流れを作る将棋盤」のようなものです。'
+          );
+        } else if (/(リーダーシップ|統率|マネジメント)/.test(c)) {
+          specific.push(
+            'それは「部屋の温度を決める空調」のようなものです。言葉にする前に空気が変わります。',
+            'それは「違う楽器を一つの流れにまとめる指揮者」のようなものです。',
+            'それは「見えにくい道で先頭に灯りを持つ人」のようなものです。'
+          );
+        } else if (/(コミュニティ|共同体|仲間の場)/.test(c)) {
+          specific.push(
+            'それは「人が集まるほど温かくなる焚き火」のようなものです。',
+            'それは「一本ずつの糸で強くなる網」のようなものです。',
+            'それは「みんなで育てる庭」のようなものです。'
+          );
+        }
+
+        if (specific.length) return specific;
+
+        return [
+          'それは「複雑な場所を進みやすくする地図」のようなものです。',
+          'それは「今いる場所と行きたい場所をつなぐ橋」のようなものです。',
+          'それは「次の一歩を見えやすくする懐中電灯」のようなものです。'
+        ];
+      }
+
+      function renderMetaphors(items, lang) {
+        const labels = lang === 'ja'
+          ? ['比喩 1', '比喩 2', '比喩 3']
+          : ['Metaphor 1', 'Metaphor 2', 'Metaphor 3'];
+
+        resultContent.dataset.hasResult = '1';
+        resultContent.className = '';
+        resultContent.innerHTML =
+          '<ul class="list">' +
+          items.map(function (item, index) {
+            return '<li class="item"><strong>' + labels[index] + '</strong>' + escapeHtml(item) + '</li>';
+          }).join('') +
+          '</ul>';
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function generate() {
+        const text = input.value.trim();
+        const lang = detectLanguage(text || input.placeholder);
+        setUILanguage(lang);
+
+        if (!text) {
+          resultContent.dataset.hasResult = '';
+          resultContent.className = 'empty';
+          resultContent.textContent = lang === 'ja'
+            ? 'まず、アイデアや概念を入力してください。'
+            : 'Enter an idea or concept first.';
+          status.textContent = '';
+          return;
+        }
+
+        const metaphors = lang === 'ja'
+          ? buildMetaphorsJa(text)
+          : buildMetaphorsEn(text);
+
+        renderMetaphors(metaphors.slice(0, 3), lang);
+        status.textContent = lang === 'ja'
+          ? '3つの比喩を生成しました。'
+          : 'Generated 3 metaphors.';
+      }
+
+      function insertExample() {
+        const currentLang = detectLanguage(input.value || document.documentElement.lang || navigator.language || 'en');
+        if (currentLang === 'ja') {
+          input.value = 'ブロックチェーンは、多くの人が確認できる共有のデジタル記録です。';
+        } else {
+          input.value = 'Blockchain is a shared digital record that many people can verify.';
+        }
+        setUILanguage(detectLanguage(input.value));
+        generate();
+      }
+
+      async function copyResult() {
+        const text = resultContent.innerText.trim();
+        const lang = detectLanguage(input.value || text || 'en');
+        if (!text || /appear here|表示されます|入力してください/.test(text)) {
+          status.textContent = lang === 'ja'
+            ? 'コピーする結果がまだありません。'
+            : 'There is no result to copy yet.';
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          status.textContent = lang === 'ja'
+            ? '結果をコピーしました。'
+            : 'Result copied.';
+        } catch (e) {
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          try {
+            document.execCommand('copy');
+            status.textContent = lang === 'ja'
+              ? '結果をコピーしました。'
+              : 'Result copied.';
+          } catch (err) {
+            status.textContent = lang === 'ja'
+              ? 'コピーできませんでした。手動でコピーしてください。'
+              : 'Copy failed. Please copy manually.';
+          }
+          document.body.removeChild(temp);
+        }
+      }
+
+      let recognition = null;
+      let listening = false;
+
+      function setupVoice() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          voiceBtn.disabled = true;
+          return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = function () {
+          listening = true;
+          voiceBtn.dataset.listening = '1';
+          voiceBtn.textContent = document.documentElement.lang === 'ja' ? '聞き取り中…' : 'Listening…';
+          status.textContent = document.documentElement.lang === 'ja' ? '話してください。' : 'Speak now.';
+        };
+
+        recognition.onend = function () {
+          listening = false;
+          voiceBtn.dataset.listening = '0';
+          voiceBtn.textContent = document.documentElement.lang === 'ja' ? '音声入力' : 'Voice Input';
+        };
+
+        recognition.onerror = function () {
+          status.textContent = document.documentElement.lang === 'ja'
+            ? '音声入力を利用できませんでした。'
+            : 'Voice input was not available.';
+        };
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript || '';
+          if (transcript) {
+            input.value = transcript.trim();
+            setUILanguage(detectLanguage(input.value));
+            generate();
+          }
+        };
+
+        voiceBtn.addEventListener('click', function () {
+          if (!recognition) return;
+          if (listening) {
+            recognition.stop();
+            return;
+          }
+          recognition.lang = detectLanguage(input.value || '') === 'ja' ? 'ja-JP' : 'en-US';
+          try {
+            recognition.start();
+          } catch (e) {
+            status.textContent = document.documentElement.lang === 'ja'
+              ? '音声入力を開始できませんでした。'
+              : 'Could not start voice input.';
+          }
+        });
+      }
+
+      input.addEventListener('input', function () {
+        setUILanguage(detectLanguage(input.value || 'en'));
+      });
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', insertExample);
+      copyBtn.addEventListener('click', copyResult);
+
+      setUILanguage(detectLanguage(input.value || navigator.language || 'en'));
+      setupVoice();
+
+      if (input.value.trim()) {
+        generate();
+      }
+    })();
+  </script>
+</body>
+</html>
