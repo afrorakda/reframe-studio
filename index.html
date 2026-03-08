@@ -1,131 +1,444 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REFRAME Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REFRAME Studio</title>
+  <style>
+    :root{
+      --bg:#071225;
+      --panel:#0c1830;
+      --card:#101d38;
+      --line:#1d2a45;
+      --text:#eef4ff;
+      --muted:#99a7c2;
+      --accent:#9bb8ff;
+      --accent-2:#cfdcff;
+      --shadow:0 18px 40px rgba(0,0,0,.28);
+      --radius:22px;
+    }
 
-<style>
+    *{ box-sizing:border-box; }
 
-body{
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-background:#0b1220;
-color:white;
-margin:0;
-padding:40px 20px;
-}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top, #0b1a34 0%, #071225 42%, #040b18 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
 
-.container{
-max-width:900px;
-margin:auto;
-}
+    .container{
+      max-width:960px;
+      margin:0 auto;
+      padding:28px 18px 44px;
+    }
 
-h1{
-font-size:34px;
-margin-bottom:8px;
-}
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      margin-bottom:26px;
+    }
 
-.subtitle{
-color:#94a3b8;
-margin-bottom:40px;
-}
+    .logo{
+      width:54px;
+      height:54px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#dbe7ff,#95b6ff);
+      color:#0b1730;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:24px;
+      flex:0 0 auto;
+      box-shadow:var(--shadow);
+    }
 
-.tools{
-display:grid;
-grid-template-columns:1fr;
-gap:14px;
-}
+    .brand h1{
+      margin:0 0 4px;
+      font-size:28px;
+      line-height:1.1;
+      letter-spacing:-0.02em;
+    }
 
-.card{
-background:#111827;
-padding:20px;
-border-radius:14px;
-text-decoration:none;
-color:white;
-border:1px solid #1f2937;
-transition:0.15s;
-}
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+    }
 
-.card:hover{
-background:#1f2937;
-}
+    .hero{
+      background:linear-gradient(180deg, rgba(16,29,56,.95) 0%, rgba(10,20,40,.96) 100%);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:30px;
+      padding:24px 18px;
+      box-shadow:var(--shadow);
+      margin-bottom:28px;
+    }
 
-.title{
-font-size:18px;
-font-weight:600;
-margin-bottom:6px;
-}
+    .pill{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      color:#d6e1ff;
+      background:rgba(255,255,255,.04);
+      font-size:14px;
+      margin-bottom:18px;
+    }
 
-.desc{
-color:#9ca3af;
-font-size:14px;
-}
+    .hero h2{
+      margin:0 0 14px;
+      font-size:34px;
+      line-height:1.08;
+      letter-spacing:-0.03em;
+      max-width:760px;
+    }
 
-</style>
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.7;
+      max-width:760px;
+    }
+
+    .section{
+      margin-top:28px;
+    }
+
+    .section h3{
+      margin:0 0 6px;
+      font-size:24px;
+      letter-spacing:-0.02em;
+    }
+
+    .section p{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+
+    .card{
+      display:block;
+      text-decoration:none;
+      color:var(--text);
+      background:linear-gradient(180deg, rgba(18,31,58,.96) 0%, rgba(11,21,42,.98) 100%);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:26px;
+      padding:22px 18px;
+      box-shadow:var(--shadow);
+    }
+
+    .card:hover{
+      transform:translateY(-1px);
+      transition:.15s ease;
+    }
+
+    .card .eyebrow{
+      display:inline-block;
+      margin-bottom:14px;
+      padding:9px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      color:#d5e2ff;
+      font-size:14px;
+    }
+
+    .card .eyebrow.featured{
+      background:#eef3ff;
+      color:#0b1730;
+      border-color:#eef3ff;
+      font-weight:700;
+    }
+
+    .card h4{
+      margin:0 0 12px;
+      font-size:28px;
+      line-height:1.12;
+      letter-spacing:-0.02em;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+      max-width:680px;
+    }
+
+    .card .cta{
+      margin-top:22px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#dfe9ff;
+      font-weight:700;
+      font-size:16px;
+    }
+
+    .arrow{
+      width:54px;
+      height:54px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      font-size:28px;
+      line-height:1;
+    }
+
+    .tool-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    .tool-card{
+      display:block;
+      text-decoration:none;
+      color:var(--text);
+      background:rgba(16,29,56,.88);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px 16px;
+    }
+
+    .tool-card:hover{
+      background:rgba(22,37,69,.96);
+      transition:.15s ease;
+    }
+
+    .tool-title{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:6px;
+      line-height:1.35;
+    }
+
+    .tool-desc{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .footer{
+      margin-top:28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .status{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    @media (min-width: 760px){
+      .grid.two{
+        grid-template-columns:1fr 1fr;
+      }
+      .tool-list{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
 
-<div class="container">
+    <div class="topbar">
+      <div class="logo">R</div>
+      <div class="brand">
+        <h1>REFRAME Studio</h1>
+        <p>Find the right tool for the next useful move.</p>
+      </div>
+    </div>
 
-<h1>REFRAME Studio</h1>
-<div class="subtitle">Simple tools. Clear next steps.</div>
+    <section class="hero">
+      <div class="pill">Simple tools. Clear next steps.</div>
+      <h2>Pick the right tool without overthinking the workflow.</h2>
+      <p>REFRAME Studio is a lightweight set of practical tools for clarifying, reframing, and moving work forward. Start with the tool that fits your current bottleneck.</p>
+    </section>
 
-<div id="tools" class="tools"></div>
+    <section class="section">
+      <h3>Start here</h3>
+      <p>Best first action when you are not sure what to use.</p>
+      <div class="grid">
+        <a class="card" href="stuck-to-tool.html">
+          <div class="eyebrow featured">Featured entry point</div>
+          <div class="eyebrow">Starter Tool</div>
+          <h4>Stuck → Best Tool</h4>
+          <p>Describe where you're stuck and get the best next tool.</p>
+          <div class="cta">
+            <span>Open tool</span>
+            <span class="arrow">→</span>
+          </div>
+        </a>
+      </div>
+    </section>
 
-</div>
+    <section class="section">
+      <h3>Core Flow</h3>
+      <p>Move from friction to action through the main thinking path.</p>
+      <div class="grid two">
+        <a class="tool-card" href="problem-to-root-cause.html">
+          <div class="tool-title">Problem → Root Causes</div>
+          <div class="tool-desc">Turn a problem into possible root causes.</div>
+        </a>
 
-<script>
+        <a class="tool-card" href="problem-to-constraints.html">
+          <div class="tool-title">Problem → Constraints</div>
+          <div class="tool-desc">Find the key constraints behind a problem.</div>
+        </a>
 
-const repo = "afrorakda/reframe-studio";
+        <a class="tool-card" href="constraint-to-action.html">
+          <div class="tool-title">Constraint → Action</div>
+          <div class="tool-desc">Turn a constraint into one useful next action.</div>
+        </a>
 
-async function loadTools(){
+        <a class="tool-card" href="problem-to-options.html">
+          <div class="tool-title">Problem → Options</div>
+          <div class="tool-desc">Turn a problem into possible options.</div>
+        </a>
 
-const url = `https://api.github.com/repos/${repo}/contents`;
+        <a class="tool-card" href="emotion-to-action.html">
+          <div class="tool-title">Emotion → Action</div>
+          <div class="tool-desc">Turn emotion into one useful next action.</div>
+        </a>
 
-const res = await fetch(url);
-const files = await res.json();
+        <a class="tool-card" href="next-step-finder.html">
+          <div class="tool-title">Next Step Finder</div>
+          <div class="tool-desc">Find one practical next step.</div>
+        </a>
+      </div>
+    </section>
 
-const htmlFiles = files.filter(f =>
-f.name.endsWith(".html") &&
-f.name !== "index.html" &&
-!f.name.includes("factory")
-);
+    <section class="section">
+      <h3>All Tools</h3>
+      <p>Everything else in the studio, auto-detected from your repository.</p>
+      <div id="toolList" class="tool-list"></div>
+      <div id="status" class="status"></div>
+    </section>
 
-const container = document.getElementById("tools");
+    <div class="footer">REFRAME Studio — one tool, one friction point.</div>
+  </div>
 
-htmlFiles.sort((a,b)=>a.name.localeCompare(b.name));
+  <script>
+    const repo = "afrorakda/reframe-studio";
 
-htmlFiles.forEach(file=>{
+    const excludedFiles = new Set([
+      "index.html",
+      "about.html",
+      "roadmap.html",
+      "reframe-studio.html",
+      "reframe_tool_factory.html"
+    ]);
 
-const name = file.name
-.replace(".html","")
-.replaceAll("-"," ");
+    const pinnedFiles = new Set([
+      "stuck-to-tool.html",
+      "problem-to-root-cause.html",
+      "problem-to-constraints.html",
+      "constraint-to-action.html",
+      "problem-to-options.html",
+      "emotion-to-action.html",
+      "next-step-finder.html"
+    ]);
 
-const title = name
-.split(" ")
-.map(w=>w.charAt(0).toUpperCase()+w.slice(1))
-.join(" ");
+    const customDescriptions = {
+      "comment-to-content.html": "Turn a comment into content direction.",
+      "comment-to-question.html": "Turn a comment into a clearer question.",
+      "complexity-cleaner.html": "Reduce unnecessary complexity.",
+      "confusion-to-question.html": "Turn confusion into a clearer question.",
+      "constraint-to-action.html": "Turn a constraint into one useful next action.",
+      "criticism-to-idea.html": "Turn criticism into a new idea.",
+      "criticism-to-lesson.html": "Turn criticism into a useful lesson.",
+      "draft-fixer.html": "Improve a rough draft.",
+      "emotion-to-action.html": "Turn emotion into one useful next action.",
+      "failure-to-lesson.html": "Turn failure into a useful lesson.",
+      "hate-to-signal.html": "Turn harsh reactions into useful signals.",
+      "hook-generator.html": "Generate hook options from a topic.",
+      "idea-to-counterargument.html": "Generate counterarguments from an idea.",
+      "idea-to-debate.html": "Turn an idea into debate angles.",
+      "idea-to-example.html": "Turn an idea into examples.",
+      "idea-to-metaphor.html": "Turn an idea into a metaphor.",
+      "idea-to-opposite.html": "Generate the opposite angle of an idea.",
+      "idea-to-post-angles.html": "Turn one idea into multiple post angles.",
+      "idea-to-thread.html": "Turn an idea into a thread structure.",
+      "next-step-finder.html": "Find one practical next step.",
+      "overthinking-breaker.html": "Break mental loops into movement.",
+      "problem-to-constraints.html": "Find the key constraints behind a problem.",
+      "problem-to-options.html": "Turn a problem into possible options.",
+      "problem-to-root-cause.html": "Turn a problem into possible root causes.",
+      "problem-to-tiny-step.html": "Turn a problem into one tiny step.",
+      "reaction-to-topic.html": "Turn a reaction into discussion topics.",
+      "stuck-to-tool.html": "Describe where you're stuck and get the best next tool.",
+      "thought-to-structure.html": "Organize scattered thoughts into structure.",
+      "thread-navigator.html": "Save and resume AI threads.",
+      "title-refiner.html": "Improve a weak title.",
+      "tweet-polisher.html": "Polish a rough social post."
+    };
 
-const card = document.createElement("a");
+    function fileToTitle(fileName) {
+      return fileName
+        .replace(".html", "")
+        .replaceAll("-", " ")
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
 
-card.href = file.name;
-card.className="card";
+    async function loadTools() {
+      const toolList = document.getElementById("toolList");
+      const status = document.getElementById("status");
 
-card.innerHTML=`
-<div class="title">${title}</div>
-<div class="desc">${file.name}</div>
-`;
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repo}/contents`);
+        const files = await res.json();
 
-container.appendChild(card);
+        const htmlFiles = files
+          .filter(file =>
+            file.name.endsWith(".html") &&
+            !excludedFiles.has(file.name) &&
+            !pinnedFiles.has(file.name)
+          )
+          .sort((a, b) => a.name.localeCompare(b.name));
 
-});
+        htmlFiles.forEach(file => {
+          const card = document.createElement("a");
+          card.href = file.name;
+          card.className = "tool-card";
 
-}
+          const title = fileToTitle(file.name);
+          const desc = customDescriptions[file.name] || file.name;
 
-loadTools();
+          card.innerHTML = `
+            <div class="tool-title">${title}</div>
+            <div class="tool-desc">${desc}</div>
+          `;
 
-</script>
+          toolList.appendChild(card);
+        });
 
+        status.textContent = `${htmlFiles.length} auto-detected tools shown below.`;
+      } catch (error) {
+        status.textContent = "Could not load auto-detected tools right now.";
+      }
+    }
+
+    loadTools();
+  </script>
 </body>
 </html>
