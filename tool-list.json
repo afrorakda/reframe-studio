@@ -154,5 +154,9 @@
     "title": "Tweet Polisher",
     "file": "tweet-polisher.html",
     "description": "Polish a rough social post."
-  }
-]
+  },
+{
+  "title": "Idea → Priority",
+  "file": "idea-to-priority.html",
+  "description": "Turn many ideas into one priority."
+}]
