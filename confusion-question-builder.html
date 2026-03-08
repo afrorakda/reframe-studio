@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confusion → Question Builder - REFRAME Studio</title>
+  <style>
+    :root{
+      --bg:#f7f7fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --primary:#111827;
+      --accent:#2563eb;
+      --accent-soft:#eff6ff;
+      --shadow:0 10px 30px rgba(17,24,39,0.06);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:linear-gradient(180deg,#f9fafb 0%,#f3f4f6 100%);
+      color:var(--text);
+      padding:24px 16px 48px;
+    }
+
+    .wrap{
+      max-width:760px;
+      margin:0 auto;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .header{
+      padding:24px 20px 12px;
+      border-bottom:1px solid rgba(229,231,235,0.7);
+      background:linear-gradient(180deg,#ffffff 0%,#fafafa 100%);
+    }
+
+    .eyebrow{
+      display:inline-block;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent);
+      background:var(--accent-soft);
+      padding:6px 10px;
+      border-radius:999px;
+      margin-bottom:12px;
+    }
+
+    h1{
+      margin:0;
+      font-size:28px;
+      line-height:1.2;
+      letter-spacing:-0.02em;
+    }
+
+    .sub{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    .section{
+      padding:20px;
+    }
+
+    .label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:180px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.6;
+      color:var(--text);
+      background:#fff;
+      resize:vertical;
+      outline:none;
+      transition:border-color .2s, box-shadow .2s;
+    }
+
+    textarea:focus{
+      border-color:#93c5fd;
+      box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+    }
+
+    .buttons{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin-top:16px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      font:inherit;
+      font-weight:700;
+      font-size:15px;
+      cursor:pointer;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+
+    button:active{
+      transform:translateY(1px);
+    }
+
+    .primary{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .secondary{
+      background:#f3f4f6;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .result{
+      margin-top:6px;
+      min-height:220px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fcfcfd;
+      padding:18px 16px;
+      white-space:pre-wrap;
+      line-height:1.7;
+      font-size:16px;
+    }
+
+    .placeholder{
+      color:var(--muted);
+    }
+
+    .footer-note{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    @media (max-width:640px){
+      h1{
+        font-size:24px;
+      }
+      .buttons{
+        grid-template-columns:1fr;
+      }
+      .section{
+        padding:16px;
+      }
+      .header{
+        padding:20px 16px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <div class="eyebrow">REFRAME Studio</div>
+        <h1>Confusion → Question Builder</h1>
+        <p class="sub">Turn vague confusion into useful questions you can actually think with.</p>
+      </div>
+
+      <div class="section">
+        <label class="label" for="input">Input</label>
+        <textarea id="input" placeholder="Example: I have many ideas, but I can’t tell which one matters, where to start, or whether I’m overthinking everything."></textarea>
+
+        <div class="buttons">
+          <button class="primary" id="generateBtn">Generate</button>
+          <button class="secondary" id="exampleBtn">Try example</button>
+          <button class="secondary" id="clearBtn">Clear</button>
+          <button class="secondary" id="copyBtn">Copy result</button>
+        </div>
+      </div>
+
+      <div class="section" style="padding-top:0;">
+        <label class="label" for="result">Result</label>
+        <div class="result placeholder" id="result">Your reframed questions will appear here.</div>
+        <div class="footer-note">
+          Tip: good questions reduce fog. They do not force answers too early.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('input');
+    const result = document.getElementById('result');
+    const generateBtn = document.getElementById('generateBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    function cleanText(text){
+      return text
+        .replace(/\s+/g, ' ')
+        .replace(/[ ]+([,.!?])/g, '$1')
+        .trim();
+    }
+
+    function splitSentences(text){
+      return text
+        .replace(/\n+/g, '. ')
+        .split(/(?<=[.!?])\s+|[•\-]\s+|[、。]/)
+        .map(s => cleanText(s))
+        .filter(Boolean);
+    }
+
+    function pickFocus(text){
+      const lower = text.toLowerCase();
+
+      if (/(start|begin|first step|where to start)/.test(lower)) {
+        return "starting point";
+      }
+      if (/(choose|choice|which|decide|decision)/.test(lower)) {
+        return "decision";
+      }
+      if (/(too many|many ideas|options|overwhelmed|scattered)/.test(lower)) {
+        return "priority";
+      }
+      if (/(stuck|blocked|can't move|cannot move|freeze)/.test(lower)) {
+        return "blocker";
+      }
+      if (/(afraid|fear|worry|anxious|anxiety)/.test(lower)) {
+        return "fear";
+      }
+      if (/(time|busy|deadline)/.test(lower)) {
+        return "time pressure";
+      }
+      if (/(matter|important|meaning)/.test(lower)) {
+        return "importance";
+      }
+
+      return "clarity";
+    }
+
+    function buildQuestions(text){
+      const cleaned = cleanText(text);
+      const pieces = splitSentences(cleaned);
+      const focus = pickFocus(cleaned);
+
+      const shortSummary = pieces.length > 0
+        ? pieces[0].slice(0, 120)
+        : cleaned.slice(0, 120);
+
+      const questionSets = {
+        "starting point": [
+          "What is the smallest possible first step here?",
+          "What am I trying to begin, specifically?",
+          "What would make this feel started by today?",
+          "Which part needs action first, and which part can wait?",
+          "What is unclear because I have not defined the first move?"
+        ],
+        "decision": [
+          "What decision am I actually trying to make?",
+          "What are the real options in front of me?",
+          "What information is missing for a good enough decision?",
+          "What standard will I use to choose?",
+          "What happens if I do not decide yet?"
+        ],
+        "priority": [
+          "What matters most among all these possibilities?",
+          "Which option creates the most movement with the least complexity?",
+          "What looks urgent but is not actually important?",
+          "If I could only move one thing forward, what would it be?",
+          "What am I mixing together that should be separated?"
+        ],
+        "blocker": [
+          "Where exactly am I getting stuck?",
+          "Is the block emotional, practical, or structural?",
+          "What part feels hard because it is undefined?",
+          "What am I expecting before I allow myself to move?",
+          "What would remove 20% of the friction immediately?"
+        ],
+        "fear": [
+          "What am I afraid might happen if I move forward?",
+          "What risk is real, and what risk is imagined?",
+          "What would a safe small experiment look like?",
+          "What am I protecting by staying unclear?",
+          "What question would make this fear more concrete?"
+        ],
+        "time pressure": [
+          "What actually needs to happen soon?",
+          "What am I treating as urgent that may not be?",
+          "What is the next useful action within the time I have?",
+          "What can be cut, delayed, or ignored?",
+          "What would progress look like in 15 minutes?"
+        ],
+        "importance": [
+          "Why does this matter to me?",
+          "What outcome am I really hoping for?",
+          "What would make this worth pursuing?",
+          "What is meaningful here beyond efficiency?",
+          "What am I trying to protect, prove, or create?"
+        ],
+        "clarity": [
+          "What exactly feels unclear here?",
+          "What am I trying to understand, decide, or do?",
+          "What are the main parts of this confusion?",
+          "What question, if answered, would reduce the fog the most?",
+          "What is still too vague in how I am describing this?"
+        ]
+      };
+
+      const selected = questionSets[focus];
+      const lines = [];
+
+      lines.push("Reframed Questions");
+      lines.push("");
+      lines.push("What seems to be going on:");
+      lines.push("“" + shortSummary + "”");
+      lines.push("");
+      lines.push("Useful questions:");
+      selected.forEach((q, i) => {
+        lines.push((i + 1) + ". " + q);
+      });
+
+      lines.push("");
+      lines.push("Best first question:");
+      lines.push(selected[0]);
+
+      return lines.join("\n");
+    }
+
+    function generate(){
+      const text = input.value.trim();
+
+      if (!text) {
+        result.textContent = "Please enter your confusion first.";
+        result.classList.remove('placeholder');
+        return;
+      }
+
+      result.textContent = buildQuestions(text);
+      result.classList.remove('placeholder');
+    }
+
+    generateBtn.addEventListener('click', generate);
+
+    exampleBtn.addEventListener('click', () => {
+      input.value = "I have too many ideas for what to build next. Everything feels possible, but I can't tell what matters most or what I should start with first.";
+      result.textContent = "Your reframed questions will appear here.";
+      result.classList.add('placeholder');
+    });
+
+    clearBtn.addEventListener('click', () => {
+      input.value = "";
+      result.textContent = "Your reframed questions will appear here.";
+      result.classList.add('placeholder');
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = result.textContent.trim();
+      if (!text || text === "Your reframed questions will appear here.") return;
+
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy result";
+        }, 1200);
+      } catch (e) {
+        copyBtn.textContent = "Copy failed";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy result";
+        }, 1200);
+      }
+    });
+  </script>
+</body>
+</html>
