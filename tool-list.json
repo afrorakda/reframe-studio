@@ -160,7 +160,8 @@
   "file": "idea-to-priority.html",
   "description": "Turn many ideas into one priority."
 },{
-  "title": "Idea → Priority",
-  "file": "idea-to-priority.html",
-  "description": "Turn many ideas into one priority."
-}]
+  "title": "Tool Generator v3",
+  "file": "tool-generator-v3.html",
+  "description": "Generate a complete REFRAME Studio tool and tool-list entry."
+}
+]
