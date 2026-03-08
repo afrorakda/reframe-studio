@@ -1,0 +1,158 @@
+[
+  {
+    "title": "Stuck → Best Tool",
+    "file": "stuck-to-tool.html",
+    "description": "Describe where you're stuck and get the best next tool.",
+    "featured": true
+  },
+  {
+    "title": "Constraint → Action",
+    "file": "constraint-to-action.html",
+    "description": "Turn a constraint into one useful next action."
+  },
+  {
+    "title": "Problem → Root Causes",
+    "file": "problem-to-root-cause.html",
+    "description": "Turn a problem into possible root causes."
+  },
+  {
+    "title": "Problem → Constraints",
+    "file": "problem-to-constraints.html",
+    "description": "Find the key constraints behind a problem."
+  },
+  {
+    "title": "Problem → Options",
+    "file": "problem-to-options.html",
+    "description": "Turn a problem into possible options."
+  },
+  {
+    "title": "Emotion → Action",
+    "file": "emotion-to-action.html",
+    "description": "Turn an emotion into a useful next action."
+  },
+  {
+    "title": "Confusion → Question",
+    "file": "confusion-to-question.html",
+    "description": "Turn confusion into a clearer question."
+  },
+  {
+    "title": "Comment → Content",
+    "file": "comment-to-content.html",
+    "description": "Turn a comment into content direction."
+  },
+  {
+    "title": "Comment → Question",
+    "file": "comment-to-question.html",
+    "description": "Turn a comment into a clearer question."
+  },
+  {
+    "title": "Complexity Cleaner",
+    "file": "complexity-cleaner.html",
+    "description": "Reduce unnecessary complexity."
+  },
+  {
+    "title": "Criticism → Idea",
+    "file": "criticism-to-idea.html",
+    "description": "Turn criticism into a new idea."
+  },
+  {
+    "title": "Criticism → Lesson",
+    "file": "criticism-to-lesson.html",
+    "description": "Turn criticism into a useful lesson."
+  },
+  {
+    "title": "Draft Fixer",
+    "file": "draft-fixer.html",
+    "description": "Improve a rough draft."
+  },
+  {
+    "title": "Failure → Lesson",
+    "file": "failure-to-lesson.html",
+    "description": "Turn failure into a useful lesson."
+  },
+  {
+    "title": "Hate → Signal",
+    "file": "hate-to-signal.html",
+    "description": "Turn harsh reactions into useful signals."
+  },
+  {
+    "title": "Hook Generator",
+    "file": "hook-generator.html",
+    "description": "Generate hook options from a topic."
+  },
+  {
+    "title": "Idea → Counterargument",
+    "file": "idea-to-counterargument.html",
+    "description": "Generate counterarguments from an idea."
+  },
+  {
+    "title": "Idea → Debate",
+    "file": "idea-to-debate.html",
+    "description": "Turn an idea into debate angles."
+  },
+  {
+    "title": "Idea → Example",
+    "file": "idea-to-example.html",
+    "description": "Turn an idea into examples."
+  },
+  {
+    "title": "Idea → Metaphor",
+    "file": "idea-to-metaphor.html",
+    "description": "Turn an idea into a metaphor."
+  },
+  {
+    "title": "Idea → Opposite",
+    "file": "idea-to-opposite.html",
+    "description": "Generate the opposite angle of an idea."
+  },
+  {
+    "title": "Idea → Post Angles",
+    "file": "idea-to-post-angles.html",
+    "description": "Turn one idea into multiple post angles."
+  },
+  {
+    "title": "Idea → Thread",
+    "file": "idea-to-thread.html",
+    "description": "Turn an idea into a thread structure."
+  },
+  {
+    "title": "Next Step Finder",
+    "file": "next-step-finder.html",
+    "description": "Find the next useful step."
+  },
+  {
+    "title": "Overthinking Breaker",
+    "file": "overthinking-breaker.html",
+    "description": "Break mental loops into movement."
+  },
+  {
+    "title": "Problem → Tiny Step",
+    "file": "problem-to-tiny-step.html",
+    "description": "Turn a problem into one tiny step."
+  },
+  {
+    "title": "Reaction → Topic",
+    "file": "reaction-to-topic.html",
+    "description": "Turn a reaction into discussion topics."
+  },
+  {
+    "title": "Thought → Structure",
+    "file": "thought-to-structure.html",
+    "description": "Organize scattered thoughts into structure."
+  },
+  {
+    "title": "Thread Navigator",
+    "file": "thread-navigator.html",
+    "description": "Save and resume AI threads."
+  },
+  {
+    "title": "Title Refiner",
+    "file": "title-refiner.html",
+    "description": "Improve a weak title."
+  },
+  {
+    "title": "Tweet Polisher",
+    "file": "tweet-polisher.html",
+    "description": "Polish a rough social post."
+  }
+]
