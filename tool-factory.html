@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Tool Factory · REFRAME Studio</title>
+  <style>
+    :root{
+      --bg:#f5f1e8;
+      --panel:#fbf8f2;
+      --card:#fffdf8;
+      --ink:#1d1b18;
+      --muted:#6f675c;
+      --line:#d9cfbf;
+      --accent:#1d1b18;
+      --accent-2:#8a7f6f;
+      --shadow:0 10px 30px rgba(29,27,24,.08);
+      --radius:18px;
+      --radius-sm:12px;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+    body{
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .shell{
+      width:min(100%,760px);
+      margin:0 auto;
+      padding:20px 16px 36px;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--ink);
+      text-decoration:none;
+      font-size:14px;
+      line-height:1.2;
+      margin-bottom:18px;
+      padding:10px 0;
+    }
+    .hero{
+      background:linear-gradient(180deg,rgba(255,253,248,.9),rgba(251,248,242,.96));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+    h1{
+      margin:0;
+      font-size:clamp(28px,7vw,40px);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+    .desc{
+      margin:10px 0 0;
+      font-size:15px;
+      line-height:1.55;
+      color:var(--muted);
+      max-width:58ch;
+    }
+    .panel{
+      margin-top:16px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.02em;
+      margin:0 0 8px;
+    }
+    textarea{
+      width:100%;
+      min-height:170px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--card);
+      color:var(--ink);
+      font:inherit;
+      padding:16px;
+      line-height:1.55;
+      outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+    }
+    textarea:focus{
+      border-color:#b8ac98;
+      box-shadow:0 0 0 3px rgba(138,127,111,.12);
+    }
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+    button,.button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      min-height:48px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .08s ease,opacity .2s ease,background .2s ease,border-color .2s ease;
+    }
+    button:active,.button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      flex:1 1 220px;
+    }
+    .secondary{
+      background:#ece5d7;
+      color:var(--ink);
+      flex:1 1 160px;
+    }
+    .ghost{
+      background:transparent;
+      color:var(--ink);
+      border:1px solid var(--line);
+    }
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .result-wrap{
+      margin-top:16px;
+      display:grid;
+      gap:14px;
+    }
+    .empty{
+      padding:18px;
+      border:1px dashed var(--line);
+      border-radius:18px;
+      color:var(--muted);
+      background:rgba(255,255,255,.35);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .tool-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .tool-head{
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(250,247,240,.88));
+    }
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      margin-bottom:8px;
+    }
+    .tool-title{
+      margin:0;
+      font-size:22px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+    .tool-sub{
+      margin:8px 0 0;
+      font-size:14px;
+      line-height:1.5;
+      color:var(--muted);
+    }
+    .specs{
+      display:grid;
+      gap:10px;
+      padding:16px;
+    }
+    .spec{
+      background:#faf6ee;
+      border:1px solid #e5dccf;
+      border-radius:14px;
+      padding:12px;
+    }
+    .spec b{
+      display:block;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      margin-bottom:6px;
+    }
+    .spec span{
+      display:block;
+      font-size:14px;
+      line-height:1.5;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    .code-block{
+      padding:0 16px 16px;
+    }
+    .code-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin:0 0 8px;
+    }
+    .code-header h4{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+    }
+    pre{
+      margin:0;
+      background:#191816;
+      color:#f8f4ec;
+      border-radius:16px;
+      padding:14px;
+      overflow:auto;
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.55;
+      border:1px solid rgba(255,255,255,.06);
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    .copy-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .mini{
+      background:#efe7db;
+      color:var(--ink);
+      padding:10px 12px;
+      min-height:40px;
+      border-radius:12px;
+      font-size:13px;
+      font-weight:700;
+    }
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+      padding:12px 0 4px;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%) translateY(20px);
+      background:#1d1b18;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .22s ease,transform .22s ease;
+      z-index:99;
+      box-shadow:var(--shadow);
+      max-width:calc(100vw - 24px);
+      text-align:center;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+    @media (min-width:700px){
+      .specs{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <a class="back" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <h1>Tool Factory</h1>
+      <p class="desc">Turn one idea into five REFRAME Studio tools.</p>
+    </section>
+
+    <section class="panel">
+      <label for="idea">Idea</label>
+      <textarea id="idea" placeholder="Example:
+I get many reactions on my posts but don't know how to turn them into ideas.
+
+例:
+投稿に反応はあるが、それをネタにできない。"></textarea>
+
+      <div class="actions">
+        <button class="primary" id="generateBtn">Generate 5 tools</button>
+        <button class="secondary" id="exampleBtn" type="button">Try example</button>
+      </div>
+
+      <div class="meta">
+        <span>5 outputs: insight, reframing, decision, creation, reflection</span>
+        <span id="status">Ready</span>
+      </div>
+    </section>
+
+    <section class="result-wrap" id="results">
+      <div class="empty">
+        Enter one idea. This tool will generate 5 different REFRAME Studio tool concepts, and for each one it will create:
+        Tool name, file name, transformation, description, button label, example input, logic, HTML tool file, and JSON entry.
+      </div>
+    </section>
+
+    <footer class="footer">REFRAME Studio · Tool Factory</footer>
+  </div>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <script>
+    (function(){
+      const ideaEl = document.getElementById('idea');
+      const generateBtn = document.getElementById('generateBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const resultsEl = document.getElementById('results');
+      const statusEl = document.getElementById('status');
+      const toastEl = document.getElementById('toast');
+
+      const exampleText = "I get many reactions on my posts but don't know how to turn them into ideas.\\n\\n例:\\n投稿に反応はあるが、それをネタにできない。";
+
+      const stopWords = new Set([
+        "i","me","my","mine","myself","we","our","ours","ourselves","you","your","yours","yourself","yourselves",
+        "he","him","his","himself","she","her","hers","herself","it","its","itself","they","them","their","theirs",
+        "this","that","these","those","am","is","are","was","were","be","been","being","have","has","had","do","does",
+        "did","a","an","the","and","but","if","or","because","as","until","while","of","at","by","for","with","about",
+        "against","between","into","through","during","before","after","above","below","to","from","up","down","in","out",
+        "on","off","over","under","again","further","then","once","here","there","when","where","why","how","all","any",
+        "both","each","few","more","most","other","some","such","no","nor","not","only","own","same","so","than","too",
+        "very","can","will","just","don't","dont","should","now","many","get","got","posts","post","know","turn","into",
+        "ideas","idea","react","reactions"
+      ]);
+
+      const typeConfig = [
+        {
+          type: "insight tool",
+          label: "Tool 1",
+          suffix: "Signal Scanner",
+          transformation: "Raw reactions → hidden patterns",
+          button: "Extract signals",
+          focus: "Find repeated themes, tensions, and useful audience signals."
+        },
+        {
+          type: "reframing tool",
+          label: "Tool 2",
+          suffix: "Angle Reframer",
+          transformation: "Stuck interpretation → fresh angle",
+          button: "Reframe angles",
+          focus: "Convert the same material into surprising and more useful frames."
+        },
+        {
+          type: "decision tool",
+          label: "Tool 3",
+          suffix: "Priority Filter",
+          transformation: "Too many possible directions → one next move",
+          button: "Choose next idea",
+          focus: "Rank possible directions using clear deterministic criteria."
+        },
+        {
+          type: "creation tool",
+          label: "Tool 4",
+          suffix: "Draft Builder",
+          transformation: "Insight → usable draft",
+          button: "Build draft",
+          focus: "Turn the strongest idea into a simple structured output."
+        },
+        {
+          type: "reflection tool",
+          label: "Tool 5",
+          suffix: "Pattern Mirror",
+          transformation: "Surface problem → deeper self-observation",
+          button: "Reflect pattern",
+          focus: "Reveal habits, assumptions, and recurring blocks behind the idea."
+        }
+      ];
+
+      function showToast(message){
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1600);
+      }
+
+      function escapeHtml(str){
+        return String(str)
+          .replace(/&/g,'&amp;')
+          .replace(/</g,'&lt;')
+          .replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;')
+          .replace(/'/g,'&#39;');
+      }
+
+      function slugify(str){
+        return String(str)
+          .toLowerCase()
+          .normalize('NFKD')
+          .replace(/[\u0300-\u036f]/g,'')
+          .replace(/[^a-z0-9]+/g,'-')
+          .replace(/^-+|-+$/g,'')
+          .replace(/-{2,}/g,'-')
+          .slice(0, 48) || 'tool';
+      }
+
+      function toTitleCase(str){
+        return str.replace(/\b\w/g, c => c.toUpperCase());
+      }
+
+      function pickKeywords(input){
+        const words = input
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}\s-]/gu,' ')
+          .split(/\s+/)
+          .filter(Boolean);
+
+        const counts = new Map();
+        for(const w of words){
+          if(stopWords.has(w)) continue;
+          if(w.length < 3 && /^[a-z]+$/.test(w)) continue;
+          counts.set(w, (counts.get(w) || 0) + 1);
+        }
+
+        const ranked = [...counts.entries()]
+          .sort((a,b) => b[1]-a[1] || b[0].localeCompare(a[0]))
+          .map(([w]) => w);
+
+        const keywords = ranked.slice(0,3);
+        while(keywords.length < 3){
+          const fallback = ["signal","angle","pattern"][keywords.length];
+          if(!keywords.includes(fallback)) keywords.push(fallback);
+        }
+        return keywords;
+      }
+
+      function detectTheme(input){
+        const text = input.toLowerCase();
+        if(/post|content|audience|reaction|comment|sns|x|tweet|youtube|instagram|note/.test(text)) return "content";
+        if(/sell|offer|product|service|customer|client|sales|lead/.test(text)) return "offer";
+        if(/team|meeting|manager|org|organization|company|work|project/.test(text)) return "team";
+        if(/learn|study|skill|practice|career/.test(text)) return "growth";
+        return "general";
+      }
+
+      function summarizeInput(input){
+        const clean = input.replace(/\s+/g,' ').trim();
+        if(!clean) return "your raw idea";
+        return clean.length > 110 ? clean.slice(0,107) + "..." : clean;
+      }
+
+      function buildConcepts(input){
+        const keywords = pickKeywords(input);
+        const theme = detectTheme(input);
+        const summary = summarizeInput(input);
+        const base = toTitleCase(keywords[0]) + " " + toTitleCase(keywords[1]);
+
+        return typeConfig.map((cfg, idx) => {
+          const names = [
+            base + " " + cfg.suffix,
+            toTitleCase(keywords[0]) + " " + cfg.suffix,
+            "REFRAME " + toTitleCase(keywords[1]) + " " + cfg.suffix,
+            toTitleCase(keywords[0]) + " / " + toTitleCase(keywords[1]) + " " + cfg.suffix,
+            "Quiet " + toTitleCase(keywords[0]) + " " + cfg.suffix
+          ];
+          const toolName = names[idx];
+          const fileName = slugify(toolName) + ".html";
+          const descriptions = {
+            content: {
+              "insight tool": "Analyze reactions, comments, and response patterns to spot what people actually care about.",
+              "reframing tool": "Take the same audience response and convert it into stronger hooks, questions, and perspectives.",
+              "decision tool": "Choose which audience signal deserves to become the next post, series, or offer.",
+              "creation tool": "Turn one strong reaction pattern into a clear content draft with structure.",
+              "reflection tool": "Notice the hidden assumptions that stop you from turning response into creation."
+            },
+            offer: {
+              "insight tool": "Scan customer language and signals to uncover the real buying tension.",
+              "reframing tool": "Shift the way the problem is described so the offer becomes clearer and sharper.",
+              "decision tool": "Prioritize the most useful offer direction using simple scoring.",
+              "creation tool": "Generate a first-pass offer draft from the strongest signal.",
+              "reflection tool": "Reveal the internal patterns that make the offer vague or overcomplicated."
+            },
+            team: {
+              "insight tool": "Extract recurring friction points and signals from team situations.",
+              "reframing tool": "Recast the same issue from constraint, role, and flow perspectives.",
+              "decision tool": "Pick the most leverage-heavy next action for the team or project.",
+              "creation tool": "Turn one key issue into a concrete action draft or meeting prompt.",
+              "reflection tool": "Observe the repeated patterns shaping the team's stuck state."
+            },
+            growth: {
+              "insight tool": "Identify where energy, feedback, and curiosity are naturally clustering.",
+              "reframing tool": "Transform a blocked learning problem into a more useful and workable angle.",
+              "decision tool": "Choose the next skill move based on signal strength and effort.",
+              "creation tool": "Turn one learning insight into a practical mini-plan or draft.",
+              "reflection tool": "Surface the self-story that keeps the growth loop repeating."
+            },
+            general: {
+              "insight tool": "Extract recurring patterns and useful signals from the raw situation.",
+              "reframing tool": "Turn the same stuck problem into new, more productive interpretations.",
+              "decision tool": "Reduce many possible directions to one next move.",
+              "creation tool": "Convert a strong idea into a draft you can actually use.",
+              "reflection tool": "Use the problem as a mirror for deeper recurring patterns."
+            }
+          };
+
+          const exampleInput = input.trim() || exampleText;
+          const logicMap = {
+            "insight tool": "1. Split input into lines or chunks. 2. Tag repeated words, pains, desires, and surprises. 3. Count recurrence. 4. Return top patterns with a one-line interpretation.",
+            "reframing tool": "1. Detect the current stuck framing. 2. Generate alternative frames: opposite, audience, system, constraint, opportunity. 3. Return five distinct reframes.",
+            "decision tool": "1. Extract candidate directions. 2. Score each on clarity, usefulness, novelty, and ease. 3. Rank by total score. 4. Recommend the top next move.",
+            "creation tool": "1. Choose the strongest signal. 2. Convert it into a simple output structure. 3. Fill the structure deterministically from the input. 4. Return a usable draft.",
+            "reflection tool": "1. Identify repeated tensions and hesitations. 2. Mirror back likely assumptions. 3. Ask grounded prompts. 4. Return observations and next reflection step."
+          };
+
+          return {
+            index: idx + 1,
+            type: cfg.type,
+            label: cfg.label,
+            toolName,
+            fileName,
+            transformation: cfg.transformation,
+            description: descriptions[theme][cfg.type],
+            buttonLabel: cfg.button,
+            exampleInput,
+            logic: logicMap[cfg.type],
+            focus: cfg.focus,
+            summary
+          };
+        });
+      }
+
+      function createToolHtml(concept){
+        const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>${escapeHtml(concept.toolName)} · REFRAME Studio</title>
+  <style>
+    :root{
+      --bg:#f5f1e8;--panel:#fbf8f2;--card:#fffdf8;--ink:#1d1b18;--muted:#6f675c;--line:#d9cfbf;--accent:#1d1b18;
+      --shadow:0 10px 30px rgba(29,27,24,.08);--radius:18px;--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+    .shell{width:min(100%,760px);margin:0 auto;padding:20px 16px 36px}
+    .back{display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none;font-size:14px;margin-bottom:18px;padding:10px 0}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+    h1{margin:0;font-size:clamp(28px,7vw,40px);line-height:1.05;letter-spacing:-.03em}
+    p{margin:10px 0 0;color:var(--muted);line-height:1.6}
+    label{display:block;font-size:13px;font-weight:700;margin:16px 0 8px}
+    textarea{width:100%;min-height:180px;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:16px;font:inherit;color:var(--ink);line-height:1.55;resize:vertical}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button{appearance:none;border:none;border-radius:14px;padding:14px 16px;min-height:48px;font:inherit;font-weight:700;cursor:pointer}
+    .primary{background:var(--accent);color:#fff;flex:1 1 220px}
+    .secondary{background:#ece5d7;color:var(--ink);flex:1 1 150px}
+    .ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .result{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;white-space:pre-wrap;line-height:1.6}
+    .footer{margin-top:18px;text-align:center;font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+    <section class="card">
+      <h1>${escapeHtml(concept.toolName)}</h1>
+      <p>${escapeHtml(concept.description)}</p>
+
+      <label for="input">Input</label>
+      <textarea id="input" placeholder="Example:
+${escapeHtml(concept.exampleInput)}
+
+例:
+${escapeHtml(concept.exampleInput)}"></textarea>
+
+      <div class="actions">
+        <button class="primary" id="run">${escapeHtml(concept.buttonLabel)}</button>
+        <button class="secondary" id="example">Try example</button>
+        <button class="ghost" id="copy">Copy result</button>
+      </div>
+
+      <div class="result" id="result">Result will appear here.</div>
+      <div class="footer">REFRAME Studio</div>
+    </section>
+  </div>
+
+  <script>
+    (function(){
+      const input = document.getElementById('input');
+      const result = document.getElementById('result');
+      const run = document.getElementById('run');
+      const example = document.getElementById('example');
+      const copy = document.getElementById('copy');
+      const sample = ${JSON.stringify(concept.exampleInput)};
+
+      function normalize(text){
+        return String(text || '').trim().replace(/\\s+/g,' ');
+      }
+
+      function splitChunks(text){
+        return normalize(text).split(/[\\n。.!?]+/).map(s => s.trim()).filter(Boolean);
+      }
+
+      function uniqueWords(text){
+        return Array.from(new Set(normalize(text).toLowerCase().replace(/[^\\p{L}\\p{N}\\s-]/gu,' ').split(/\\s+/).filter(w => w.length > 2)));
+      }
+
+      function generate(text){
+        const source = normalize(text);
+        if(!source) return 'Please enter an idea first.';
+        const chunks = splitChunks(source);
+        const words = uniqueWords(source).slice(0,8);
+
+        ${concept.type === "insight tool" ? `
+        const lines = [
+          "Top signals:",
+          "1. Repetition → " + (words[0] || "pattern") + " appears early and likely matters.",
+          "2. Tension → " + (chunks[0] || source),
+          "3. Opportunity → A reusable topic may be hidden inside the strongest reaction.",
+          "",
+          "Working interpretation:",
+          "People are not only reacting to the surface issue. They may be reacting to the tension behind it."
+        ];
+        return lines.join("\\n");` : ""}
+
+        ${concept.type === "reframing tool" ? `
+        const focus = chunks[0] || source;
+        const lines = [
+          "Reframes:",
+          "1. Opposite: What if the problem is not lack of ideas but lack of sorting?",
+          "2. Audience: What is your audience repeatedly asking you to explain?",
+          "3. Constraint: If you had to create from one signal only, which one survives?",
+          "4. System: What part of your workflow stops raw reaction from becoming output?",
+          "5. Opportunity: Which reaction could become a series, not just one post?"
+        ];
+        return lines.join("\\n");` : ""}
+
+        ${concept.type === "decision tool" ? `
+        const options = chunks.length ? chunks.slice(0,4) : [source];
+        const scored = options.map((item, i) => {
+          const clarity = Math.min(5, 2 + item.length % 4);
+          const usefulness = Math.min(5, 3 + (i % 3));
+          const novelty = Math.min(5, 2 + ((item.split(' ').length + i) % 4));
+          const ease = Math.min(5, 5 - (i % 3));
+          return { item, clarity, usefulness, novelty, ease, total: clarity + usefulness + novelty + ease };
+        }).sort((a,b) => b.total - a.total);
+        const top = scored[0];
+        return [
+          "Ranked directions:",
+          ...scored.map((s, i) => (i+1) + ". " + s.item + " → " + s.total + "/20"),
+          "",
+          "Recommended next move:",
+          top.item,
+          "",
+          "Why:",
+          "Highest combined score across clarity, usefulness, novelty, and ease."
+        ].join("\\n");` : ""}
+
+        ${concept.type === "creation tool" ? `
+        const hook = chunks[0] || source;
+        const w1 = words[0] || "signal";
+        const w2 = words[1] || "pattern";
+        return [
+          "Draft:",
+          "",
+          "Hook:",
+          "The real issue is not " + w1 + ". It is how " + w2 + " never becomes a usable next step.",
+          "",
+          "Body:",
+          "When the same response keeps appearing, it is already telling you what wants to be made. The task is not more inspiration. The task is structured conversion.",
+          "",
+          "Closing:",
+          "Save one repeated signal today and turn it into one small draft."
+        ].join("\\n");` : ""}
+
+        ${concept.type === "reflection tool" ? `
+        const first = chunks[0] || source;
+        return [
+          "Reflection mirror:",
+          "1. What do you repeatedly notice but refuse to count as valuable?",
+          "2. Are you waiting for a perfect idea instead of a live signal?",
+          "3. What pattern in your process makes response disappear before it becomes form?",
+          "",
+          "Observation:",
+          first,
+          "",
+          "Next step:",
+          "Name one recurring signal and one reason you have not trusted it."
+        ].join("\\n");` : ""}
+      }
+
+      run.addEventListener('click', function(){
+        result.textContent = generate(input.value);
+      });
+
+      example.addEventListener('click', function(){
+        input.value = sample;
+        result.textContent = generate(input.value);
+      });
+
+      copy.addEventListener('click', async function(){
+        try{
+          await navigator.clipboard.writeText(result.textContent);
+          copy.textContent = 'Copied';
+          setTimeout(() => copy.textContent = 'Copy result', 1200);
+        }catch(e){
+          copy.textContent = 'Unable to copy';
+          setTimeout(() => copy.textContent = 'Copy result', 1200);
+        }
+      });
+    })();
+  <\/script>
+</body>
+</html>`;
+        return html;
+      }
+
+      function createJson(concept){
+        return JSON.stringify({
+          title: concept.toolName,
+          file: concept.fileName,
+          description: concept.description
+        }, null, 2);
+      }
+
+      function conceptCard(concept){
+        const htmlCode = createToolHtml(concept);
+        const jsonCode = createJson(concept);
+
+        return `
+          <article class="tool-card">
+            <div class="tool-head">
+              <div class="eyebrow">${escapeHtml(concept.label)} · ${escapeHtml(concept.type)}</div>
+              <h3 class="tool-title">${escapeHtml(concept.toolName)}</h3>
+              <p class="tool-sub">${escapeHtml(concept.description)}</p>
+            </div>
+
+            <div class="specs">
+              <div class="spec"><b>File name</b><span>${escapeHtml(concept.fileName)}</span></div>
+              <div class="spec"><b>Transformation</b><span>${escapeHtml(concept.transformation)}</span></div>
+              <div class="spec"><b>Button label</b><span>${escapeHtml(concept.buttonLabel)}</span></div>
+              <div class="spec"><b>Example input</b><span>${escapeHtml(concept.exampleInput)}</span></div>
+              <div class="spec" style="grid-column:1 / -1"><b>Logic</b><span>${escapeHtml(concept.logic)}</span></div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <h4>HTML</h4>
+                <div class="copy-row">
+                  <button class="mini" data-copy="${encodeURIComponent(htmlCode)}">Copy HTML</button>
+                </div>
+              </div>
+              <pre>${escapeHtml(htmlCode)}</pre>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <h4>JSON</h4>
+                <div class="copy-row">
+                  <button class="mini" data-copy="${encodeURIComponent(jsonCode)}">Copy JSON</button>
+                </div>
+              </div>
+              <pre>${escapeHtml(jsonCode)}</pre>
+            </div>
+          </article>
+        `;
+      }
+
+      function render(concepts){
+        resultsEl.innerHTML = concepts.map(conceptCard).join('');
+        resultsEl.querySelectorAll('[data-copy]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            try{
+              await navigator.clipboard.writeText(decodeURIComponent(btn.getAttribute('data-copy')));
+              const original = btn.textContent;
+              btn.textContent = 'Copied';
+              setTimeout(() => btn.textContent = original, 1200);
+              showToast('Copied to clipboard');
+            }catch(e){
+              showToast('Unable to copy');
+            }
+          });
+        });
+      }
+
+      generateBtn.addEventListener('click', function(){
+        const input = ideaEl.value.trim() || exampleText;
+        statusEl.textContent = 'Generated';
+        render(buildConcepts(input));
+      });
+
+      exampleBtn.addEventListener('click', function(){
+        ideaEl.value = exampleText;
+        statusEl.textContent = 'Example loaded';
+      });
+
+      // Initial example-friendly empty state on first tap path
+      ideaEl.addEventListener('input', () => {
+        statusEl.textContent = ideaEl.value.trim() ? 'Editing' : 'Ready';
+      });
+    })();
+  </script>
+</body>
+</html>
