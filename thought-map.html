@@ -18,9 +18,6 @@
       --shadow:0 10px 30px rgba(0,0,0,.28);
       --radius:20px;
       --primary-size:106px;
-      --child-size:74px;
-      --header-h:112px;
-      --footer-h:52px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -36,7 +33,6 @@
         radial-gradient(circle at 85% 15%, rgba(120,255,220,.12), transparent 24%),
         radial-gradient(circle at 50% 85%, rgba(170,120,255,.12), transparent 26%),
         linear-gradient(180deg, #06101c 0%, #081322 45%, #091523 100%);
-      overflow:hidden;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -50,6 +46,8 @@
 
     .topbar{
       padding:16px 16px 8px;
+      position:relative;
+      z-index:20;
     }
 
     .back-link{
@@ -72,6 +70,8 @@
 
     header{
       padding:8px 16px 6px;
+      position:relative;
+      z-index:20;
     }
 
     h1{
@@ -98,6 +98,8 @@
       gap:12px;
       color:var(--muted);
       font-size:13px;
+      position:relative;
+      z-index:20;
     }
 
     .helper{
@@ -128,6 +130,7 @@
       flex:1;
       min-height:0;
       padding:4px 10px 12px;
+      z-index:1;
     }
 
     .map{
@@ -153,6 +156,7 @@
     }
 
     .stars{
+      z-index:1;
       pointer-events:none;
       opacity:.65;
       background-image:
@@ -164,6 +168,11 @@
         radial-gradient(circle at 44% 54%, rgba(255,255,255,.35) 0 1px, transparent 1.5px),
         radial-gradient(circle at 8% 86%, rgba(255,255,255,.55) 0 1px, transparent 1.5px),
         radial-gradient(circle at 94% 64%, rgba(255,255,255,.5) 0 1px, transparent 1.5px);
+    }
+
+    .lines{
+      z-index:2;
+      pointer-events:none;
     }
 
     .lines svg{
@@ -181,6 +190,16 @@
     .line.child-line{
       stroke:rgba(180,220,255,.28);
       stroke-width:1.2;
+    }
+
+    .nodes{
+      z-index:3;
+      pointer-events:none;
+    }
+
+    .children-layer{
+      z-index:4;
+      pointer-events:none;
     }
 
     .node{
@@ -211,6 +230,7 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+      pointer-events:auto;
     }
 
     .node:active{ transform:translate(-50%,-50%) scale(.98); }
@@ -290,6 +310,8 @@
       font-size:12px;
       text-align:center;
       letter-spacing:.01em;
+      position:relative;
+      z-index:20;
     }
 
     @media (max-width: 420px){
@@ -407,7 +429,6 @@
         }
       ];
 
-      const map = document.getElementById("map");
       const primaryNodesLayer = document.getElementById("primaryNodes");
       const childrenLayer = document.getElementById("childrenLayer");
       const primaryLinesGroup = document.getElementById("primaryLines");
@@ -466,6 +487,7 @@
           btn.dataset.key = item.key;
           btn.setAttribute("aria-label", item.label);
           btn.textContent = item.label;
+          btn.style.pointerEvents = "auto";
           btn.addEventListener("click", () => toggleNode(item.key));
           primaryNodesLayer.appendChild(btn);
           return btn;
