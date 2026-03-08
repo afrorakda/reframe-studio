@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Constraint → Action</title>
+  <meta name="description" content="Turn a constraint into one useful next action." />
+  <style>
+    :root{
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #18202a;
+      --muted: #667085;
+      --line: #e7ecf3;
+      --primary: #1f6fff;
+      --primary-pressed: #1659cc;
+      --soft: #eef4ff;
+      --success: #127a4a;
+      --shadow: 0 10px 30px rgba(24,32,42,0.08);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --max: 760px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #fafdff 0%, #f5f7fb 42%, #eef2f8 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    a, button, textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      margin: 4px 0 16px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .back-link:active {
+      transform: translateY(1px);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(231,236,243,0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .title {
+      font-size: clamp(28px, 6vw, 40px);
+      line-height: 1.08;
+      margin: 0 0 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .desc {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin: 0 0 8px;
+      color: #344054;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      font: inherit;
+      font-size: 16px;
+      color: var(--text);
+      background: #fbfcfe;
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(16,24,40,0.03);
+    }
+
+    textarea:focus {
+      border-color: rgba(31,111,255,0.5);
+      box-shadow: 0 0 0 4px rgba(31,111,255,0.12);
+      background: #fff;
+    }
+
+    textarea::placeholder {
+      color: #98a2b3;
+      white-space: pre-line;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 16px;
+      padding: 15px 16px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.06s ease, opacity 0.2s ease, background 0.2s ease;
+      min-height: 52px;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(31,111,255,0.25);
+    }
+
+    .primary:hover {
+      background: var(--primary-pressed);
+    }
+
+    .secondary {
+      background: var(--soft);
+      color: var(--primary);
+      border: 1px solid #dce8ff;
+    }
+
+    .secondary:hover {
+      background: #e7f0ff;
+    }
+
+    .ghost {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .ghost:hover {
+      background: #fafcff;
+    }
+
+    .result-card {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+
+    .result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .result-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      color: #344054;
+      letter-spacing: 0.01em;
+    }
+
+    .status {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--success);
+      min-height: 18px;
+    }
+
+    .result {
+      white-space: pre-wrap;
+      font-size: 16px;
+      color: var(--text);
+      min-height: 148px;
+      padding: 4px 2px 0;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin: 16px 0 0;
+      padding-bottom: 6px;
+    }
+
+    @media (min-width: 640px) {
+      .wrap {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .card {
+        padding: 24px;
+      }
+      .controls {
+        grid-template-columns: 1.2fr 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back-link" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+
+    <section class="card">
+      <h1 class="title">Constraint → Action</h1>
+      <p class="desc">Turn a constraint into one useful next action.</p>
+
+      <label class="label" for="constraintInput">Constraint or bottleneck</label>
+      <textarea
+        id="constraintInput"
+        placeholder="I don't have a clear template.
+使えるテンプレートがまだない。"
+        aria-label="Constraint input"
+      ></textarea>
+
+      <div class="controls">
+        <button id="findBtn" class="primary" type="button">Find action</button>
+        <button id="exampleBtn" class="secondary" type="button">Try example</button>
+        <button id="copyBtn" class="ghost" type="button">Copy result</button>
+      </div>
+
+      <div class="result-card" aria-live="polite">
+        <div class="result-head">
+          <h2 class="result-title">Result</h2>
+          <div class="status" id="status"></div>
+        </div>
+        <div class="result" id="result"></div>
+      </div>
+    </section>
+
+    <p class="footer">REFRAME Studio — small, clear, immediately usable actions.</p>
+  </main>
+
+  <script>
+    (function () {
+      const input = document.getElementById('constraintInput');
+      const result = document.getElementById('result');
+      const status = document.getElementById('status');
+      const findBtn = document.getElementById('findBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const copyBtn = document.getElementById('copyBtn');
+
+      const EXAMPLE_EN = "I don't have a clear template for this workflow.";
+      const EXAMPLE_JA = "この作業フローで使えるテンプレートがまだない。";
+
+      function setStatus(message) {
+        status.textContent = message || '';
+        if (message) {
+          window.clearTimeout(setStatus._timer);
+          setStatus._timer = window.setTimeout(() => {
+            status.textContent = '';
+          }, 1800);
+        }
+      }
+
+      function containsJapanese(text) {
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/.test(text);
+      }
+
+      function isEnglishOnly(text) {
+        const hasLetters = /[A-Za-z]/.test(text);
+        const hasJapanese = containsJapanese(text);
+        return hasLetters && !hasJapanese;
+      }
+
+      function detectLanguage(text) {
+        if (containsJapanese(text)) return 'ja';
+        return 'en';
+      }
+
+      function normalize(text) {
+        return (text || '').trim().toLowerCase();
+      }
+
+      function hasAny(text, keywords) {
+        return keywords.some(k => text.includes(k));
+      }
+
+      function makeOutput(lang, actions) {
+        const header = lang === 'ja' ? '次のアクション候補:' : 'Possible actions:';
+        return header + '\n' + actions.map(a => '- ' + a).join('\n');
+      }
+
+      function actionSetForTemplate(lang) {
+        if (lang === 'ja') {
+          return [
+            'まず一つの簡単なテンプレートを作る',
+            '使う構造を一つだけ固定する',
+            '選択肢を減らして判断回数を減らす',
+            '同じ型を次回も使い回す'
+          ];
+        }
+        return [
+          'Make one simple template',
+          'Fix one structure and use it',
+          'Reduce the number of choices',
+          'Reuse the same format next time'
+        ];
+      }
+
+      function actionSetForDecisions(lang) {
+        if (lang === 'ja') {
+          return [
+            '選択肢を三つ以下に絞る',
+            '判断ルールを一つだけ決める',
+            'まずの既定値を一つ固定する',
+            '今回の対象範囲を小さく区切る'
+          ];
+        }
+        return [
+          'Cut the options down to three',
+          'Choose one decision rule',
+          'Set one default first',
+          'Limit the scope for this round'
+        ];
+      }
+
+      function actionSetForPriorities(lang) {
+        if (lang === 'ja') {
+          return [
+            '今日の最重要ターゲットを一つ決める',
+            '進んだか分かる指標を一つ決める',
+            '横道の作業をいったん外す',
+            'まず一つだけ最後まで終える'
+          ];
+        }
+        return [
+          'Pick one target for today',
+          'Define one metric for progress',
+          'Remove side tasks for now',
+          'Finish one thing before starting another'
+        ];
+      }
+
+      function actionSetForWorkflow(lang) {
+        if (lang === 'ja') {
+          return [
+            '毎回同じ順番で進める流れを決める',
+            '短いチェックリストを一つ作る',
+            '繰り返せる定型ルーティンにする',
+            '毎回同じ最初の一歩から始める'
+          ];
+        }
+        return [
+          'Set one fixed sequence',
+          'Use one short checklist',
+          'Create one repeatable routine',
+          'Start from the same first step each time'
+        ];
+      }
+
+      function actionSetGeneric(lang) {
+        if (lang === 'ja') {
+          return [
+            '次の一歩を五分でできる大きさまで小さくする',
+            '終わりの条件を一つだけ決める',
+            '今やらないことを一つ外す',
+            '今日中に一回だけ試して記録する'
+          ];
+        }
+        return [
+          'Shrink the next step to five minutes',
+          'Set one clear finish line',
+          'Remove one thing you will not do now',
+          'Test one small version today'
+        ];
+      }
+
+      function generateActions(text) {
+        const lang = detectLanguage(text);
+        const t = normalize(text);
+
+        const templateKeywordsEn = ['template', 'format', 'structure', 'framework', 'blank', 'starting point'];
+        const templateKeywordsJa = ['テンプレート', 'ひな型', '型', 'フォーマット', '形式', '土台'];
+        const decisionKeywordsEn = ['too many decisions', 'too many choices', 'too many options', 'decision', 'choices', 'options', 'overthinking'];
+        const decisionKeywordsJa = ['判断が多い', '決めることが多い', '選択肢が多い', '迷う', '判断できない', '決められない'];
+        const priorityKeywordsEn = ['priority', 'priorities', 'unclear priorities', 'not sure what matters', 'focus', 'too many tasks'];
+        const priorityKeywordsJa = ['優先順位', '何を先にやるか', '優先が不明', '焦点', 'タスクが多い', '重要なものが分からない'];
+        const workflowKeywordsEn = ['workflow', 'inconsistent', 'routine', 'process', 'sequence', 'scattered'];
+        const workflowKeywordsJa = ['流れが安定しない', '手順がばらばら', 'ワークフロー', 'ルーティン', '進め方が一定でない', '順番が決まらない'];
+
+        if (hasAny(t, templateKeywordsEn) || hasAny(text, templateKeywordsJa)) {
+          return makeOutput(lang, actionSetForTemplate(lang));
+        }
+        if (hasAny(t, decisionKeywordsEn) || hasAny(text, decisionKeywordsJa)) {
+          return makeOutput(lang, actionSetForDecisions(lang));
+        }
+        if (hasAny(t, priorityKeywordsEn) || hasAny(text, priorityKeywordsJa)) {
+          return makeOutput(lang, actionSetForPriorities(lang));
+        }
+        if (hasAny(t, workflowKeywordsEn) || hasAny(text, workflowKeywordsJa)) {
+          return makeOutput(lang, actionSetForWorkflow(lang));
+        }
+
+        const fallback = actionSetGeneric(lang);
+
+        if (lang === 'ja' && /ない|不足|詰ま|止ま|できない|不明|混乱/.test(text)) {
+          return makeOutput(lang, fallback);
+        }
+        if (lang === 'en' && /(can't|cannot|stuck|lack|missing|blocked|unclear|messy|slow)/.test(t)) {
+          return makeOutput(lang, fallback);
+        }
+
+        return makeOutput(lang, fallback);
+      }
+
+      function run() {
+        const text = input.value.trim();
+        if (!text) {
+          result.textContent = '';
+          setStatus('');
+          return;
+        }
+        result.textContent = generateActions(text);
+      }
+
+      findBtn.addEventListener('click', run);
+
+      exampleBtn.addEventListener('click', function () {
+        const lang = detectLanguage(input.value.trim() || navigator.language || 'en');
+        input.value = lang === 'ja' ? EXAMPLE_JA : EXAMPLE_EN;
+        run();
+      });
+
+      copyBtn.addEventListener('click', async function () {
+        const text = result.textContent.trim();
+        if (!text) return;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus('Copied');
+        } catch (e) {
+          const range = document.createRange();
+          range.selectNodeContents(result);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          try {
+            document.execCommand('copy');
+            setStatus('Copied');
+          } catch (err) {
+            setStatus('Copy failed');
+          }
+          sel.removeAllRanges();
+        }
+      });
+
+      input.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          run();
+        }
+      });
+
+      input.addEventListener('input', function () {
+        if (!input.value.trim()) {
+          result.textContent = '';
+        }
+      });
+
+      const initial = input.value.trim();
+      if (initial) run();
+    })();
+  </script>
+</body>
+</html>
