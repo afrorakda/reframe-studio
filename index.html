@@ -22,7 +22,7 @@ margin:auto;
 
 h1{
 font-size:34px;
-margin-bottom:10px;
+margin-bottom:8px;
 }
 
 .subtitle{
@@ -61,10 +61,6 @@ color:#9ca3af;
 font-size:14px;
 }
 
-.featured{
-border:2px solid #6366f1;
-}
-
 </style>
 </head>
 
@@ -81,33 +77,53 @@ border:2px solid #6366f1;
 
 <script>
 
-fetch("tool-list.json")
-.then(res => res.json())
-.then(tools => {
+const repo = "afrorakda/reframe-studio";
+
+async function loadTools(){
+
+const url = `https://api.github.com/repos/${repo}/contents`;
+
+const res = await fetch(url);
+const files = await res.json();
+
+const htmlFiles = files.filter(f =>
+f.name.endsWith(".html") &&
+f.name !== "index.html" &&
+!f.name.includes("factory")
+);
 
 const container = document.getElementById("tools");
 
-tools.forEach(tool => {
+htmlFiles.sort((a,b)=>a.name.localeCompare(b.name));
+
+htmlFiles.forEach(file=>{
+
+const name = file.name
+.replace(".html","")
+.replaceAll("-"," ");
+
+const title = name
+.split(" ")
+.map(w=>w.charAt(0).toUpperCase()+w.slice(1))
+.join(" ");
 
 const card = document.createElement("a");
 
-card.href = tool.file;
-card.className = "card";
+card.href = file.name;
+card.className="card";
 
-if(tool.featured){
-card.classList.add("featured");
-}
-
-card.innerHTML = `
-<div class="title">${tool.title}</div>
-<div class="desc">${tool.description}</div>
+card.innerHTML=`
+<div class="title">${title}</div>
+<div class="desc">${file.name}</div>
 `;
 
 container.appendChild(card);
 
 });
 
-});
+}
+
+loadTools();
 
 </script>
 
