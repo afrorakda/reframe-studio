@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
+<title>Criticism → Question • REFRAME Studio</title>
+
+<style>
+
+:root{
+--bg:#f6f7fb;
+--panel:#ffffff;
+--text:#111318;
+--muted:#6b7280;
+--line:#e5e7eb;
+--accent:#2563eb;
+--radius:16px;
+--shadow:0 10px 30px rgba(0,0,0,.06);
+--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:var(--bg);
+font-family:var(--font);
+color:var(--text);
+padding:28px 18px 40px;
+}
+
+.page{
+max-width:680px;
+margin:auto;
+}
+
+.back{
+display:inline-block;
+margin-bottom:18px;
+font-size:14px;
+text-decoration:none;
+color:#4b5563;
+}
+
+.card{
+background:var(--panel);
+border-radius:var(--radius);
+padding:26px;
+box-shadow:var(--shadow);
+border:1px solid var(--line);
+}
+
+h1{
+margin:0 0 10px 0;
+font-size:30px;
+}
+
+.desc{
+color:var(--muted);
+margin-bottom:22px;
+}
+
+textarea{
+width:100%;
+min-height:130px;
+padding:14px;
+border-radius:12px;
+border:1px solid var(--line);
+font-size:15px;
+resize:vertical;
+}
+
+.buttons{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:16px;
+}
+
+button{
+border:none;
+border-radius:12px;
+padding:11px 16px;
+font-size:14px;
+cursor:pointer;
+}
+
+.primary{
+background:var(--accent);
+color:white;
+}
+
+.secondary{
+background:#e5e7eb;
+}
+
+.copy{
+background:#e5e7eb;
+margin-top:10px;
+}
+
+.result{
+margin-top:22px;
+border:1px solid var(--line);
+border-radius:12px;
+padding:16px;
+background:#fafafa;
+white-space:pre-wrap;
+font-size:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<main class="page">
+
+<a class="back" href="index.html">← Back to REFRAME Studio</a>
+
+<div class="card">
+
+<h1>Criticism → Question</h1>
+
+<p class="desc">
+Turn criticism into better questions and productive thinking.
+</p>
+
+<textarea id="input" placeholder="Paste criticism.
+
+Example:
+Your idea will never work. Nobody needs this."></textarea>
+
+<div class="buttons">
+
+<button class="primary" onclick="generate()">Generate</button>
+
+<button class="secondary" onclick="example()">Try example</button>
+
+<button class="secondary" onclick="clearInput()">Clear</button>
+
+<button class="copy" onclick="copyResult()">Copy result</button>
+
+</div>
+
+<div class="result" id="result">
+Result will appear here.
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+function example(){
+document.getElementById("input").value =
+"Your idea will never work. Nobody needs this.";
+}
+
+function clearInput(){
+document.getElementById("input").value="";
+document.getElementById("result").innerText="Result will appear here.";
+}
+
+function generate(){
+
+const input=document.getElementById("input").value.trim();
+
+if(!input){
+alert("Please enter criticism.");
+return;
+}
+
+const output=`Reframed questions
+
+1. What assumption is this criticism reacting to?
+
+2. What problem might the critic believe is unsolved?
+
+3. Is there a hidden concern about usefulness or timing?
+
+4. What evidence would prove this criticism wrong?
+
+5. How could this objection improve the idea?`;
+
+document.getElementById("result").innerText=output;
+}
+
+function copyResult(){
+const text=document.getElementById("result").innerText;
+navigator.clipboard.writeText(text);
+}
+
+</script>
+
+</body>
+</html>
