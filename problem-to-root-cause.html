@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Problem → Root Causes</title>
+  <meta name="description" content="Turn a problem into possible root causes." />
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: rgba(255,255,255,0.88);
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --primary: #111827;
+      --primary-2: #374151;
+      --accent: #eef2ff;
+      --shadow: 0 10px 30px rgba(17,24,39,0.08);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --max: 760px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, #eef2ff 0%, transparent 30%),
+        radial-gradient(circle at bottom right, #fdf2f8 0%, transparent 28%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+    }
+
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .back {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--primary-2);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 6vw, 36px);
+      line-height: 1.08;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 18px 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary-2);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    textarea:focus {
+      border-color: #c7d2fe;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.06s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      min-height: 48px;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(17,24,39,0.18);
+      flex: 1 1 220px;
+    }
+
+    .primary:hover {
+      background: #0b1220;
+    }
+
+    .secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--line);
+      flex: 1 1 160px;
+    }
+
+    .secondary:hover {
+      background: #fafafa;
+    }
+
+    .resultCard {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+      overflow: hidden;
+    }
+
+    .resultHead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17,24,39,0.02);
+    }
+
+    .resultHead h2 {
+      margin: 0;
+      font-size: 14px;
+      color: var(--primary-2);
+      letter-spacing: 0.01em;
+    }
+
+    .copyBtn {
+      padding: 10px 12px;
+      min-height: auto;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .result {
+      margin: 0;
+      padding: 18px 16px 20px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 160px;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 18px 8px 4px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+      .result {
+        font-size: 15px;
+      }
+      button {
+        width: 100%;
+      }
+      .resultHead {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .copyBtn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <button class="back" id="backBtn" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</button>
+    </div>
+
+    <main class="card">
+      <h1>Problem → Root Causes</h1>
+      <p class="desc">Turn a problem into possible root causes.</p>
+
+      <label class="label" for="problemInput">Describe the problem</label>
+      <textarea
+        id="problemInput"
+        placeholder="My posts get views but no engagement.
+投稿は見られるのに反応がない。"
+        spellcheck="false"
+        autocapitalize="sentences"
+      ></textarea>
+
+      <div class="row">
+        <button class="primary" id="analyzeBtn">Find root causes</button>
+        <button class="secondary" id="exampleBtn">Try example</button>
+      </div>
+
+      <section class="resultCard" aria-live="polite" aria-label="Result area">
+        <div class="resultHead">
+          <h2>Result</h2>
+          <button class="copyBtn" id="copyBtn">Copy result</button>
+        </div>
+        <pre class="result" id="result">Possible root causes:
+- Unclear message
+- Wrong audience
+- Weak distribution
+- Low emotional relevance</pre>
+      </section>
+
+      <div class="hint">The tool returns exactly 4 possible causes and keeps them short.</div>
+    </main>
+
+    <footer>REFRAME Studio · Problem → Root Causes</footer>
+  </div>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('problemInput');
+      const resultEl = document.getElementById('result');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const backBtn = document.getElementById('backBtn');
+
+      const JA_RE = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+
+      const JA = {
+        heading: '原因の可能性:',
+        empty: '原因の可能性:\n- 問題の定義が曖昧\n- 前提のズレ\n- 優先順位が不明確\n- 流れを止める制約がある',
+        example: '投稿は見られるのに反応がない。',
+        copied: 'コピーしました',
+        copy: 'Copy result'
+      };
+
+      const EN = {
+        heading: 'Possible root causes:',
+        empty: 'Possible root causes:\n- Unclear problem definition\n- Misaligned assumptions\n- Unclear priorities\n- A bottleneck in the flow',
+        example: 'My posts get views but no engagement.',
+        copied: 'Copied',
+        copy: 'Copy result'
+      };
+
+      const CATEGORIES = {
+        writing: {
+          en: [
+            'Unclear message',
+            'Weak hook',
+            'Wrong audience',
+            'Low emotional relevance',
+            'Unclear structure',
+            'Low trust signals',
+            'Weak call to engage',
+            'Message buried too late'
+          ],
+          ja: [
+            'メッセージが曖昧',
+            '最初の引きが弱い',
+            '対象がずれている',
+            '感情的な引っかかりが弱い',
+            '構成が伝わりにくい',
+            '信頼の根拠が弱い',
+            '反応したくなる導線が弱い',
+            '要点が後ろに埋もれている'
+          ]
+        },
+        progress: {
+          en: [
+            'Unclear process',
+            'No repeatable template',
+            'Too many decisions',
+            'Unclear priorities',
+            'Work is over-fragmented',
+            'No visible next step',
+            'Hidden dependencies',
+            'Feedback loop is too slow'
+          ],
+          ja: [
+            '進め方が曖昧',
+            '再現できる型がない',
+            '判断が多すぎる',
+            '優先順位が不明確',
+            '作業が細切れすぎる',
+            '次の一手が見えていない',
+            '依存関係が隠れている',
+            'フィードバックが遅い'
+          ]
+        },
+        trust: {
+          en: [
+            'Low trust',
+            'Weak proof',
+            'Message feels generic',
+            'Offer lacks specificity',
+            'Audience risk feels high',
+            'Value is not concrete enough'
+          ],
+          ja: [
+            '信頼が不足している',
+            '根拠の見せ方が弱い',
+            '内容が一般論に見える',
+            '提案の具体性が低い',
+            '受け手の不安が大きい',
+            '価値が具体的に伝わらない'
+          ]
+        },
+        timing: {
+          en: [
+            'Poor timing',
+            'Low relevance to the moment',
+            'Distribution is weak',
+            'Channel mismatch',
+            'Content is easy to skip',
+            'Audience attention is elsewhere'
+          ],
+          ja: [
+            'タイミングが悪い',
+            '今の関心とずれている',
+            '拡散導線が弱い',
+            'チャネルが合っていない',
+            '流し見されやすい',
+            '受け手の注意が別に向いている'
+          ]
+        },
+        general: {
+          en: [
+            'Problem framing is unclear',
+            'Audience fit is weak',
+            'Structure is fragile',
+            'Distribution is weak',
+            'Relevance is low',
+            'Trust is low',
+            'Priorities are unclear',
+            'The bottleneck is hidden'
+          ],
+          ja: [
+            '問題設定が曖昧',
+            '対象とのズレがある',
+            '構造が弱い',
+            '拡散導線が弱い',
+            '関連性が低い',
+            '信頼が不足している',
+            '優先順位が不明確',
+            '制約が見えていない'
+          ]
+        }
+      };
+
+      function detectLang(text) {
+        return JA_RE.test(text) ? 'ja' : 'en';
+      }
+
+      function normalize(text) {
+        return (text || '').trim().toLowerCase();
+      }
+
+      function hasAny(text, words) {
+        return words.some(w => text.includes(w));
+      }
+
+      function scoreIntent(rawText, lang) {
+        const text = normalize(rawText);
+        const jaWords = {
+          writing: ['投稿', 'ポスト', '発信', '書く', '文章', 'note', 'sns', 'エンゲージ', '反応', 'いいね', '閲覧', 'ビュー', '再生', 'クリック', '読ま', 'フォロワー', '拡散'],
+          progress: ['進ま', '遅い', '止ま', '継続', '続か', '一貫', '習慣', '先延ばし', '作業', '仕事', '進捗', '詰ま', '迷', '優先順位', '判断', 'テンプレ'],
+          trust: ['信頼', '怪しい', '信用', '売れない', '買われない', '申込', '問い合わせ', '成約', '刺さら', '響か'],
+          timing: ['タイミング', '時期', '見られない', '届かない', '拡散', '流入', '配信', '露出', 'アルゴリズム', 'チャネル']
+        };
+        const enWords = {
+          writing: ['post', 'posts', 'engagement', 'views', 'likes', 'comments', 'content', 'writing', 'write', 'copy', 'newsletter', 'audience', 'followers', 'reach', 'clicks', 'impressions'],
+          progress: ['slow progress', 'stuck', 'blocked', 'inconsistent', 'consistency', 'can’t finish', 'cannot finish', 'finish', 'progress', 'workflow', 'process', 'template', 'priorit', 'too many decisions', 'procrastin'],
+          trust: ['trust', 'sales', 'buy', 'conversion', 'conversions', 'signups', 'signup', 'leads', 'credibility', 'proof', 'authority'],
+          timing: ['timing', 'distribution', 'reach', 'not seen', 'visibility', 'algorithm', 'channel', 'relevance', 'too late', 'too early']
+        };
+
+        const dict = lang === 'ja' ? jaWords : enWords;
+
+        const scores = {
+          writing: 0,
+          progress: 0,
+          trust: 0,
+          timing: 0
+        };
+
+        Object.keys(dict).forEach(key => {
+          dict[key].forEach(word => {
+            if (text.includes(word)) scores[key] += 1;
+          });
+        });
+
+        // Extra heuristics
+        if (lang === 'en') {
+          if (/views|engagement|likes|comments|reach|impressions/.test(text)) scores.writing += 2;
+          if (/stuck|slow|inconsistent|blocked|procrastin|priorit/.test(text)) scores.progress += 2;
+        } else {
+          if (/閲覧|反応|いいね|コメント|再生|拡散/.test(rawText)) scores.writing += 2;
+          if (/進ま|遅い|止ま|継続|優先順位|判断/.test(rawText)) scores.progress += 2;
+        }
+
+        return scores;
+      }
+
+      function uniquePick(arr, count) {
+        const seen = new Set();
+        const out = [];
+        for (const item of arr) {
+          const key = item.trim();
+          if (!seen.has(key)) {
+            seen.add(key);
+            out.push(item);
+          }
+          if (out.length === count) break;
+        }
+        return out;
+      }
+
+      function buildCauses(text, lang) {
+        const scores = scoreIntent(text, lang);
+        const isJA = lang === 'ja';
+
+        const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+        const topIntent = sorted[0][0];
+        const secondIntent = sorted[1][0];
+        const topScore = sorted[0][1];
+
+        let pool = [];
+
+        if (topScore === 0) {
+          pool = [
+            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
+          ];
+        } else if (topIntent === 'writing') {
+          pool = [
+            ...(isJA ? CATEGORIES.writing.ja : CATEGORIES.writing.en),
+            ...(isJA ? CATEGORIES.timing.ja : CATEGORIES.timing.en),
+            ...(isJA ? CATEGORIES.trust.ja : CATEGORIES.trust.en)
+          ];
+        } else if (topIntent === 'progress') {
+          pool = [
+            ...(isJA ? CATEGORIES.progress.ja : CATEGORIES.progress.en),
+            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
+          ];
+        } else if (topIntent === 'trust') {
+          pool = [
+            ...(isJA ? CATEGORIES.trust.ja : CATEGORIES.trust.en),
+            ...(isJA ? CATEGORIES.writing.ja : CATEGORIES.writing.en),
+            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
+          ];
+        } else {
+          pool = [
+            ...(isJA ? CATEGORIES.timing.ja : CATEGORIES.timing.en),
+            ...(isJA ? CATEGORIES.writing.ja : CATEGORIES.writing.en),
+            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
+          ];
+        }
+
+        // Blend in second intent when meaningful
+        if (scores[secondIntent] > 0 && secondIntent !== topIntent) {
+          pool = pool.concat(isJA ? CATEGORIES[secondIntent].ja : CATEGORIES[secondIntent].en);
+        }
+
+        // Additional bias rules
+        const raw = text || '';
+        const lower = normalize(raw);
+
+        if (lang === 'en' && hasAny(lower, ['post', 'engagement', 'views', 'likes', 'comments', 'write', 'content'])) {
+          pool = [
+            'Unclear message',
+            'Weak hook',
+            'Wrong audience',
+            'Low emotional relevance',
+            ...pool
+          ];
+        }
+
+        if (lang === 'ja' && /投稿|反応|閲覧|いいね|コメント|発信|文章|書く|拡散/.test(raw)) {
+          pool = [
+            'メッセージが曖昧',
+            '最初の引きが弱い',
+            '対象がずれている',
+            '感情的な引っかかりが弱い',
+            ...pool
+          ];
+        }
+
+        if (lang === 'en' && hasAny(lower, ['slow progress', 'stuck', 'blocked', 'inconsistent', 'process', 'workflow', 'template', 'priorit'])) {
+          pool = [
+            'Unclear process',
+            'No repeatable template',
+            'Too many decisions',
+            'Unclear priorities',
+            ...pool
+          ];
+        }
+
+        if (lang === 'ja' && /進ま|止ま|遅い|継続|一貫|優先順位|判断|テンプレ|作業/.test(raw)) {
+          pool = [
+            '進め方が曖昧',
+            '再現できる型がない',
+            '判断が多すぎる',
+            '優先順位が不明確',
+            ...pool
+          ];
+        }
+
+        const selected = uniquePick(pool, 4);
+
+        while (selected.length < 4) {
+          const fallback = isJA ? CATEGORIES.general.ja : CATEGORIES.general.en;
+          const next = fallback.find(x => !selected.includes(x));
+          if (!next) break;
+          selected.push(next);
+        }
+
+        const heading = isJA ? JA.heading : EN.heading;
+        return heading + '\n- ' + selected.join('\n- ');
+      }
+
+      function analyze() {
+        const text = inputEl.value.trim();
+        const lang = detectLang(text);
+        resultEl.textContent = text ? buildCauses(text, lang) : (lang === 'ja' ? JA.empty : EN.empty);
+      }
+
+      analyzeBtn.addEventListener('click', analyze);
+
+      inputEl.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') analyze();
+      });
+
+      exampleBtn.addEventListener('click', function () {
+        const prefersJA = /^ja\b/i.test(navigator.language || '');
+        inputEl.value = prefersJA ? JA.example : EN.example;
+        analyze();
+        inputEl.focus();
+      });
+
+      copyBtn.addEventListener('click', async function () {
+        try {
+          await navigator.clipboard.writeText(resultEl.textContent);
+          const lang = detectLang(inputEl.value.trim() || resultEl.textContent);
+          copyBtn.textContent = lang === 'ja' ? JA.copied : EN.copied;
+          setTimeout(() => {
+            copyBtn.textContent = lang === 'ja' ? JA.copy : EN.copy;
+          }, 1400);
+        } catch (_) {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(resultEl);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      });
+
+      backBtn.addEventListener('click', function () {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = '#';
+        }
+      });
+
+      // Initial state
+      resultEl.textContent = EN.empty;
+    })();
+  </script>
+</body>
+</html>
