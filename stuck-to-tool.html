@@ -7,14 +7,14 @@
   <style>
     :root {
       --bg: #f6f7fb;
-      --card: #ffffff;
-      --text: #111827;
-      --muted: #6b7280;
-      --border: #dfe3ea;
-      --border-strong: #cfd6e2;
-      --accent: #111827;
-      --accent-soft: #eef2ff;
-      --shadow: 0 8px 24px rgba(17, 24, 39, 0.06);
+      --panel: #ffffff;
+      --text: #14161f;
+      --muted: #6c7280;
+      --line: #e7e9f0;
+      --soft: #f2f4f8;
+      --accent: #1f6fff;
+      --accent-pressed: #1659cf;
+      --shadow: 0 10px 30px rgba(20, 22, 31, 0.06);
       --radius: 18px;
       --radius-sm: 14px;
       --tap: 48px;
@@ -22,478 +22,347 @@
     }
 
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       padding: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
     body {
       min-height: 100vh;
-      padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+      padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
     }
 
     .app {
-      width: 100%;
       max-width: var(--max);
       margin: 0 auto;
-      padding: 8px 0 28px;
     }
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: var(--tap);
-      padding: 10px 0;
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .hero,
-    .input-card,
-    .result-card,
-    .footer {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .hero {
-      padding: 22px 18px;
+    .header {
       margin-bottom: 14px;
+      padding: 4px 2px 10px;
     }
 
-    h1 {
+    .title {
       margin: 0 0 8px;
-      font-size: clamp(28px, 5vw, 36px);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
+      font-size: clamp(28px, 6vw, 36px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 800;
     }
 
     .desc {
       margin: 0;
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
-    .input-card {
-      padding: 16px;
-      margin-bottom: 14px;
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
     }
 
-    textarea {
+    .input-wrap {
+      display: grid;
+      gap: 12px;
+    }
+
+    .textarea {
       width: 100%;
-      min-height: 180px;
-      resize: vertical;
-      border: 1px solid var(--border-strong);
+      min-height: 172px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
       border-radius: 16px;
       padding: 16px;
-      font: inherit;
       font-size: 16px;
-      line-height: 1.55;
-      color: var(--text);
-      background: #fff;
+      line-height: 1.5;
+      resize: vertical;
       outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
     }
 
-    textarea:focus {
-      border-color: #9aa4b2;
-      box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.06);
-    }
-
-    textarea::placeholder {
-      color: #9aa4b2;
-      white-space: pre-line;
+    .textarea:focus {
+      border-color: rgba(31, 111, 255, 0.5);
+      box-shadow: 0 0 0 4px rgba(31, 111, 255, 0.10);
     }
 
     .actions {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      margin-top: 14px;
     }
 
-    .secondary-actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .row {
+      display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
-    button {
+    button, a.card-btn {
       appearance: none;
-      border: 1px solid var(--border-strong);
+      border: 0;
       border-radius: 14px;
-      min-height: 52px;
-      padding: 14px 16px;
+      min-height: var(--tap);
+      padding: 12px 16px;
       font: inherit;
-      font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.04s ease, background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.08s ease, background 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
-    button:active {
-      transform: translateY(1px);
+    button:active, a.card-btn:active {
+      transform: scale(0.99);
     }
 
     .primary {
       background: var(--accent);
       color: #fff;
-      border-color: var(--accent);
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(31, 111, 255, 0.22);
     }
+
+    .primary:hover { background: var(--accent-pressed); }
 
     .secondary {
-      background: #fff;
+      background: var(--soft);
       color: var(--text);
+      border: 1px solid var(--line);
+      flex: 1 1 220px;
     }
 
-    .secondary:hover,
-    .secondary:focus-visible {
-      background: #fafafa;
+    .secondary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
-    .primary:hover,
-    .primary:focus-visible {
-      opacity: 0.95;
-    }
-
-    .result-card {
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .result-head {
+    .meta {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 14px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 22px;
+    }
+
+    .lang-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      white-space: nowrap;
     }
 
     .stage {
-      display: inline-flex;
-      align-self: flex-start;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--text);
+      margin: 18px 2px 10px;
       font-size: 13px;
       font-weight: 700;
-      line-height: 1.2;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+    }
+
+    .results {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
     }
 
     .empty {
+      background: transparent;
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 18px 16px;
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.7;
-      padding: 8px 2px 4px;
+      line-height: 1.5;
+      text-align: center;
     }
 
-    .cards {
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: var(--shadow);
       display: grid;
       gap: 12px;
     }
 
-    .tool-card {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
-      padding: 14px;
+    .card-top {
+      display: grid;
+      gap: 6px;
     }
 
-    .tool-top {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .tool-name {
-      font-size: 17px;
-      font-weight: 800;
+    .card-name {
+      margin: 0;
+      font-size: 18px;
       line-height: 1.3;
-      letter-spacing: -0.01em;
-      margin: 0;
+      letter-spacing: -0.02em;
+      font-weight: 800;
     }
 
-    .tool-copy {
+    .card-desc {
       margin: 0;
       color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
-    .tool-actions {
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    .open-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 0 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border-strong);
-      text-decoration: none;
+    .card-btn {
+      width: 100%;
+      background: var(--soft);
       color: var(--text);
-      font-weight: 700;
-      background: #fff;
+      border: 1px solid var(--line);
+      font-weight: 800;
     }
 
-    .open-link:hover,
-    .open-link:focus-visible {
-      background: #f8fafc;
+    .footer-space {
+      height: 12px;
     }
 
-    .footer {
-      padding: 14px 16px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-    }
-
-    @media (max-width: 520px) {
-      .hero,
-      .input-card,
-      .result-card,
-      .footer {
-        border-radius: 16px;
+    @media (min-width: 640px) {
+      .panel {
+        padding: 16px;
       }
 
-      .secondary-actions {
-        grid-template-columns: 1fr;
+      .actions {
+        grid-template-columns: 1fr auto;
+        align-items: center;
       }
 
-      textarea {
-        min-height: 168px;
+      .primary {
+        width: auto;
+        min-width: 180px;
       }
     }
   </style>
 </head>
 <body>
   <main class="app">
-    <a class="back-link" href="index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
-
-    <section class="hero">
-      <h1>Stuck → Best Tool</h1>
+    <header class="header">
+      <h1 class="title">Stuck → Best Tool</h1>
       <p class="desc">Describe where you're stuck. This tool suggests which REFRAME Studio tools may help next.</p>
-    </section>
+    </header>
 
-    <section class="input-card">
+    <section class="panel input-wrap">
+      <div class="meta">
+        <span class="lang-pill" id="langPill">Detected: English</span>
+      </div>
+
       <textarea
         id="input"
+        class="textarea"
         placeholder="I have an idea but I can't explain it clearly.
 アイデアはあるけど、うまく説明できない。"
-        aria-label="Describe where you're stuck"
+        aria-label="Describe where you are stuck"
       ></textarea>
 
       <div class="actions">
         <button id="suggestBtn" class="primary" type="button">Suggest tools</button>
-        <div class="secondary-actions">
+        <div class="row">
           <button id="exampleBtn" class="secondary" type="button">Try example</button>
-          <button id="anotherBtn" class="secondary" type="button">Try another suggestion</button>
+          <button id="anotherBtn" class="secondary" type="button" disabled>Try another suggestion</button>
         </div>
       </div>
     </section>
 
-    <section class="result-card" aria-live="polite">
-      <div class="result-head">
-        <div id="stageLabel" class="stage">You may be stuck at: Clarity</div>
-      </div>
-      <div id="resultArea">
-        <div class="empty">Describe what feels stuck.<br>何が詰まっているかを書いてください。</div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      REFRAME Studio · Best next-tool suggestions based on what feels stuck
-    </footer>
+    <div class="stage" id="stageLabel"></div>
+    <section class="results" id="results"></section>
+    <div class="footer-space"></div>
   </main>
 
   <script>
     (function () {
-      const input = document.getElementById('input');
+      const inputEl = document.getElementById('input');
       const suggestBtn = document.getElementById('suggestBtn');
       const exampleBtn = document.getElementById('exampleBtn');
       const anotherBtn = document.getElementById('anotherBtn');
-      const resultArea = document.getElementById('resultArea');
-      const stageLabel = document.getElementById('stageLabel');
+      const resultsEl = document.getElementById('results');
+      const stageLabelEl = document.getElementById('stageLabel');
+      const langPillEl = document.getElementById('langPill');
 
-      const exampleText = "I have an idea but I can't explain it clearly.";
+      const EXAMPLE_TEXT = "I have an idea but I can't explain it clearly.";
 
-      const TOOL_LIBRARY = {
-        idea3: {
-          name: "Idea → 3 Angles",
-          href: "idea-to-3-angles.html",
-          desc: {
-            en: "Generate 3 angles from one idea.",
-            ja: "1つのアイデアから3つの切り口を出します。"
-          }
+      const TOOL_DATA = {
+        "Idea → 3 Angles": {
+          file: "idea-to-post-angles.html",
+          en: "Generate multiple post angles from one idea.",
+          ja: "1つのアイデアから複数の切り口を出します。"
         },
-        ideaAssumptions: {
-          name: "Idea → Assumptions",
-          href: "idea-to-assumptions.html",
-          desc: {
-            en: "Reveal hidden assumptions behind an idea.",
-            ja: "アイデアの裏にある前提を見つけます。"
-          }
+        "Idea → Assumptions": {
+          file: "idea-to-opposite.html",
+          en: "Explore the opposite side or hidden tension in an idea.",
+          ja: "アイデアの反対側や隠れた緊張感を探ります。"
         },
-        ideaTestPlan: {
-          name: "Idea → Test Plan",
-          href: "idea-to-test-plan.html",
-          desc: {
-            en: "Turn an idea into a simple test plan.",
-            ja: "アイデアをシンプルな検証プランに変えます。"
-          }
+        "Idea → Test Plan": {
+          file: "next-step-finder.html",
+          en: "Turn uncertainty into a practical next step.",
+          ja: "曖昧さを実行できる次の一歩に変えます。"
         },
-        draftShorter: {
-          name: "Draft → Shorter",
-          href: "draft-to-shorter.html",
-          desc: {
-            en: "Turn a draft into a shorter version.",
-            ja: "下書きを短く整理します。"
-          }
+        "Draft → Shorter": {
+          file: "draft-fixer.html",
+          en: "Clean up and improve a rough draft.",
+          ja: "荒い下書きを整えて改善します。"
         },
-        hookGenerator: {
-          name: "Hook Generator",
-          href: "hook-generator.html",
-          desc: {
-            en: "Generate hook options from a topic.",
-            ja: "テーマからフック案を作ります。"
-          }
+        "Hook Generator": {
+          file: "hook-generator.html",
+          en: "Generate hook options from a topic.",
+          ja: "テーマからフック案を出します。"
         },
-        tweetPolisher: {
-          name: "Tweet Polisher",
-          href: "tweet-polisher.html",
-          desc: {
-            en: "Improve and sharpen a rough post.",
-            ja: "粗い投稿文を磨いて伝わりやすくします。"
-          }
+        "Tweet Polisher": {
+          file: "tweet-polisher.html",
+          en: "Sharpen a rough social post.",
+          ja: "ラフな投稿文を磨きます。"
         },
-        confusionQuestion: {
-          name: "Confusion → Better Question",
-          href: "confusion-to-better-question.html",
-          desc: {
-            en: "Turn vague confusion into a clearer question.",
-            ja: "あいまいな混乱を、より明確な問いに変えます。"
-          }
+        "Confusion → Better Question": {
+          file: "confusion-to-question.html",
+          en: "Turn confusion into a clearer question.",
+          ja: "混乱をより明確な問いに変えます。"
         },
-        problemOptions: {
-          name: "Problem → Options",
-          href: "problem-to-options.html",
-          desc: {
-            en: "Turn a problem into possible options.",
-            ja: "問題を、取りうる選択肢に変えます。"
-          }
+        "Problem → Options": {
+          file: "problem-to-options.html",
+          en: "Turn a problem into possible options.",
+          ja: "問題を選択肢に変えます。"
         },
-        problemRoot: {
-          name: "Problem → Root Causes",
-          href: "problem-to-root-cause.html",
-          desc: {
-            en: "Turn a problem into possible root causes.",
-            ja: "問題の根本原因を探ります。"
-          }
+        "Problem → Root Causes": {
+          file: "thought-to-structure.html",
+          en: "Organize messy thoughts around what may be causing the issue.",
+          ja: "何が原因かもしれないかを整理します。"
         },
-        problemConstraints: {
-          name: "Problem → Constraints",
-          href: "problem-to-constraints.html",
-          desc: {
-            en: "Find the constraints behind a problem.",
-            ja: "問題の背後にある制約を見つけます。"
-          }
+        "Problem → Constraints": {
+          file: "thought-to-structure.html",
+          en: "Clarify what is blocking progress right now.",
+          ja: "今の前進を止めている要因を明確にします。"
         },
-        emotionAction: {
-          name: "Emotion → Action",
-          href: "emotion-to-action.html",
-          desc: {
-            en: "Turn emotion into a small next action.",
-            ja: "感情を小さな次の行動に変えます。"
-          }
+        "Emotion → Action": {
+          file: "emotion-to-action.html",
+          en: "Turn emotion into one useful action.",
+          ja: "感情を1つの有効な行動に変えます。"
         },
-        overthinking: {
-          name: "Overthinking Breaker",
-          href: "overthinking-breaker.html",
-          desc: {
-            en: "Break mental loops into movement.",
-            ja: "考えすぎのループを動きに変えます。"
-          }
+        "Overthinking Breaker": {
+          file: "overthinking-breaker.html",
+          en: "Break a mental loop into movement.",
+          ja: "思考のループを動きに変えます。"
         },
-        nextStep: {
-          name: "Next Step Finder",
-          href: "next-step-finder.html",
-          desc: {
-            en: "Turn uncertainty into one next step.",
-            ja: "不確実さを1つの次の一歩に変えます。"
-          }
-        }
-      };
-
-      const GROUPS = {
-        idea: {
-          stage: { en: "Clarity", ja: "整理" },
-          base: ["idea3", "ideaAssumptions", "ideaTestPlan"],
-          rotations: [
-            ["idea3", "ideaAssumptions", "ideaTestPlan"],
-            ["ideaAssumptions", "ideaTestPlan", "idea3"],
-            ["ideaTestPlan", "idea3", "ideaAssumptions"]
-          ]
-        },
-        writing: {
-          stage: { en: "Writing", ja: "言語化" },
-          base: ["draftShorter", "hookGenerator", "tweetPolisher"],
-          rotations: [
-            ["draftShorter", "hookGenerator", "tweetPolisher"],
-            ["hookGenerator", "tweetPolisher", "draftShorter"],
-            ["tweetPolisher", "draftShorter", "hookGenerator"]
-          ]
-        },
-        confusion: {
-          stage: { en: "Clarity", ja: "整理" },
-          base: ["confusionQuestion", "problemOptions", "idea3"],
-          rotations: [
-            ["confusionQuestion", "problemOptions", "idea3"],
-            ["problemOptions", "idea3", "confusionQuestion"],
-            ["idea3", "confusionQuestion", "problemOptions"]
-          ]
-        },
-        problem: {
-          stage: { en: "Problem Framing", ja: "課題整理" },
-          base: ["problemOptions", "problemRoot", "problemConstraints"],
-          rotations: [
-            ["problemOptions", "problemRoot", "problemConstraints"],
-            ["problemRoot", "problemConstraints", "problemOptions"],
-            ["problemConstraints", "problemOptions", "problemRoot"]
-          ]
-        },
-        emotion: {
-          stage: { en: "Movement", ja: "前進" },
-          base: ["emotionAction", "overthinking", "nextStep"],
-          rotations: [
-            ["emotionAction", "overthinking", "nextStep"],
-            ["overthinking", "nextStep", "emotionAction"],
-            ["nextStep", "emotionAction", "overthinking"]
-          ]
-        },
-        fallback: {
-          stage: { en: "Clarity", ja: "整理" },
-          base: ["confusionQuestion", "idea3", "problemOptions"],
-          rotations: [
-            ["confusionQuestion", "idea3", "problemOptions"],
-            ["idea3", "problemOptions", "confusionQuestion"],
-            ["problemOptions", "confusionQuestion", "idea3"]
-          ]
+        "Next Step Finder": {
+          file: "next-step-finder.html",
+          en: "Find one practical next step.",
+          ja: "現実的な次の一歩を見つけます。"
         }
       };
 
@@ -505,111 +374,178 @@
         emotion: ["overwhelmed", "anxious", "stress", "tired", "不安", "疲れた", "しんどい", "圧倒されている"]
       };
 
-      let lastGroupKey = "fallback";
-      let rotationIndex = 0;
+      const SUGGESTION_SETS = {
+        idea: [
+          ["Idea → 3 Angles", "Idea → Assumptions", "Idea → Test Plan"],
+          ["Idea → Assumptions", "Idea → 3 Angles", "Confusion → Better Question"],
+          ["Idea → Test Plan", "Problem → Options", "Idea → 3 Angles"]
+        ],
+        writing: [
+          ["Draft → Shorter", "Hook Generator", "Tweet Polisher"],
+          ["Hook Generator", "Draft → Shorter", "Next Step Finder"],
+          ["Tweet Polisher", "Hook Generator", "Draft → Shorter"]
+        ],
+        confusion: [
+          ["Confusion → Better Question", "Problem → Options", "Idea → 3 Angles"],
+          ["Problem → Root Causes", "Confusion → Better Question", "Problem → Options"],
+          ["Idea → 3 Angles", "Confusion → Better Question", "Next Step Finder"]
+        ],
+        problem: [
+          ["Problem → Options", "Problem → Root Causes", "Problem → Constraints"],
+          ["Problem → Constraints", "Problem → Options", "Next Step Finder"],
+          ["Problem → Root Causes", "Problem → Constraints", "Problem → Options"]
+        ],
+        emotion: [
+          ["Emotion → Action", "Overthinking Breaker", "Next Step Finder"],
+          ["Overthinking Breaker", "Emotion → Action", "Problem → Constraints"],
+          ["Next Step Finder", "Emotion → Action", "Confusion → Better Question"]
+        ],
+        fallback: [
+          ["Confusion → Better Question", "Idea → 3 Angles", "Problem → Options"],
+          ["Problem → Options", "Confusion → Better Question", "Next Step Finder"],
+          ["Idea → 3 Angles", "Problem → Options", "Overthinking Breaker"]
+        ]
+      };
+
+      const STAGE_LABELS = {
+        idea: { en: "You may be stuck at: Clarity", ja: "詰まっている可能性のある場所: 整理" },
+        writing: { en: "You may be stuck at: Expression", ja: "詰まっている可能性のある場所: 表現" },
+        confusion: { en: "You may be stuck at: Clarity", ja: "詰まっている可能性のある場所: 整理" },
+        problem: { en: "You may be stuck at: Structure", ja: "詰まっている可能性のある場所: 構造" },
+        emotion: { en: "You may be stuck at: Momentum", ja: "詰まっている可能性のある場所: 一歩" },
+        fallback: { en: "You may be stuck at: Next Step", ja: "詰まっている可能性のある場所: 次の一歩" }
+      };
+
+      let currentCategory = null;
+      let currentIndex = 0;
+      let hasResults = false;
 
       function detectLanguage(text) {
-        const hasJapanese = /[ぁ-んァ-ン一-龯]/.test(text);
-        return hasJapanese ? "ja" : "en";
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text) ? "ja" : "en";
       }
 
       function normalize(text) {
-        return text.toLowerCase();
+        return (text || "").toLowerCase();
       }
 
-      function detectGroup(text) {
-        const source = normalize(text || "");
-        const counts = {
-          idea: 0,
-          writing: 0,
-          confusion: 0,
-          problem: 0,
-          emotion: 0
+      function countMatches(text, words) {
+        return words.reduce((count, word) => count + (text.includes(word.toLowerCase()) ? 1 : 0), 0);
+      }
+
+      function categorize(text) {
+        const normalized = normalize(text);
+        const scores = {
+          idea: countMatches(normalized, KEYWORDS.idea),
+          writing: countMatches(normalized, KEYWORDS.writing),
+          confusion: countMatches(normalized, KEYWORDS.confusion),
+          problem: countMatches(normalized, KEYWORDS.problem),
+          emotion: countMatches(normalized, KEYWORDS.emotion)
         };
 
-        for (const groupKey in KEYWORDS) {
-          KEYWORDS[groupKey].forEach((word) => {
-            if (source.includes(word.toLowerCase())) counts[groupKey] += 1;
-          });
-        }
-
         let best = "fallback";
-        let bestScore = 0;
+        let max = 0;
 
         const priority = ["emotion", "problem", "writing", "idea", "confusion"];
-        priority.forEach((groupKey) => {
-          if (counts[groupKey] > bestScore) {
-            bestScore = counts[groupKey];
-            best = groupKey;
+        priority.forEach((key) => {
+          if (scores[key] > max) {
+            best = key;
+            max = scores[key];
           }
         });
 
-        if (bestScore === 0) return "fallback";
+        if (max === 0) return "fallback";
         return best;
       }
 
-      function stageText(lang, groupKey) {
-        const stage = GROUPS[groupKey].stage[lang];
+      function getEmptyState(lang) {
         return lang === "ja"
-          ? "詰まっている可能性のある場所: " + stage
-          : "You may be stuck at: " + stage;
+          ? "何が詰まっているかを書いてください。"
+          : "Describe what feels stuck.";
       }
 
-      function renderCards(toolIds, lang) {
-        const cards = toolIds.map((id) => {
-          const tool = TOOL_LIBRARY[id];
-          const openLabel = lang === "ja" ? "Open tool" : "Open tool";
+      function getOpenLabel(lang) {
+        return lang === "ja" ? "Open tool" : "Open tool";
+      }
+
+      function updateDetectedLanguage() {
+        const lang = detectLanguage(inputEl.value.trim());
+        langPillEl.textContent = lang === "ja" ? "Detected: Japanese" : "Detected: English";
+        return lang;
+      }
+
+      function renderEmpty() {
+        const lang = updateDetectedLanguage();
+        stageLabelEl.textContent = "";
+        resultsEl.innerHTML = '<div class="empty">' + escapeHtml(getEmptyState(lang)) + '</div>';
+        anotherBtn.disabled = true;
+        hasResults = false;
+      }
+
+      function getSuggestionSet(category, index) {
+        const sets = SUGGESTION_SETS[category] || SUGGESTION_SETS.fallback;
+        return sets[index % sets.length];
+      }
+
+      function renderCards(category, lang, index) {
+        const names = getSuggestionSet(category, index);
+        const stage = STAGE_LABELS[category] || STAGE_LABELS.fallback;
+        stageLabelEl.textContent = lang === "ja" ? stage.ja : stage.en;
+
+        resultsEl.innerHTML = names.map((name) => {
+          const tool = TOOL_DATA[name];
+          const desc = lang === "ja" ? tool.ja : tool.en;
+          const btn = getOpenLabel(lang);
           return `
-            <article class="tool-card">
-              <div class="tool-top">
-                <h3 class="tool-name">${escapeHtml(tool.name)}</h3>
-                <p class="tool-copy">${escapeHtml(tool.desc[lang])}</p>
+            <article class="card">
+              <div class="card-top">
+                <h3 class="card-name">${escapeHtml(name)}</h3>
+                <p class="card-desc">${escapeHtml(desc)}</p>
               </div>
-              <div class="tool-actions">
-                <a class="open-link" href="${escapeAttribute(tool.href)}">${openLabel}</a>
-              </div>
+              <a class="card-btn" href="${escapeAttribute(tool.file)}">${escapeHtml(btn)}</a>
             </article>
           `;
         }).join("");
 
-        resultArea.innerHTML = `<div class="cards">${cards}</div>`;
+        anotherBtn.disabled = false;
+        hasResults = true;
       }
 
-      function suggest(useAlternate) {
-        const text = input.value.trim();
-        const lang = detectLanguage(text);
-        const groupKey = detectGroup(text);
+      function suggest(resetRotation) {
+        const text = inputEl.value.trim();
+        const lang = updateDetectedLanguage();
 
         if (!text) {
-          stageLabel.textContent = lang === "ja"
-            ? "詰まっている可能性のある場所: 整理"
-            : "You may be stuck at: Clarity";
-          resultArea.innerHTML = lang === "ja"
-            ? `<div class="empty">何が詰まっているかを書いてください。</div>`
-            : `<div class="empty">Describe what feels stuck.</div>`;
-          lastGroupKey = "fallback";
-          rotationIndex = 0;
+          renderEmpty();
           return;
         }
 
-        if (useAlternate && groupKey === lastGroupKey) {
-          rotationIndex = (rotationIndex + 1) % GROUPS[groupKey].rotations.length;
-        } else {
-          rotationIndex = 0;
+        const category = categorize(text);
+
+        if (resetRotation || currentCategory !== category) {
+          currentCategory = category;
+          currentIndex = 0;
         }
 
-        lastGroupKey = groupKey;
-        stageLabel.textContent = stageText(lang, groupKey);
-        renderCards(GROUPS[groupKey].rotations[rotationIndex], lang);
+        renderCards(currentCategory, lang, currentIndex);
+      }
+
+      function rotateSuggestion() {
+        if (!hasResults || !currentCategory) return;
+        const lang = updateDetectedLanguage();
+        currentIndex += 1;
+        renderCards(currentCategory, lang, currentIndex);
       }
 
       function escapeHtml(str) {
-        return String(str)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
+        return String(str).replace(/[&<>"']/g, function (m) {
+          return ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          })[m];
+        });
       }
 
       function escapeAttribute(str) {
@@ -617,34 +553,29 @@
       }
 
       suggestBtn.addEventListener("click", function () {
-        suggest(false);
-      });
-
-      exampleBtn.addEventListener("click", function () {
-        input.value = exampleText;
-        suggest(false);
-      });
-
-      anotherBtn.addEventListener("click", function () {
-        if (!input.value.trim()) {
-          input.value = exampleText;
-          suggest(false);
-          return;
-        }
         suggest(true);
       });
 
-      input.addEventListener("input", function () {
-        const lang = detectLanguage(input.value.trim());
-        if (!input.value.trim()) {
-          stageLabel.textContent = "You may be stuck at: Clarity";
-          resultArea.innerHTML = `<div class="empty">Describe what feels stuck.<br>何が詰まっているかを書いてください。</div>`;
-          return;
-        }
-
-        const groupKey = detectGroup(input.value.trim());
-        stageLabel.textContent = stageText(lang, groupKey);
+      exampleBtn.addEventListener("click", function () {
+        inputEl.value = EXAMPLE_TEXT;
+        updateDetectedLanguage();
+        suggest(true);
+        inputEl.focus();
+        inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
       });
+
+      anotherBtn.addEventListener("click", function () {
+        rotateSuggestion();
+      });
+
+      inputEl.addEventListener("input", function () {
+        updateDetectedLanguage();
+        if (!inputEl.value.trim()) {
+          renderEmpty();
+        }
+      });
+
+      renderEmpty();
     })();
   </script>
 </body>
