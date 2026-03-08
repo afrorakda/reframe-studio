@@ -116,6 +116,16 @@
     "description": "Turn an idea into a thread structure."
   },
   {
+    "title": "Idea → Priority",
+    "file": "idea-to-priority.html",
+    "description": "Turn many ideas into one priority."
+  },
+  {
+    "title": "Idea → Tool Spec",
+    "file": "idea-to-tool-spec.html",
+    "description": "Turn a rough idea into 3 possible REFRAME Studio tool specs."
+  },
+  {
     "title": "Next Step Finder",
     "file": "next-step-finder.html",
     "description": "Find the next useful step."
@@ -151,17 +161,28 @@
     "description": "Improve a weak title."
   },
   {
+    "title": "Tool Generator v3",
+    "file": "tool-generator-v3.html",
+    "description": "Generate a complete REFRAME Studio tool and tool-list entry."
+  },
+  {
+    "title": "Tool Factory",
+    "file": "tool-factory.html",
+    "description": "Turn one idea into five REFRAME Studio tools."
+  },
+  {
+    "title": "Tool Spec → HTML",
+    "file": "tool-spec-to-html.html",
+    "description": "Turn a REFRAME Studio tool spec into a ready-to-use HTML generation prompt."
+  },
+  {
+    "title": "Troll → Pattern Detector",
+    "file": "troll-to-pattern.html",
+    "description": "Analyze negative comments and detect thinking patterns."
+  },
+  {
     "title": "Tweet Polisher",
     "file": "tweet-polisher.html",
     "description": "Polish a rough social post."
-  },
-{
-  "title": "Idea → Priority",
-  "file": "idea-to-priority.html",
-  "description": "Turn many ideas into one priority."
-},{
-  "title": "Tool Generator v3",
-  "file": "tool-generator-v3.html",
-  "description": "Generate a complete REFRAME Studio tool and tool-list entry."
-}
+  }
 ]
