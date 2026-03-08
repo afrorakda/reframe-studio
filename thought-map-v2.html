@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Thought Map v2</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0b1830;
+      --panel:rgba(13,22,40,.72);
+      --line:rgba(134,177,255,.22);
+      --line-strong:rgba(160,205,255,.34);
+      --text:#e8f1ff;
+      --muted:#98a9c8;
+      --glow:rgba(104,173,255,.36);
+      --glow-soft:rgba(104,173,255,.18);
+      --primary-1:#8ec5ff;
+      --primary-2:#79f0d6;
+      --tool:#d8e8ff;
+      --tool-bg:rgba(255,255,255,.06);
+      --tool-border:rgba(180,215,255,.18);
+      --danger:#ffb3b3;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --header-h: 118px;
+      --footer-h: 48px;
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(83,141,255,.11), transparent 28%),
+        radial-gradient(circle at 80% 15%, rgba(108,255,225,.08), transparent 24%),
+        radial-gradient(circle at 50% 78%, rgba(97,147,255,.10), transparent 26%),
+        linear-gradient(180deg, #091222 0%, #07111f 45%, #060d18 100%);
+      overflow:hidden;
+    }
+
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    body::before{
+      background-image:
+        radial-gradient(2px 2px at 8% 14%, rgba(255,255,255,.8) 30%, transparent 31%),
+        radial-gradient(1.5px 1.5px at 20% 32%, rgba(255,255,255,.55) 30%, transparent 31%),
+        radial-gradient(2px 2px at 34% 18%, rgba(255,255,255,.68) 30%, transparent 31%),
+        radial-gradient(1.5px 1.5px at 49% 9%, rgba(255,255,255,.55) 30%, transparent 31%),
+        radial-gradient(2px 2px at 63% 23%, rgba(255,255,255,.75) 30%, transparent 31%),
+        radial-gradient(1.5px 1.5px at 77% 11%, rgba(255,255,255,.48) 30%, transparent 31%),
+        radial-gradient(2px 2px at 91% 26%, rgba(255,255,255,.7) 30%, transparent 31%),
+        radial-gradient(1.5px 1.5px at 12% 64%, rgba(255,255,255,.45) 30%, transparent 31%),
+        radial-gradient(2px 2px at 26% 81%, rgba(255,255,255,.6) 30%, transparent 31%),
+        radial-gradient(1.5px 1.5px at 44% 72%, rgba(255,255,255,.5) 30%, transparent 31%),
+        radial-gradient(2px 2px at 58% 88%, rgba(255,255,255,.62) 30%, transparent 31%),
+        radial-gradient(1.5px 1.5px at 71% 69%, rgba(255,255,255,.44) 30%, transparent 31%),
+        radial-gradient(2px 2px at 85% 79%, rgba(255,255,255,.68) 30%, transparent 31%);
+      opacity:.55;
+    }
+
+    body::after{
+      background:
+        radial-gradient(circle at center, transparent 42%, rgba(3,7,12,.18) 72%, rgba(3,7,12,.45) 100%);
+      opacity:.8;
+    }
+
+    .app{
+      position:relative;
+      z-index:1;
+      min-height:100%;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    .topbar{
+      padding:calc(10px + var(--safe-top)) 16px 10px;
+      position:relative;
+      z-index:6;
+    }
+
+    .topbar-inner{
+      max-width:980px;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .back-link{
+      align-self:flex-start;
+      color:var(--text);
+      text-decoration:none;
+      font-size:14px;
+      line-height:1;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+      box-shadow:0 0 0 1px rgba(255,255,255,.02) inset, 0 10px 28px rgba(0,0,0,.18);
+    }
+
+    .back-link:active{transform:scale(.98)}
+
+    .title-wrap{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .title-block{
+      min-width:0;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(26px, 6vw, 40px);
+      font-weight:700;
+      letter-spacing:-.03em;
+    }
+
+    .desc{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      max-width:34rem;
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .helper{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .btn{
+      appearance:none;
+      border:1px solid rgba(180,215,255,.14);
+      color:var(--text);
+      background:rgba(255,255,255,.055);
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      backdrop-filter: blur(10px);
+      box-shadow:0 0 0 1px rgba(255,255,255,.02) inset, 0 10px 28px rgba(0,0,0,.16);
+      position:relative;
+      z-index:10;
+      pointer-events:auto;
+    }
+
+    .btn:active{transform:scale(.98)}
+
+    .map-shell{
+      position:relative;
+      min-height:0;
+      padding:4px 10px 10px;
+      z-index:1;
+    }
+
+    .map-card{
+      position:relative;
+      width:min(100%, 980px);
+      height:100%;
+      min-height:520px;
+      margin:0 auto;
+      border-radius:28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)),
+        radial-gradient(circle at 50% 50%, rgba(104,173,255,.03), transparent 56%);
+      border:1px solid rgba(180,215,255,.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 20px 60px rgba(0,0,0,.28);
+      overflow:hidden;
+      isolation:isolate;
+    }
+
+    .map-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size:34px 34px;
+      mask-image:radial-gradient(circle at center, rgba(0,0,0,.85), transparent 86%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .status{
+      position:absolute;
+      top:14px;
+      left:14px;
+      right:14px;
+      display:flex;
+      justify-content:center;
+      pointer-events:none;
+      z-index:5;
+    }
+
+    .status-message{
+      display:none;
+      max-width:88%;
+      font-size:12px;
+      color:var(--danger);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,179,179,.18);
+      background:rgba(60,18,24,.45);
+      backdrop-filter: blur(8px);
+      text-align:center;
+    }
+
+    .status-message.show{display:inline-block}
+
+    .map-area{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      z-index:1;
+      touch-action:manipulation;
+    }
+
+    .line-layer{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .line{
+      stroke:var(--line);
+      stroke-width:1.4;
+      fill:none;
+      vector-effect:non-scaling-stroke;
+      opacity:.95;
+      transition:opacity .28s ease, stroke .28s ease;
+      filter: drop-shadow(0 0 8px rgba(122,183,255,.16));
+    }
+
+    .line.strong{
+      stroke:var(--line-strong);
+      opacity:1;
+    }
+
+    .nodes{
+      position:absolute;
+      inset:0;
+      z-index:3;
+      pointer-events:none;
+    }
+
+    .node{
+      position:absolute;
+      transform:translate(-50%, -50%) scale(1);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      border-radius:999px;
+      text-decoration:none;
+      user-select:none;
+      pointer-events:auto;
+      cursor:pointer;
+      transition:
+        transform .28s ease,
+        opacity .28s ease,
+        box-shadow .28s ease,
+        border-color .28s ease,
+        background .28s ease;
+      will-change:transform, opacity;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .node:active{transform:translate(-50%, -50%) scale(.97)}
+
+    .node.primary{
+      min-width:110px;
+      height:110px;
+      padding:0 18px;
+      font-size:17px;
+      font-weight:650;
+      color:#f5f9ff;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.18), transparent 30%),
+        linear-gradient(180deg, rgba(142,197,255,.16), rgba(121,240,214,.06));
+      border:1px solid rgba(180,225,255,.18);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 0 28px var(--glow-soft),
+        0 10px 28px rgba(0,0,0,.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .node.primary.selected{
+      border-color:rgba(180,225,255,.35);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.06) inset,
+        0 0 36px rgba(104,173,255,.25),
+        0 0 80px rgba(104,173,255,.12),
+        0 14px 36px rgba(0,0,0,.24);
+      transform:translate(-50%, -50%) scale(1.04);
+    }
+
+    .node.primary .halo{
+      position:absolute;
+      inset:-18px;
+      border-radius:inherit;
+      background:radial-gradient(circle, rgba(104,173,255,.10), transparent 62%);
+      pointer-events:none;
+      z-index:-1;
+    }
+
+    .node.tool{
+      min-width:86px;
+      max-width:132px;
+      height:42px;
+      padding:0 14px;
+      font-size:13px;
+      font-weight:550;
+      color:var(--tool);
+      background:var(--tool-bg);
+      border:1px solid var(--tool-border);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.015) inset,
+        0 0 16px rgba(104,173,255,.10),
+        0 8px 20px rgba(0,0,0,.18);
+      backdrop-filter: blur(8px);
+      opacity:0;
+      transform:translate(-50%, -50%) scale(.86);
+    }
+
+    .node.tool.show{
+      opacity:1;
+      transform:translate(-50%, -50%) scale(1);
+    }
+
+    .node.tool:hover,
+    .node.tool:focus-visible{
+      border-color:rgba(200,230,255,.34);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 0 18px rgba(125,188,255,.18),
+        0 10px 28px rgba(0,0,0,.24);
+    }
+
+    .node-label{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:100%;
+      padding:0 1px;
+    }
+
+    .footer{
+      padding:8px 16px calc(12px + var(--safe-bottom));
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      position:relative;
+      z-index:4;
+    }
+
+    @media (min-width: 700px){
+      .topbar{
+        padding:calc(14px + var(--safe-top)) 18px 12px;
+      }
+      .map-shell{
+        padding:6px 18px 12px;
+      }
+      .map-card{
+        min-height:620px;
+      }
+      .node.primary{
+        min-width:126px;
+        height:126px;
+        font-size:18px;
+      }
+      .node.tool{
+        max-width:144px;
+      }
+      .helper{
+        font-size:13px;
+      }
+    }
+
+    @media (max-width: 420px){
+      .title-wrap{
+        gap:10px;
+      }
+      .controls{
+        width:100%;
+        justify-content:space-between;
+      }
+      .helper{
+        max-width:60%;
+      }
+      .btn{
+        padding:10px 13px;
+      }
+      .node.primary{
+        min-width:100px;
+        height:100px;
+        font-size:16px;
+      }
+      .node.tool{
+        min-width:78px;
+        max-width:118px;
+        height:40px;
+        font-size:12.5px;
+        padding:0 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .node,
+      .line{
+        transition:none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="back-link" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+        <div class="title-wrap">
+          <div class="title-block">
+            <h1>Thought Map v2</h1>
+            <p class="desc">Explore REFRAME Studio through a living visual tool map.</p>
+          </div>
+          <div class="controls">
+            <div class="helper">Tap a node to open its orbit.</div>
+            <button class="btn" id="resetBtn" type="button">Reset map</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="map-shell">
+      <section class="map-card" aria-label="Thought map">
+        <div class="status">
+          <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="map-area" id="mapArea">
+          <svg class="line-layer" id="lineLayer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="nodes" id="nodesLayer"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">REFRAME Studio — explore your next thought.</footer>
+  </div>
+
+  <script>
+    (function () {
+      const CATEGORIES = ["Stuck", "Problem", "Idea", "Emotion", "Decision", "Create"];
+      const EXCLUDED = new Set(["about.html", "index.html", "thought-map.html", "thought-map-v2.html"]);
+      const MAX_TOOLS = 8;
+
+      const CATEGORY_RULES = [
+        { category: "Problem", match: /(problem)/i },
+        { category: "Idea", match: /(idea)/i },
+        { category: "Emotion", match: /(emotion|criticism|failure|hate)/i },
+        { category: "Decision", match: /(constraint|decision|priority|options|next\s*step)/i },
+        { category: "Stuck", match: /(stuck|overthinking)/i },
+        { category: "Create", match: /(thread|hook|draft|tweet|title|post|content)/i }
+      ];
+
+      const mapArea = document.getElementById("mapArea");
+      const lineLayer = document.getElementById("lineLayer");
+      const nodesLayer = document.getElementById("nodesLayer");
+      const statusMessage = document.getElementById("statusMessage");
+      const resetBtn = document.getElementById("resetBtn");
+
+      let activeCategory = null;
+      let categorizedTools = initCategoryStore();
+      let toolNodeRefs = [];
+      let toolLineRefs = [];
+      let primaryNodes = {};
+      let coreLines = [];
+
+      function initCategoryStore() {
+        return CATEGORIES.reduce((acc, key) => {
+          acc[key] = [];
+          return acc;
+        }, {});
+      }
+
+      function showStatus(text) {
+        if (!text) {
+          statusMessage.textContent = "";
+          statusMessage.classList.remove("show");
+          return;
+        }
+        statusMessage.textContent = text;
+        statusMessage.classList.add("show");
+      }
+
+      function shortLabel(text, max = 18) {
+        const value = String(text || "").trim();
+        if (value.length <= max) return value;
+        return value.slice(0, max - 1).trimEnd() + "…";
+      }
+
+      function sanitizePath(path) {
+        return typeof path === "string" ? path.trim() : "";
+      }
+
+      function inferHref(tool) {
+        const candidates = [
+          tool.file,
+          tool.href,
+          tool.url,
+          tool.path,
+          tool.filename,
+          tool.link
+        ].map(sanitizePath).filter(Boolean);
+
+        if (!candidates.length) return null;
+        return candidates[0];
+      }
+
+      function inferTitle(tool) {
+        const candidates = [
+          tool.title,
+          tool.name,
+          tool.label
+        ].map(v => typeof v === "string" ? v.trim() : "").filter(Boolean);
+
+        if (!candidates.length) return "Untitled";
+        return candidates[0];
+      }
+
+      function categorizeTitle(title) {
+        for (const rule of CATEGORY_RULES) {
+          if (rule.match.test(title)) return rule.category;
+        }
+        return "Stuck";
+      }
+
+      function normalizeToolList(data) {
+        if (Array.isArray(data)) return data;
+        if (Array.isArray(data.tools)) return data.tools;
+        if (Array.isArray(data.items)) return data.items;
+        if (Array.isArray(data.pages)) return data.pages;
+        return [];
+      }
+
+      function categorizeTools(rawTools) {
+        const next = initCategoryStore();
+
+        rawTools.forEach(tool => {
+          const title = inferTitle(tool);
+          const href = inferHref(tool);
+          if (!href) return;
+          const lowerHref = href.toLowerCase();
+          if (EXCLUDED.has(lowerHref)) return;
+
+          const category = categorizeTitle(title);
+          next[category].push({
+            title,
+            href,
+            category
+          });
+        });
+
+        for (const category of CATEGORIES) {
+          next[category].sort((a, b) => a.title.localeCompare(b.title));
+        }
+
+        return next;
+      }
+
+      function createSvgLine(className = "line") {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("class", className);
+        lineLayer.appendChild(line);
+        return line;
+      }
+
+      function setLine(line, a, b) {
+        line.setAttribute("x1", a.x + "%");
+        line.setAttribute("y1", a.y + "%");
+        line.setAttribute("x2", b.x + "%");
+        line.setAttribute("y2", b.y + "%");
+      }
+
+      function createPrimaryNode(category, pos) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "node primary";
+        btn.setAttribute("aria-pressed", "false");
+        btn.setAttribute("aria-label", category);
+        btn.style.left = pos.x + "%";
+        btn.style.top = pos.y + "%";
+        btn.dataset.category = category;
+
+        const halo = document.createElement("span");
+        halo.className = "halo";
+        halo.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.className = "node-label";
+        label.textContent = category;
+
+        btn.appendChild(halo);
+        btn.appendChild(label);
+
+        btn.addEventListener("click", () => {
+          if (activeCategory === category) {
+            resetMap();
+          } else {
+            openCategory(category);
+          }
+        });
+
+        nodesLayer.appendChild(btn);
+        primaryNodes[category] = { el: btn, pos };
+      }
+
+      function createToolNode(tool, pos, delayMs) {
+        const a = document.createElement("a");
+        a.className = "node tool";
+        a.href = tool.href;
+        a.setAttribute("aria-label", tool.title);
+        a.style.left = pos.x + "%";
+        a.style.top = pos.y + "%";
+        a.style.transitionDelay = delayMs + "ms";
+
+        const label = document.createElement("span");
+        label.className = "node-label";
+        label.textContent = shortLabel(tool.title, 20);
+
+        a.appendChild(label);
+        nodesLayer.appendChild(a);
+
+        requestAnimationFrame(() => a.classList.add("show"));
+        return a;
+      }
+
+      function clearToolOrbit() {
+        toolNodeRefs.forEach(el => el.remove());
+        toolLineRefs.forEach(el => el.remove());
+        toolNodeRefs = [];
+        toolLineRefs = [];
+      }
+
+      function resetPrimarySelection() {
+        CATEGORIES.forEach(category => {
+          const ref = primaryNodes[category];
+          if (!ref) return;
+          ref.el.classList.remove("selected");
+          ref.el.setAttribute("aria-pressed", "false");
+        });
+
+        coreLines.forEach(line => line.classList.remove("strong"));
+      }
+
+      function resetMap() {
+        activeCategory = null;
+        clearToolOrbit();
+        resetPrimarySelection();
+      }
+
+      function openCategory(category) {
+        activeCategory = category;
+        clearToolOrbit();
+        resetPrimarySelection();
+
+        const center = primaryNodes[category];
+        if (!center) return;
+
+        center.el.classList.add("selected");
+        center.el.setAttribute("aria-pressed", "true");
+
+        const index = CATEGORIES.indexOf(category);
+        if (coreLines[index]) coreLines[index].classList.add("strong");
+
+        const tools = (categorizedTools[category] || []).slice(0, MAX_TOOLS);
+        if (!tools.length) return;
+
+        const positions = getOrbitPositions(category, tools.length);
+
+        tools.forEach((tool, i) => {
+          const pos = positions[i];
+          const line = createSvgLine("line");
+          setLine(line, center.pos, pos);
+          toolLineRefs.push(line);
+
+          const node = createToolNode(tool, pos, i * 24);
+          toolNodeRefs.push(node);
+        });
+      }
+
+      function getLayoutPreset() {
+        const rect = mapArea.getBoundingClientRect();
+        const mobile = rect.width < 700;
+        if (mobile) {
+          return {
+            center: { x: 50, y: 50 },
+            primary: {
+              Stuck:   { x: 50, y: 17 },
+              Problem: { x: 22, y: 32 },
+              Idea:    { x: 78, y: 32 },
+              Emotion: { x: 20, y: 68 },
+              Decision:{ x: 80, y: 68 },
+              Create:  { x: 50, y: 84 }
+            }
+          };
+        }
+        return {
+          center: { x: 50, y: 50 },
+          primary: {
+            Stuck:   { x: 50, y: 18 },
+            Problem: { x: 25, y: 34 },
+            Idea:    { x: 75, y: 34 },
+            Emotion: { x: 25, y: 67 },
+            Decision:{ x: 75, y: 67 },
+            Create:  { x: 50, y: 82 }
+          }
+        };
+      }
+
+      function getOrbitPositions(category, count) {
+        const rect = mapArea.getBoundingClientRect();
+        const mobile = rect.width < 700;
+        const presetsMobile = {
+          Stuck: [
+            { x: 26, y: 12 }, { x: 74, y: 12 }, { x: 14, y: 25 }, { x: 86, y: 25 },
+            { x: 28, y: 42 }, { x: 72, y: 42 }, { x: 40, y: 7 },  { x: 60, y: 7 }
+          ],
+          Problem: [
+            { x: 9, y: 18 },  { x: 12, y: 47 }, { x: 33, y: 18 }, { x: 41, y: 43 },
+            { x: 8, y: 60 },  { x: 31, y: 54 }, { x: 18, y: 13 }, { x: 39, y: 28 }
+          ],
+          Idea: [
+            { x: 67, y: 18 }, { x: 91, y: 18 }, { x: 59, y: 43 }, { x: 88, y: 47 },
+            { x: 69, y: 54 }, { x: 92, y: 60 }, { x: 82, y: 13 }, { x: 61, y: 28 }
+          ],
+          Emotion: [
+            { x: 8, y: 58 },  { x: 10, y: 79 }, { x: 30, y: 54 }, { x: 40, y: 76 },
+            { x: 18, y: 87 }, { x: 33, y: 90 }, { x: 41, y: 61 }, { x: 6, y: 91 }
+          ],
+          Decision: [
+            { x: 59, y: 76 }, { x: 70, y: 54 }, { x: 91, y: 58 }, { x: 89, y: 79 },
+            { x: 67, y: 90 }, { x: 82, y: 87 }, { x: 94, y: 91 }, { x: 59, y: 61 }
+          ],
+          Create: [
+            { x: 25, y: 92 }, { x: 75, y: 92 }, { x: 18, y: 78 }, { x: 82, y: 78 },
+            { x: 36, y: 70 }, { x: 64, y: 70 }, { x: 50, y: 95 }, { x: 50, y: 66 }
+          ]
+        };
+
+        const presetsDesktop = {
+          Stuck: [
+            { x: 33, y: 12 }, { x: 67, y: 12 }, { x: 18, y: 22 }, { x: 82, y: 22 },
+            { x: 30, y: 28 }, { x: 70, y: 28 }, { x: 42, y: 8 },  { x: 58, y: 8 }
+          ],
+          Problem: [
+            { x: 9, y: 20 },  { x: 8, y: 39 },  { x: 16, y: 53 }, { x: 32, y: 18 },
+            { x: 41, y: 31 }, { x: 12, y: 28 }, { x: 23, y: 48 }, { x: 38, y: 45 }
+          ],
+          Idea: [
+            { x: 68, y: 18 }, { x: 91, y: 20 }, { x: 92, y: 39 }, { x: 84, y: 53 },
+            { x: 59, y: 31 }, { x: 88, y: 28 }, { x: 77, y: 48 }, { x: 62, y: 45 }
+          ],
+          Emotion: [
+            { x: 8, y: 61 },  { x: 12, y: 73 }, { x: 18, y: 86 }, { x: 32, y: 82 },
+            { x: 41, y: 68 }, { x: 24, y: 61 }, { x: 39, y: 56 }, { x: 10, y: 91 }
+          ],
+          Decision: [
+            { x: 59, y: 68 }, { x: 68, y: 82 }, { x: 82, y: 86 }, { x: 88, y: 73 },
+            { x: 92, y: 61 }, { x: 76, y: 61 }, { x: 61, y: 56 }, { x: 90, y: 91 }
+          ],
+          Create: [
+            { x: 33, y: 90 }, { x: 67, y: 90 }, { x: 18, y: 80 }, { x: 82, y: 80 },
+            { x: 29, y: 70 }, { x: 71, y: 70 }, { x: 50, y: 95 }, { x: 50, y: 66 }
+          ]
+        };
+
+        const preset = mobile ? presetsMobile[category] : presetsDesktop[category];
+        return preset.slice(0, count);
+      }
+
+      function drawCoreMap() {
+        nodesLayer.innerHTML = "";
+        lineLayer.innerHTML = "";
+        primaryNodes = {};
+        coreLines = [];
+
+        const layout = getLayoutPreset();
+        const center = layout.center;
+
+        CATEGORIES.forEach(category => {
+          const pos = layout.primary[category];
+          const line = createSvgLine("line");
+          setLine(line, center, pos);
+          coreLines.push(line);
+        });
+
+        CATEGORIES.forEach(category => {
+          createPrimaryNode(category, layout.primary[category]);
+        });
+      }
+
+      async function loadTools() {
+        showStatus("");
+        try {
+          const res = await fetch("tool-list.json", { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+          const tools = normalizeToolList(data);
+          categorizedTools = categorizeTools(tools);
+        } catch (err) {
+          categorizedTools = initCategoryStore();
+          showStatus("Tool list unavailable.");
+        }
+      }
+
+      let resizeTimer = null;
+      function handleResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const previous = activeCategory;
+          drawCoreMap();
+          if (previous) openCategory(previous);
+        }, 80);
+      }
+
+      resetBtn.addEventListener("click", resetMap);
+      window.addEventListener("resize", handleResize, { passive: true });
+      window.addEventListener("orientationchange", handleResize, { passive: true });
+
+      (async function init() {
+        drawCoreMap();
+        await loadTools();
+      })();
+    })();
+  </script>
+</body>
+</html>
