@@ -61,6 +61,11 @@
     "description": "Turn criticism into a useful lesson."
   },
   {
+    "title": "Criticism → Question",
+    "file": "criticism-to-question.html",
+    "description": "Transform criticism into better questions."
+  },
+  {
     "title": "Draft Fixer",
     "file": "draft-fixer.html",
     "description": "Improve a rough draft."
@@ -69,6 +74,11 @@
     "title": "Failure → Lesson",
     "file": "failure-to-lesson.html",
     "description": "Turn failure into a useful lesson."
+  },
+  {
+    "title": "Hate → Content",
+    "file": "hate-to-content.html",
+    "description": "Turn negative comments into content ideas."
   },
   {
     "title": "Hate → Signal",
@@ -124,6 +134,11 @@
     "title": "Idea → Tool Spec",
     "file": "idea-to-tool-spec.html",
     "description": "Turn a rough idea into 3 possible REFRAME Studio tool specs."
+  },
+  {
+    "title": "Negative Comment → Thread",
+    "file": "negative-comment-to-thread.html",
+    "description": "Turn a negative comment into a thread outline."
   },
   {
     "title": "Next Step Finder",
