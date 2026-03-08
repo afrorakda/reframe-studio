@@ -1,430 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>REFRAME Studio</title>
-<meta name="description" content="Ultra-simple browser tools that reduce thinking friction.">
-
-<style>
-:root{
-  --bg:#f5f5f5;
-  --card:#ffffff;
-  --text:#111111;
-  --muted:#666666;
-  --line:#dddddd;
-  --accent:#111111;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-.wrap{
-  max-width:760px;
-  margin:auto;
-  padding:24px;
-}
-
-h1{
-  font-size:36px;
-  line-height:1.1;
-  margin:0 0 12px 0;
-}
-
-.subtitle{
-  color:var(--muted);
-  font-size:16px;
-  line-height:1.45;
-  margin:0 0 28px 0;
-}
-
-.random-btn{
-  display:inline-block;
-  border:none;
-  border-radius:14px;
-  background:var(--accent);
-  color:#fff;
-  font-size:16px;
-  padding:14px 20px;
-  cursor:pointer;
-  margin-bottom:28px;
-}
-
-.random-btn:hover{
-  opacity:0.92;
-}
-
-.section{
-  margin:0 0 28px 0;
-}
-
-.section-title{
-  font-size:22px;
-  font-weight:700;
-  margin:0 0 8px 0;
-}
-
-.section-text{
-  color:#555;
-  font-size:15px;
-  line-height:1.5;
-  margin:0 0 14px 0;
-}
-
-.loop-card{
-  display:block;
-  text-decoration:none;
-  color:var(--text);
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:12px;
-}
-
-.loop-card:hover{
-  background:#fafafa;
-}
-
-.loop-step{
-  font-size:13px;
-  color:var(--muted);
-  margin-bottom:6px;
-  font-weight:600;
-  letter-spacing:0.02em;
-  text-transform:uppercase;
-}
-
-.loop-title{
-  font-size:20px;
-  font-weight:700;
-  line-height:1.25;
-  margin:0 0 6px 0;
-}
-
-.loop-desc{
-  color:#555;
-  font-size:15px;
-  line-height:1.5;
-  margin:0;
-}
-
-.loop-arrow{
-  text-align:center;
-  color:#999;
-  font-size:18px;
-  margin:6px 0 10px;
-}
-
-.problem{
-  display:block;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:16px 18px;
-  margin-bottom:12px;
-  text-decoration:none;
-  color:var(--text);
-  font-size:18px;
-}
-
-.problem:hover{
-  background:#fafafa;
-}
-
-.status{
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:18px;
-}
-
-.tool{
-  display:block;
-  text-decoration:none;
-  color:var(--text);
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:22px 20px;
-  margin-bottom:18px;
-}
-
-.tool:hover{
-  background:#fafafa;
-}
-
-.tool-title{
-  font-size:22px;
-  font-weight:700;
-  line-height:1.25;
-  margin:0 0 8px 0;
-}
-
-.tool-desc{
-  color:#555;
-  font-size:15px;
-  line-height:1.5;
-  margin:0;
-}
-
-.links{
-  margin-top:30px;
-  font-size:14px;
-}
-
-.links a{
-  color:#1e3a5f;
-  text-decoration:none;
-  font-weight:600;
-}
-
-.links a:hover{
-  text-decoration:underline;
-}
-
-.footer{
-  margin-top:40px;
-  font-size:12px;
-  color:#666;
-  line-height:1.6;
-}
-</style>
-</head>
-
-<body>
-<div class="wrap">
-
-  <h1>REFRAME Studio</h1>
-
-  <p class="subtitle">
-    Reduce thinking friction.
-  </p>
-
-  <button class="random-btn" id="randomBtn">🎲 Random tool</button>
-
-  <div class="section">
-    <h2 class="section-title">🧠 Thinking Loop</h2>
-
-    <a class="loop-card" href="confusion-to-question.html">
-      <div class="loop-step">Step 1</div>
-      <div class="loop-title">Confusion → Question</div>
-      <p class="loop-desc">Turn vague thoughts into clear questions.</p>
-    </a>
-
-    <div class="loop-arrow">↓</div>
-
-    <a class="loop-card" href="problem-to-options.html">
-      <div class="loop-step">Step 2</div>
-      <div class="loop-title">Problem → Options</div>
-      <p class="loop-desc">Turn a vague problem into possible paths forward.</p>
-    </a>
-
-    <div class="loop-arrow">↓</div>
-
-    <a class="loop-card" href="idea-to-post-angles.html">
-      <div class="loop-step">Step 3</div>
-      <div class="loop-title">Idea → Post Angles</div>
-      <p class="loop-desc">Generate directions from an idea.</p>
-    </a>
-
-    <div class="loop-arrow">↓</div>
-
-    <a class="loop-card" href="hook-generator.html">
-      <div class="loop-step">Step 4</div>
-      <div class="loop-title">Hook Generator</div>
-      <p class="loop-desc">Create strong opening hooks.</p>
-    </a>
-
-    <div class="loop-arrow">↓</div>
-
-    <a class="loop-card" href="tweet-polisher.html">
-      <div class="loop-step">Step 5</div>
-      <div class="loop-title">Tweet Polisher</div>
-      <p class="loop-desc">Turn rough writing into a publishable post.</p>
-    </a>
-  </div>
-
-  <div class="section">
-    <h2 class="section-title">Where are you stuck?</h2>
-    <p class="section-text">Pick a starting point.</p>
-
-    <a class="problem" href="confusion-to-question.html">🤔 I'm confused</a>
-    <a class="problem" href="criticism-to-idea.html">😤 Someone criticized me</a>
-    <a class="problem" href="idea-to-post-angles.html">🧠 I have an idea</a>
-    <a class="problem" href="tweet-polisher.html">✍️ I'm writing a post</a>
-    <a class="problem" href="hook-generator.html">🚀 I want to publish</a>
-  </div>
-
-  <div class="section">
-    <h2 class="section-title">All tools</h2>
-    <div id="status" class="status">Loading tools...</div>
-    <div id="tools"></div>
-  </div>
-
-  <div class="links">
-    <a href="about.html">About</a> |
-    <a href="roadmap.html">Roadmap</a>
-  </div>
-
-  <div class="footer">
-    <p><strong>Built by REFRAME Studio</strong></p>
-    <p>
-      Tiny thinking tools for creators and builders.<br>
-      #Reframed
-    </p>
-    <p>
-      Open-source style tools. Simple. Private. Fast.
-    </p>
-    <p>
-      No login. No tracking. No personal data collected.<br>
-      Runs entirely in your browser.
-    </p>
-  </div>
-
-</div>
-
-<script>
-const OWNER = "afrorakda";
-const REPO = "reframe-studio";
-const BRANCH = "main";
-
-const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
-const rawBase = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/`;
-
-const excludedFiles = [
-  "index.html",
-  "about.html",
-  "roadmap.html",
-  "reframe_tool_factory.html"
-];
-
-let loadedToolFiles = [];
-
-function escapeHtml(str){
-  return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#39;");
-}
-
-function cleanTitle(title){
-  return title
-    .replace(/\s*\|\s*REFRAME Studio\s*$/i,"")
-    .replace(/\s*–\s*REFRAME Studio\s*$/i,"")
-    .replace(/\s*-\s*REFRAME Studio\s*$/i,"")
-    .trim();
-}
-
-function filenameToTitle(filename){
-  const base = filename.replace(".html","");
-  return base
-    .split("-")
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-function extractTitle(html, fallback){
-  const match = html.match(/<title>(.*?)<\/title>/i);
-  if(!match) return fallback;
-  const title = cleanTitle(match[1]);
-  return title || fallback;
-}
-
-function extractDescription(html){
-  const match =
-    html.match(/<meta\s+name=["']description["']\s+content=["']([^"]+)["']\s*\/?>/i) ||
-    html.match(/<meta\s+name=['"]description['"]\s+content=['"]([^']+)['"]\s*\/?>/i);
-
-  if(!match) return "Small browser tool by REFRAME Studio.";
-  return match[1].trim();
-}
-
-function buildToolCard(file, title, description){
-  return `
-    <a class="tool" href="${escapeHtml(file)}">
-      <div class="tool-title">${escapeHtml(title)}</div>
-      <p class="tool-desc">${escapeHtml(description)}</p>
-    </a>
-  `;
-}
-
-async function loadTools(){
-  const statusEl = document.getElementById("status");
-  const toolsEl = document.getElementById("tools");
-
-  try{
-    const repoRes = await fetch(apiUrl);
-    if(!repoRes.ok) throw new Error("Failed to fetch repository contents");
-
-    const files = await repoRes.json();
-
-    const htmlFiles = files
-      .filter(file => file.type === "file")
-      .filter(file => file.name.endsWith(".html"))
-      .filter(file => !excludedFiles.includes(file.name));
-
-    const toolData = [];
-
-    for(const file of htmlFiles){
-      try{
-        const rawRes = await fetch(rawBase + file.name);
-        if(!rawRes.ok) throw new Error("Failed to fetch tool html");
-
-        const html = await rawRes.text();
-
-        const fallbackTitle = filenameToTitle(file.name);
-        const title = extractTitle(html, fallbackTitle);
-        const description = extractDescription(html);
-
-        toolData.push({
-          file: file.name,
-          title,
-          description
-        });
-      }catch(error){
-        toolData.push({
-          file: file.name,
-          title: filenameToTitle(file.name),
-          description: "Small browser tool by REFRAME Studio."
-        });
-      }
-    }
-
-    toolData.sort((a,b) => a.title.localeCompare(b.title));
-
-    loadedToolFiles = toolData.map(tool => tool.file);
-
-    toolsEl.innerHTML = toolData.map(tool =>
-      buildToolCard(tool.file, tool.title, tool.description)
-    ).join("");
-
-    statusEl.textContent = `${toolData.length} tools`;
-  }catch(error){
-    statusEl.textContent = "Could not load tools.";
-  }
-}
-
-function randomTool(){
-  if(!loadedToolFiles.length) return;
-  const random = loadedToolFiles[Math.floor(Math.random() * loadedToolFiles.length)];
-  window.location.href = random;
-}
-
-document.getElementById("randomBtn").addEventListener("click", randomTool);
-
-loadTools();
-</script>
-
-</body>
-</html>
+REFRAME STUDIO INDEX UPDATE
+
+FILE
+index.html
+
+TASK
+Update the REFRAME Studio homepage structure.
+
+Non-negotiable rules:
+- One HTML file only
+- HTML + CSS + Vanilla JavaScript only
+- No frameworks
+- No external APIs
+- No backend
+- Fully client-side
+- Mobile friendly and optimized for iPhone
+
+Important output rule:
+Return the ENTIRE HTML file in ONE single code block.
+Do not split the code into multiple blocks.
+Return raw HTML only.
+
+Goal:
+Make “Stuck → Best Tool” the clear entry point of REFRAME Studio.
+
+Required homepage structure:
+1. Keep the existing REFRAME Studio style and tool list layout as much as possible.
+2. Add a special section at the top labeled:
+   - Start here
+3. In that section, place a featured card for:
+   - Stuck → Best Tool
+   - Link: stuck-to-tool.html
+   - Description: Describe where you're stuck and get the best next tool.
+4. Below that, add a section labeled:
+   - All Tools
+5. Keep the rest of the tools below in the normal list.
+6. Make the featured “Start here” card visually more prominent than the normal tool cards.
+7. Keep the UI simple, clean, and lightweight.
+8. Do not turn the whole homepage into a complex app.
+
+Suggested top structure:
+
+Start here
+[Featured card: Stuck → Best Tool]
+
+All Tools
+[existing tool cards below]
+
+Design notes:
+- The featured card should stand out slightly with stronger contrast, border, size, or spacing
+- It should feel like the natural first action
+- Keep the rest of the page familiar
+
+Do not remove existing tools.
+Do not add heavy new features.
+Just improve the hierarchy so users notice the entry tool first.
