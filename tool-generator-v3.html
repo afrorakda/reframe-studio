@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tool Generator v3</title>
+  <meta name="description" content="Turn a rough REFRAME Studio tool idea into a complete ready-to-paste HTML file and a tool-list.json entry." />
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --ink:#131722;
+      --muted:#5f6878;
+      --line:#e3e7ef;
+      --accent:#1f6fff;
+      --accent-2:#0f56d9;
+      --soft:#eef4ff;
+      --good:#117a3f;
+      --shadow:0 10px 30px rgba(16,24,40,.08);
+      --radius:18px;
+      --radius-sm:12px;
+      --tap:52px;
+      --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+    body{
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+    .wrap{
+      max-width:860px;
+      margin:0 auto;
+      padding:16px 16px 28px;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:44px;
+      color:var(--accent);
+      text-decoration:none;
+      font-weight:700;
+      margin:4px 0 14px;
+    }
+    .hero{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:20px;
+      margin-bottom:16px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(28px,6vw,40px);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+    .desc{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-bottom:16px;
+    }
+    textarea{
+      width:100%;
+      min-height:240px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      font:400 15px/1.55 var(--sans);
+      color:var(--ink);
+      background:#fff;
+      outline:none;
+    }
+    textarea:focus{
+      border-color:#b5c8ff;
+      box-shadow:0 0 0 4px rgba(31,111,255,.12);
+    }
+    textarea::placeholder{
+      color:#7b8597;
+      opacity:1;
+      white-space:pre-wrap;
+    }
+    .actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:16px;
+      min-height:var(--tap);
+      padding:14px 16px;
+      font:700 16px/1.2 var(--sans);
+      cursor:pointer;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{
+      background:var(--accent);
+      color:#fff;
+    }
+    .primary:hover{background:var(--accent-2)}
+    .secondary{
+      background:#eef2f8;
+      color:var(--ink);
+    }
+    .secondary:hover{background:#e6ebf4}
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+    .result-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .result-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fff, #fbfcff);
+    }
+    .result-title{
+      margin:0;
+      font-size:16px;
+      letter-spacing:-.01em;
+    }
+    .copy-btn{
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:12px;
+      background:#eef2f8;
+      color:var(--ink);
+      font-size:14px;
+      flex:0 0 auto;
+    }
+    pre{
+      margin:0;
+      padding:16px;
+      min-height:240px;
+      overflow:auto;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font:13px/1.55 var(--mono);
+      background:#fbfcff;
+    }
+    .empty{
+      color:var(--muted);
+    }
+    footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      padding:8px 0 4px;
+    }
+    @media (min-width:760px){
+      .wrap{padding:24px 24px 34px}
+      .hero,.panel,.result-card{border-radius:26px}
+      .actions{
+        grid-template-columns:1.3fr .8fr;
+      }
+      .grid{
+        grid-template-columns:1fr 1fr;
+      }
+      textarea{min-height:260px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <h1>Tool Generator v3</h1>
+      <p class="desc">Turn a rough REFRAME Studio tool idea into a complete ready-to-paste HTML file and a tool-list.json entry.</p>
+    </section>
+
+    <section class="panel">
+      <textarea id="specInput" spellcheck="false" placeholder="Tool name: Idea → Priority
+File name: idea-to-priority.html
+Transformation: Idea → Priority
+Description: Turn many ideas into one priority.
+Main button: Find priority
+Example input: I have too many ideas and don't know what to do first.
+Logic: Detect multiple ideas and return 3 priority options.
+
+ツール名: Idea → Priority
+ファイル名: idea-to-priority.html
+変換: Idea → Priority
+説明: 多すぎるアイデアを一つの優先順位に変える。
+ボタン: Find priority
+例文: アイデアが多すぎて何からやるべきか分からない。
+ロジック: 複数アイデアを検出して、優先候補を3つ返す。"></textarea>
+      <div class="actions">
+        <button id="generateBtn" class="primary">Generate tool</button>
+        <button id="tryExampleBtn" class="secondary">Try example</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="result-card">
+        <div class="result-head">
+          <h2 class="result-title">HTML result</h2>
+          <button id="copyHtmlBtn" class="copy-btn">Copy HTML</button>
+        </div>
+        <pre id="htmlResult" class="empty">Generated HTML will appear here.</pre>
+      </article>
+
+      <article class="result-card">
+        <div class="result-head">
+          <h2 class="result-title">JSON result</h2>
+          <button id="copyJsonBtn" class="copy-btn">Copy JSON entry</button>
+        </div>
+        <pre id="jsonResult" class="empty">Generated JSON entry will appear here.</pre>
+      </article>
+    </section>
+
+    <footer>REFRAME Studio · Tool Generator v3</footer>
+  </main>
+
+  <script>
+    (function(){
+      const input = document.getElementById('specInput');
+      const generateBtn = document.getElementById('generateBtn');
+      const tryExampleBtn = document.getElementById('tryExampleBtn');
+      const copyHtmlBtn = document.getElementById('copyHtmlBtn');
+      const copyJsonBtn = document.getElementById('copyJsonBtn');
+      const htmlResult = document.getElementById('htmlResult');
+      const jsonResult = document.getElementById('jsonResult');
+
+      const exampleSpec = `Tool name: Idea → Priority
+File name: idea-to-priority.html
+Transformation: Idea → Priority
+Description: Turn many ideas into one priority.
+Main button: Find priority
+Example input: I have too many ideas and don't know what to do first.
+Logic: Detect multiple ideas and return 3 priority options.`;
+
+      function isJapanese(text){
+        return /[ぁ-んァ-ン一-龯々]/.test(text || '');
+      }
+
+      function escapeHtml(value){
+        return String(value == null ? '' : value)
+          .replace(/&/g,'&amp;')
+          .replace(/</g,'&lt;')
+          .replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;')
+          .replace(/'/g,'&#39;');
+      }
+
+      function escapeAttr(value){
+        return escapeHtml(value).replace(/\n/g,' ');
+      }
+
+      function escapeJsString(value){
+        return String(value == null ? '' : value)
+          .replace(/\\/g,'\\\\')
+          .replace(/`/g,'\\`')
+          .replace(/\$\{/g,'\\${');
+      }
+
+      function toTitleCase(str){
+        return String(str || '')
+          .replace(/[_-]+/g,' ')
+          .replace(/\s+/g,' ')
+          .trim()
+          .replace(/\b\w/g, function(m){ return m.toUpperCase(); });
+      }
+
+      function slugify(str){
+        const base = String(str || '')
+          .normalize('NFKD')
+          .replace(/[^\w\s-]/g,' ')
+          .replace(/_/g,' ')
+          .toLowerCase()
+          .trim()
+          .replace(/\s+/g,'-')
+          .replace(/-+/g,'-');
+        return (base || 'reframe-tool') + '.html';
+      }
+
+      function cleanLineValue(value){
+        return String(value || '').trim().replace(/^[:：]\s*/, '').trim();
+      }
+
+      function pickField(text, labels){
+        const lines = String(text || '').split(/\r?\n/);
+        for(const line of lines){
+          for(const raw of labels){
+            const label = raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const re = new RegExp('^\\s*' + label + '\\s*[:：]\\s*(.+)\\s*$','i');
+            const m = line.match(re);
+            if(m) return cleanLineValue(m[1]);
+          }
+        }
+        return '';
+      }
+
+      function firstSentence(text){
+        return String(text || '')
+          .split(/\n+/)
+          .map(s => s.trim())
+          .filter(Boolean)[0] || '';
+      }
+
+      function inferTitle(text){
+        const first = firstSentence(text);
+        if (!first) return 'Idea Refiner';
+        const clean = first
+          .replace(/^(tool name|title|ツール名)\s*[:：]\s*/i,'')
+          .slice(0,60)
+          .trim();
+        return clean ? clean : 'Idea Refiner';
+      }
+
+      function inferTransformation(title, text){
+        const explicit = pickField(text, ['Transformation','変換']);
+        if (explicit) return explicit;
+        if (title.includes('→')) return title;
+        const words = title.split(/\s+/).filter(Boolean);
+        if (words.length >= 2) return words.slice(0,2).join(' ') + ' → Result';
+        return title + ' → Output';
+      }
+
+      function inferDescription(title, transformation, text){
+        const explicit = pickField(text, ['Description','説明']);
+        if (explicit) return explicit;
+        return 'Turn input from ' + transformation.replace(/→/g,'to') + '.';
+      }
+
+      function inferButton(text, transformation){
+        const explicit = pickField(text, ['Main button','Button','ボタン']);
+        if (explicit) return explicit;
+        const right = String(transformation || '').split('→')[1];
+        const base = (right || 'result').trim().toLowerCase();
+        if (base.includes('priority')) return 'Find priority';
+        if (base.includes('decision')) return 'Make decision';
+        if (base.includes('clarity')) return 'Find clarity';
+        if (base.includes('name')) return 'Generate names';
+        return 'Generate result';
+      }
+
+      function inferExample(text){
+        const explicit = pickField(text, ['Example input','Example','例文']);
+        if (explicit) return explicit;
+        return 'I have too many thoughts and want a clearer next step.';
+      }
+
+      function inferLogic(text){
+        const explicit = pickField(text, ['Logic','ロジック']);
+        if (explicit) return explicit;
+        return 'Detect the main themes in the input and return 3 to 5 structured outputs.';
+      }
+
+      function inferCategory(title, transformation, description, logic){
+        const hay = (title + ' ' + transformation + ' ' + description + ' ' + logic).toLowerCase();
+        if (/priority|prioritize|first|focus/.test(hay)) return 'prioritization';
+        if (/decision|choose|option/.test(hay)) return 'decision-making';
+        if (/clarity|reframe|rewrite|summar/.test(hay)) return 'clarity';
+        if (/name|naming|title/.test(hay)) return 'naming';
+        if (/plan|roadmap|next step/.test(hay)) return 'planning';
+        return 'thinking';
+      }
+
+      function parseSpec(text){
+        const raw = String(text || '').trim();
+        const title = pickField(raw, ['Tool name','Title','ツール名']) || inferTitle(raw);
+        let file = pickField(raw, ['File name','Filename','ファイル名']);
+        const transformation = inferTransformation(title, raw);
+        const description = inferDescription(title, transformation, raw);
+        const button = inferButton(raw, transformation);
+        const example = inferExample(raw);
+        const logic = inferLogic(raw);
+        const category = inferCategory(title, transformation, description, logic);
+
+        if (!file) file = slugify(title || transformation || 'reframe tool');
+        file = slugify(String(file).replace(/\.html$/i,''));
+        return { title, file, transformation, description, button, example, logic, category };
+      }
+
+      function buildGeneratedTool(spec){
+        const title = escapeAttr(spec.title);
+        const description = escapeAttr(spec.description);
+        const category = escapeAttr(spec.category);
+        const button = escapeHtml(spec.button);
+        const example = escapeJsString(spec.example);
+        const placeholder = `Type your input here...
+
+Example:
+${spec.example}`;
+        const placeholderEsc = escapeHtml(placeholder);
+
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>${title}</title>
+  <meta name="description" content="${description}" />
+  <meta name="reframe:title" content="${title}">
+  <meta name="reframe:description" content="${description}">
+  <meta name="reframe:category" content="${category}">
+  <meta name="reframe:state" content="active">
+  <meta name="reframe:generator" content="tool-generator-v3">
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --ink:#131722;
+      --muted:#5f6878;
+      --line:#e3e7ef;
+      --accent:#1f6fff;
+      --accent-2:#0f56d9;
+      --soft:#eef4ff;
+      --shadow:0 10px 30px rgba(16,24,40,.08);
+      --radius:18px;
+      --tap:52px;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+    body{
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    }
+    .wrap{max-width:760px;margin:0 auto;padding:16px 16px 28px}
+    .back{
+      display:inline-flex;align-items:center;gap:8px;min-height:44px;
+      color:var(--accent);text-decoration:none;font-weight:700;margin:4px 0 14px;
+    }
+    .hero,.panel,.results{
+      background:var(--card);border:1px solid var(--line);border-radius:24px;
+      box-shadow:var(--shadow);padding:18px;margin-bottom:16px;
+    }
+    h1{
+      margin:0 0 8px;font-size:clamp(28px,6vw,38px);line-height:1.05;letter-spacing:-.03em;
+    }
+    .desc{margin:0;color:var(--muted);font-size:15px;line-height:1.6}
+    textarea{
+      width:100%;min-height:210px;resize:vertical;border:1px solid var(--line);
+      border-radius:18px;padding:16px;font:400 15px/1.55 var(--sans);color:var(--ink);
+      background:#fff;outline:none;
+    }
+    textarea:focus{border-color:#b5c8ff;box-shadow:0 0 0 4px rgba(31,111,255,.12)}
+    textarea::placeholder{color:#7b8597;opacity:1;white-space:pre-wrap}
+    .actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+    button{
+      appearance:none;border:none;border-radius:16px;min-height:var(--tap);
+      padding:14px 16px;font:700 16px/1.2 var(--sans);cursor:pointer;
+      transition:transform .04s ease, background .2s ease;
+    }
+    button:active{transform:translateY(1px)}
+    .primary{background:var(--accent);color:#fff}
+    .primary:hover{background:var(--accent-2)}
+    .secondary{background:#eef2f8;color:var(--ink)}
+    .secondary:hover{background:#e6ebf4}
+    .result-tools{display:flex;justify-content:flex-end;margin-bottom:12px}
+    .copy-btn{min-height:42px;padding:10px 14px;border-radius:12px;background:#eef2f8;color:var(--ink);font-size:14px}
+    .empty{
+      border:1px dashed var(--line);border-radius:18px;padding:18px;color:var(--muted);
+      background:#fbfcff;line-height:1.7;
+    }
+    .cards{display:grid;grid-template-columns:1fr;gap:12px}
+    .card{
+      border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff;
+    }
+    .tag{
+      display:inline-block;background:var(--soft);color:var(--accent-2);
+      border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700;margin-bottom:8px;
+    }
+    .card h3{margin:0 0 8px;font-size:17px;letter-spacing:-.02em}
+    .card p{margin:0;color:#344054;line-height:1.6;font-size:15px}
+    .mono{white-space:pre-wrap;word-break:break-word}
+    footer{text-align:center;color:var(--muted);font-size:13px;padding:8px 0 4px}
+    @media (min-width:720px){
+      .wrap{padding:24px 24px 34px}
+      .actions{grid-template-columns:1.25fr .85fr .85fr}
+      textarea{min-height:230px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <h1>${title}</h1>
+      <p class="desc">${description}</p>
+    </section>
+
+    <section class="panel">
+      <textarea id="userInput" spellcheck="false" placeholder="${placeholderEsc}"></textarea>
+      <div class="actions">
+        <button id="runBtn" class="primary">${button}</button>
+        <button id="exampleBtn" class="secondary">Try example</button>
+        <button id="copyBtn" class="secondary">Copy result</button>
+      </div>
+    </section>
+
+    <section class="results">
+      <div class="result-tools"></div>
+      <div id="resultArea" class="empty">Add input, then generate a result.</div>
+    </section>
+
+    <footer>REFRAME Studio</footer>
+  </main>
+
+  <script>
+    (function(){
+      const title = ${JSON.stringify(spec.title)};
+      const transformation = ${JSON.stringify(spec.transformation)};
+      const description = ${JSON.stringify(spec.description)};
+      const mainButton = ${JSON.stringify(spec.button)};
+      const exampleInput = ${JSON.stringify(spec.example)};
+      const logicHint = ${JSON.stringify(spec.logic)};
+      const category = ${JSON.stringify(spec.category)};
+
+      const userInput = document.getElementById('userInput');
+      const runBtn = document.getElementById('runBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const resultArea = document.getElementById('resultArea');
+
+      function isJapanese(text){
+        return /[ぁ-んァ-ン一-龯々]/.test(text || '');
+      }
+
+      function escapeHtml(value){
+        return String(value == null ? '' : value)
+          .replace(/&/g,'&amp;')
+          .replace(/</g,'&lt;')
+          .replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;')
+          .replace(/'/g,'&#39;');
+      }
+
+      function normalizeText(text){
+        return String(text || '')
+          .replace(/\\r/g,'\\n')
+          .replace(/\\t/g,' ')
+          .replace(/[•・]/g,'\\n')
+          .replace(/[;,]/g,'\\n')
+          .replace(/\\n{3,}/g,'\\n\\n')
+          .trim();
+      }
+
+      function splitIdeas(text){
+        const normalized = normalizeText(text);
+        const parts = normalized
+          .split(/\\n+/)
+          .map(s => s.trim())
+          .filter(Boolean);
+
+        if (parts.length > 1) return parts.slice(0, 12);
+
+        return normalized
+          .split(/(?:\\s+and\\s+|\\s+or\\s+|、|。|，|, )/i)
+          .map(s => s.trim())
+          .filter(Boolean)
+          .slice(0, 12);
+      }
+
+      function firstMeaningful(text, fallback){
+        const items = splitIdeas(text);
+        return items[0] || fallback;
+      }
+
+      function scoreItems(items, lang){
+        return items.map(function(item, index){
+          const len = item.length;
+          let score = 0;
+          if (len <= 28) score += 3;
+          else if (len <= 52) score += 2;
+          else score += 1;
+
+          if (/now|today|urgent|launch|money|customer|deadline|sales|client|first|今|緊急|売上|顧客|締切|先/.test(item)) score += 3;
+          if (/learn|someday|maybe|later|interesting|dream|study|いつか|学ぶ|興味/.test(item)) score += 1;
+          score += Math.max(0, 3 - index);
+          return { item, score };
+        }).sort(function(a,b){ return b.score - a.score; });
+      }
+
+      function makePriorityResults(text, lang){
+        const items = splitIdeas(text);
+        const ranked = scoreItems(items.length ? items : [text], lang);
+        const top = ranked.slice(0, 3).map(function(x){ return x.item; });
+        const filler = lang === 'ja'
+          ? ['今いちばん現実に進むもの', '波及効果が大きいもの', '最小労力で試せるもの']
+          : ['Most real right now', 'Highest ripple effect', 'Easiest to test fast'];
+
+        while (top.length < 3) top.push(filler[top.length]);
+
+        return lang === 'ja'
+          ? [
+              {label:'最優先', title: top[0], body:'いま着手しやすく、前進が最も見えやすい選択です。'},
+              {label:'次点', title: top[1], body:'最優先の反応を見たあとで進めると、迷いが減りやすい候補です。'},
+              {label:'保留', title: top[2], body:'価値はあるが、今すぐでなくても良い可能性があります。'}
+            ]
+          : [
+              {label:'Top priority', title: top[0], body:'This is the clearest option to move now with visible momentum.'},
+              {label:'Second option', title: top[1], body:'This becomes easier to judge after you test the first option.'},
+              {label:'Parking lot', title: top[2], body:'This may matter, but it does not need to lead right now.'}
+            ];
+      }
+
+      function makeDecisionResults(text, lang){
+        const focus = firstMeaningful(text, lang === 'ja' ? '選択肢' : 'your option');
+        return lang === 'ja'
+          ? [
+              {label:'選択肢A', title:'いちばんシンプルに進める', body:'「' + focus + '」を小さく試し、判断材料を先に増やします。'},
+              {label:'選択肢B', title:'比較してから決める', body:'条件を3つに絞って比較し、感情ではなく基準で選びます。'},
+              {label:'選択肢C', title:'今は決めない', body:'決める前に不足情報を一つだけ集め、判断の質を上げます。'}
+            ]
+          : [
+              {label:'Option A', title:'Move with the simplest path', body:'Run a small test around "' + focus + '" before making a bigger commitment.'},
+              {label:'Option B', title:'Compare with clear criteria', body:'Choose 3 criteria first, then compare options against them.'},
+              {label:'Option C', title:'Delay the decision on purpose', body:'Collect one missing piece of information before locking in.'}
+            ];
+      }
+
+      function makeNamingResults(text, lang){
+        const base = firstMeaningful(text, lang === 'ja' ? '新しいもの' : 'something new').replace(/[.!?。！]/g,'');
+        const compact = base.split(/\\s+/).slice(0,4).join(' ');
+        return lang === 'ja'
+          ? [
+              {label:'方向1', title: compact + ' Core', body:'本質と信頼感を前に出す名前です。'},
+              {label:'方向2', title: compact + ' Flow', body:'動きや変化の印象を強める名前です。'},
+              {label:'方向3', title: compact + ' Note', body:'やわらかく覚えやすい方向の名前です。'}
+            ]
+          : [
+              {label:'Direction 1', title: compact + ' Core', body:'A name that feels grounded and essential.'},
+              {label:'Direction 2', title: compact + ' Flow', body:'A name that emphasizes movement and momentum.'},
+              {label:'Direction 3', title: compact + ' Note', body:'A softer, easier-to-remember direction.'}
+            ];
+      }
+
+      function makeClarityResults(text, lang){
+        const ideas = splitIdeas(text);
+        const subject = firstMeaningful(text, lang === 'ja' ? 'テーマ' : 'the topic');
+        const count = ideas.length;
+        return lang === 'ja'
+          ? [
+              {label:'要点', title:'いま起きていること', body:'中心テーマは「' + subject + '」です。' + (count > 1 ? '論点が' + count + '個ほど混ざっています。' : 'まず一つの焦点に絞れます。')},
+              {label:'整理', title:'分けて考える', body:'事実・感情・次の一歩を分けると、混乱が減ります。'},
+              {label:'次の一手', title:'最小の前進', body:'今日できる最小行動を一つ決めると、思考が前に進みます。'}
+            ]
+          : [
+              {label:'Signal', title:'What is actually happening', body:'The core theme is "' + subject + '." ' + (count > 1 ? 'There are about ' + count + ' mixed threads here.' : 'This can be handled as one clear thread.')},
+              {label:'Structure', title:'Separate the layers', body:'Split facts, feelings, and next actions so the problem becomes smaller.'},
+              {label:'Next step', title:'One small move', body:'Choose a single action you can do today to create momentum.'}
+            ];
+      }
+
+      function makePlanResults(text, lang){
+        const subject = firstMeaningful(text, lang === 'ja' ? 'テーマ' : 'the work');
+        return lang === 'ja'
+          ? [
+              {label:'Step 1', title:'目的を一文にする', body:'「' + subject + '」で何を変えたいかを一文で固定します。'},
+              {label:'Step 2', title:'最小実行を決める', body:'30分以内で終わる試作か検証を先に置きます。'},
+              {label:'Step 3', title:'反応を見て調整する', body:'結果を見て、続ける・削る・変えるを判断します。'}
+            ]
+          : [
+              {label:'Step 1', title:'Lock the goal in one sentence', body:'Define what should change through "' + subject + '" in one clear line.'},
+              {label:'Step 2', title:'Choose the smallest execution', body:'Start with a prototype or test that fits inside 30 minutes.'},
+              {label:'Step 3', title:'Adjust from feedback', body:'Use what happens next to continue, cut, or change direction.'}
+            ];
+      }
+
+      function makeGenericResults(text, lang){
+        const subject = firstMeaningful(text, lang === 'ja' ? '入力内容' : 'your input');
+        return lang === 'ja'
+          ? [
+              {label:'視点1', title:'本質', body:'中心にあるのは「' + subject + '」です。まず主題を一つに絞ります。'},
+              {label:'視点2', title:'再構成', body:'要素を分けて並べると、選びやすい形に変わります。'},
+              {label:'視点3', title:'出力', body:'次の一手が見える短い形にまとめます。'}
+            ]
+          : [
+              {label:'Lens 1', title:'Core', body:'The main thing underneath this is "' + subject + '." Start by narrowing to one theme.'},
+              {label:'Lens 2', title:'Reframe', body:'Break the input into parts so it becomes easier to act on.'},
+              {label:'Lens 3', title:'Output', body:'Convert the input into a short result you can use immediately.'}
+            ];
+      }
+
+      function chooseMode(){
+        const hay = (title + ' ' + transformation + ' ' + description + ' ' + logicHint + ' ' + category).toLowerCase();
+        if (/priority|prioritize|focus|first/.test(hay)) return 'priority';
+        if (/decision|choose|option/.test(hay)) return 'decision';
+        if (/name|naming|title/.test(hay)) return 'naming';
+        if (/plan|roadmap|step/.test(hay)) return 'plan';
+        if (/clarity|reframe|summar|simplify|idea/.test(hay)) return 'clarity';
+        return 'generic';
+      }
+
+      function renderResults(results){
+        const html = '<div class="cards">' + results.map(function(item){
+          return '<article class="card">' +
+            '<div class="tag">' + escapeHtml(item.label) + '</div>' +
+            '<h3>' + escapeHtml(item.title) + '</h3>' +
+            '<p>' + escapeHtml(item.body) + '</p>' +
+          '</article>';
+        }).join('') + '</div>';
+        resultArea.className = '';
+        resultArea.innerHTML = html;
+      }
+
+      function runTool(){
+        const text = userInput.value.trim();
+        if (!text){
+          resultArea.className = 'empty';
+          resultArea.textContent = 'Add input, then generate a result.';
+          return;
+        }
+
+        const lang = isJapanese(text) ? 'ja' : 'en';
+        const mode = chooseMode();
+        let results;
+
+        if (mode === 'priority') results = makePriorityResults(text, lang);
+        else if (mode === 'decision') results = makeDecisionResults(text, lang);
+        else if (mode === 'naming') results = makeNamingResults(text, lang);
+        else if (mode === 'plan') results = makePlanResults(text, lang);
+        else if (mode === 'clarity') results = makeClarityResults(text, lang);
+        else results = makeGenericResults(text, lang);
+
+        renderResults(results);
+      }
+
+      function copyResult(){
+        const text = resultArea.classList.contains('empty')
+          ? resultArea.textContent
+          : resultArea.innerText;
+        if (!text) return;
+
+        navigator.clipboard.writeText(text).then(function(){
+          const old = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(function(){ copyBtn.textContent = old; }, 1200);
+        });
+      }
+
+      runBtn.addEventListener('click', runTool);
+      exampleBtn.addEventListener('click', function(){
+        userInput.value = exampleInput;
+        runTool();
+      });
+      copyBtn.addEventListener('click', copyResult);
+    })();
+  <\/script>
+</body>
+</html>`;
+      }
+
+      function buildJson(spec){
+        return JSON.stringify({
+          title: spec.title,
+          file: spec.file,
+          description: spec.description
+        }, null, 2);
+      }
+
+      function setResult(node, text){
+        node.textContent = text;
+        node.classList.toggle('empty', !text);
+      }
+
+      function copyText(text, button, originalLabel){
+        if (!text || !text.trim()) return;
+        navigator.clipboard.writeText(text).then(function(){
+          button.textContent = 'Copied';
+          setTimeout(function(){
+            button.textContent = originalLabel;
+          }, 1200);
+        });
+      }
+
+      generateBtn.addEventListener('click', function(){
+        const raw = input.value.trim();
+        if (!raw){
+          setResult(htmlResult, 'Paste a tool concept or spec to generate HTML.');
+          setResult(jsonResult, 'Paste a tool concept or spec to generate a JSON entry.');
+          return;
+        }
+        const spec = parseSpec(raw);
+        const html = buildGeneratedTool(spec);
+        const json = buildJson(spec);
+        setResult(htmlResult, html);
+        setResult(jsonResult, json);
+      });
+
+      tryExampleBtn.addEventListener('click', function(){
+        input.value = exampleSpec;
+      });
+
+      copyHtmlBtn.addEventListener('click', function(){
+        copyText(htmlResult.textContent, copyHtmlBtn, 'Copy HTML');
+      });
+
+      copyJsonBtn.addEventListener('click', function(){
+        copyText(jsonResult.textContent, copyJsonBtn, 'Copy JSON entry');
+      });
+    })();
+  </script>
+</body>
+</html>
