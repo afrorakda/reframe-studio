@@ -4,441 +4,537 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REFRAME Studio</title>
+  <meta
+    name="description"
+    content="REFRAME Studio is a lightweight set of thinking tools for clarifying problems, generating ideas, and moving forward."
+  />
   <style>
-    :root{
-      --bg:#071225;
-      --panel:#0c1830;
-      --card:#101d38;
-      --line:#1d2a45;
-      --text:#eef4ff;
-      --muted:#99a7c2;
-      --accent:#9bb8ff;
-      --accent-2:#cfdcff;
-      --shadow:0 18px 40px rgba(0,0,0,.28);
-      --radius:22px;
+    :root {
+      --bg-1: #07111f;
+      --bg-2: #0b1324;
+      --bg-3: #121a2f;
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-strong: rgba(255, 255, 255, 0.11);
+      --border: rgba(255, 255, 255, 0.12);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #edf2ff;
+      --muted: #b7c1d9;
+      --accent: #8fb7ff;
+      --accent-2: #7ee7d8;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --max-width: 900px;
     }
 
-    *{ box-sizing:border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at top, #0b1a34 0%, #071225 42%, #040b18 100%);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
+        radial-gradient(circle at top left, rgba(120, 119, 198, 0.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(126, 231, 216, 0.14), transparent 28%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
+      min-height: 100vh;
+      line-height: 1.5;
     }
 
-    .container{
-      max-width:960px;
-      margin:0 auto;
-      padding:28px 18px 44px;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .topbar{
-      display:flex;
-      align-items:flex-start;
-      gap:14px;
-      margin-bottom:26px;
+    .page {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 28px 16px 40px;
     }
 
-    .logo{
-      width:54px;
-      height:54px;
-      border-radius:16px;
-      background:linear-gradient(135deg,#dbe7ff,#95b6ff);
-      color:#0b1730;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      font-size:24px;
-      flex:0 0 auto;
-      box-shadow:var(--shadow);
+    .hero {
+      padding: 32px 0 18px;
     }
 
-    .brand h1{
-      margin:0 0 4px;
-      font-size:28px;
-      line-height:1.1;
-      letter-spacing:-0.02em;
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
-    .brand p{
-      margin:0;
-      color:var(--muted);
-      font-size:15px;
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 7vw, 3.8rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
     }
 
-    .hero{
-      background:linear-gradient(180deg, rgba(16,29,56,.95) 0%, rgba(10,20,40,.96) 100%);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:30px;
-      padding:24px 18px;
-      box-shadow:var(--shadow);
-      margin-bottom:28px;
+    .subtitle {
+      margin: 12px 0 14px;
+      font-size: clamp(1.05rem, 3.8vw, 1.35rem);
+      color: var(--accent-2);
+      font-weight: 600;
     }
 
-    .pill{
-      display:inline-block;
-      padding:10px 16px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      color:#d6e1ff;
-      background:rgba(255,255,255,.04);
-      font-size:14px;
-      margin-bottom:18px;
+    .intro {
+      margin: 0;
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 1rem;
     }
 
-    .hero h2{
-      margin:0 0 14px;
-      font-size:34px;
-      line-height:1.08;
-      letter-spacing:-0.03em;
-      max-width:760px;
+    .section {
+      margin-top: 34px;
     }
 
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      font-size:17px;
-      line-height:1.7;
-      max-width:760px;
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
-    .section{
-      margin-top:28px;
+    .section-title {
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
     }
 
-    .section h3{
-      margin:0 0 6px;
-      font-size:24px;
-      letter-spacing:-0.02em;
+    .section-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
     }
 
-    .section p{
-      margin:0 0 16px;
-      color:var(--muted);
-      font-size:15px;
+    .grid {
+      display: grid;
+      gap: 14px;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
+    .grid.two {
+      grid-template-columns: 1fr;
     }
 
-    .card{
-      display:block;
-      text-decoration:none;
-      color:var(--text);
-      background:linear-gradient(180deg, rgba(18,31,58,.96) 0%, rgba(11,21,42,.98) 100%);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:26px;
-      padding:22px 18px;
-      box-shadow:var(--shadow);
+    .grid.cards {
+      grid-template-columns: 1fr;
     }
 
-    .card:hover{
-      transform:translateY(-1px);
-      transition:.15s ease;
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px;
+      min-height: 148px;
+      border-radius: var(--radius);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.09) 0%,
+        rgba(255, 255, 255, 0.06) 100%
+      );
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease,
+        background 180ms ease;
+      overflow: hidden;
     }
 
-    .card .eyebrow{
-      display:inline-block;
-      margin-bottom:14px;
-      padding:9px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      color:#d5e2ff;
-      font-size:14px;
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30% -40% auto;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(143, 183, 255, 0.18), transparent 70%);
+      pointer-events: none;
+      opacity: 0.85;
     }
 
-    .card .eyebrow.featured{
-      background:#eef3ff;
-      color:#0b1730;
-      border-color:#eef3ff;
-      font-weight:700;
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+      box-shadow:
+        0 18px 44px rgba(0, 0, 0, 0.42),
+        0 0 0 1px rgba(143, 183, 255, 0.12),
+        0 0 28px rgba(143, 183, 255, 0.15);
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.11) 0%,
+        rgba(255, 255, 255, 0.07) 100%
+      );
     }
 
-    .card h4{
-      margin:0 0 12px;
-      font-size:28px;
-      line-height:1.12;
-      letter-spacing:-0.02em;
+    .card.large {
+      min-height: 184px;
+      padding: 22px;
     }
 
-    .card p{
-      margin:0;
-      color:var(--muted);
-      font-size:16px;
-      line-height:1.6;
-      max-width:680px;
+    .card-title {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
 
-    .card .cta{
-      margin-top:22px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      color:#dfe9ff;
-      font-weight:700;
-      font-size:16px;
+    .card-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.96rem;
     }
 
-    .arrow{
-      width:54px;
-      height:54px;
-      border-radius:999px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.04);
-      font-size:28px;
-      line-height:1;
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: auto;
     }
 
-    .tool-list{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(143, 183, 255, 0.13);
+      border: 1px solid rgba(143, 183, 255, 0.2);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      white-space: nowrap;
     }
 
-    .tool-card{
-      display:block;
-      text-decoration:none;
-      color:var(--text);
-      background:rgba(16,29,56,.88);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
-      padding:18px 16px;
+    .button:hover {
+      background: rgba(143, 183, 255, 0.18);
     }
 
-    .tool-card:hover{
-      background:rgba(22,37,69,.96);
-      transition:.15s ease;
+    .mini-link {
+      color: var(--accent);
+      font-size: 0.9rem;
+      word-break: break-word;
     }
 
-    .tool-title{
-      font-size:18px;
-      font-weight:700;
-      margin-bottom:6px;
-      line-height:1.35;
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
 
-    .tool-desc{
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.5;
+    .tool-card {
+      min-height: 110px;
+      padding: 16px;
+      border-radius: var(--radius-sm);
     }
 
-    .footer{
-      margin-top:28px;
-      text-align:center;
-      color:var(--muted);
-      font-size:13px;
+    .tool-card .card-title {
+      font-size: 1rem;
     }
 
-    .status{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:13px;
+    .tool-card .card-desc {
+      font-size: 0.92rem;
     }
 
-    @media (min-width: 760px){
-      .grid.two{
-        grid-template-columns:1fr 1fr;
+    .loading,
+    .empty-state {
+      padding: 18px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    @media (min-width: 640px) {
+      .page {
+        padding: 36px 20px 48px;
       }
-      .tool-list{
-        grid-template-columns:1fr 1fr;
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid.cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tool-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 860px) {
+      .grid.cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <main class="page">
+    <header class="hero">
+      <div class="eyebrow">Thinking tools</div>
+      <h1>REFRAME Studio</h1>
+      <p class="subtitle">Simple tools. Clear next steps.</p>
+      <p class="intro">
+        REFRAME Studio is a lightweight set of thinking tools for clarifying problems,
+        generating ideas, and moving forward.
+      </p>
+    </header>
 
-    <div class="topbar">
-      <div class="logo">R</div>
-      <div class="brand">
-        <h1>REFRAME Studio</h1>
-        <p>Find the right tool for the next useful move.</p>
+    <section class="section" aria-labelledby="start-here-title">
+      <div class="section-header">
+        <h2 class="section-title" id="start-here-title">Start Here</h2>
+        <p class="section-text">Pick the easiest entry point based on how you want to think.</p>
       </div>
-    </div>
 
-    <section class="hero">
-      <div class="pill">Simple tools. Clear next steps.</div>
-      <h2>Pick the right tool without overthinking the workflow.</h2>
-      <p>REFRAME Studio is a lightweight set of practical tools for clarifying, reframing, and moving work forward. Start with the tool that fits your current bottleneck.</p>
-    </section>
+      <div class="grid two">
+        <a class="card large" href="stuck-to-tool.html">
+          <h3 class="card-title">Stuck → Best Tool</h3>
+          <p class="card-desc">
+            Describe where you're stuck and get the best next tool.
+          </p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+            <span class="mini-link">stuck-to-tool.html</span>
+          </div>
+        </a>
 
-    <section class="section">
-      <h3>Start here</h3>
-      <p>Best first action when you are not sure what to use.</p>
-      <div class="grid">
-        <a class="card" href="stuck-to-tool.html">
-          <div class="eyebrow featured">Featured entry point</div>
-          <div class="eyebrow">Starter Tool</div>
-          <h4>Stuck → Best Tool</h4>
-          <p>Describe where you're stuck and get the best next tool.</p>
-          <div class="cta">
-            <span>Open tool</span>
-            <span class="arrow">→</span>
+        <a class="card large" href="thought-map.html">
+          <h3 class="card-title">Thought Map</h3>
+          <p class="card-desc">
+            Explore the tools through a visual thinking map.
+          </p>
+          <div class="card-footer">
+            <span class="button">Open map</span>
+            <span class="mini-link">thought-map.html</span>
           </div>
         </a>
       </div>
     </section>
 
-    <section class="section">
-      <h3>Core Flow</h3>
-      <p>Move from friction to action through the main thinking path.</p>
-      <div class="grid two">
-        <a class="tool-card" href="problem-to-root-cause.html">
-          <div class="tool-title">Problem → Root Causes</div>
-          <div class="tool-desc">Turn a problem into possible root causes.</div>
+    <section class="section" aria-labelledby="core-flow-title">
+      <div class="section-header">
+        <h2 class="section-title" id="core-flow-title">Core Flow</h2>
+        <p class="section-text">A practical path from unclear problems to concrete movement.</p>
+      </div>
+
+      <div class="grid cards">
+        <a class="card" href="problem-to-root-cause.html">
+          <h3 class="card-title">Problem → Root Causes</h3>
+          <p class="card-desc">Trace a visible problem back to what may actually be driving it.</p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+          </div>
         </a>
 
-        <a class="tool-card" href="problem-to-constraints.html">
-          <div class="tool-title">Problem → Constraints</div>
-          <div class="tool-desc">Find the key constraints behind a problem.</div>
+        <a class="card" href="problem-to-constraints.html">
+          <h3 class="card-title">Problem → Constraints</h3>
+          <p class="card-desc">Surface the limits, frictions, and blockers shaping the problem.</p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+          </div>
         </a>
 
-        <a class="tool-card" href="constraint-to-action.html">
-          <div class="tool-title">Constraint → Action</div>
-          <div class="tool-desc">Turn a constraint into one useful next action.</div>
+        <a class="card" href="constraint-to-action.html">
+          <h3 class="card-title">Constraint → Action</h3>
+          <p class="card-desc">Turn a constraint into a realistic next move you can actually take.</p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+          </div>
         </a>
 
-        <a class="tool-card" href="problem-to-options.html">
-          <div class="tool-title">Problem → Options</div>
-          <div class="tool-desc">Turn a problem into possible options.</div>
+        <a class="card" href="problem-to-options.html">
+          <h3 class="card-title">Problem → Options</h3>
+          <p class="card-desc">Generate multiple directions instead of forcing a single answer too early.</p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+          </div>
         </a>
 
-        <a class="tool-card" href="emotion-to-action.html">
-          <div class="tool-title">Emotion → Action</div>
-          <div class="tool-desc">Turn emotion into one useful next action.</div>
+        <a class="card" href="emotion-to-action.html">
+          <h3 class="card-title">Emotion → Action</h3>
+          <p class="card-desc">Use emotion as signal, then convert it into a grounded next step.</p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+          </div>
         </a>
 
-        <a class="tool-card" href="next-step-finder.html">
-          <div class="tool-title">Next Step Finder</div>
-          <div class="tool-desc">Find one practical next step.</div>
+        <a class="card" href="next-step-finder.html">
+          <h3 class="card-title">Next Step Finder</h3>
+          <p class="card-desc">When things are fuzzy, identify the smallest useful move forward.</p>
+          <div class="card-footer">
+            <span class="button">Open tool</span>
+          </div>
         </a>
       </div>
     </section>
 
-    <section class="section">
-      <h3>All Tools</h3>
-      <p>Everything else in the studio, auto-detected from your repository.</p>
-      <div id="toolList" class="tool-list"></div>
-      <div id="status" class="status"></div>
+    <section class="section" aria-labelledby="all-tools-title">
+      <div class="section-header">
+        <h2 class="section-title" id="all-tools-title">All Tools</h2>
+        <p class="section-text">Loaded automatically from <code>tool-list.json</code>.</p>
+      </div>
+
+      <div id="all-tools" class="tool-grid" aria-live="polite">
+        <div class="loading">Loading tools…</div>
+      </div>
     </section>
 
-    <div class="footer">REFRAME Studio — one tool, one friction point.</div>
-  </div>
+    <footer>
+      REFRAME Studio — simple thinking tools.
+    </footer>
+  </main>
 
   <script>
-    const repo = "afrorakda/reframe-studio";
+    (function () {
+      const container = document.getElementById("all-tools");
+      const excluded = new Set(["about.html", "index.html", "thought-map.html"]);
 
-    const excludedFiles = new Set([
-      "index.html",
-      "about.html",
-      "roadmap.html",
-      "reframe-studio.html",
-      "reframe_tool_factory.html"
-    ]);
+      function toTitleFromHref(href) {
+        return href
+          .replace(/\.html?$/i, "")
+          .split(/[\/#?]/)
+          .pop()
+          .replace(/[-_]+/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+      }
 
-    const pinnedFiles = new Set([
-      "stuck-to-tool.html",
-      "problem-to-root-cause.html",
-      "problem-to-constraints.html",
-      "constraint-to-action.html",
-      "problem-to-options.html",
-      "emotion-to-action.html",
-      "next-step-finder.html"
-    ]);
+      function normalizeTool(item) {
+        if (typeof item === "string") {
+          return {
+            href: item,
+            title: toTitleFromHref(item),
+            description: ""
+          };
+        }
 
-    const customDescriptions = {
-      "comment-to-content.html": "Turn a comment into content direction.",
-      "comment-to-question.html": "Turn a comment into a clearer question.",
-      "complexity-cleaner.html": "Reduce unnecessary complexity.",
-      "confusion-to-question.html": "Turn confusion into a clearer question.",
-      "constraint-to-action.html": "Turn a constraint into one useful next action.",
-      "criticism-to-idea.html": "Turn criticism into a new idea.",
-      "criticism-to-lesson.html": "Turn criticism into a useful lesson.",
-      "draft-fixer.html": "Improve a rough draft.",
-      "emotion-to-action.html": "Turn emotion into one useful next action.",
-      "failure-to-lesson.html": "Turn failure into a useful lesson.",
-      "hate-to-signal.html": "Turn harsh reactions into useful signals.",
-      "hook-generator.html": "Generate hook options from a topic.",
-      "idea-to-counterargument.html": "Generate counterarguments from an idea.",
-      "idea-to-debate.html": "Turn an idea into debate angles.",
-      "idea-to-example.html": "Turn an idea into examples.",
-      "idea-to-metaphor.html": "Turn an idea into a metaphor.",
-      "idea-to-opposite.html": "Generate the opposite angle of an idea.",
-      "idea-to-post-angles.html": "Turn one idea into multiple post angles.",
-      "idea-to-thread.html": "Turn an idea into a thread structure.",
-      "next-step-finder.html": "Find one practical next step.",
-      "overthinking-breaker.html": "Break mental loops into movement.",
-      "problem-to-constraints.html": "Find the key constraints behind a problem.",
-      "problem-to-options.html": "Turn a problem into possible options.",
-      "problem-to-root-cause.html": "Turn a problem into possible root causes.",
-      "problem-to-tiny-step.html": "Turn a problem into one tiny step.",
-      "reaction-to-topic.html": "Turn a reaction into discussion topics.",
-      "stuck-to-tool.html": "Describe where you're stuck and get the best next tool.",
-      "thought-to-structure.html": "Organize scattered thoughts into structure.",
-      "thread-navigator.html": "Save and resume AI threads.",
-      "title-refiner.html": "Improve a weak title.",
-      "tweet-polisher.html": "Polish a rough social post."
-    };
+        if (!item || typeof item !== "object") return null;
 
-    function fileToTitle(fileName) {
-      return fileName
-        .replace(".html", "")
-        .replaceAll("-", " ")
-        .replace(/\b\w/g, c => c.toUpperCase());
-    }
+        const href =
+          item.href ||
+          item.url ||
+          item.link ||
+          item.file ||
+          item.path ||
+          "";
 
-    async function loadTools() {
-      const toolList = document.getElementById("toolList");
-      const status = document.getElementById("status");
+        if (!href) return null;
 
-      try {
-        const res = await fetch(`https://api.github.com/repos/${repo}/contents`);
-        const files = await res.json();
+        const title =
+          item.title ||
+          item.name ||
+          item.label ||
+          toTitleFromHref(href);
 
-        const htmlFiles = files
-          .filter(file =>
-            file.name.endsWith(".html") &&
-            !excludedFiles.has(file.name) &&
-            !pinnedFiles.has(file.name)
-          )
-          .sort((a, b) => a.name.localeCompare(b.name));
+        const description =
+          item.description ||
+          item.summary ||
+          item.subtitle ||
+          "";
 
-        htmlFiles.forEach(file => {
+        return { href, title, description };
+      }
+
+      function renderTools(tools) {
+        if (!Array.isArray(tools) || tools.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state">No tools found in tool-list.json.</div>';
+          return;
+        }
+
+        const visibleTools = tools
+          .map(normalizeTool)
+          .filter(Boolean)
+          .filter((tool) => !excluded.has(tool.href));
+
+        if (visibleTools.length === 0) {
+          container.innerHTML =
+            '<div class="empty-state">No tools available to display.</div>';
+          return;
+        }
+
+        container.innerHTML = "";
+
+        visibleTools.forEach((tool) => {
           const card = document.createElement("a");
-          card.href = file.name;
-          card.className = "tool-card";
+          card.className = "card tool-card";
+          card.href = tool.href;
 
-          const title = fileToTitle(file.name);
-          const desc = customDescriptions[file.name] || file.name;
+          const safeDescription = tool.description
+            ? tool.description
+            : "Open this thinking tool.";
 
           card.innerHTML = `
-            <div class="tool-title">${title}</div>
-            <div class="tool-desc">${desc}</div>
+            <h3 class="card-title">${escapeHtml(tool.title)}</h3>
+            <p class="card-desc">${escapeHtml(safeDescription)}</p>
+            <div class="card-footer">
+              <span class="button">Open tool</span>
+              <span class="mini-link">${escapeHtml(tool.href)}</span>
+            </div>
           `;
 
-          toolList.appendChild(card);
+          container.appendChild(card);
         });
-
-        status.textContent = `${htmlFiles.length} auto-detected tools shown below.`;
-      } catch (error) {
-        status.textContent = "Could not load auto-detected tools right now.";
       }
-    }
 
-    loadTools();
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      fetch("tool-list.json")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to load tool-list.json");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const tools = Array.isArray(data)
+            ? data
+            : Array.isArray(data.tools)
+              ? data.tools
+              : [];
+          renderTools(tools);
+        })
+        .catch(() => {
+          container.innerHTML =
+            '<div class="empty-state">Could not load tool-list.json.</div>';
+        });
+    })();
   </script>
 </body>
 </html>
