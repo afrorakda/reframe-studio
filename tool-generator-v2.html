@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Tool Generator v2</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121933;
+      --panel-2:#0f1630;
+      --text:#eef2ff;
+      --muted:#b9c2e3;
+      --line:rgba(255,255,255,.1);
+      --accent:#8b9cff;
+      --accent-2:#6ee7f9;
+      --good:#22c55e;
+      --shadow:0 20px 50px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(139,156,255,.16), transparent 30%),
+        radial-gradient(circle at top right, rgba(110,231,249,.12), transparent 24%),
+        linear-gradient(180deg,#0a0f1e 0%, #0f1530 100%);
+      color:var(--text);
+      min-height:100vh;
+      padding:16px;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .app{
+      width:100%;
+      max-width:880px;
+      margin:0 auto;
+    }
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      text-decoration:none;
+      margin:4px 0 14px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      font-weight:600;
+      font-size:14px;
+    }
+    .back:active{transform:scale(.99)}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(10px);
+    }
+    .header{
+      padding:22px 18px 10px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:28px;
+      line-height:1.1;
+      letter-spacing:-0.02em;
+    }
+    .desc{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+    .body{
+      padding:14px 18px 18px;
+    }
+    .label{
+      display:block;
+      margin:0 0 10px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+    textarea{
+      width:100%;
+      min-height:250px;
+      resize:vertical;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      background:var(--panel-2);
+      color:var(--text);
+      padding:16px;
+      font:inherit;
+      line-height:1.55;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    textarea::placeholder{color:#98a4cf}
+    .actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:16px;
+      padding:15px 16px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      min-height:52px;
+      transition:transform .06s ease, opacity .2s ease, background .2s ease;
+    }
+    button:active{transform:scale(.99)}
+    .primary{
+      background:linear-gradient(135deg,var(--accent),#7088ff);
+      color:#081022;
+    }
+    .secondary{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .result-wrap{
+      margin-top:16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(0,0,0,.18);
+    }
+    .result-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+    }
+    .result-title{
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:.01em;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:12px;
+    }
+    pre{
+      margin:0;
+      padding:16px;
+      min-height:220px;
+      max-height:56vh;
+      overflow:auto;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      font-size:12.5px;
+      line-height:1.55;
+      color:#dfe6ff;
+    }
+    .empty{
+      color:#97a2c8;
+    }
+    footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      padding:16px 6px 6px;
+    }
+    @media (min-width:700px){
+      body{padding:22px}
+      .header{padding:26px 24px 10px}
+      .body{padding:18px 24px 24px}
+      h1{font-size:34px}
+      .actions{
+        grid-template-columns:1.2fr .9fr .9fr;
+      }
+      textarea{min-height:280px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="card">
+      <div class="header">
+        <h1>Tool Generator v2</h1>
+        <p class="desc">Turn a rough REFRAME Studio tool idea into a complete ready-to-paste HTML file.</p>
+      </div>
+
+      <div class="body">
+        <label class="label" for="specInput">Tool concept / semi-structured spec</label>
+        <textarea id="specInput" placeholder="Tool name: Idea → Priority
+File name: idea-to-priority.html
+Transformation: Idea → Priority
+Description: Turn many ideas into one priority.
+Main button: Find priority
+Example input: I have too many ideas and don't know what to do first.
+Logic: Detect multiple ideas and return 3 priority options.
+
+ツール名: Idea → Priority
+ファイル名: idea-to-priority.html
+変換: Idea → Priority
+説明: 多すぎるアイデアを一つの優先順位に変える。
+ボタン: Find priority
+例文: アイデアが多すぎて何からやるべきか分からない。
+ロジック: 複数アイデアを検出して、優先候補を3つ返す。"></textarea>
+
+        <div class="actions">
+          <button class="primary" id="generateBtn">Generate tool</button>
+          <button class="secondary" id="exampleBtn">Try example</button>
+          <button class="secondary" id="copyBtn">Copy result</button>
+        </div>
+
+        <div class="result-wrap" aria-live="polite">
+          <div class="result-head">
+            <div>
+              <div class="result-title">Result</div>
+              <div class="meta">One complete HTML file. Ready to paste into GitHub Create new file.</div>
+            </div>
+          </div>
+          <pre id="result" class="empty">Your generated HTML will appear here.</pre>
+        </div>
+      </div>
+    </section>
+
+    <footer>REFRAME Studio · Tool Generator v2</footer>
+  </main>
+
+  <script>
+    const exampleSpec = `Tool name: Idea → Priority
+File name: idea-to-priority.html
+Transformation: Idea → Priority
+Description: Turn many ideas into one priority.
+Main button: Find priority
+Example input: I have too many ideas and don't know what to do first.
+Logic: Detect multiple ideas and return 3 priority options.
+
+ツール名: Idea → Priority
+ファイル名: idea-to-priority.html
+変換: Idea → Priority
+説明: 多すぎるアイデアを一つの優先順位に変える。
+ボタン: Find priority
+例文: アイデアが多すぎて何からやるべきか分からない。
+ロジック: 複数アイデアを検出して、優先候補を3つ返す。`;
+
+    const specInput = document.getElementById('specInput');
+    const resultEl = document.getElementById('result');
+    const generateBtn = document.getElementById('generateBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function escapeJs(str){
+      return String(str)
+        .replace(/\\/g,'\\\\')
+        .replace(/`/g,'\\`')
+        .replace(/\$\{/g,'\\${');
+    }
+
+    function normalizeQuotes(str){
+      return String(str || '')
+        .replace(/[“”]/g,'"')
+        .replace(/[‘’]/g,"'");
+    }
+
+    function kebabCase(input){
+      const fallback = 'generated-tool';
+      const cleaned = normalizeQuotes(input || '')
+        .toLowerCase()
+        .replace(/\.html$/i,'')
+        .replace(/→/g,' to ')
+        .replace(/&/g,' and ')
+        .replace(/[^a-z0-9\\s-]/g,' ')
+        .trim()
+        .replace(/\s+/g,'-')
+        .replace(/-+/g,'-');
+      return (cleaned || fallback) + '.html';
+    }
+
+    function titleCase(input){
+      const text = String(input || '').trim();
+      if(!text) return 'Generated Tool';
+      return text
+        .split(/\s+/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    }
+
+    function extractField(text, labels){
+      for(const label of labels){
+        const pattern = new RegExp('(?:^|\\\\n)\\\\s*' + label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*[:：]\\s*(.+)', 'i');
+        const match = text.match(pattern);
+        if(match && match[1]) return match[1].trim();
+      }
+      return '';
+    }
+
+    function inferDescription(title, transformation){
+      if(title && transformation){
+        return `Turn ${transformation.toLowerCase()} into a clear output.`;
+      }
+      if(title){
+        return `A REFRAME Studio tool for ${title.toLowerCase()}.`;
+      }
+      return 'Turn rough input into a clearer next step.';
+    }
+
+    function inferButton(title, transformation){
+      const t = `${title} ${transformation}`.toLowerCase();
+      if(t.includes('priority')) return 'Find priority';
+      if(t.includes('decision')) return 'Make decision';
+      if(t.includes('clarity')) return 'Get clarity';
+      if(t.includes('plan')) return 'Build plan';
+      if(t.includes('reframe')) return 'Reframe';
+      return 'Generate result';
+    }
+
+    function inferExample(title, transformation){
+      const t = `${title} ${transformation}`.toLowerCase();
+      if(t.includes('priority')) return "I have too many ideas and don't know what to do first.";
+      if(t.includes('decision')) return "I keep going back and forth between two options.";
+      if(t.includes('plan')) return "I know what I want, but I don't know the first three steps.";
+      return "I have a rough problem and want a clearer output.";
+    }
+
+    function inferLogic(title, transformation, description){
+      const text = `${title} ${transformation} ${description}`.toLowerCase();
+      if(text.includes('priority')){
+        return 'Detect multiple ideas, group them by urgency and leverage, then return 3 priority options.';
+      }
+      if(text.includes('decision')){
+        return 'Detect tradeoffs, highlight what matters most, then return 3 decision paths.';
+      }
+      if(text.includes('plan')){
+        return 'Detect the goal, constraints, and next steps, then return 3 to 5 action steps.';
+      }
+      if(text.includes('reframe')){
+        return 'Detect the stuck framing, shift perspective, then return 3 alternative reframes.';
+      }
+      return 'Extract key input patterns and return 3 to 5 deterministic outputs.';
+    }
+
+    function parseSpec(raw){
+      const text = normalizeQuotes(raw || '');
+      const title = extractField(text, ['Tool name','Title','ツール名']) || 'Generated Tool';
+      let fileName = extractField(text, ['File name','Filename','ファイル名']);
+      const transformation = extractField(text, ['Transformation','Transform','変換']) || (title.includes('→') ? title : 'Input → Output');
+      const description = extractField(text, ['Description','説明']) || inferDescription(title, transformation);
+      const mainButton = extractField(text, ['Main button','Button','ボタン']) || inferButton(title, transformation);
+      const exampleInput = extractField(text, ['Example input','Example','例文']) || inferExample(title, transformation);
+      const logic = extractField(text, ['Logic','Rules','ロジック']) || inferLogic(title, transformation, description);
+
+      if(!fileName){
+        const base = title && title !== 'Generated Tool' ? title : transformation.replace(/→/g, ' ');
+        fileName = kebabCase(base);
+      } else {
+        fileName = kebabCase(fileName.replace(/\.html$/i,''));
+      }
+
+      return {
+        title: titleCase(title.replace(/\s*→\s*/g, ' → ')),
+        fileName,
+        transformation: transformation.replace(/\s*→\s*/g, ' → ') || 'Input → Output',
+        description,
+        mainButton,
+        exampleInput,
+        logic
+      };
+    }
+
+    function buildGeneratedTool(spec){
+      const metaTitle = escapeHtml(spec.title);
+      const metaDesc = escapeHtml(spec.description);
+      const uiTitle = escapeJs(spec.title);
+      const uiDesc = escapeJs(spec.description);
+      const uiButton = escapeJs(spec.mainButton);
+      const uiExample = escapeJs(spec.exampleInput);
+      const uiTransformation = escapeJs(spec.transformation);
+      const uiLogic = escapeJs(spec.logic);
+
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="reframe:title" content="${metaTitle}">
+  <meta name="reframe:description" content="${metaDesc}">
+  <meta name="reframe:generator" content="tool-generator-v2">
+  <title>${metaTitle}</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121933;
+      --panel-2:#0f1630;
+      --text:#eef2ff;
+      --muted:#b9c2e3;
+      --line:rgba(255,255,255,.1);
+      --accent:#8b9cff;
+      --shadow:0 18px 40px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(139,156,255,.16), transparent 30%),
+        linear-gradient(180deg,#0a0f1e 0%, #0f1530 100%);
+      color:var(--text);
+      min-height:100vh;
+      padding:16px;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .app{max-width:760px;margin:0 auto}
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      text-decoration:none;
+      margin:4px 0 14px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      font-weight:600;
+      font-size:14px;
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(10px);
+    }
+    .header{padding:24px 20px 10px}
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+    .desc{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:15px;
+    }
+    .body{padding:16px 20px 22px}
+    .label{
+      display:block;
+      margin:0 0 10px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+    textarea{
+      width:100%;
+      min-height:220px;
+      resize:vertical;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      background:var(--panel-2);
+      color:var(--text);
+      padding:16px;
+      font:inherit;
+      line-height:1.55;
+    }
+    textarea::placeholder{color:#98a4cf}
+    .actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    button{
+      appearance:none;
+      border:none;
+      border-radius:16px;
+      padding:15px 16px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      min-height:52px;
+    }
+    button:active{transform:scale(.99)}
+    .primary{
+      background:linear-gradient(135deg,var(--accent),#7088ff);
+      color:#081022;
+    }
+    .secondary{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .result-wrap{
+      margin-top:16px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:18px;
+      overflow:hidden;
+      background:rgba(0,0,0,.18);
+    }
+    .result-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+    }
+    .result-title{
+      font-size:14px;
+      font-weight:800;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .result{
+      padding:14px;
+      min-height:180px;
+    }
+    .empty{
+      color:#97a2c8;
+    }
+    .list{
+      display:grid;
+      gap:10px;
+    }
+    .item{
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:12px 13px;
+    }
+    .item strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+    }
+    .paragraph{
+      line-height:1.7;
+      color:#e6ebff;
+    }
+    footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      padding:16px 6px 6px;
+    }
+    @media (min-width:700px){
+      body{padding:22px}
+      .header{padding:28px 24px 10px}
+      .body{padding:18px 24px 24px}
+      .actions{grid-template-columns:1.2fr .9fr .9fr}
+      textarea{min-height:250px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="card">
+      <div class="header">
+        <h1>${metaTitle}</h1>
+        <p class="desc">${metaDesc}</p>
+      </div>
+
+      <div class="body">
+        <label class="label" for="inputText">Input</label>
+        <textarea id="inputText" placeholder="Type your input here.
+
+英語でも日本語でも入力できます。
+結果は入力言語に合わせて返されます。"></textarea>
+
+        <div class="actions">
+          <button class="primary" id="mainBtn">${escapeHtml(spec.mainButton)}</button>
+          <button class="secondary" id="exampleBtn">Try example</button>
+          <button class="secondary" id="copyBtn">Copy result</button>
+        </div>
+
+        <div class="result-wrap" aria-live="polite">
+          <div class="result-head">
+            <div>
+              <div class="result-title">Result</div>
+              <div class="meta">${escapeHtml(spec.transformation)}</div>
+            </div>
+          </div>
+          <div class="result empty" id="result">Enter text and tap "${escapeHtml(spec.mainButton)}" to see the result.</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>REFRAME Studio</footer>
+  </main>
+
+  <script>
+    const exampleInput = \`${uiExample}\`;
+    const transformation = \`${uiTransformation}\`;
+    const logicHint = \`${uiLogic}\`;
+
+    const inputText = document.getElementById('inputText');
+    const result = document.getElementById('result');
+    const mainBtn = document.getElementById('mainBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function detectLanguage(text){
+      return /[ぁ-んァ-ン一-龯々ー]/.test(text) ? 'ja' : 'en';
+    }
+
+    function splitIdeas(text){
+      return String(text)
+        .split(/\\n|,|、|。|;|；|\\||\\/|・/g)
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
+
+    function unique(arr){
+      return [...new Set(arr)];
+    }
+
+    function scoreItem(item){
+      let score = 0;
+      const t = item.toLowerCase();
+      if(t.length <= 18) score += 2;
+      if(/first|start|urgent|now|launch|customer|sell|revenue|test|ship|validate|deadline|today|今|先|急|売上|顧客|検証|締切/.test(item)) score += 3;
+      if(/maybe|someday|later|nice|learn|study|idea|dream|いつか|あとで|学ぶ|勉強|夢/.test(item)) score -= 1;
+      return score;
+    }
+
+    function makeListOutput(items, lang){
+      const ranked = unique(items)
+        .map(text => ({ text, score: scoreItem(text) }))
+        .sort((a,b) => b.score - a.score)
+        .slice(0,5);
+
+      if(!ranked.length){
+        return lang === 'ja'
+          ? '<div class="empty">入力すると、ここに結果が表示されます。</div>'
+          : '<div class="empty">Your result will appear here after you enter text.</div>';
+      }
+
+      const top = ranked.slice(0, Math.min(5, Math.max(3, ranked.length)));
+      return '<div class="list">' + top.map((item, index) => {
+        const title = lang === 'ja' ? \`候補 \${index + 1}\` : \`Option \${index + 1}\`;
+        const note = lang === 'ja'
+          ? (index === 0 ? '最初に試す候補' : index === 1 ? '次に検討する候補' : '保留しつつ残す候補')
+          : (index === 0 ? 'Best first move' : index === 1 ? 'Strong next option' : 'Keep as secondary option');
+        return \`<div class="item"><strong>\${escapeHtml(title)}</strong>\${escapeHtml(item.text)}<div class="meta" style="margin-top:6px;">\${escapeHtml(note)}</div></div>\`;
+      }).join('') + '</div>';
+    }
+
+    function makeParagraphOutput(text, lang){
+      const cleaned = text.trim().replace(/\\s+/g,' ');
+      if(!cleaned){
+        return lang === 'ja'
+          ? '<div class="empty">入力すると、ここに結果が表示されます。</div>'
+          : '<div class="empty">Your result will appear here after you enter text.</div>';
+      }
+      const sentence = lang === 'ja'
+        ? \`要点: \${cleaned}。次の一歩は、最も具体的で小さい行動から始めることです。\`
+        : \`Summary: \${cleaned}. The next step is to start with the smallest clear action.\`;
+      return \`<div class="paragraph">\${escapeHtml(sentence)}</div>\`;
+    }
+
+    function transform(text){
+      const lang = detectLanguage(text);
+      const items = splitIdeas(text);
+      const wantsParagraph = /paragraph|summary|要約|文章|一文/.test(logicHint.toLowerCase());
+      if(wantsParagraph){
+        return makeParagraphOutput(text, lang);
+      }
+      if(items.length <= 1 && text.trim().length > 0){
+        const expanded = lang === 'ja'
+          ? [text.trim(), '最初の一歩に変換する', '今週やらないことを決める']
+          : [text.trim(), 'Turn it into a first step', 'Decide what not to do this week'];
+        return makeListOutput(expanded, lang);
+      }
+      return makeListOutput(items, lang);
+    }
+
+    mainBtn.addEventListener('click', () => {
+      const value = inputText.value.trim();
+      result.classList.remove('empty');
+      result.innerHTML = transform(value);
+    });
+
+    exampleBtn.addEventListener('click', () => {
+      inputText.value = exampleInput;
+      result.classList.remove('empty');
+      result.innerHTML = transform(exampleInput);
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = result.innerText.trim();
+      if(!text){
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => copyBtn.textContent = 'Copy result', 1200);
+      }catch(err){
+        copyBtn.textContent = 'Copy failed';
+        setTimeout(() => copyBtn.textContent = 'Copy result', 1200);
+      }
+    });
+  </script>
+</body>
+</html>`;
+    }
+
+    function renderOutput(html){
+      resultEl.classList.remove('empty');
+      resultEl.textContent = html;
+    }
+
+    function generate(){
+      const spec = parseSpec(specInput.value);
+      const html = buildGeneratedTool(spec);
+      renderOutput(html);
+    }
+
+    generateBtn.addEventListener('click', generate);
+
+    exampleBtn.addEventListener('click', () => {
+      specInput.value = exampleSpec;
+      generate();
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = resultEl.textContent.trim();
+      if(!text || resultEl.classList.contains('empty')){
+        return;
+      }
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => copyBtn.textContent = 'Copy result', 1200);
+      }catch(err){
+        copyBtn.textContent = 'Copy failed';
+        setTimeout(() => copyBtn.textContent = 'Copy result', 1200);
+      }
+    });
+  </script>
+</body>
+</html>
