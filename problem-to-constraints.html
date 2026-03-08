@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Problem → Constraints</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#18212f;
+      --muted:#64748b;
+      --line:#e6ebf2;
+      --accent:#1f6fff;
+      --accent-pressed:#1557cc;
+      --soft:#eef4ff;
+      --shadow:0 12px 32px rgba(15, 23, 42, 0.08);
+      --radius:20px;
+      --radius-sm:14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body{
+      margin:0;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #fafcff 0%, var(--bg) 48%, #eef2f8 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .app{
+      min-height:100%;
+      padding:16px 14px 28px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:760px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+      font-weight:600;
+      margin:4px 2px 14px;
+    }
+
+    .back:active{ opacity:.75; }
+
+    .card{
+      background:var(--card);
+      border:1px solid rgba(230,235,242,.9);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+      line-height:1.15;
+      letter-spacing:-0.02em;
+    }
+
+    .desc{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.5;
+    }
+
+    .label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin:0 0 8px;
+      color:#334155;
+    }
+
+    textarea{
+      width:100%;
+      min-height:170px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:#fcfdff;
+      color:var(--text);
+      padding:16px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.55;
+      outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+      transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    textarea:focus{
+      border-color:#bdd2ff;
+      box-shadow:0 0 0 4px rgba(31,111,255,.12);
+      background:#fff;
+    }
+
+    textarea::placeholder{
+      color:#94a3b8;
+      white-space:pre-line;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:14px 16px;
+      font:inherit;
+      font-size:15px;
+      font-weight:700;
+      cursor:pointer;
+      min-height:48px;
+      transition:transform .04s ease, background .18s ease, opacity .18s ease, box-shadow .18s ease;
+    }
+
+    button:active{
+      transform:translateY(1px);
+    }
+
+    .primary{
+      background:var(--accent);
+      color:#fff;
+      box-shadow:0 10px 22px rgba(31,111,255,.24);
+      flex:1 1 220px;
+    }
+
+    .primary:hover,
+    .primary:focus-visible{
+      background:var(--accent-pressed);
+    }
+
+    .secondary{
+      background:var(--soft);
+      color:#1947a6;
+      flex:1 1 160px;
+    }
+
+    .secondary:hover,
+    .secondary:focus-visible{
+      background:#e4eeff;
+    }
+
+    .copy{
+      background:#eef2f7;
+      color:#334155;
+      flex:1 1 160px;
+    }
+
+    .copy:hover,
+    .copy:focus-visible{
+      background:#e6ebf2;
+    }
+
+    .copy[disabled]{
+      opacity:.5;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .result-wrap{
+      margin-top:18px;
+    }
+
+    .result{
+      min-height:180px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+      border-radius:18px;
+      padding:16px;
+      white-space:pre-wrap;
+      font-size:16px;
+      line-height:1.7;
+      word-break:break-word;
+    }
+
+    .result.empty{
+      color:#94a3b8;
+    }
+
+    .footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:12.5px;
+      margin-top:14px;
+      padding-bottom:calc(env(safe-area-inset-bottom) + 4px);
+    }
+
+    @media (max-width: 480px){
+      .app{ padding:12px 12px 24px; }
+      .card{ padding:16px; border-radius:18px; }
+      h1{ font-size:26px; }
+      .desc{ font-size:14px; }
+      textarea, .result{ font-size:16px; }
+      .controls{ gap:8px; }
+      button{ width:100%; }
+    }
+
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b1220;
+        --card:#121a2a;
+        --text:#e5edf8;
+        --muted:#93a4bc;
+        --line:#243047;
+        --accent:#5b9cff;
+        --accent-pressed:#4a8ef5;
+        --soft:#17243d;
+        --shadow:0 16px 36px rgba(0,0,0,.28);
+      }
+      body{
+        background:
+          radial-gradient(circle at top, #111a2a 0%, #0b1220 48%, #09101c 100%);
+      }
+      textarea{
+        background:#0f1727;
+        box-shadow:none;
+      }
+      textarea:focus{
+        background:#0f1727;
+      }
+      .result{
+        background:linear-gradient(180deg, #11192a 0%, #0e1625 100%);
+      }
+      .copy{
+        background:#1a2437;
+        color:#d8e3f3;
+      }
+      .copy:hover,
+      .copy:focus-visible{
+        background:#223049;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="wrap">
+      <a class="back" href="#" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+
+      <main class="card">
+        <h1>Problem → Constraints</h1>
+        <p class="desc">Find the key constraints behind a problem.</p>
+
+        <label class="label" for="input">Your problem</label>
+        <textarea
+          id="input"
+          placeholder="I want to make more tools, but progress is slow.
+もっとツールを作りたいのに進みが遅い。"
+          spellcheck="false"
+        ></textarea>
+
+        <div class="controls">
+          <button id="findBtn" class="primary" type="button">Find constraints</button>
+          <button id="exampleBtn" class="secondary" type="button">Try example</button>
+          <button id="copyBtn" class="copy" type="button" disabled>Copy result</button>
+        </div>
+
+        <section class="result-wrap">
+          <label class="label" for="result">Result</label>
+          <div id="result" class="result empty" aria-live="polite">Your result will appear here.</div>
+        </section>
+      </main>
+
+      <div class="footer">REFRAME Studio — bottlenecks before advice.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const inputEl = document.getElementById('input');
+      const resultEl = document.getElementById('result');
+      const findBtn = document.getElementById('findBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const copyBtn = document.getElementById('copyBtn');
+
+      const EN_EXAMPLE = 'I want to make more tools, but progress is slow.';
+      const JA_EXAMPLE = 'もっとツールを作りたいのに進みが遅い。';
+
+      const EN_LABEL = 'Possible constraints:';
+      const JA_LABEL = '制約の可能性:';
+
+      const EN_DEFAULT_EMPTY = 'Your result will appear here.';
+
+      const EN_OPTIONS = {
+        time: 'Not enough protected time',
+        clarity: 'Unclear next step',
+        template: 'No fixed template',
+        priority: 'Unclear priorities',
+        energy: 'Low energy at the start',
+        workflow: 'Inconsistent workflow',
+        decisions: 'Too many decisions',
+        scope: 'Scope is too broad',
+        switching: 'Too much context switching',
+        finish: 'No clear finish line',
+        fragmentation: 'Tasks are too fragmented',
+        setup: 'Setup overhead is too high'
+      };
+
+      const JA_OPTIONS = {
+        time: 'まとまった時間が確保できていない',
+        clarity: '次の一手が曖昧',
+        template: 'テンプレートが固定されていない',
+        priority: '優先順位が曖昧',
+        energy: '着手時のエネルギーが足りない',
+        workflow: '作業の流れが安定していない',
+        decisions: '判断回数が多すぎる',
+        scope: '範囲が広すぎる',
+        switching: '切り替えが多すぎる',
+        finish: '終わりの定義が曖昧',
+        fragmentation: '作業が細切れになっている',
+        setup: '準備の負荷が高すぎる'
+      };
+
+      const EN_KEYWORDS = {
+        time: ['time','busy','schedule','late','slow','stuck','delay','delayed','overloaded','too much','not enough time','week','daily'],
+        clarity: ['unclear','confused','not sure','don’t know','dont know','direction','clarity','vague','uncertain','figure out'],
+        template: ['template','format','structure','repeat','reusable','starting from scratch','again and again'],
+        priority: ['priority','priorities','important','focus','too many things','everything','urgent'],
+        energy: ['tired','energy','exhausted','burnout','fatigue','drained','hard to start','motivation'],
+        workflow: ['workflow','routine','process','system','habit','inconsistent','irregular','scattered'],
+        decisions: ['decide','decision','choices','choose','thinking too much','overthink','options'],
+        scope: ['scope','big','huge','too much','too many','complex','expand','feature','features','perfection'],
+        switching: ['switch','switching','interrupt','interruptions','multitask','multitasking','context'],
+        finish: ['finish','done','complete','end','ship','publish','release'],
+        fragmentation: ['fragmented','small chunks','bits','pieces','scattered','broken up'],
+        setup: ['setup','prepare','preparation','overhead','tools','environment']
+      };
+
+      const JA_KEYWORDS = {
+        time: ['時間','忙しい','進みが遅い','遅い','余裕がない','後回し','手が回らない'],
+        clarity: ['曖昧','わからない','不明','見えない','整理できない','はっきりしない'],
+        template: ['テンプレート','型','フォーマット','毎回ゼロから','再利用'],
+        priority: ['優先','優先順位','重要','全部','どれも','絞れない'],
+        energy: ['疲れ','疲れて','エネルギー','しんどい','だるい','やる気','気力'],
+        workflow: ['流れ','作業の流れ','安定しない','バラバラ','習慣','ルーティン','仕組み'],
+        decisions: ['判断','決める','決められない','選択','迷う','考えすぎ'],
+        scope: ['範囲','広すぎる','大きすぎる','多すぎる','複雑','機能','完璧'],
+        switching: ['切り替え','中断','割り込み','マルチタスク','同時進行'],
+        finish: ['終わり','完成','出せない','公開','仕上がらない'],
+        fragmentation: ['細切れ','分断','バラバラ','断片'],
+        setup: ['準備','セットアップ','環境','立ち上げ','手間']
+      };
+
+      const CONJUNCTIONS = ['but', 'however', 'でも', 'けど'];
+
+      function containsJapanese(text) {
+        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/.test(text);
+      }
+
+      function detectLanguage(text) {
+        return containsJapanese(text) ? 'ja' : 'en';
+      }
+
+      function normalize(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .replace(/[！!]+/g, '!')
+          .replace(/[？?]+/g, '?')
+          .trim();
+      }
+
+      function getImportantTail(text) {
+        const lower = text.toLowerCase();
+        let bestIndex = -1;
+        let bestLen = 0;
+        let matchedWord = '';
+
+        CONJUNCTIONS.forEach(word => {
+          const index = lower.lastIndexOf(word);
+          if (index !== -1 && word.length >= bestLen) {
+            bestIndex = index;
+            bestLen = word.length;
+            matchedWord = word;
+          }
+        });
+
+        if (bestIndex === -1) {
+          return '';
+        }
+
+        return text.slice(bestIndex + matchedWord.length).trim();
+      }
+
+      function countKeywordHits(text, keywordsByCategory) {
+        const counts = {};
+        Object.keys(keywordsByCategory).forEach(category => {
+          counts[category] = 0;
+          keywordsByCategory[category].forEach(keyword => {
+            if (text.includes(keyword)) counts[category] += 1;
+          });
+        });
+        return counts;
+      }
+
+      function scoreCategories(text, lang) {
+        const keywords = lang === 'ja' ? JA_KEYWORDS : EN_KEYWORDS;
+        const counts = countKeywordHits(text, keywords);
+        const scores = {};
+
+        Object.keys(keywords).forEach(category => {
+          scores[category] = counts[category];
+        });
+
+        const tail = getImportantTail(text);
+        if (tail) {
+          const tailCounts = countKeywordHits(tail.toLowerCase ? tail.toLowerCase() : tail, keywords);
+          Object.keys(tailCounts).forEach(category => {
+            scores[category] += tailCounts[category] * 2 + (tailCounts[category] > 0 ? 1 : 0);
+          });
+        }
+
+        const lower = text.toLowerCase();
+
+        if (lang === 'en') {
+          if (/\bslow\b|\bstuck\b|\bdelay/.test(lower)) scores.time += 2;
+          if (/\bmore\b|\btoo many\b|\bfeature/.test(lower)) scores.scope += 1;
+          if (/\bmake\b|\bcreate\b|\bbuild\b/.test(lower)) scores.template += 1;
+          if (/\bprogress\b/.test(lower)) scores.workflow += 1;
+        } else {
+          if (/進みが遅い|止まって|停滞/.test(text)) scores.time += 2;
+          if (/もっと|多く|増やし/.test(text)) scores.scope += 1;
+          if (/作りたい|作る/.test(text)) scores.template += 1;
+          if (/進み/.test(text)) scores.workflow += 1;
+        }
+
+        return scores;
+      }
+
+      function topFourConstraints(text, lang) {
+        const options = lang === 'ja' ? JA_OPTIONS : EN_OPTIONS;
+        const scores = scoreCategories(text, lang);
+
+        const defaults = lang === 'ja'
+          ? ['template', 'decisions', 'priority', 'workflow']
+          : ['template', 'decisions', 'priority', 'workflow'];
+
+        const ranked = Object.keys(options)
+          .map(key => ({ key, score: scores[key] || 0 }))
+          .sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return defaults.indexOf(a.key) - defaults.indexOf(b.key);
+          });
+
+        const picked = [];
+        for (const item of ranked) {
+          if (picked.length >= 4) break;
+          if (!picked.includes(item.key) && (item.score > 0 || defaults.includes(item.key))) {
+            picked.push(item.key);
+          }
+        }
+
+        for (const d of defaults) {
+          if (picked.length >= 4) break;
+          if (!picked.includes(d)) picked.push(d);
+        }
+
+        return picked.slice(0, 4).map(key => options[key]);
+      }
+
+      function buildResult(text) {
+        const cleaned = normalize(text);
+        if (!cleaned) return null;
+
+        const lang = detectLanguage(cleaned);
+        const constraints = topFourConstraints(cleaned, lang);
+        const label = lang === 'ja' ? JA_LABEL : EN_LABEL;
+
+        return label + '\n' + constraints.map(item => '- ' + item).join('\n');
+      }
+
+      function renderResult(text) {
+        if (!text) {
+          resultEl.textContent = EN_DEFAULT_EMPTY;
+          resultEl.classList.add('empty');
+          copyBtn.disabled = true;
+          return;
+        }
+        resultEl.textContent = text;
+        resultEl.classList.remove('empty');
+        copyBtn.disabled = false;
+      }
+
+      function run() {
+        renderResult(buildResult(inputEl.value));
+      }
+
+      function tryExample() {
+        const useJa = (navigator.language || '').toLowerCase().startsWith('ja');
+        inputEl.value = useJa ? JA_EXAMPLE : EN_EXAMPLE;
+        run();
+        inputEl.focus();
+        inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length);
+      }
+
+      async function copyResult() {
+        const text = resultEl.textContent.trim();
+        if (!text || resultEl.classList.contains('empty')) return;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(() => { copyBtn.textContent = original; }, 1200);
+        } catch (e) {
+          const range = document.createRange();
+          range.selectNodeContents(resultEl);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          try { document.execCommand('copy'); } catch (_) {}
+          selection.removeAllRanges();
+
+          const original = copyBtn.textContent;
+          copyBtn.textContent = 'Copied';
+          setTimeout(() => { copyBtn.textContent = original; }, 1200);
+        }
+      }
+
+      findBtn.addEventListener('click', run);
+      exampleBtn.addEventListener('click', tryExample);
+      copyBtn.addEventListener('click', copyResult);
+
+      inputEl.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') run();
+      });
+
+      renderResult(null);
+    })();
+  </script>
+</body>
+</html>
