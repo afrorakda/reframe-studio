@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Idea → Tool Spec</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: rgba(255, 255, 255, 0.9);
+      --text: #16181d;
+      --muted: #667085;
+      --line: #e7eaf0;
+      --accent: #111827;
+      --soft: #eef2ff;
+      --button: #111827;
+      --buttonText: #ffffff;
+      --buttonAlt: #ffffff;
+      --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #f9fafc 0%, #f4f6fb 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 2px 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 18px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 6vw, 40px);
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+    }
+
+    .desc {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(17,24,39,0.02);
+    }
+
+    textarea:focus {
+      border-color: #c7d2fe;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 16px;
+      padding: 15px 16px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.04s ease, opacity 0.2s ease, background 0.2s ease;
+      min-height: 52px;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .primary {
+      background: var(--button);
+      color: var(--buttonText);
+      box-shadow: 0 10px 20px rgba(17, 24, 39, 0.14);
+    }
+
+    .secondary {
+      background: var(--buttonAlt);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .result {
+      margin-top: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 240px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .result.empty {
+      color: var(--muted);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 18px 8px 6px;
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        padding: 24px;
+      }
+
+      .actions {
+        grid-template-columns: 1.35fr 1fr 1fr;
+      }
+
+      textarea {
+        min-height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <main class="card">
+      <h1>Idea → Tool Spec</h1>
+      <p class="desc">Turn a rough idea into 3 possible REFRAME Studio tool specs.</p>
+
+      <div class="section">
+        <label for="idea">Rough idea</label>
+        <textarea id="idea" placeholder="People struggle to know which tool to use next.
+次にどのツールを使えばいいかわからなくて困る人が多い。"></textarea>
+      </div>
+
+      <div class="actions">
+        <button id="generateBtn" class="primary">Generate tool specs</button>
+        <button id="exampleBtn" class="secondary">Try example</button>
+        <button id="copyBtn" class="secondary">Copy result</button>
+      </div>
+
+      <div id="result" class="result empty">Your 3 tool spec options will appear here.</div>
+    </main>
+
+    <footer class="footer">Built for REFRAME Studio • Single-file • Fully client-side</footer>
+  </div>
+
+  <script>
+    (function () {
+      const ideaEl = document.getElementById('idea');
+      const resultEl = document.getElementById('result');
+      const generateBtn = document.getElementById('generateBtn');
+      const exampleBtn = document.getElementById('exampleBtn');
+      const copyBtn = document.getElementById('copyBtn');
+
+      const isJapanese = (text) => /[ぁ-んァ-ン一-龯]/.test(text);
+
+      const normalize = (text) => text.trim().replace(/\s+/g, ' ');
+
+      function detectCategory(text, lang) {
+        const t = text.toLowerCase();
+
+        if (lang === 'ja') {
+          if (/(わからない|迷う|混乱|整理できない|はっきりしない|曖昧|次に何|何を使う|方向性|まとまらない)/.test(text)) {
+            return 'confusion';
+          }
+          if (/(決められない|判断|選べない|比較|優先順位|リスク|選択|決断)/.test(text)) {
+            return 'decision';
+          }
+          if (/(書けない|文章|投稿|ドラフト|下書き|言語化|説明できない|伝わらない|タイトル|フック)/.test(text)) {
+            return 'writing';
+          }
+          if (/(不安|焦り|しんどい|疲れた| overwhelmed |圧倒|動けない|やる気|感情|気持ち|ストレス)/.test(text)) {
+            return 'emotion';
+          }
+          return 'general';
+        }
+
+        if (/(confused|unclear|not sure|don't know|dont know|stuck|messy|direction|which tool|what next|can't figure out|cannot figure out|uncertain)/.test(t)) {
+          return 'confusion';
+        }
+        if (/(decide|decision|choose|choice|priorit|compare|risk|tradeoff|criteria|option)/.test(t)) {
+          return 'decision';
+        }
+        if (/(write|writing|draft|post|hook|headline|copy|explain|wording|message|content)/.test(t)) {
+          return 'writing';
+        }
+        if (/(overwhelm|anxious|anxiety|stress|emotion|emotional|burnout|tired|freeze|avoid|motivation)/.test(t)) {
+          return 'emotion';
+        }
+        return 'general';
+      }
+
+      function buildEnglishSpecs(category, input) {
+        const map = {
+          confusion: [
+            {
+              name: 'Problem → Best Tool',
+              file: 'problem-to-best-tool.html',
+              transformation: 'Problem → Tool suggestion',
+              description: 'Describe the friction and get 3 likely next tools to use.',
+              button: 'Suggest tools',
+              example: input || 'People have ideas, but they do not know which tool helps next.',
+              logic: 'Detect whether the user is stuck in clarity, structure, decision, or writing, then suggest 3 focused tools.'
+            },
+            {
+              name: 'Idea → Clear Question',
+              file: 'idea-to-clear-question.html',
+              transformation: 'Idea → Clarifying question',
+              description: 'Turn a fuzzy idea into the clearest next question.',
+              button: 'Find the question',
+              example: input || 'I know something feels off, but I cannot define the problem yet.',
+              logic: 'Extract the likely goal, missing detail, and uncertainty, then produce one strong question to unlock progress.'
+            },
+            {
+              name: 'Stuck → Next Step',
+              file: 'stuck-to-next-step.html',
+              transformation: 'Stuck → Next step',
+              description: 'Turn confusion into one small practical next move.',
+              button: 'Find next step',
+              example: input || 'There are too many directions and I keep looping.',
+              logic: 'Identify the main blockage and convert it into one immediate action with low complexity.'
+            }
+          ],
+          decision: [
+            {
+              name: 'Decision → Criteria',
+              file: 'decision-to-criteria.html',
+              transformation: 'Decision → Criteria',
+              description: 'Turn a hard decision into clear criteria for choosing.',
+              button: 'Find criteria',
+              example: input || 'I have several tool ideas and cannot decide which one to build first.',
+              logic: 'Extract the decision, infer likely priorities, and turn them into simple selection criteria.'
+            },
+            {
+              name: 'Options → Tradeoffs',
+              file: 'options-to-tradeoffs.html',
+              transformation: 'Options → Tradeoffs',
+              description: 'Make the tradeoffs between options easier to see.',
+              button: 'Map tradeoffs',
+              example: input || 'One idea is easier, another is more useful, and I keep hesitating.',
+              logic: 'Detect speed, impact, effort, and clarity tradeoffs, then summarize each option in a practical way.'
+            },
+            {
+              name: 'Choice → Risk Check',
+              file: 'choice-to-risk-check.html',
+              transformation: 'Choice → Risk check',
+              description: 'Stress-test a choice before you commit.',
+              button: 'Check risks',
+              example: input || 'I want to choose a direction, but I do not want to regret it later.',
+              logic: 'Identify common downside patterns such as hidden complexity, weak demand, and unclear scope.'
+            }
+          ],
+          writing: [
+            {
+              name: 'Idea → Hook',
+              file: 'idea-to-hook.html',
+              transformation: 'Idea → Hook',
+              description: 'Turn a rough idea into 3 possible opening hooks.',
+              button: 'Generate hooks',
+              example: input || 'I have something useful to say, but the opening feels flat.',
+              logic: 'Detect the core tension, benefit, or surprise, then write 3 short hook directions.'
+            },
+            {
+              name: 'Draft → Cleaner Draft',
+              file: 'draft-to-cleaner-draft.html',
+              transformation: 'Draft → Cleaner draft',
+              description: 'Make a rough draft clearer, tighter, and easier to follow.',
+              button: 'Clean draft',
+              example: input || 'My writing is too messy and people do not get the point.',
+              logic: 'Simplify wording, remove repetition, and improve flow while keeping the original meaning.'
+            },
+            {
+              name: 'Idea → First Post',
+              file: 'idea-to-first-post.html',
+              transformation: 'Idea → First post',
+              description: 'Turn a raw idea into a simple post draft.',
+              button: 'Draft post',
+              example: input || 'I want to share this idea, but I do not know how to start writing it.',
+              logic: 'Detect the main message, choose a basic structure, and produce a short usable first draft.'
+            }
+          ],
+          emotion: [
+            {
+              name: 'Emotion → Action',
+              file: 'emotion-to-action.html',
+              transformation: 'Emotion → Action',
+              description: 'Turn emotional friction into one practical action.',
+              button: 'Find action',
+              example: input || 'I feel overwhelmed and cannot tell what to do first.',
+              logic: 'Detect the dominant emotional block and convert it into one small stabilizing move.'
+            },
+            {
+              name: 'Overwhelm → Next Step',
+              file: 'overwhelm-to-next-step.html',
+              transformation: 'Overwhelm → Next step',
+              description: 'Shrink overwhelm into a calmer next step.',
+              button: 'Reduce overwhelm',
+              example: input || 'Everything feels important and I freeze.',
+              logic: 'Separate signal from noise, then suggest the smallest meaningful next action.'
+            },
+            {
+              name: 'Feeling → Reframe',
+              file: 'feeling-to-reframe.html',
+              transformation: 'Feeling → Reframe',
+              description: 'Turn a heavy feeling into a more workable frame.',
+              button: 'Reframe feeling',
+              example: input || 'I feel behind and it is hard to move.',
+              logic: 'Identify the hidden pressure in the wording, then generate a calmer and more useful interpretation.'
+            }
+          ],
+          general: [
+            {
+              name: 'Idea → Angles',
+              file: 'idea-to-angles.html',
+              transformation: 'Idea → Angles',
+              description: 'Turn one rough idea into 3 focused tool directions.',
+              button: 'Generate angles',
+              example: input || 'People struggle to know which tool to use next.',
+              logic: 'Extract the pain point, then propose 3 small tools from clarity, action, and decision angles.'
+            },
+            {
+              name: 'Problem → Options',
+              file: 'problem-to-options.html',
+              transformation: 'Problem → Options',
+              description: 'Turn one friction point into practical tool options.',
+              button: 'Generate options',
+              example: input || 'Users hit a wall when they try to move from idea to action.',
+              logic: 'Identify what is blocked, then create 3 single-purpose tools that reduce the friction.'
+            },
+            {
+              name: 'Need → Simple Tool',
+              file: 'need-to-simple-tool.html',
+              transformation: 'Need → Simple tool',
+              description: 'Turn an unmet need into a small REFRAME Studio tool spec.',
+              button: 'Create tool',
+              example: input || 'There is a need, but the right tool format is still unclear.',
+              logic: 'Detect the job to be done and convert it into a narrow one-transformation tool.'
+            }
+          ]
+        };
+
+        const specs = map[category];
+        return specs.map((s, i) => {
+          return [
+            `Option ${i + 1}`,
+            `Tool name: ${s.name}`,
+            `File name: ${s.file}`,
+            `Transformation: ${s.transformation}`,
+            `Description: ${s.description}`,
+            `Main button: ${s.button}`,
+            `Example input: ${s.example}`,
+            `Logic: ${s.logic}`
+          ].join('\n');
+        }).join('\n\n');
+      }
+
+      function buildJapaneseSpecs(category, input) {
+        const map = {
+          confusion: [
+            {
+              name: 'Problem → Best Tool',
+              file: 'problem-to-best-tool.html',
+              transformation: 'Problem → Tool suggestion',
+              description: '詰まりや困りごとを書いて、次に使うべきツール候補を見つける。',
+              button: 'Suggest tools',
+              example: input || '何に困っているかはあるけれど、次にどのツールを使うべきか判断できない。',
+              logic: '詰まり方が整理不足、判断不足、文章化不足、感情的な停滞のどれかを見て、合う小さなツールを3つ出す。'
+            },
+            {
+              name: 'Idea → Clear Question',
+              file: 'idea-to-clear-question.html',
+              transformation: 'Idea → Clarifying question',
+              description: '曖昧な状態から、次に立てるべき問いを明確にする。',
+              button: 'Find the question',
+              example: input || '違和感はあるけれど、問題の形にまだできていない。',
+              logic: '目的、足りない情報、不明点を拾って、前に進むための問いを1つに絞る。'
+            },
+            {
+              name: 'Stuck → Next Step',
+              file: 'stuck-to-next-step.html',
+              transformation: 'Stuck → Next step',
+              description: '混乱を、すぐに試せる次の一歩に変える。',
+              button: 'Find next step',
+              example: input || '選択肢が多すぎて、ずっと考え続けてしまう。',
+              logic: '止まっている原因を見つけて、負荷の低い具体的な一歩に変換する。'
+            }
+          ],
+          decision: [
+            {
+              name: 'Decision → Criteria',
+              file: 'decision-to-criteria.html',
+              transformation: 'Decision → Criteria',
+              description: '決めにくい選択を、判断基準の形に変える。',
+              button: 'Find criteria',
+              example: input || '作りたいツール案がいくつかあるが、どれを先に作るか決められない。',
+              logic: '判断対象を読み取り、優先度になりそうな条件を抽出して、シンプルな基準にまとめる。'
+            },
+            {
+              name: 'Options → Tradeoffs',
+              file: 'options-to-tradeoffs.html',
+              transformation: 'Options → Tradeoffs',
+              description: '選択肢ごとの差と引き換えを見えやすくする。',
+              button: 'Map tradeoffs',
+              example: input || '簡単な案と効果が高そうな案の間で迷っている。',
+              logic: 'スピード、効果、負荷、わかりやすさの差を整理して、選択しやすくする。'
+            },
+            {
+              name: 'Choice → Risk Check',
+              file: 'choice-to-risk-check.html',
+              transformation: 'Choice → Risk check',
+              description: '決める前に、その選択の弱点をざっと確認する。',
+              button: 'Check risks',
+              example: input || '選んだあとで後悔しそうで決めきれない。',
+              logic: '複雑化、需要の弱さ、範囲の広すぎなど、ありがちな失敗要因を洗い出す。'
+            }
+          ],
+          writing: [
+            {
+              name: 'Idea → Hook',
+              file: 'idea-to-hook.html',
+              transformation: 'Idea → Hook',
+              description: 'ぼんやりした考えを、入り口になるフック案に変える。',
+              button: 'Generate hooks',
+              example: input || '伝えたいことはあるが、書き出しが弱い。',
+              logic: '核になる違和感、利点、意外性を見つけて、短い導入案を3つ出す。'
+            },
+            {
+              name: 'Draft → Cleaner Draft',
+              file: 'draft-to-cleaner-draft.html',
+              transformation: 'Draft → Cleaner draft',
+              description: '下書きを、読みやすく伝わりやすい形に整える。',
+              button: 'Clean draft',
+              example: input || '文章が散らかっていて、要点が伝わりにくい。',
+              logic: '重複や回りくどさを減らし、流れを整えながら意味は保つ。'
+            },
+            {
+              name: 'Idea → First Post',
+              file: 'idea-to-first-post.html',
+              transformation: 'Idea → First post',
+              description: '思いつきを、最初の投稿ドラフトに変える。',
+              button: 'Draft post',
+              example: input || 'この考えを出したいが、どう書き始めればいいかわからない。',
+              logic: '伝えたい核を拾い、基本構成を選んで、短く使いやすい初稿にする。'
+            }
+          ],
+          emotion: [
+            {
+              name: 'Emotion → Action',
+              file: 'emotion-to-action.html',
+              transformation: 'Emotion → Action',
+              description: '感情の重さを、実行できる行動に変える。',
+              button: 'Find action',
+              example: input || '気持ちが重くて、何から手をつければいいかわからない。',
+              logic: '強く出ている感情の種類を見て、負担の少ない一歩に変換する。'
+            },
+            {
+              name: 'Overwhelm → Next Step',
+              file: 'overwhelm-to-next-step.html',
+              transformation: 'Overwhelm → Next step',
+              description: '圧倒感を、小さくて落ち着いた次の一歩に変える。',
+              button: 'Reduce overwhelm',
+              example: input || '全部が大事に見えて固まってしまう。',
+              logic: 'ノイズと優先事項を分けて、意味のある最小アクションを出す。'
+            },
+            {
+              name: 'Feeling → Reframe',
+              file: 'feeling-to-reframe.html',
+              transformation: 'Feeling → Reframe',
+              description: '重い受け止め方を、動きやすい見方に変える。',
+              button: 'Reframe feeling',
+              example: input || '遅れている感じが強くて、動けなくなる。',
+              logic: '言葉の中の圧力や思い込みを見つけて、少し軽くて使える視点に言い換える。'
+            }
+          ],
+          general: [
+            {
+              name: 'Idea → Angles',
+              file: 'idea-to-angles.html',
+              transformation: 'Idea → Angles',
+              description: 'ひとつの粗いアイデアを、3つのツール方向に分ける。',
+              button: 'Generate angles',
+              example: input || '次にどのツールを使えばいいかわからなくて困る人が多い。',
+              logic: '困りごとの核を拾い、整理、行動、判断の3方向から小さなツール案にする。'
+            },
+            {
+              name: 'Problem → Options',
+              file: 'problem-to-options.html',
+              transformation: 'Problem → Options',
+              description: 'ひとつの摩擦点から、作りやすいツール候補を出す。',
+              button: 'Generate options',
+              example: input || 'アイデアから行動に移るところで止まる人が多い。',
+              logic: '何が止まっているかを見て、その摩擦を減らす単機能ツールを3つ作る。'
+            },
+            {
+              name: 'Need → Simple Tool',
+              file: 'need-to-simple-tool.html',
+              transformation: 'Need → Simple tool',
+              description: '未充足のニーズを、小さなツール仕様に変える。',
+              button: 'Create tool',
+              example: input || '必要性はあるが、どんな形式のツールにするかはまだ曖昧。',
+              logic: 'やるべき仕事を見極めて、変換がひとつだけの細いツールに落とし込む。'
+            }
+          ]
+        };
+
+        const specs = map[category];
+        return specs.map((s, i) => {
+          return [
+            `案${i + 1}`,
+            `ツール名: ${s.name}`,
+            `ファイル名: ${s.file}`,
+            `変換: ${s.transformation}`,
+            `説明: ${s.description}`,
+            `ボタン: ${s.button}`,
+            `例文: ${s.example}`,
+            `ロジック: ${s.logic}`
+          ].join('\n');
+        }).join('\n\n');
+      }
+
+      function generate() {
+        const raw = ideaEl.value || '';
+        const input = normalize(raw);
+        if (!input) {
+          resultEl.textContent = 'Please enter a rough idea first.';
+          resultEl.classList.remove('empty');
+          return;
+        }
+
+        const lang = isJapanese(input) ? 'ja' : 'en';
+        const category = detectCategory(input, lang);
+        const output = lang === 'ja'
+          ? buildJapaneseSpecs(category, input)
+          : buildEnglishSpecs(category, input);
+
+        resultEl.textContent = output;
+        resultEl.classList.remove('empty');
+      }
+
+      function setExample() {
+        const browserJa = (navigator.language || '').toLowerCase().startsWith('ja');
+        const text = browserJa
+          ? '何に困っているかはあるけれど、次にどのツールを使うべきか判断できない。'
+          : 'People have a rough idea, but they do not know which tool to use next.';
+        ideaEl.value = text;
+        ideaEl.focus();
+        generate();
+      }
+
+      async function copyResult() {
+        const text = resultEl.textContent.trim();
+        if (!text || resultEl.classList.contains('empty')) return;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          copyBtn.textContent = 'Copied';
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy result';
+          }, 1200);
+        } catch (e) {
+          copyBtn.textContent = 'Copy failed';
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy result';
+          }, 1200);
+        }
+      }
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', setExample);
+      copyBtn.addEventListener('click', copyResult);
+
+      ideaEl.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          generate();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
