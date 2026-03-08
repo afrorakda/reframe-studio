@@ -1,665 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Thought Map — REFRAME Studio</title>
-  <meta name="description" content="Explore REFRAME Studio through a visual thinking map." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REFRAME Thinking Graph</title>
+
   <style>
-    :root{
-      --bg:#07111f;
-      --bg2:#0b1728;
-      --card:rgba(255,255,255,0.06);
-      --card-2:rgba(255,255,255,0.08);
-      --line:rgba(170,205,255,0.20);
-      --text:#eef4ff;
-      --muted:#9eb1c8;
-      --ring:rgba(255,255,255,0.18);
-      --shadow:0 10px 30px rgba(0,0,0,.28);
-      --radius:20px;
-      --primary-size:106px;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    *{
+      box-sizing:border-box;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(90,150,255,.16), transparent 28%),
-        radial-gradient(circle at 85% 15%, rgba(120,255,220,.12), transparent 24%),
-        radial-gradient(circle at 50% 85%, rgba(170,120,255,.12), transparent 26%),
-        linear-gradient(180deg, #06101c 0%, #081322 45%, #091523 100%);
-      -webkit-tap-highlight-color: transparent;
+      font-family:Arial, sans-serif;
+      background:#f7f7f7;
+      color:#111;
     }
 
-    .app{
-      min-height:100%;
-      display:flex;
-      flex-direction:column;
-      padding-top:var(--safe-top);
-      padding-bottom:var(--safe-bottom);
-    }
-
-    .topbar{
-      padding:16px 16px 8px;
-      position:relative;
-      z-index:20;
-    }
-
-    .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      color:var(--text);
-      text-decoration:none;
-      font-size:14px;
-      opacity:.92;
-      padding:8px 12px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:999px;
-      background:rgba(255,255,255,.04);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-
-    .back-link:active{transform:scale(.98)}
-
-    header{
-      padding:8px 16px 6px;
-      position:relative;
-      z-index:20;
+    .wrap{
+      max-width:760px;
+      margin:0 auto;
+      padding:20px 16px 40px;
     }
 
     h1{
-      margin:0;
-      font-size:30px;
+      margin:10px 0 8px;
+      font-size:clamp(34px, 7vw, 58px);
       line-height:1.05;
-      letter-spacing:-0.03em;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .subtitle{
+      margin:0 0 20px;
+      text-align:center;
+      font-size:clamp(16px, 4vw, 24px);
+      color:#444;
+      line-height:1.4;
+    }
+
+    .home-link{
+      display:block;
+      width:100%;
+      margin:0 0 18px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:#111;
+      color:#fff;
+      text-decoration:none;
+      text-align:center;
+      font-size:clamp(18px, 4.2vw, 24px);
       font-weight:700;
     }
 
-    .sub{
-      margin:8px 0 0;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.45;
-      max-width:34rem;
-    }
-
-    .toolbar{
-      padding:10px 16px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      color:var(--muted);
-      font-size:13px;
-      position:relative;
-      z-index:20;
-    }
-
-    .helper{
-      min-width:0;
-      white-space:nowrap;
+    .section{
+      margin-bottom:18px;
+      background:#fff;
+      border:1px solid #e5e5e5;
+      border-radius:20px;
       overflow:hidden;
-      text-overflow:ellipsis;
     }
 
-    .reset-btn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.12);
-      color:var(--text);
-      background:rgba(255,255,255,.06);
-      padding:10px 14px;
-      border-radius:999px;
-      font-size:14px;
-      font-weight:600;
-      box-shadow:var(--shadow);
-      cursor:pointer;
-      flex:0 0 auto;
-    }
-    .reset-btn:active{transform:scale(.98)}
-    .reset-btn[disabled]{opacity:.45; cursor:default}
-
-    .map-shell{
-      position:relative;
-      flex:1;
-      min-height:0;
-      padding:4px 10px 12px;
-      z-index:1;
-    }
-
-    .map{
-      position:relative;
-      height:100%;
-      min-height:420px;
-      border-radius:26px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)),
-        radial-gradient(circle at 50% 50%, rgba(100,140,210,.10), transparent 48%);
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 24px 60px rgba(0,0,0,.28);
-      overflow:hidden;
-      isolation:isolate;
-    }
-
-    .stars,
-    .lines,
-    .nodes,
-    .children-layer{
-      position:absolute;
-      inset:0;
-    }
-
-    .stars{
-      z-index:1;
-      pointer-events:none;
-      opacity:.65;
-      background-image:
-        radial-gradient(circle at 12% 20%, rgba(255,255,255,.8) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 88% 18%, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 66% 30%, rgba(255,255,255,.45) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 25% 72%, rgba(255,255,255,.45) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 76% 82%, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 44% 54%, rgba(255,255,255,.35) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 8% 86%, rgba(255,255,255,.55) 0 1px, transparent 1.5px),
-        radial-gradient(circle at 94% 64%, rgba(255,255,255,.5) 0 1px, transparent 1.5px);
-    }
-
-    .lines{
-      z-index:2;
-      pointer-events:none;
-    }
-
-    .lines svg{
+    .section-header{
       width:100%;
-      height:100%;
+      padding:18px 18px;
+      border:none;
+      background:#fff;
+      text-align:left;
+      font-size:clamp(22px, 5vw, 30px);
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .section-header.active{
+      background:#111;
+      color:#fff;
+    }
+
+    .section-body{
+      display:none;
+      padding:0 14px 14px;
+      background:#fafafa;
+    }
+
+    .section-body.open{
       display:block;
     }
 
-    .line{
-      stroke:var(--line);
-      stroke-width:1.4;
-      fill:none;
-    }
-
-    .line.child-line{
-      stroke:rgba(180,220,255,.28);
-      stroke-width:1.2;
-    }
-
-    .nodes{
-      z-index:3;
-      pointer-events:none;
-    }
-
-    .children-layer{
-      z-index:4;
-      pointer-events:none;
-    }
-
-    .node{
-      position:absolute;
-      transform:translate(-50%,-50%);
-      width:var(--primary-size);
-      height:var(--primary-size);
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(circle at 35% 30%, rgba(255,255,255,.18), rgba(255,255,255,.06) 38%, rgba(255,255,255,.04) 68%),
-        rgba(255,255,255,.05);
-      color:var(--text);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
+    .mutation{
+      margin-top:12px;
+      background:#fff;
+      border:1px solid #e8e8e8;
+      border-radius:16px;
       padding:14px;
-      font-size:16px;
-      font-weight:700;
-      letter-spacing:-0.02em;
-      line-height:1.1;
-      cursor:pointer;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.02) inset,
-        0 10px 28px rgba(0,0,0,.22),
-        0 0 30px rgba(120,170,255,.16);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
-      pointer-events:auto;
     }
 
-    .node:active{ transform:translate(-50%,-50%) scale(.98); }
-
-    .node:hover,
-    .node:focus-visible{
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.05) inset,
-        0 14px 32px rgba(0,0,0,.28),
-        0 0 38px rgba(120,170,255,.24);
-      border-color:rgba(255,255,255,.18);
-      outline:none;
+    .mutation-title{
+      margin:0 0 10px;
+      font-size:clamp(18px, 4.2vw, 24px);
+      font-weight:800;
     }
 
-    .node.active{
-      background:
-        radial-gradient(circle at 35% 30%, rgba(255,255,255,.24), rgba(255,255,255,.08) 42%, rgba(255,255,255,.05) 72%),
-        rgba(255,255,255,.08);
-      border-color:rgba(255,255,255,.24);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.05) inset,
-        0 18px 40px rgba(0,0,0,.32),
-        0 0 48px rgba(120,170,255,.32);
-    }
-
-    .node[data-key="stuck"]{ box-shadow:0 10px 28px rgba(0,0,0,.22), 0 0 32px rgba(91,170,255,.20); }
-    .node[data-key="problem"]{ box-shadow:0 10px 28px rgba(0,0,0,.22), 0 0 32px rgba(255,148,105,.18); }
-    .node[data-key="idea"]{ box-shadow:0 10px 28px rgba(0,0,0,.22), 0 0 32px rgba(173,129,255,.20); }
-    .node[data-key="emotion"]{ box-shadow:0 10px 28px rgba(0,0,0,.22), 0 0 32px rgba(255,112,176,.18); }
-    .node[data-key="decision"]{ box-shadow:0 10px 28px rgba(0,0,0,.22), 0 0 32px rgba(104,237,192,.18); }
-
-    .child{
-      position:absolute;
-      transform:translate(-50%,-50%) scale(.92);
-      min-width:80px;
-      max-width:122px;
-      min-height:54px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(11,24,40,.82);
-      color:var(--text);
-      padding:11px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
+    .tool-link{
+      display:block;
+      width:100%;
+      margin:10px 0 0;
+      padding:14px 14px;
+      border-radius:14px;
+      background:#f3f3f3;
+      color:#111;
       text-decoration:none;
-      font-size:13px;
-      line-height:1.15;
-      font-weight:600;
-      letter-spacing:-0.015em;
-      box-shadow:0 12px 28px rgba(0,0,0,.22), 0 0 24px rgba(160,210,255,.10);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .26s ease, transform .26s ease, box-shadow .22s ease, border-color .22s ease;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      font-size:clamp(16px, 4vw, 20px);
+      line-height:1.35;
+      border:1px solid #dfdfdf;
     }
 
-    .child.show{
-      opacity:1;
-      pointer-events:auto;
-      transform:translate(-50%,-50%) scale(1);
+    .tool-link:hover{
+      background:#ececec;
     }
 
-    .child:active{ transform:translate(-50%,-50%) scale(.98); }
-    .child:hover,
-    .child:focus-visible{
-      outline:none;
-      border-color:rgba(255,255,255,.22);
-      box-shadow:0 14px 32px rgba(0,0,0,.28), 0 0 32px rgba(160,210,255,.18);
-    }
-
-    footer{
-      padding:10px 16px calc(14px + var(--safe-bottom));
-      color:var(--muted);
-      font-size:12px;
+    .hint{
+      margin-top:18px;
       text-align:center;
-      letter-spacing:.01em;
-      position:relative;
-      z-index:20;
-    }
-
-    @media (max-width: 420px){
-      :root{
-        --primary-size:96px;
-      }
-      h1{font-size:28px}
-      .sub{font-size:13px}
-      .child{max-width:108px; font-size:12.5px; min-height:52px}
-    }
-
-    @media (min-width: 768px){
-      .topbar{padding:20px 22px 10px}
-      header{padding:8px 22px 8px}
-      .toolbar{padding:10px 22px 14px}
-      .map-shell{padding:4px 18px 16px}
-      h1{font-size:36px}
-      .sub{font-size:15px}
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      .node, .child, .reset-btn { transition:none; }
+      color:#666;
+      font-size:14px;
+      line-height:1.5;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="topbar">
-      <a class="back-link" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
-    </div>
+  <div class="wrap">
+    <a class="home-link" href="index.html">← Back to REFRAME Studio</a>
 
-    <header>
-      <h1>Thought Map</h1>
-      <p class="sub">Explore REFRAME Studio through a visual thinking map.</p>
-    </header>
+    <h1>Thinking Graph</h1>
+    <p class="subtitle">
+      Start with what you have.<br>
+      Then choose how you want to mutate it.
+    </p>
 
-    <div class="toolbar">
-      <div class="helper">Tap a node to reveal a path.</div>
-      <button class="reset-btn" id="resetBtn" type="button" disabled>Reset map</button>
-    </div>
-
-    <main class="map-shell">
-      <section class="map" id="map" aria-label="Thought map">
-        <div class="stars" aria-hidden="true"></div>
-
-        <div class="lines" aria-hidden="true">
-          <svg id="lineSvg" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <g id="primaryLines"></g>
-            <g id="childLines"></g>
-          </svg>
+    <!-- Criticism -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Criticism</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Criticism → Lesson</p>
+          <a class="tool-link" href="criticism-to-lesson.html">criticism-to-lesson.html</a>
         </div>
 
-        <div class="nodes" id="primaryNodes"></div>
-        <div class="children-layer" id="childrenLayer"></div>
-      </section>
-    </main>
+        <div class="mutation">
+          <p class="mutation-title">Criticism → Question</p>
+          <a class="tool-link" href="criticism-to-question.html">criticism-to-question.html</a>
+        </div>
 
-    <footer>REFRAME Studio — explore your next thought.</footer>
+        <div class="mutation">
+          <p class="mutation-title">Criticism → Idea</p>
+          <a class="tool-link" href="criticism-to-idea.html">criticism-to-idea.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Criticism → Content</p>
+          <a class="tool-link" href="comment-to-content.html">comment-to-content.html</a>
+          <a class="tool-link" href="hate-to-content.html">hate-to-content.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Criticism → Signal</p>
+          <a class="tool-link" href="hate-to-signal.html">hate-to-signal.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Criticism → Thread</p>
+          <a class="tool-link" href="negative-comment-to-thread.html">negative-comment-to-thread.html</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emotion -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Emotion</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Emotion → Action</p>
+          <a class="tool-link" href="emotion-to-action.html">emotion-to-action.html</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problem -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Problem</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Problem → Action</p>
+          <a class="tool-link" href="constraint-to-action.html">constraint-to-action.html</a>
+          <a class="tool-link" href="next-step-finder.html">next-step-finder.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Problem → Cleaner</p>
+          <a class="tool-link" href="complexity-cleaner.html">complexity-cleaner.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Problem → Tool</p>
+          <a class="tool-link" href="stuck-to-tool.html">stuck-to-tool.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Problem → Break</p>
+          <a class="tool-link" href="overthinking-breaker.html">overthinking-breaker.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Problem → Fix</p>
+          <a class="tool-link" href="draft-fixer.html">draft-fixer.html</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Idea -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Idea</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Idea → Thread</p>
+          <a class="tool-link" href="idea-to-thread.html">idea-to-thread.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Metaphor</p>
+          <a class="tool-link" href="idea-to-metaphor.html">idea-to-metaphor.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Opposite</p>
+          <a class="tool-link" href="idea-to-opposite.html">idea-to-opposite.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Example</p>
+          <a class="tool-link" href="idea-to-example.html">idea-to-example.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Debate</p>
+          <a class="tool-link" href="idea-to-debate.html">idea-to-debate.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Counterargument</p>
+          <a class="tool-link" href="idea-to-counterargument.html">idea-to-counterargument.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Priority</p>
+          <a class="tool-link" href="idea-to-priority.html">idea-to-priority.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Post Angles</p>
+          <a class="tool-link" href="idea-to-post-angles.html">idea-to-post-angles.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Idea → Tool Spec</p>
+          <a class="tool-link" href="idea-to-tool-spec.html">idea-to-tool-spec.html</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Failure -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Failure</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Failure → Lesson</p>
+          <a class="tool-link" href="failure-to-lesson.html">failure-to-lesson.html</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confusion -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Confusion</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Confusion → Question</p>
+          <a class="tool-link" href="confusion-to-question.html">confusion-to-question.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Confusion → Question Builder</p>
+          <a class="tool-link" href="confusion-question-builder.html">confusion-question-builder.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Confusion → Structure</p>
+          <a class="tool-link" href="thought-to-structure.html">thought-to-structure.html</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output -->
+    <div class="section">
+      <button class="section-header" onclick="toggleSection(this)">Output / Publishing</button>
+      <div class="section-body">
+        <div class="mutation">
+          <p class="mutation-title">Output → Hook</p>
+          <a class="tool-link" href="hook-generator.html">hook-generator.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Output → Title</p>
+          <a class="tool-link" href="title-refiner.html">title-refiner.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Output → Tweet</p>
+          <a class="tool-link" href="tweet-polisher.html">tweet-polisher.html</a>
+        </div>
+
+        <div class="mutation">
+          <p class="mutation-title">Output → Thread</p>
+          <a class="tool-link" href="thread-navigator.html">thread-navigator.html</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint">
+      This is not a tool list.<br>
+      It is a map of how thought mutates.
+    </p>
   </div>
 
   <script>
-    (function () {
-      const primaryData = [
-        {
-          key: "stuck",
-          label: "Stuck",
-          children: [
-            { label: "Best Tool", href: "stuck-to-tool.html" },
-            { label: "Next Step", href: "next-step-finder.html" },
-            { label: "Overthinking Breaker", href: "overthinking-breaker.html" }
-          ]
-        },
-        {
-          key: "problem",
-          label: "Problem",
-          children: [
-            { label: "Root Causes", href: "problem-to-root-cause.html" },
-            { label: "Constraints", href: "problem-to-constraints.html" },
-            { label: "Options", href: "problem-to-options.html" },
-            { label: "Tiny Step", href: "problem-to-tiny-step.html" },
-            { label: "Structure", href: "thought-to-structure.html" }
-          ]
-        },
-        {
-          key: "idea",
-          label: "Idea",
-          children: [
-            { label: "Post Angles", href: "idea-to-post-angles.html" },
-            { label: "Example", href: "idea-to-example.html" },
-            { label: "Metaphor", href: "idea-to-metaphor.html" },
-            { label: "Opposite", href: "idea-to-opposite.html" },
-            { label: "Counterargument", href: "idea-to-counterargument.html" },
-            { label: "Thread", href: "idea-to-thread.html" }
-          ]
-        },
-        {
-          key: "emotion",
-          label: "Emotion",
-          children: [
-            { label: "Emotion → Action", href: "emotion-to-action.html" },
-            { label: "Hate → Signal", href: "hate-to-signal.html" },
-            { label: "Criticism → Lesson", href: "criticism-to-lesson.html" },
-            { label: "Failure → Lesson", href: "failure-to-lesson.html" }
-          ]
-        },
-        {
-          key: "decision",
-          label: "Decision",
-          children: [
-            { label: "Constraint → Action", href: "constraint-to-action.html" },
-            { label: "Problem → Options", href: "problem-to-options.html" },
-            { label: "Next Step Finder", href: "next-step-finder.html" },
-            { label: "Thought → Structure", href: "thought-to-structure.html" }
-          ]
-        }
-      ];
+    function toggleSection(button){
+      const body = button.nextElementSibling;
+      const isOpen = body.classList.contains("open");
 
-      const primaryNodesLayer = document.getElementById("primaryNodes");
-      const childrenLayer = document.getElementById("childrenLayer");
-      const primaryLinesGroup = document.getElementById("primaryLines");
-      const childLinesGroup = document.getElementById("childLines");
-      const resetBtn = document.getElementById("resetBtn");
-
-      let activeKey = null;
-      let primaryButtons = [];
-      let childElements = [];
-      let primaryPositions = {};
-
-      const layoutDesktop = {
-        stuck:    { x: 20, y: 28 },
-        problem:  { x: 50, y: 18 },
-        idea:     { x: 78, y: 32 },
-        emotion:  { x: 28, y: 72 },
-        decision: { x: 72, y: 72 }
-      };
-
-      const layoutMobile = {
-        stuck:    { x: 22, y: 22 },
-        problem:  { x: 72, y: 22 },
-        idea:     { x: 50, y: 48 },
-        emotion:  { x: 22, y: 76 },
-        decision: { x: 78, y: 76 }
-      };
-
-      const primaryConnections = [
-        ["stuck", "problem"],
-        ["problem", "idea"],
-        ["stuck", "emotion"],
-        ["emotion", "decision"],
-        ["problem", "decision"],
-        ["idea", "decision"],
-        ["problem", "emotion"]
-      ];
-
-      function isMobile() {
-        return window.matchMedia("(max-width: 700px)").matches;
-      }
-
-      function getLayout() {
-        return isMobile() ? layoutMobile : layoutDesktop;
-      }
-
-      function clamp(value, min, max) {
-        return Math.max(min, Math.min(max, value));
-      }
-
-      function createPrimaryNodes() {
-        primaryNodesLayer.innerHTML = "";
-        primaryButtons = primaryData.map(item => {
-          const btn = document.createElement("button");
-          btn.className = "node";
-          btn.type = "button";
-          btn.dataset.key = item.key;
-          btn.setAttribute("aria-label", item.label);
-          btn.textContent = item.label;
-          btn.style.pointerEvents = "auto";
-          btn.addEventListener("click", () => toggleNode(item.key));
-          primaryNodesLayer.appendChild(btn);
-          return btn;
-        });
-      }
-
-      function applyPrimaryLayout() {
-        const layout = getLayout();
-        primaryPositions = {};
-        primaryButtons.forEach(btn => {
-          const key = btn.dataset.key;
-          const pos = layout[key];
-          btn.style.left = pos.x + "%";
-          btn.style.top = pos.y + "%";
-          primaryPositions[key] = pos;
-          btn.classList.toggle("active", key === activeKey);
-        });
-      }
-
-      function clearSvg(group) {
-        while (group.firstChild) group.removeChild(group.firstChild);
-      }
-
-      function drawPrimaryLines() {
-        clearSvg(primaryLinesGroup);
-        primaryConnections.forEach(([a, b]) => {
-          const pa = primaryPositions[a];
-          const pb = primaryPositions[b];
-          if (!pa || !pb) return;
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("x1", pa.x);
-          line.setAttribute("y1", pa.y);
-          line.setAttribute("x2", pb.x);
-          line.setAttribute("y2", pb.y);
-          line.setAttribute("class", "line");
-          primaryLinesGroup.appendChild(line);
-        });
-      }
-
-      function createChildEl(item, x, y, delay, originKey) {
-        const a = document.createElement("a");
-        a.className = "child";
-        a.href = item.href;
-        a.textContent = item.label;
-        a.style.left = x + "%";
-        a.style.top = y + "%";
-        a.style.transitionDelay = delay + "ms";
-        a.dataset.origin = originKey;
-        childrenLayer.appendChild(a);
-        requestAnimationFrame(() => a.classList.add("show"));
-        return a;
-      }
-
-      function drawChildLine(from, to, delay) {
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", from.x);
-        line.setAttribute("y1", from.y);
-        line.setAttribute("x2", to.x);
-        line.setAttribute("y2", to.y);
-        line.setAttribute("class", "line child-line");
-        line.style.opacity = "0";
-        line.style.transition = "opacity .22s ease";
-        line.style.transitionDelay = delay + "ms";
-        childLinesGroup.appendChild(line);
-        requestAnimationFrame(() => {
-          line.style.opacity = "1";
-        });
-      }
-
-      function clearChildren() {
-        childElements.forEach(el => el.remove());
-        childElements = [];
-        clearSvg(childLinesGroup);
-      }
-
-      function getChildRadius(count) {
-        if (isMobile()) {
-          if (count <= 3) return 19;
-          if (count <= 4) return 21;
-          if (count <= 5) return 23;
-          return 25;
-        }
-        if (count <= 3) return 17;
-        if (count <= 4) return 18;
-        if (count <= 5) return 19;
-        return 21;
-      }
-
-      function getAngles(key, count) {
-        const presetsMobile = {
-          stuck:    [-10, 35, 80, 125, 170, 215],
-          problem:  [10, 55, 100, 145, 190, 235],
-          idea:     [-135, -85, -35, 15, 65, 115],
-          emotion:  [-25, 20, 65, 110, 155, 200],
-          decision: [-155, -110, -65, -20, 25, 70]
-        };
-
-        const presetsDesktop = {
-          stuck:    [-15, 30, 75, 120, 165, 210],
-          problem:  [150, 190, 230, 310, 350, 30],
-          idea:     [150, 195, 240, 285, 330, 15],
-          emotion:  [-20, 20, 60, 100, 140, 180],
-          decision: [180, 220, 260, 300, 340, 20]
-        };
-
-        const source = isMobile() ? presetsMobile : presetsDesktop;
-        return source[key].slice(0, count);
-      }
-
-      function showChildren(key) {
-        clearChildren();
-
-        const primary = primaryData.find(item => item.key === key);
-        if (!primary) return;
-
-        const center = primaryPositions[key];
-        const count = primary.children.length;
-        const radius = getChildRadius(count);
-        const angles = getAngles(key, count);
-        const bounds = { left: 10, right: 90, top: 10, bottom: 90 };
-
-        primary.children.forEach((child, index) => {
-          const angle = (angles[index] || (index * (360 / count))) * Math.PI / 180;
-          const x = clamp(center.x + Math.cos(angle) * radius, bounds.left, bounds.right);
-          const y = clamp(center.y + Math.sin(angle) * radius, bounds.top, bounds.bottom);
-          const delay = index * 22;
-          const childEl = createChildEl(child, x, y, delay, key);
-          childElements.push(childEl);
-          drawChildLine(center, { x, y }, delay);
-        });
-      }
-
-      function toggleNode(key) {
-        activeKey = activeKey === key ? null : key;
-        primaryButtons.forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.key === activeKey);
-        });
-
-        if (activeKey) {
-          showChildren(activeKey);
-          resetBtn.disabled = false;
-        } else {
-          clearChildren();
-          resetBtn.disabled = true;
-        }
-      }
-
-      function resetMap() {
-        activeKey = null;
-        primaryButtons.forEach(btn => btn.classList.remove("active"));
-        clearChildren();
-        resetBtn.disabled = true;
-      }
-
-      function render() {
-        applyPrimaryLayout();
-        drawPrimaryLines();
-        if (activeKey) {
-          showChildren(activeKey);
-        }
-      }
-
-      createPrimaryNodes();
-      render();
-
-      resetBtn.addEventListener("click", resetMap);
-      window.addEventListener("resize", render);
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") resetMap();
+      document.querySelectorAll(".section-body").forEach(section => {
+        section.classList.remove("open");
       });
-    })();
+
+      document.querySelectorAll(".section-header").forEach(header => {
+        header.classList.remove("active");
+      });
+
+      if(!isOpen){
+        body.classList.add("open");
+        button.classList.add("active");
+      }
+    }
   </script>
 </body>
 </html>
