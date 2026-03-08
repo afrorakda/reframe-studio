@@ -1,571 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
-  <title>REFRAME Studio</title>
-  <meta
-    name="description"
-    content="REFRAME Studio — lightweight client-side homepage for tool discovery."
-  />
-  <style>
-    :root{
-      --bg:#0b1020;
-      --bg-soft:#121a31;
-      --panel:#111829;
-      --panel-2:#16213d;
-      --card:#131c32;
-      --card-hover:#182445;
-      --text:#eef2ff;
-      --muted:#a9b4d0;
-      --line:rgba(255,255,255,.09);
-      --line-strong:rgba(255,255,255,.18);
-      --accent:#8fb4ff;
-      --accent-2:#bfd2ff;
-      --shadow:0 18px 40px rgba(0,0,0,.28);
-      --radius:18px;
-      --radius-sm:14px;
-      --max:1080px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REFRAME Studio</title>
 
-    *{box-sizing:border-box}
-    html{
-      -webkit-text-size-adjust:100%;
-      scroll-behavior:smooth;
-    }
-    body{
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(1200px 600px at 50% -10%, rgba(143,180,255,.18), transparent 55%),
-        linear-gradient(180deg, #0a0f1d 0%, #0b1020 100%);
-      color:var(--text);
-      min-height:100vh;
-    }
+<style>
 
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:#0b1220;
+color:white;
+margin:0;
+padding:40px 20px;
+}
 
-    .wrap{
-      width:min(calc(100% - 32px), var(--max));
-      margin:0 auto;
-    }
+.container{
+max-width:900px;
+margin:auto;
+}
 
-    .page{
-      padding:
-        max(18px, env(safe-area-inset-top))
-        0
-        max(28px, env(safe-area-inset-bottom));
-    }
+h1{
+font-size:34px;
+margin-bottom:10px;
+}
 
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      padding:8px 0 22px;
-    }
+.subtitle{
+color:#94a3b8;
+margin-bottom:40px;
+}
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:0;
-    }
+.tools{
+display:grid;
+grid-template-columns:1fr;
+gap:14px;
+}
 
-    .brand-mark{
-      width:40px;
-      height:40px;
-      border-radius:12px;
-      background:linear-gradient(135deg, #d9e6ff 0%, #8fb4ff 100%);
-      color:#09111f;
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      letter-spacing:.02em;
-      box-shadow:0 10px 28px rgba(143,180,255,.28);
-      flex:0 0 auto;
-    }
+.card{
+background:#111827;
+padding:20px;
+border-radius:14px;
+text-decoration:none;
+color:white;
+border:1px solid #1f2937;
+transition:0.15s;
+}
 
-    .brand-copy{
-      min-width:0;
-    }
+.card:hover{
+background:#1f2937;
+}
 
-    .brand-title{
-      font-size:1rem;
-      font-weight:700;
-      line-height:1.1;
-      letter-spacing:.01em;
-    }
+.title{
+font-size:18px;
+font-weight:600;
+margin-bottom:6px;
+}
 
-    .brand-subtitle{
-      margin-top:4px;
-      color:var(--muted);
-      font-size:.9rem;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+.desc{
+color:#9ca3af;
+font-size:14px;
+}
 
-    .hero{
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:24px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-    }
+.featured{
+border:2px solid #6366f1;
+}
 
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:var(--accent-2);
-      font-size:.85rem;
-      line-height:1;
-      margin-bottom:14px;
-    }
-
-    .hero h1{
-      margin:0;
-      font-size:clamp(1.7rem, 4.6vw, 3rem);
-      line-height:1.03;
-      letter-spacing:-.03em;
-    }
-
-    .hero p{
-      margin:12px 0 0;
-      max-width:720px;
-      color:var(--muted);
-      font-size:1rem;
-      line-height:1.6;
-    }
-
-    .section{
-      margin-top:32px;
-    }
-
-    .section-head{
-      display:flex;
-      align-items:end;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:14px;
-    }
-
-    .section-title{
-      margin:0;
-      font-size:1.05rem;
-      font-weight:700;
-      letter-spacing:.01em;
-    }
-
-    .section-note{
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.4;
-    }
-
-    .feature-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:16px;
-    }
-
-    .tool-grid{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
-      gap:14px;
-    }
-
-    .card{
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      min-height:180px;
-      padding:18px;
-      border-radius:var(--radius);
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
-      box-shadow:0 10px 24px rgba(0,0,0,.18);
-      transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
-      overflow:hidden;
-      isolation:isolate;
-    }
-
-    .card:hover,
-    .card:focus-visible{
-      transform:translateY(-2px);
-      border-color:var(--line-strong);
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      box-shadow:0 16px 30px rgba(0,0,0,.22);
-      outline:none;
-    }
-
-    .card::after{
-      content:"";
-      position:absolute;
-      inset:auto -40px -60px auto;
-      width:140px;
-      height:140px;
-      background:radial-gradient(circle, rgba(143,180,255,.14), transparent 65%);
-      z-index:-1;
-      pointer-events:none;
-    }
-
-    .card-tag{
-      display:inline-flex;
-      width:max-content;
-      align-items:center;
-      gap:8px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      color:var(--accent-2);
-      font-size:.8rem;
-      line-height:1;
-      margin-bottom:14px;
-    }
-
-    .card-title{
-      margin:0;
-      font-size:1.08rem;
-      line-height:1.2;
-      letter-spacing:-.01em;
-    }
-
-    .card-desc{
-      margin:10px 0 18px;
-      color:var(--muted);
-      font-size:.95rem;
-      line-height:1.55;
-      max-width:46ch;
-    }
-
-    .card-meta{
-      margin-top:auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      color:var(--accent-2);
-      font-size:.92rem;
-    }
-
-    .arrow{
-      width:32px;
-      height:32px;
-      display:grid;
-      place-items:center;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.09);
-      background:rgba(255,255,255,.04);
-      flex:0 0 auto;
-    }
-
-    .featured{
-      min-height:220px;
-      padding:22px;
-      border-radius:22px;
-      border:1px solid rgba(191,210,255,.22);
-      background:
-        radial-gradient(120% 120% at 0% 0%, rgba(143,180,255,.18), transparent 52%),
-        linear-gradient(180deg, rgba(191,210,255,.08), rgba(255,255,255,.03));
-      box-shadow:
-        0 20px 44px rgba(0,0,0,.26),
-        inset 0 1px 0 rgba(255,255,255,.05);
-    }
-
-    .featured .card-title{
-      font-size:clamp(1.25rem, 3vw, 1.8rem);
-    }
-
-    .featured .card-desc{
-      font-size:1rem;
-      max-width:58ch;
-    }
-
-    .featured .card-meta{
-      font-weight:600;
-    }
-
-    .featured-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      width:max-content;
-      padding:8px 12px;
-      border-radius:999px;
-      background:#dfe9ff;
-      color:#0a1220;
-      font-size:.8rem;
-      font-weight:700;
-      line-height:1;
-      margin-bottom:16px;
-      box-shadow:0 10px 24px rgba(191,210,255,.16);
-    }
-
-    .footer{
-      padding:28px 0 8px;
-      color:var(--muted);
-      font-size:.88rem;
-    }
-
-    @media (max-width: 900px){
-      .tool-grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 640px){
-      .wrap{
-        width:min(calc(100% - 24px), var(--max));
-      }
-
-      .hero{
-        padding:20px;
-        border-radius:22px;
-      }
-
-      .tool-grid{
-        grid-template-columns:1fr;
-        gap:12px;
-      }
-
-      .card{
-        min-height:160px;
-        padding:16px;
-      }
-
-      .featured{
-        min-height:200px;
-        padding:18px;
-      }
-
-      .section{
-        margin-top:28px;
-      }
-
-      .topbar{
-        padding-bottom:18px;
-      }
-
-      .section-head{
-        align-items:start;
-        flex-direction:column;
-        gap:6px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      html{scroll-behavior:auto}
-      .card{transition:none}
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="page">
-    <div class="wrap">
-      <header class="topbar" aria-label="Site header">
-        <div class="brand">
-          <div class="brand-mark" aria-hidden="true">R</div>
-          <div class="brand-copy">
-            <div class="brand-title">REFRAME Studio</div>
-            <div class="brand-subtitle">Find the right tool for the next useful move.</div>
-          </div>
-        </div>
-      </header>
 
-      <main>
-        <section class="hero" aria-label="Introduction">
-          <div class="eyebrow">Simple tools. Clear next steps.</div>
-          <h1>Pick the right tool without overthinking the workflow.</h1>
-          <p>
-            REFRAME Studio is a lightweight set of practical tools for clarifying, reframing,
-            and moving work forward. Start with the tool that fits your current bottleneck.
-          </p>
-        </section>
+<div class="container">
 
-        <section class="section" aria-labelledby="start-here-title">
-          <div class="section-head">
-            <h2 class="section-title" id="start-here-title">Start here</h2>
-            <div class="section-note">Best first action when you are not sure what to use.</div>
-          </div>
+<h1>REFRAME Studio</h1>
+<div class="subtitle">Simple tools. Clear next steps.</div>
 
-          <div class="feature-grid">
-            <a class="card featured" href="stuck-to-tool.html" aria-label="Open Stuck to Best Tool">
-              <div class="featured-badge">Featured entry point</div>
-              <div class="card-tag">Starter Tool</div>
-              <h3 class="card-title">Stuck → Best Tool</h3>
-              <p class="card-desc">
-                Describe where you're stuck and get the best next tool.
-              </p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
-          </div>
-        </section>
+<div id="tools" class="tools"></div>
 
-        <section class="section" aria-labelledby="all-tools-title">
-          <div class="section-head">
-            <h2 class="section-title" id="all-tools-title">All Tools</h2>
-            <div class="section-note">Browse the full studio in the familiar card layout.</div>
-          </div>
+</div>
 
-          <div class="tool-grid" id="tools-grid">
-            <a class="card" href="offer-reframe.html">
-              <div class="card-tag">Strategy</div>
-              <h3 class="card-title">Offer Reframe</h3>
-              <p class="card-desc">Tighten the offer so the value is easier to understand and easier to choose.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+<script>
 
-            <a class="card" href="positioning.html">
-              <div class="card-tag">Strategy</div>
-              <h3 class="card-title">Positioning</h3>
-              <p class="card-desc">Clarify who it is for, what it is, and why it matters now.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+fetch("tool-list.json")
+.then(res => res.json())
+.then(tools => {
 
-            <a class="card" href="message-map.html">
-              <div class="card-tag">Messaging</div>
-              <h3 class="card-title">Message Map</h3>
-              <p class="card-desc">Organize the core message, supporting ideas, and proof into one clean structure.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+const container = document.getElementById("tools");
 
-            <a class="card" href="landing-page.html">
-              <div class="card-tag">Copy</div>
-              <h3 class="card-title">Landing Page</h3>
-              <p class="card-desc">Build a cleaner page flow with a stronger headline, value stack, and call to action.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+tools.forEach(tool => {
 
-            <a class="card" href="headline-angles.html">
-              <div class="card-tag">Copy</div>
-              <h3 class="card-title">Headline Angles</h3>
-              <p class="card-desc">Generate multiple framing angles so the core idea lands faster.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+const card = document.createElement("a");
 
-            <a class="card" href="cta-builder.html">
-              <div class="card-tag">Copy</div>
-              <h3 class="card-title">CTA Builder</h3>
-              <p class="card-desc">Turn a vague next step into a clean, low-friction action prompt.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+card.href = tool.file;
+card.className = "card";
 
-            <a class="card" href="objection-reframe.html">
-              <div class="card-tag">Sales</div>
-              <h3 class="card-title">Objection Reframe</h3>
-              <p class="card-desc">Translate hesitation into clearer understanding, trust, and movement.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+if(tool.featured){
+card.classList.add("featured");
+}
 
-            <a class="card" href="audience-clarifier.html">
-              <div class="card-tag">Research</div>
-              <h3 class="card-title">Audience Clarifier</h3>
-              <p class="card-desc">Define the audience more precisely so the message stops trying to speak to everyone.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+card.innerHTML = `
+<div class="title">${tool.title}</div>
+<div class="desc">${tool.description}</div>
+`;
 
-            <a class="card" href="value-prop.html">
-              <div class="card-tag">Strategy</div>
-              <h3 class="card-title">Value Proposition</h3>
-              <p class="card-desc">Refine the specific outcome, differentiation, and reason to believe.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+container.appendChild(card);
 
-            <a class="card" href="founder-story.html">
-              <div class="card-tag">Narrative</div>
-              <h3 class="card-title">Founder Story</h3>
-              <p class="card-desc">Shape the origin story into something concise, credible, and useful.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+});
 
-            <a class="card" href="content-seeds.html">
-              <div class="card-tag">Content</div>
-              <h3 class="card-title">Content Seeds</h3>
-              <p class="card-desc">Turn one idea into multiple usable content directions without forcing volume.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
+});
 
-            <a class="card" href="clarity-check.html">
-              <div class="card-tag">Review</div>
-              <h3 class="card-title">Clarity Check</h3>
-              <p class="card-desc">Pressure-test the message for ambiguity, friction, and missing context.</p>
-              <div class="card-meta">
-                <span>Open tool</span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </div>
-            </a>
-          </div>
-        </section>
-      </main>
+</script>
 
-      <footer class="footer">
-        REFRAME Studio
-      </footer>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const cards = document.querySelectorAll('.card');
-      cards.forEach((card) => {
-        card.addEventListener('touchstart', function () {
-          this.style.transform = 'translateY(-1px)';
-        }, { passive: true });
-
-        card.addEventListener('touchend', function () {
-          this.style.transform = '';
-        }, { passive: true });
-      });
-    })();
-  </script>
 </body>
 </html>
