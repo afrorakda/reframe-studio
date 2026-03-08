@@ -9,109 +9,62 @@
 body{
   font-family:sans-serif;
   max-width:700px;
-  margin:40px auto;
-  padding:20px;
+  margin:20px auto;
+  padding:16px;
   text-align:center;
   background:#f8f8f8;
   color:#111;
 }
 
 h1{
-  font-size:44px;
-  margin-bottom:12px;
+  font-size:38px;
+  margin:10px 0;
 }
 
 p{
-  font-size:20px;
-  margin-bottom:20px;
+  font-size:18px;
+  margin-bottom:14px;
 }
 
 textarea{
   width:100%;
-  height:140px;
-  font-size:20px;
-  padding:16px;
-  border:1px solid #ccc;
+  height:100px;
+  font-size:18px;
+  padding:14px;
   border-radius:14px;
-  box-sizing:border-box;
-  background:white;
+  border:1px solid #ccc;
 }
 
 .main-button{
-  display:inline-block;
-  margin-top:24px;
-  padding:18px 36px;
-  font-size:24px;
+  width:100%;
+  margin-top:16px;
+  padding:18px;
+  font-size:22px;
   font-weight:bold;
-  cursor:pointer;
-  border-radius:14px;
   border:none;
+  border-radius:14px;
   background:#111;
   color:white;
 }
 
-.main-button:hover{
-  background:#333;
-}
-
 #output{
-  margin-top:40px;
-  font-size:30px;
-  line-height:1.5;
-  min-height:60px;
+  margin-top:18px;
+  font-size:22px;
+  min-height:30px;
 }
 
 .links{
-  margin-top:36px;
+  margin-top:18px;
 }
 
-.links a{
-  display:block;
+.links button{
   width:100%;
-  box-sizing:border-box;
-  margin:14px 0;
-  padding:18px 20px;
-  background:white;
-  border:1px solid #ddd;
+  margin:10px 0;
+  padding:18px;
+  font-size:20px;
   border-radius:14px;
-  text-decoration:none;
-  color:#111;
-  font-size:24px;
-  font-weight:bold;
-}
-
-.links a:hover{
-  background:#efefef;
-}
-
-@media (max-width: 600px){
-  h1{
-    font-size:38px;
-  }
-
-  p{
-    font-size:18px;
-  }
-
-  textarea{
-    font-size:18px;
-    height:130px;
-  }
-
-  .main-button{
-    width:100%;
-    font-size:24px;
-    padding:20px;
-  }
-
-  #output{
-    font-size:24px;
-  }
-
-  .links a{
-    font-size:22px;
-    padding:20px 16px;
-  }
+  border:1px solid #ddd;
+  background:white;
 }
 </style>
 
@@ -125,30 +78,66 @@ textarea{
 
 <textarea id="input"></textarea>
 
-<br>
-
 <button class="main-button" onclick="reframe()">REFRAME</button>
 
 <div id="output"></div>
 
 <div class="links">
-  <a href="thought-map.html">Thought Map</a>
-  <a href="tool-generator-v3.html">Surprise Me</a>
+
+<button onclick="location.href='thought-map.html'">
+Thought Map
+</button>
+
+<button onclick="surprise()">
+Surprise Me
+</button>
+
 </div>
 
 <script>
+
 const angles = [
-  "Maybe the criticism is pointing at something interesting.",
-  "What if the opposite was true?",
-  "Maybe the problem is actually the advantage.",
-  "Cringe might mean you're not generic.",
-  "What assumption might be wrong?"
+
+"Maybe the criticism is pointing at something interesting.",
+
+"What if the opposite was true?",
+
+"Maybe the problem is actually the advantage.",
+
+"Cringe might mean you're not generic.",
+
+"What assumption might be wrong?"
+
 ];
 
 function reframe(){
-  const angle = angles[Math.floor(Math.random() * angles.length)];
-  document.getElementById("output").innerText = angle;
+
+const angle = angles[Math.floor(Math.random()*angles.length)];
+
+document.getElementById("output").innerText = angle;
+
 }
+
+function surprise(){
+
+const tools = [
+
+"idea-to-thread.html",
+"criticism-to-lesson.html",
+"emotion-to-action.html",
+"hook-generator.html",
+"tweet-polisher.html",
+"idea-to-metaphor.html",
+"failure-to-lesson.html"
+
+];
+
+const randomTool = tools[Math.floor(Math.random()*tools.length)];
+
+window.location.href = randomTool;
+
+}
+
 </script>
 
 </body>
