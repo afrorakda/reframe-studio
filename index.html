@@ -57,7 +57,8 @@
 
     .main-button,
     .secondary-button,
-    .ghost-button{
+    .ghost-button,
+    .chaos-button{
       width:100%;
       border:none;
       border-radius:18px;
@@ -80,6 +81,14 @@
       background:#e9e9e9;
       color:#111;
       font-size:clamp(18px, 4.2vw, 24px);
+    }
+
+    .chaos-button{
+      margin-top:12px;
+      padding:16px 18px;
+      background:#ffcc00;
+      color:#111;
+      font-size:clamp(20px, 4.4vw, 26px);
     }
 
     .output-card{
@@ -148,6 +157,7 @@
 
     <button class="main-button" onclick="reframe()">REFRAME</button>
     <button class="ghost-button" onclick="reframeAgain()">Reframe Again</button>
+    <button class="chaos-button" onclick="chaosMode()">CHAOS</button>
 
     <div class="output-card">
       <p id="output">A new angle appears here.</p>
@@ -223,6 +233,19 @@
       "tweet-polisher.html"
     ];
 
+    const chaosPrompts = [
+      "Turn this into a controversial opinion.",
+      "Make this absurd.",
+      "What would the opposite thinker say?",
+      "Turn this into satire.",
+      "What would a troll say?",
+      "What hidden advantage might exist?",
+      "What would make this go viral?",
+      "How would a comedian frame this?",
+      "What assumption is wrong here?",
+      "What would a contrarian argue?"
+    ];
+
     function pickRandom(list){
       return list[Math.floor(Math.random() * list.length)];
     }
@@ -242,6 +265,25 @@
     function surpriseMe(){
       const randomTool = pickRandom(tools);
       window.location.href = randomTool;
+    }
+
+    function chaosMode(){
+      const input = document.getElementById("input");
+      const randomPrompt = pickRandom(chaosPrompts);
+      const randomTool = pickRandom(tools);
+
+      if(input.value.trim() === ""){
+        input.value = randomPrompt;
+      } else {
+        input.value = randomPrompt + "\n\n" + input.value;
+      }
+
+      document.getElementById("output").innerText =
+        "Chaos prompt added: " + randomPrompt + " → Opening " + randomTool;
+
+      setTimeout(function(){
+        window.location.href = randomTool;
+      }, 700);
     }
   </script>
 </body>
