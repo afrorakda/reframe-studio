@@ -16,8 +16,7 @@ var map = {
 
 "Tool Factory":[
 "idea-to-tool-spec.html",
-"tool-generator-v3.html",
-"tool-factory-pro.html"
+"tool-generator-v3.html"
 ],
 
 "Constraint → Action":[
@@ -43,7 +42,10 @@ return map[zone] || [];
 
 function navigate(input){
 
-if(!window.REFRAME_MUTATION_LOOP) return null;
+if(!window.REFRAME_MUTATION_LOOP){
+console.log("Mutation loop missing");
+return null;
+}
 
 var loop = window.REFRAME_MUTATION_LOOP.runLoop(input,{
 mode:"stable",
@@ -53,7 +55,9 @@ limit:3
 
 var path = window.REFRAME_MUTATION_LOOP.getLoopPath(loop);
 
-if(!path.length) return null;
+if(!path || !path.length){
+return null;
+}
 
 var zone = path[path.length-1].zoneTitle;
 
