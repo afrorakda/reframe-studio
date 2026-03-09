@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thought Galaxy</title>
+<style>
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:#05070d;
+color:#e8ecf1;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+line-height:1.6;
+overflow-x:hidden;
+}
+
+.container{
+max-width:980px;
+margin:auto;
+padding:20px;
+}
+
+h1{
+margin:0 0 10px;
+font-size:52px;
+line-height:1.05;
+letter-spacing:-0.02em;
+}
+
+.sub{
+color:#9aa4b2;
+font-size:18px;
+margin-bottom:24px;
+max-width:760px;
+}
+
+.card{
+background:rgba(23,26,33,0.82);
+border:1px solid #243044;
+border-radius:18px;
+padding:16px;
+margin-bottom:18px;
+backdrop-filter:blur(6px);
+}
+
+textarea{
+width:100%;
+min-height:120px;
+background:#0b0f17;
+border:1px solid #33405a;
+border-radius:14px;
+color:#e8ecf1;
+padding:14px;
+font-size:16px;
+resize:vertical;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:12px;
+}
+
+button{
+background:#2b6cff;
+border:none;
+color:white;
+padding:11px 16px;
+border-radius:12px;
+cursor:pointer;
+font:inherit;
+}
+
+button.secondary{
+background:#2a3140;
+color:#e8ecf1;
+}
+
+.status{
+margin-top:12px;
+font-size:14px;
+color:#9aa4b2;
+}
+
+.galaxy-card{
+padding:0;
+overflow:hidden;
+}
+
+.galaxy-head{
+padding:16px 16px 0 16px;
+}
+
+.galaxy-wrap{
+position:relative;
+height:620px;
+margin-top:10px;
+background:
+radial-gradient(circle at 20% 20%, rgba(85,125,255,0.18), transparent 28%),
+radial-gradient(circle at 80% 30%, rgba(120,86,255,0.14), transparent 22%),
+radial-gradient(circle at 50% 80%, rgba(84,181,255,0.12), transparent 24%),
+linear-gradient(180deg, #05070d 0%, #070b14 100%);
+border-top:1px solid #1d2635;
+overflow:hidden;
+}
+
+.starfield{
+position:absolute;
+inset:0;
+pointer-events:none;
+opacity:0.9;
+}
+
+.starfield span{
+position:absolute;
+display:block;
+width:2px;
+height:2px;
+border-radius:50%;
+background:rgba(255,255,255,0.8);
+box-shadow:0 0 6px rgba(255,255,255,0.35);
+}
+
+.galaxy-svg{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none;
+}
+
+.node{
+position:absolute;
+transform:translate(-50%,-50%);
+min-width:110px;
+max-width:200px;
+padding:12px 14px;
+border-radius:999px;
+text-align:center;
+font-weight:600;
+font-size:15px;
+border:1px solid #36507e;
+background:rgba(12,18,30,0.88);
+box-shadow:0 0 0 1px rgba(98,125,198,0.06), 0 8px 28px rgba(0,0,0,0.28);
+color:#eef3ff;
+backdrop-filter:blur(4px);
+}
+
+.node.small{
+font-size:14px;
+min-width:100px;
+}
+
+.node.input{
+background:rgba(28,41,72,0.95);
+border-color:#5e82ff;
+box-shadow:0 0 24px rgba(76,117,255,0.2);
+max-width:280px;
+border-radius:20px;
+font-weight:700;
+}
+
+.node.route{
+background:rgba(16,27,44,0.95);
+border-color:#5a74c4;
+}
+
+.node.tool{
+background:rgba(14,22,35,0.94);
+border-color:#3e587e;
+font-weight:500;
+}
+
+.node.mutation{
+background:rgba(22,18,38,0.92);
+border-color:#6d63c6;
+color:#efeaff;
+}
+
+.legend{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+padding:14px 16px 16px;
+border-top:1px solid #1d2635;
+}
+
+.pill{
+display:inline-block;
+padding:6px 10px;
+border-radius:999px;
+background:#1d2632;
+border:1px solid #33405a;
+font-size:13px;
+color:#dbe5ff;
+}
+
+.meta-grid{
+display:grid;
+grid-template-columns:1fr;
+gap:16px;
+}
+
+.route-list{
+display:grid;
+gap:12px;
+}
+
+.route-card{
+background:#0f141f;
+border:1px solid #29364c;
+border-radius:14px;
+padding:14px;
+}
+
+.route-title{
+font-size:18px;
+font-weight:700;
+margin-bottom:8px;
+}
+
+.muted{
+color:#9aa4b2;
+}
+
+.tool-link{
+display:block;
+padding:10px 12px;
+margin-top:8px;
+border-radius:12px;
+background:#0b1018;
+border:1px solid #33405a;
+text-decoration:none;
+color:#e8ecf1;
+}
+
+@media (min-width: 860px){
+.meta-grid{
+grid-template-columns:1fr 1fr;
+}
+}
+
+@media (max-width: 640px){
+h1{
+font-size:42px;
+}
+.galaxy-wrap{
+height:700px;
+}
+.node{
+font-size:14px;
+min-width:96px;
+padding:10px 12px;
+}
+.node.input{
+max-width:220px;
+}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Thought Galaxy</h1>
+  <p class="sub">Turn one thought into a small universe of mutations, routes, and tools.</p>
+
+  <div class="card">
+    <textarea id="input">I feel stuck and cannot decide what to build next.</textarea>
+    <div class="buttons">
+      <button onclick="runGalaxy()">Generate galaxy</button>
+      <button class="secondary" onclick="example1()">Example 1</button>
+      <button class="secondary" onclick="example2()">Example 2</button>
+      <button class="secondary" onclick="clearGalaxy()">Clear</button>
+    </div>
+    <div id="status" class="status">Ready.</div>
+  </div>
+
+  <div class="card galaxy-card">
+    <div class="galaxy-head">
+      <h2 style="margin:0 0 6px;">Galaxy View</h2>
+      <div class="muted">Input in the center. Mutations, routes, and tools orbit around it.</div>
+    </div>
+    <div class="galaxy-wrap" id="galaxyWrap">
+      <div class="starfield" id="starfield"></div>
+      <svg class="galaxy-svg" id="galaxySvg"></svg>
+      <div id="galaxyNodes"></div>
+    </div>
+    <div class="legend">
+      <span class="pill">Input core</span>
+      <span class="pill">Mutation stars</span>
+      <span class="pill">Route stars</span>
+      <span class="pill">Tool stars</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="card">
+      <h3 style="margin-top:0;">Routes</h3>
+      <div id="routesView" class="muted">No galaxy yet.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Detected Directions</h3>
+      <div id="directionsView" class="muted">No galaxy yet.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const mutations = [
+  "structure",
+  "contrast",
+  "sequence",
+  "experiment",
+  "reframe",
+  "question",
+  "tool idea",
+  "constraint",
+  "possibility",
+  "action"
+];
+
+const toolMap = {
+  "structure": ["problem-to-root-cause.html", "problem-to-constraints.html"],
+  "contrast": ["problem-to-options.html"],
+  "sequence": ["next-step-finder.html"],
+  "experiment": ["tool-factory.html"],
+  "reframe": ["stuck-to-tool.html", "thought-map.html"],
+  "question": ["thought-map.html"],
+  "tool idea": ["idea-to-tool-spec.html", "tool-generator-v3.html"],
+  "constraint": ["constraint-to-action.html", "problem-to-constraints.html"],
+  "possibility": ["problem-to-options.html", "tool-factory.html"],
+  "action": ["next-step-finder.html", "constraint-to-action.html"]
+};
+
+function sample(arr){
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function uniqueArray(arr){
+  return Array.from(new Set(arr));
+}
+
+function buildRoute(){
+  const mutationA = sample(mutations);
+  let mutationB = sample(mutations);
+  if(mutationB === mutationA){
+    mutationB = sample(mutations);
+  }
+
+  const tools = uniqueArray((toolMap[mutationB] || []).concat(toolMap[mutationA] || [])).slice(0, 3);
+
+  return {
+    mutations: [mutationA, mutationB],
+    tools: tools
+  };
+}
+
+function createStars(){
+  const field = document.getElementById("starfield");
+  let html = "";
+  const count = 80;
+  for(let i=0;i<count;i++){
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const s = Math.random() * 2 + 1;
+    html += "<span style='left:"+x+"%;top:"+y+"%;width:"+s+"px;height:"+s+"px;opacity:"+(0.3 + Math.random()*0.6)+";'></span>";
+  }
+  field.innerHTML = html;
+}
+
+function line(x1,y1,x2,y2,color,width,opacity){
+  return "<line x1='"+x1+"' y1='"+y1+"' x2='"+x2+"' y2='"+y2+"' stroke='"+color+"' stroke-width='"+width+"' stroke-opacity='"+opacity+"' />";
+}
+
+function nodeHtml(cls, x, y, text){
+  return "<div class='node "+cls+"' style='left:"+x+"%;top:"+y+"%;'>"+escapeHtml(text)+"</div>";
+}
+
+function escapeHtml(text){
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function example1(){
+  document.getElementById("input").value = "I feel stuck and cannot decide what to build next.";
+}
+
+function example2(){
+  document.getElementById("input").value = "アイデアはあるのにツールの形にできない。";
+}
+
+function clearGalaxy(){
+  document.getElementById("galaxyNodes").innerHTML = "";
+  document.getElementById("galaxySvg").innerHTML = "";
+  document.getElementById("routesView").innerHTML = "No galaxy yet.";
+  document.getElementById("directionsView").innerHTML = "No galaxy yet.";
+  document.getElementById("status").innerHTML = "Ready.";
+}
+
+function renderRoutes(routes){
+  let html = "<div class='route-list'>";
+  routes.forEach(function(route, idx){
+    html += "<div class='route-card'>";
+    html += "<div class='route-title'>Route "+(idx+1)+"</div>";
+    html += "<div>";
+    route.mutations.forEach(function(m){
+      html += "<span class='pill'>"+escapeHtml(m)+"</span>";
+    });
+    html += "</div>";
+    html += "<div style='margin-top:10px;'>";
+    route.tools.forEach(function(tool){
+      html += "<a class='tool-link' href='./"+encodeURI(tool)+"'>"+escapeHtml(tool)+"</a>";
+    });
+    html += "</div>";
+    html += "</div>";
+  });
+  html += "</div>";
+  document.getElementById("routesView").innerHTML = html;
+}
+
+function renderDirections(routes){
+  const allMutations = uniqueArray(routes.flatMap(function(r){ return r.mutations; }));
+  const allTools = uniqueArray(routes.flatMap(function(r){ return r.tools; }));
+
+  let html = "";
+  html += "<div style='margin-bottom:10px;'><strong>Mutation stars</strong></div>";
+  allMutations.forEach(function(m){
+    html += "<span class='pill'>"+escapeHtml(m)+"</span>";
+  });
+
+  html += "<div style='margin:14px 0 10px;'><strong>Tool stars</strong></div>";
+  allTools.forEach(function(t){
+    html += "<span class='pill'>"+escapeHtml(t)+"</span>";
+  });
+
+  document.getElementById("directionsView").innerHTML = html;
+}
+
+function runGalaxy(){
+  const input = document.getElementById("input").value.trim();
+  const routes = [buildRoute(), buildRoute(), buildRoute()];
+  const svg = document.getElementById("galaxySvg");
+  const nodes = document.getElementById("galaxyNodes");
+
+  createStars();
+
+  const inputPos = {x:50,y:18};
+  const routePos = [
+    {x:24,y:46},
+    {x:50,y:38},
+    {x:76,y:48}
+  ];
+  const mutationPos = [
+    [{x:18,y:32},{x:14,y:58}],
+    [{x:44,y:28},{x:56,y:56}],
+    [{x:82,y:34},{x:86,y:60}]
+  ];
+  const toolPos = [
+    [{x:20,y:72},{x:10,y:86}],
+    [{x:50,y:70},{x:64,y:84}],
+    [{x:80,y:74},{x:90,y:88}]
+  ];
+
+  let svgHtml = "";
+  let nodeHtmlAll = "";
+
+  nodeHtmlAll += nodeHtml("input", inputPos.x, inputPos.y, input || "Input");
+
+  routes.forEach(function(route, i){
+    const rp = routePos[i];
+    svgHtml += line(inputPos.x+"%", inputPos.y+"%", rp.x+"%", rp.y+"%", "#5e82ff", "2", "0.65");
+    nodeHtmlAll += nodeHtml("route", rp.x, rp.y, "Route " + (i+1));
+
+    route.mutations.forEach(function(mutation, mi){
+      const mp = mutationPos[i][mi];
+      svgHtml += line(rp.x+"%", rp.y+"%", mp.x+"%", mp.y+"%", "#8b78ff", "1.8", "0.55");
+      nodeHtmlAll += nodeHtml("mutation small", mp.x, mp.y, mutation);
+    });
+
+    route.tools.slice(0,2).forEach(function(tool, ti){
+      const tp = toolPos[i][ti];
+      svgHtml += line(rp.x+"%", rp.y+"%", tp.x+"%", tp.y+"%", "#6db6ff", "1.6", "0.48");
+      nodeHtmlAll += nodeHtml("tool small", tp.x, tp.y, tool.replace(".html",""));
+    });
+  });
+
+  svg.innerHTML = svgHtml;
+  nodes.innerHTML = nodeHtmlAll;
+
+  renderRoutes(routes);
+  renderDirections(routes);
+  document.getElementById("status").innerHTML = "Galaxy generated.";
+}
+
+createStars();
+</script>
+</body>
+</html>
