@@ -1,422 +1,742 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Criticism → Lesson | REFRAME Studio</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1f2430;
+      --text: #f3f5f7;
+      --muted: #a8b0bd;
+      --line: #2a3140;
+      --accent: #8b5cf6;
+      --accent-2: #22c55e;
+      --accent-3: #06b6d4;
+      --danger: #f97316;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 920px;
+    }
 
-<title>Criticism → Lesson | REFRAME Studio</title>
-<meta name="description" content="Turn criticism into 1–3 short lessons you can use right away." />
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-:root{
-  --bg:#f6f6f6;
-  --card:#ffffff;
-  --text:#111111;
-  --muted:#666666;
-  --line:#dddddd;
-  --primary:#0d1b3d;
-  --primary-hover:#08122a;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #151926 0%, var(--bg) 45%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
 
-*{
-  box-sizing:border-box;
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-html{
-  -webkit-text-size-adjust:100%;
-}
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
 
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+    .page {
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
 
-.wrap{
-  max-width:760px;
-  margin:0 auto;
-  padding:24px 16px 40px;
-}
+    .shell {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
 
-.back{
-  display:inline-block;
-  margin-bottom:18px;
-  color:#4b5563;
-  text-decoration:none;
-  font-size:14px;
-}
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
 
-.back:hover{
-  text-decoration:underline;
-}
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      transition: color 0.18s ease;
+    }
 
-.panel{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:22px;
-  padding:20px 18px;
-}
+    .back-link:hover {
+      color: var(--text);
+    }
 
-h1{
-  margin:0 0 10px;
-  font-size:34px;
-  line-height:1.08;
-  letter-spacing:-0.02em;
-}
+    .studio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 0.85rem;
+    }
 
-.desc{
-  margin:0 0 22px;
-  color:var(--muted);
-  font-size:16px;
-  line-height:1.6;
-}
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
 
-label{
-  display:block;
-  margin-bottom:10px;
-  font-size:14px;
-  font-weight:700;
-}
+    .hero {
+      padding: 28px 22px 22px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at top right, rgba(139, 92, 246, 0.16), transparent 28%),
+        radial-gradient(circle at top left, rgba(6, 182, 212, 0.10), transparent 24%);
+    }
 
-textarea{
-  width:100%;
-  min-height:170px;
-  padding:16px;
-  border:1px solid #cfd5df;
-  border-radius:18px;
-  background:#fff;
-  color:var(--text);
-  font:inherit;
-  resize:vertical;
-  line-height:1.6;
-}
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      background: rgba(139, 92, 246, 0.12);
+      color: #c8b5ff;
+      border: 1px solid rgba(139, 92, 246, 0.28);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      letter-spacing: 0.02em;
+    }
 
-textarea::placeholder{
-  color:#999999;
-}
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
 
-.primary-btn,
-.sub-btn{
-  appearance:none;
-  width:100%;
-  border:none;
-  border-radius:18px;
-  font:inherit;
-  font-weight:700;
-  cursor:pointer;
-}
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 720px;
+      font-size: 1rem;
+    }
 
-.primary-btn{
-  margin-top:18px;
-  padding:18px 20px;
-  font-size:18px;
-  background:var(--primary);
-  color:#fff;
-}
+    .body {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
 
-.primary-btn:hover{
-  background:var(--primary-hover);
-}
+    .field {
+      display: grid;
+      gap: 10px;
+    }
 
-.sub-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:12px;
-}
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
 
-.sub-btn{
-  padding:16px 14px;
-  font-size:16px;
-  background:#e9edf2;
-  color:#1f2937;
-}
+    .label {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
 
-.sub-btn:hover{
-  background:#dfe5eb;
-}
+    .hint {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
 
-.copy-btn{
-  margin-top:12px;
-}
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #11151d;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
 
-.status{
-  min-height:24px;
-  margin-top:14px;
-  color:#6b7280;
-  font-size:14px;
-}
+    textarea:focus {
+      border-color: rgba(139, 92, 246, 0.7);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+    }
 
-.result{
-  margin-top:18px;
-  border:1px solid #d9dee6;
-  border-radius:18px;
-  background:#fbfbfb;
-  padding:18px;
-}
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-.result h2{
-  margin:0 0 14px;
-  font-size:18px;
-}
+    .button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.18s ease, background 0.18s ease;
+    }
 
-.lesson-card{
-  border:1px solid #d9dee6;
-  border-radius:16px;
-  background:#fff;
-  padding:14px;
-  margin-top:12px;
-}
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: #48516a;
+    }
 
-.lesson-title{
-  margin:0 0 8px;
-  color:#6b7280;
-  font-size:13px;
-  font-weight:700;
-}
+    .button:active {
+      transform: translateY(0);
+    }
 
-.lesson-text{
-  margin:0;
-  line-height:1.6;
-}
+    .button.primary {
+      background: linear-gradient(180deg, #9a6bff, #7c4dff);
+      border-color: transparent;
+      color: white;
+      font-weight: 600;
+    }
 
-.footer{
-  margin-top:40px;
-  font-size:12px;
-  color:#666;
-  line-height:1.6;
-}
+    .button.secondary {
+      background: #131925;
+    }
 
-.footer p{
-  margin:0 0 14px;
-}
+    .button.ghost {
+      background: transparent;
+    }
 
-@media (max-width:560px){
-  h1{
-    font-size:30px;
-  }
+    .button.small {
+      padding: 10px 12px;
+      font-size: 0.92rem;
+    }
 
-  .sub-row{
-    grid-template-columns:1fr 1fr;
-  }
-}
-</style>
+    .output-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+      padding: 18px;
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+    }
+
+    .result {
+      white-space: pre-wrap;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .result.empty {
+      color: var(--muted);
+    }
+
+    .feedback {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .next-block {
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      background:
+        linear-gradient(180deg, rgba(6,182,212,0.08), rgba(6,182,212,0.03));
+    }
+
+    .next-title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: end;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .next-title {
+      margin: 0;
+      font-size: 1.04rem;
+      font-weight: 700;
+    }
+
+    .next-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .next-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .next-card {
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      transition: transform 0.16s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .next-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(6, 182, 212, 0.5);
+      background: rgba(255,255,255,0.045);
+    }
+
+    .next-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: #86e7f8;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .next-card h3 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .next-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.87rem;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 720px) {
+      .hero,
+      .body {
+        padding: 18px;
+      }
+
+      .next-grid {
+        grid-template-columns: 1fr;
+      }
+
+      textarea {
+        min-height: 160px;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
+  <main class="page">
+    <div class="shell">
+      <div class="topbar">
+        <a class="back-link" href="reframe-studio.html">← Back to REFRAME Studio</a>
+        <div class="studio-badge">Runs entirely in your browser</div>
+      </div>
 
-  <a class="back" href="./">← Back to REFRAME Studio</a>
+      <section class="card">
+        <header class="hero">
+          <div class="eyebrow">REFRAME Studio / Mutation Tool</div>
+          <h1>Criticism → Lesson</h1>
+          <p class="subtitle">
+            Turn friction, negativity, or external criticism into a usable lesson.
+            Not answer. Mutation.
+          </p>
+        </header>
 
-  <div class="panel">
-    <h1>Criticism → Lesson</h1>
-    <p class="desc">
-      Paste a criticism or negative comment. This tool turns it into 1–3 short lessons you can use right away.
-    </p>
+        <div class="body">
+          <div class="field">
+            <div class="label-row">
+              <label class="label" for="input">Input criticism</label>
+              <div class="hint">EN / JP placeholders included</div>
+            </div>
 
-    <label for="input">Criticism or negative comment</label>
+            <textarea
+              id="input"
+              placeholder="EN: Paste criticism, negative feedback, or a frustrating comment here...
 
-    <textarea
-      id="input"
-      placeholder="Example:
-Your presentation was confusing and too long. The main point was not clear.
+JP: 批判、否定的な反応、モヤモヤするコメントを書いてください..."
+            ></textarea>
+          </div>
 
-批判やネガティブなコメントを入力してください。"></textarea>
+          <div class="actions">
+            <button class="button secondary" id="try-example" type="button">Try example</button>
+            <button class="button primary" id="generate" type="button">Generate lesson</button>
+            <button class="button ghost" id="clear-input" type="button">Clear</button>
+          </div>
 
-    <button id="generateBtn" class="primary-btn" type="button">Extract Lessons</button>
+          <div class="feedback" id="feedback"></div>
 
-    <div class="sub-row">
-      <button id="exampleBtn" class="sub-btn" type="button">Try example</button>
-      <button id="voiceBtn" class="sub-btn" type="button">Voice Input</button>
-    </div>
+          <section class="output-wrap hidden" id="output-wrap">
+            <div class="panel">
+              <h2 class="panel-title">
+                <span class="dot"></span>
+                Lesson
+              </h2>
+              <div class="result" id="result"></div>
 
-    <button id="copyBtn" class="sub-btn copy-btn" type="button">Copy result</button>
+              <div class="actions" style="margin-top: 14px;">
+                <button class="button small" id="copy-result" type="button">Copy result</button>
+                <button class="button small" id="copy-link" type="button">Copy page link</button>
+              </div>
+            </div>
 
-    <div id="status" class="status"></div>
+            <div class="panel next-block">
+              <div class="next-title-row">
+                <div>
+                  <h2 class="next-title">Next mutation</h2>
+                  <p class="next-subtitle">A tool is not finished until the thought can continue.</p>
+                </div>
+              </div>
 
-    <div class="result">
-      <h2 id="resultTitle">Lessons</h2>
-      <div id="resultBody">
-        <div class="lesson-card">
-          <p class="lesson-text" id="emptyText">Your result will appear here.</p>
+              <div class="next-grid" id="next-tools"></div>
+            </div>
+          </section>
         </div>
-      </div>
+      </section>
+
+      <p class="footer-note">
+        Simple / Private / Fast — No login, no tracking, no personal data collected.
+      </p>
     </div>
-  </div>
+  </main>
 
-  <footer class="footer">
-    <p><strong>Built by REFRAME Studio</strong></p>
-    <p>
-      Turn criticism into 1–3 short lessons you can use right away.<br>
-      #Reframed
-    </p>
-    <p>
-      Open-source style tools. Simple. Private. Fast.
-    </p>
-    <p>
-      No login. No tracking. No personal data collected.<br>
-      Runs entirely in your browser.
-    </p>
-  </footer>
+  <script>
+    const inputEl = document.getElementById("input");
+    const generateBtn = document.getElementById("generate");
+    const tryExampleBtn = document.getElementById("try-example");
+    const clearInputBtn = document.getElementById("clear-input");
+    const outputWrap = document.getElementById("output-wrap");
+    const resultEl = document.getElementById("result");
+    const nextToolsEl = document.getElementById("next-tools");
+    const copyResultBtn = document.getElementById("copy-result");
+    const copyLinkBtn = document.getElementById("copy-link");
+    const feedbackEl = document.getElementById("feedback");
 
-</div>
-
-<script>
-const inputEl = document.getElementById("input");
-const statusEl = document.getElementById("status");
-const resultTitleEl = document.getElementById("resultTitle");
-const resultBodyEl = document.getElementById("resultBody");
-const exampleBtn = document.getElementById("exampleBtn");
-const voiceBtn = document.getElementById("voiceBtn");
-const copyBtn = document.getElementById("copyBtn");
-const generateBtn = document.getElementById("generateBtn");
-
-function isJapanese(text){
-  return /[ぁ-んァ-ン一-龯]/.test(text);
-}
-
-function t(lang, en, ja){
-  return lang === "ja" ? ja : en;
-}
-
-function getLang(text){
-  return isJapanese(text) ? "ja" : "en";
-}
-
-function setStatus(message){
-  statusEl.textContent = message;
-}
-
-function getLessons(text){
-  const lang = getLang(text);
-
-  if(lang === "ja"){
-    return [
-      "相手が混乱した点は、説明の長さではなく結論の見えにくさかもしれない。",
-      "伝えたい内容が正しくても、順番と要約が弱いと価値が届きにくい。",
-      "次回は最初に要点を短く示してから補足すると、受け取り方が改善しやすい。"
+    const EXAMPLES = [
+      "People say my posts are too abstract and hard to understand.",
+      "Everyone says I change direction too often and never stick to one theme.",
+      "My ideas are interesting, but people say they are too weird to be useful.",
+      "『言ってることは面白いけど、結局何が言いたいのかわからない』と言われた。",
+      "『発信が抽象的すぎて、誰のためなのか見えない』と言われた。"
     ];
-  }
 
-  return [
-    "The main issue may not be the idea itself, but the lack of clarity in how it is presented.",
-    "Even strong points lose impact when the structure is too long or the conclusion arrives too late.",
-    "Next time, lead with the core point first, then support it with shorter explanation."
-  ];
-}
+    const NEXT_MUTATIONS = [
+      {
+        key: "lesson-to-angle",
+        title: "Lesson → Angle",
+        description: "Turn the lesson into a sharper perspective or viewpoint.",
+        href: "lesson-to-angle.html",
+        label: "Perspective"
+      },
+      {
+        key: "lesson-to-hook",
+        title: "Lesson → Hook",
+        description: "Turn the lesson into a stronger opening line.",
+        href: "lesson-to-hook.html",
+        label: "Opening"
+      },
+      {
+        key: "lesson-to-thread",
+        title: "Lesson → Thread",
+        description: "Expand the lesson into a post or thread structure.",
+        href: "lesson-to-thread.html",
+        label: "Structure"
+      },
+      {
+        key: "lesson-to-opposite",
+        title: "Lesson → Opposite",
+        description: "Push the lesson through inversion to find a more interesting contrast.",
+        href: "lesson-to-opposite.html",
+        label: "Inversion"
+      }
+    ];
 
-function renderLessons(text){
-  const lang = getLang(text);
-  const lessons = getLessons(text);
+    function setFeedback(message) {
+      feedbackEl.textContent = message || "";
+    }
 
-  resultTitleEl.textContent = t(lang, "Lessons", "教訓");
+    function getInputFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("input") || "";
+    }
 
-  resultBodyEl.innerHTML = lessons.map((lesson, index) => {
-    return `
-      <div class="lesson-card">
-        <div class="lesson-title">${t(lang, `Lesson ${index + 1}`, `教訓 ${index + 1}`)}</div>
-        <p class="lesson-text">${lesson}</p>
-      </div>
-    `;
-  }).join("");
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-  setStatus(t(lang, "Converted into 1–3 lessons.", "1〜3個の教訓に変換しました。"));
-}
+    function splitSentences(text) {
+      return text
+        .replace(/\n+/g, " ")
+        .split(/(?<=[.!?。！？])\s+|\n+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+    }
 
-function generate(){
-  const value = inputEl.value.trim();
+    function normalizeInput(text) {
+      return text
+        .replace(/\s+/g, " ")
+        .replace(/[“”]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .trim();
+    }
 
-  if(!value){
-    const lang = getLang(inputEl.value);
-    setStatus(t(lang, "Paste criticism first.", "先に批判やコメントを入力してください。"));
-    return;
-  }
+    function pickExample() {
+      const randomIndex = Math.floor(Math.random() * EXAMPLES.length);
+      return EXAMPLES[randomIndex];
+    }
 
-  renderLessons(value);
-}
+    function analyzeCriticism(text) {
+      const lower = text.toLowerCase();
 
-function insertExample(){
-  inputEl.value = "Your presentation was confusing and too long. The main point was not clear.";
-  setStatus("English example inserted.");
-}
+      const flags = {
+        clarity:
+          /abstract|unclear|confusing|hard to understand|what do you mean|わからない|抽象|伝わら|意味不明|見えない/.test(lower),
+        consistency:
+          /inconsistent|change direction|all over the place|scattered|stick to|テーマがない|ブレ|一貫性|散らか/.test(lower),
+        usefulness:
+          /useless|not useful|too weird|impractical|pointless|役に立たない|使えない|変すぎ|現実的じゃない/.test(lower),
+        audience:
+          /for who|who is this for|nobody needs|target|audience|誰向け|誰のため|ターゲット/.test(lower),
+        emotional:
+          /hate|annoying|stupid|bad|terrible|awful|嫌い|うざい|最悪|ひどい/.test(lower)
+      };
 
-async function copyResult(){
-  const cards = Array.from(document.querySelectorAll(".lesson-card .lesson-text"));
-  const texts = cards.map(el => el.textContent.trim()).filter(Boolean);
+      if (flags.clarity) return "clarity";
+      if (flags.audience) return "audience";
+      if (flags.consistency) return "consistency";
+      if (flags.usefulness) return "usefulness";
+      if (flags.emotional) return "emotion";
+      return "generic";
+    }
 
-  if(!texts.length || (texts.length === 1 && texts[0] === "Your result will appear here.")){
-    setStatus("Generate lessons first.");
-    return;
-  }
+    function transformCriticismToLesson(text) {
+      const clean = normalizeInput(text);
+      const type = analyzeCriticism(clean);
 
-  const lang = getLang(inputEl.value.trim());
-  const title = t(lang, "Criticism → Lesson", "Criticism → Lesson");
-  const heading = t(lang, "Lessons", "教訓");
-  const output = `${title}\n\n${heading}\n${texts.map((text, i) => `${i + 1}. ${text}`).join("\n")}`;
+      const starters = {
+        clarity:
+          "This criticism may be pointing to a gap between your intention and the audience’s entry point.",
+        audience:
+          "This criticism may be revealing that the idea exists, but the receiver cannot find their place inside it.",
+        consistency:
+          "This criticism may be reacting less to the quality of your ideas and more to the lack of a visible through-line.",
+        usefulness:
+          "This criticism may not mean the idea is wrong. It may mean the bridge from strange to useful is still missing.",
+        emotion:
+          "This criticism may contain heat, but heat often appears where expectation and reality collide.",
+        generic:
+          "This criticism may contain a signal hidden inside a rough or unhelpful surface."
+      };
 
-  try{
-    await navigator.clipboard.writeText(output);
-    setStatus(t(lang, "Result copied.", "結果をコピーしました。"));
-  }catch(error){
-    setStatus(t(lang, "Copy failed.", "コピーに失敗しました。"));
-  }
-}
+      const lessons = {
+        clarity:
+          "The lesson is not simply to become simpler. The lesson is to create a clearer doorway into the idea so others can enter before they judge.",
+        audience:
+          "The lesson is not to make the thought smaller. The lesson is to make the intended receiver visible inside the expression.",
+        consistency:
+          "The lesson is not to force yourself into rigidity. The lesson is to reveal the deeper theme that connects your changing ideas.",
+        usefulness:
+          "The lesson is not to abandon weirdness. The lesson is to translate weirdness into application, example, or consequence.",
+        emotion:
+          "The lesson is not to absorb the emotion as truth. The lesson is to separate tone from information and keep only what improves direction.",
+        generic:
+          "The lesson is to extract the structural hint, discard the noise, and turn reaction into design input."
+      };
 
-function loadInputFromUrl(){
-  const params = new URLSearchParams(window.location.search);
-  const input = params.get("input");
-  if(input){
-    inputEl.value = input;
-  }
-}
+      const closer =
+        "Criticism becomes useful the moment it stops being a verdict and starts becoming material.";
 
-function setupVoiceInput(){
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      return `${starters[type]} ${lessons[type]}\n\n${closer}`;
+    }
 
-  if(!SpeechRecognition){
-    voiceBtn.addEventListener("click", function(){
-      setStatus("Voice input is not supported in this browser.");
+    function chooseNextMutations(resultText) {
+      const lower = resultText.toLowerCase();
+
+      if (lower.includes("doorway") || lower.includes("entry point") || lower.includes("clearer")) {
+        return [
+          NEXT_MUTATIONS[0],
+          NEXT_MUTATIONS[1],
+          NEXT_MUTATIONS[2]
+        ];
+      }
+
+      if (lower.includes("receiver") || lower.includes("visible") || lower.includes("audience")) {
+        return [
+          NEXT_MUTATIONS[0],
+          NEXT_MUTATIONS[2],
+          NEXT_MUTATIONS[3]
+        ];
+      }
+
+      if (lower.includes("theme") || lower.includes("connects") || lower.includes("through-line")) {
+        return [
+          NEXT_MUTATIONS[2],
+          NEXT_MUTATIONS[0],
+          NEXT_MUTATIONS[3]
+        ];
+      }
+
+      if (lower.includes("translate weirdness") || lower.includes("application")) {
+        return [
+          NEXT_MUTATIONS[3],
+          NEXT_MUTATIONS[1],
+          NEXT_MUTATIONS[2]
+        ];
+      }
+
+      return [
+        NEXT_MUTATIONS[0],
+        NEXT_MUTATIONS[1],
+        NEXT_MUTATIONS[2]
+      ];
+    }
+
+    function buildNextToolURL(baseHref, resultText) {
+      return `${baseHref}?input=${encodeURIComponent(resultText)}`;
+    }
+
+    function renderNextMutations(resultText) {
+      const routes = chooseNextMutations(resultText);
+      nextToolsEl.innerHTML = "";
+
+      routes.forEach(route => {
+        const link = document.createElement("a");
+        link.className = "next-card";
+        link.href = buildNextToolURL(route.href, resultText);
+        link.innerHTML = `
+          <span class="next-label">${escapeHTML(route.label)}</span>
+          <h3>${escapeHTML(route.title)}</h3>
+          <p>${escapeHTML(route.description)}</p>
+        `;
+        nextToolsEl.appendChild(link);
+      });
+    }
+
+    function showOutput(resultText) {
+      resultEl.textContent = resultText;
+      outputWrap.classList.remove("hidden");
+      renderNextMutations(resultText);
+    }
+
+    async function copyText(text, successMessage) {
+      try {
+        await navigator.clipboard.writeText(text);
+        setFeedback(successMessage);
+      } catch (error) {
+        setFeedback("Copy failed. Please copy manually.");
+        console.error(error);
+      }
+    }
+
+    function generateLesson() {
+      const inputText = normalizeInput(inputEl.value);
+
+      if (!inputText) {
+        setFeedback("Please enter criticism first.");
+        inputEl.focus();
+        return;
+      }
+
+      const lesson = transformCriticismToLesson(inputText);
+      showOutput(lesson);
+      setFeedback("Lesson generated. Continue the thought with the next mutation.");
+    }
+
+    function initPrefilledInput() {
+      const prefilled = getInputFromURL();
+      if (prefilled) {
+        inputEl.value = prefilled;
+        setFeedback("Prefilled input loaded from URL.");
+      }
+    }
+
+    tryExampleBtn.addEventListener("click", () => {
+      inputEl.value = pickExample();
+      setFeedback("Example inserted.");
+      inputEl.focus();
     });
-    return;
-  }
 
-  const recognition = new SpeechRecognition();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+    clearInputBtn.addEventListener("click", () => {
+      inputEl.value = "";
+      resultEl.textContent = "";
+      nextToolsEl.innerHTML = "";
+      outputWrap.classList.add("hidden");
+      setFeedback("Cleared.");
+      inputEl.focus();
+    });
 
-  voiceBtn.addEventListener("click", function(){
-    const lang = getLang(inputEl.value.trim());
-    recognition.lang = lang === "ja" ? "ja-JP" : "en-US";
-    setStatus(t(lang, "Listening...", "音声入力中..."));
-    recognition.start();
-  });
+    generateBtn.addEventListener("click", generateLesson);
 
-  recognition.addEventListener("result", function(event){
-    const transcript = event.results[0][0].transcript;
-    inputEl.value = transcript;
-    const lang = getLang(transcript);
-    setStatus(t(lang, "Voice input inserted.", "音声入力を反映しました。"));
-  });
+    inputEl.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        generateLesson();
+      }
+    });
 
-  recognition.addEventListener("error", function(){
-    const lang = getLang(inputEl.value.trim());
-    setStatus(t(lang, "Voice input failed.", "音声入力に失敗しました。"));
-  });
-}
+    copyResultBtn.addEventListener("click", () => {
+      const text = resultEl.textContent.trim();
+      if (!text) {
+        setFeedback("No result to copy yet.");
+        return;
+      }
+      copyText(text, "Result copied.");
+    });
 
-generateBtn.addEventListener("click", generate);
-exampleBtn.addEventListener("click", insertExample);
-copyBtn.addEventListener("click", copyResult);
+    copyLinkBtn.addEventListener("click", () => {
+      copyText(window.location.href, "Page link copied.");
+    });
 
-inputEl.addEventListener("keydown", function(event){
-  if(event.key === "Enter" && (event.metaKey || event.ctrlKey)){
-    generate();
-  }
-});
-
-loadInputFromUrl();
-setupVoiceInput();
-</script>
+    initPrefilledInput();
+  </script>
 </body>
 </html>
