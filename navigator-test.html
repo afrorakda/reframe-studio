@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navigator Test</title>
+
+<style>
+body{
+background:#0f1115;
+color:#e8ecf1;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+h1{
+margin-bottom:8px;
+}
+
+.sub{
+color:#9aa4b2;
+margin-bottom:24px;
+}
+
+.card{
+background:#171a21;
+border:1px solid #2a3140;
+border-radius:14px;
+padding:16px;
+margin-bottom:18px;
+}
+
+textarea{
+width:100%;
+min-height:120px;
+background:#0f1115;
+border:1px solid #333c4d;
+border-radius:10px;
+color:#e8ecf1;
+padding:12px;
+font-size:14px;
+}
+
+button{
+background:#2b6cff;
+border:none;
+padding:10px 14px;
+border-radius:10px;
+color:white;
+cursor:pointer;
+margin-right:6px;
+margin-top:10px;
+}
+
+button.secondary{
+background:#2a3140;
+}
+
+.pill{
+display:inline-block;
+padding:5px 10px;
+border-radius:999px;
+background:#222938;
+border:1px solid #33405a;
+font-size:13px;
+margin:4px 4px 0 0;
+}
+
+.tool-link{
+display:block;
+padding:12px 14px;
+margin-top:10px;
+border-radius:10px;
+background:#0f1115;
+border:1px solid #33405a;
+color:#dbe5ff;
+text-decoration:none;
+}
+
+.tool-link:hover{
+border-color:#4a69b8;
+}
+
+.small{
+font-size:13px;
+color:#9aa4b2;
+}
+
+.empty{
+color:#9aa4b2;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Navigator Test</h1>
+<p class="sub">Input your thought. See the zone. Open the next tools.</p>
+
+<div class="card">
+<label>Input</label>
+<textarea id="input">I feel stuck and cannot decide what to build next.</textarea>
+<br>
+<button onclick="runNavigator()">Run navigator</button>
+<button class="secondary" onclick="example1()">Example 1</button>
+<button class="secondary" onclick="example2()">Example 2</button>
+<button class="secondary" onclick="clearAll()">Clear</button>
+</div>
+
+<div class="card">
+<h3>Detected Zone</h3>
+<div id="zoneView" class="empty">No result yet.</div>
+</div>
+
+<div class="card">
+<h3>Path</h3>
+<div id="pathView" class="empty">No result yet.</div>
+</div>
+
+<div class="card">
+<h3>Suggested Tools</h3>
+<div id="toolsView" class="empty">No result yet.</div>
+</div>
+
+</div>
+
+<script src="./mutation-map.js"></script>
+<script src="./router-v2.js"></script>
+<script src="./drift-engine.js"></script>
+<script src="./drift-memory.js"></script>
+<script src="./gravity-engine.js"></script>
+<script src="./mutation-loop.js"></script>
+<script src="./reframe-navigator.js"></script>
+
+<script>
+function example1(){
+document.getElementById("input").value =
+"I feel stuck and cannot decide what to build next."
+}
+
+function example2(){
+document.getElementById("input").value =
+"アイデアはあるのにツールの形にできない。"
+}
+
+function clearAll(){
+document.getElementById("zoneView").innerHTML = "No result yet."
+document.getElementById("pathView").innerHTML = "No result yet."
+document.getElementById("toolsView").innerHTML = "No result yet."
+}
+
+function pill(text){
+return "<span class='pill'>" + text + "</span>";
+}
+
+function escapeHtml(text){
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;");
+}
+
+function runNavigator(){
+
+if(!window.REFRAME_NAVIGATOR){
+document.getElementById("zoneView").innerHTML = "Navigator not loaded."
+document.getElementById("pathView").innerHTML = ""
+document.getElementById("toolsView").innerHTML = ""
+return;
+}
+
+var input = document.getElementById("input").value;
+var result = window.REFRAME_NAVIGATOR.navigate(input);
+
+if(!result){
+document.getElementById("zoneView").innerHTML = "No result."
+document.getElementById("pathView").innerHTML = ""
+document.getElementById("toolsView").innerHTML = ""
+return;
+}
+
+renderZone(result.zone);
+renderPath(result.path);
+renderTools(result.tools);
+}
+
+function renderZone(zone){
+document.getElementById("zoneView").innerHTML =
+zone ? pill(zone) : "<span class='empty'>No zone found.</span>";
+}
+
+function renderPath(path){
+if(!path || !path.length){
+document.getElementById("pathView").innerHTML = "No path."
+return;
+}
+
+var html = "";
+
+path.forEach(function(step){
+html += pill("Step " + step.stepNumber + ": " + step.zoneTitle);
+});
+
+document.getElementById("pathView").innerHTML = html;
+}
+
+function renderTools(tools){
+if(!tools || !tools.length){
+document.getElementById("toolsView").innerHTML = "No tools found."
+return;
+}
+
+var html = "";
+
+tools.forEach(function(tool){
+html += '<a class="tool-link" href="./' + encodeURI(tool) + '">' + escapeHtml(tool) + '</a>';
+});
+
+document.getElementById("toolsView").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
