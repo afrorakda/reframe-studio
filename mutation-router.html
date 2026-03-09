@@ -1,222 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutation Router</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mutation Router</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-body{
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-margin:0;
-background:#ffffff;
-color:#111;
-line-height:1.5;
-}
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+    }
 
-.container{
-max-width:720px;
-margin:0 auto;
-padding:24px;
-}
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 18px 40px;
+    }
 
-.back{
-font-size:14px;
-margin-bottom:16px;
-display:inline-block;
-color:#666;
-text-decoration:none;
-}
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #666666;
+      text-decoration: none;
+      font-size: 15px;
+    }
 
-h1{
-font-size:32px;
-margin:0 0 8px 0;
-}
+    h1 {
+      margin: 0 0 10px;
+      font-size: 48px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
 
-.desc{
-color:#666;
-margin-bottom:20px;
-}
+    .desc {
+      margin: 0 0 26px;
+      font-size: 18px;
+      color: #666666;
+      max-width: 640px;
+    }
 
-textarea{
-width:100%;
-height:120px;
-padding:12px;
-font-size:16px;
-border:1px solid #ddd;
-border-radius:8px;
-box-sizing:border-box;
-}
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      border: 2px solid #e6e6e6;
+      border-radius: 18px;
+      padding: 20px;
+      font: inherit;
+      font-size: 18px;
+      color: #111111;
+      background: #ffffff;
+      resize: vertical;
+      outline: none;
+    }
 
-.buttons{
-margin-top:12px;
-}
+    textarea:focus {
+      border-color: #111111;
+    }
 
-button{
-padding:12px 16px;
-font-size:15px;
-border-radius:8px;
-border:none;
-cursor:pointer;
-margin-right:8px;
-margin-top:8px;
-}
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
 
-.primary{
-background:#111;
-color:#fff;
-}
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 16px 22px;
+      font: inherit;
+      font-size: 17px;
+      cursor: pointer;
+      min-height: 56px;
+    }
 
-.secondary{
-background:#eee;
-color:#111;
-}
+    .primary {
+      background: #111111;
+      color: #ffffff;
+    }
 
-.result{
-margin-top:28px;
-}
+    .secondary {
+      background: #efefef;
+      color: #111111;
+    }
 
-.card{
-border:1px solid #eee;
-border-radius:10px;
-padding:16px;
-margin-bottom:12px;
-}
+    .result {
+      margin-top: 28px;
+    }
 
-.card-title{
-font-weight:600;
-margin-bottom:6px;
-}
+    .result-title {
+      font-size: 15px;
+      color: #666666;
+      margin-bottom: 14px;
+    }
 
-.open{
-display:inline-block;
-margin-top:6px;
-font-size:14px;
-}
+    .card {
+      border: 2px solid #efefef;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+      background: #ffffff;
+    }
 
-.footer{
-margin-top:40px;
-font-size:12px;
-color:#777;
-}
-</style>
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .meta {
+      font-size: 14px;
+      color: #666666;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 16px;
+      color: #444444;
+    }
+
+    .open-link {
+      display: inline-block;
+      margin-top: 14px;
+      color: #111111;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .empty {
+      color: #666666;
+      font-size: 16px;
+      padding: 6px 2px;
+    }
+
+    .footer {
+      margin-top: 34px;
+      font-size: 14px;
+      color: #777777;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 34px;
+      }
+
+      .desc {
+        font-size: 16px;
+      }
+
+      textarea {
+        font-size: 16px;
+        min-height: 140px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 15px 18px;
+        min-height: 52px;
+      }
+
+      .card h3 {
+        font-size: 20px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
 
-<div class="container">
+    <h1>Mutation Router</h1>
+    <p class="desc">Drop a thought fragment. Discover possible next mutations.</p>
 
-<a class="back" href="./index.html">← Back to REFRAME Studio</a>
-
-<h1>Mutation Router</h1>
-
-<div class="desc">
-Drop a thought fragment. Discover possible next mutations.
-</div>
-
-<textarea id="input" placeholder="Example:
+    <textarea id="fragmentInput" placeholder="Example:
 People say my ideas are too abstract
 AI tools feel repetitive
 Content creation feels exhausting"></textarea>
 
-<div class="buttons">
-<button class="primary" onclick="runRouter()">Find next mutations</button>
-<button class="secondary" onclick="example()">Try example</button>
-<button class="secondary" onclick="clearInput()">Clear</button>
-</div>
+    <div class="buttons">
+      <button class="primary" id="runBtn">Find next mutations</button>
+      <button class="secondary" id="exampleBtn">Try example</button>
+      <button class="secondary" id="clearBtn">Clear</button>
+    </div>
 
-<div class="result" id="result"></div>
+    <div class="result" id="result"></div>
 
-<div class="footer">
-No login. No tracking. Runs entirely in your browser.
-</div>
+    <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
+  </div>
 
-</div>
+  <script>
+    const TOOL_REGISTRY = [
+      {
+        id: "thought-galaxy",
+        title: "Thought Galaxy",
+        file: "thought-galaxy.html",
+        note: "Start from a floating fragment and open mutation paths."
+      },
+      {
+        id: "mutation-engine",
+        title: "Mutation Engine",
+        file: "mutation-engine.html",
+        note: "Push the fragment into a stronger mutation."
+      },
+      {
+        id: "mutation-flow",
+        title: "Mutation Flow v1",
+        file: "mutation-flow-v1.html",
+        note: "Keep the mutation moving into a next form."
+      },
+      {
+        id: "tool-birth-engine",
+        title: "Tool Birth Engine v1",
+        file: "tool-birth-engine-v1.html",
+        note: "Turn mutation into a possible new tool."
+      }
+    ];
 
-<script src="./fragment.js"></script>
-<script src="./router.js"></script>
+    function createFragment(text, sourceType = "idea", mode = "drift") {
+      return {
+        id: "frag_" + Date.now(),
+        text: text.trim(),
+        sourceType: sourceType,
+        currentField: "friction",
+        mode: mode,
+        history: []
+      };
+    }
 
-<script>
+    function detectSourceType(text) {
+      const t = text.toLowerCase();
 
-function detectSourceType(text){
+      if (t.includes("people say") || t.includes("criticism") || t.includes("critic")) {
+        return "criticism";
+      }
 
-const t = text.toLowerCase();
+      if (t.includes("feel") || t.includes("tired") || t.includes("exhaust") || t.includes("overwhelmed")) {
+        return "emotion";
+      }
 
-if(t.includes("people say") || t.includes("critic")) return "criticism";
-if(t.includes("feel") || t.includes("tired") || t.includes("exhaust")) return "emotion";
-if(t.includes("can't") || t.includes("cannot") || t.includes("stuck")) return "problem";
-if(t.includes("confused") || t.includes("why")) return "confusion";
-if(t.includes("failed") || t.includes("didn't work")) return "failure";
+      if (t.includes("can't") || t.includes("cannot") || t.includes("stuck") || t.includes("problem")) {
+        return "problem";
+      }
 
-return "idea";
+      if (t.includes("confused") || t.includes("why") || t.includes("unclear")) {
+        return "confusion";
+      }
 
-}
+      if (t.includes("failed") || t.includes("didn't work") || t.includes("did not work")) {
+        return "failure";
+      }
 
-function runRouter(){
+      return "idea";
+    }
 
-const text = document.getElementById("input").value.trim();
+    function findTools(ids) {
+      return TOOL_REGISTRY.filter(tool => ids.includes(tool.id));
+    }
 
-if(!text){
-alert("Enter a thought fragment.");
-return;
-}
+    function getNextTools(fragment) {
+      const type = fragment.sourceType;
 
-const sourceType = detectSourceType(text);
+      if (type === "idea") {
+        return findTools(["mutation-engine", "mutation-flow"]);
+      }
 
-const fragment = createFragment(text, sourceType);
+      if (type === "criticism") {
+        return findTools(["mutation-engine", "mutation-flow"]);
+      }
 
-const tools = getNextTools(fragment);
+      if (type === "emotion") {
+        return findTools(["mutation-engine"]);
+      }
 
-renderTools(tools);
+      if (type === "problem") {
+        return findTools(["mutation-engine", "mutation-flow"]);
+      }
 
-}
+      if (type === "confusion") {
+        return findTools(["thought-galaxy", "mutation-flow"]);
+      }
 
-function renderTools(tools){
+      if (type === "failure") {
+        return findTools(["mutation-engine", "tool-birth-engine"]);
+      }
 
-const box = document.getElementById("result");
+      return findTools(["mutation-engine"]);
+    }
 
-box.innerHTML = "";
+    function renderResults(tools, fragment) {
+      const result = document.getElementById("result");
 
-if(!tools || tools.length === 0){
+      if (!tools || tools.length === 0) {
+        result.innerHTML = '<div class="empty">No next mutations found.</div>';
+        return;
+      }
 
-box.innerHTML = "<p>No mutations found.</p>";
-return;
+      let html = '<div class="result-title">Next mutations for: <strong>' + escapeHtml(fragment.sourceType) + '</strong></div>';
 
-}
+      tools.forEach(tool => {
+        html += `
+          <div class="card">
+            <h3>${escapeHtml(tool.title)}</h3>
+            <div class="meta">Next mutation tool</div>
+            <p>${escapeHtml(tool.note)}</p>
+            <a class="open-link" href="./${escapeHtml(tool.file)}">Open tool →</a>
+          </div>
+        `;
+      });
 
-tools.forEach(tool=>{
+      result.innerHTML = html;
+    }
 
-const div = document.createElement("div");
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
 
-div.className="card";
+    function runRouter() {
+      const input = document.getElementById("fragmentInput");
+      const text = input.value.trim();
 
-div.innerHTML=`
-<div class="card-title">${tool.title}</div>
-<div>Next mutation tool</div>
-<a class="open" href="./${tool.file}">Open tool →</a>
-`;
+      if (!text) {
+        alert("Enter a thought fragment.");
+        return;
+      }
 
-box.appendChild(div);
+      const sourceType = detectSourceType(text);
+      const fragment = createFragment(text, sourceType, "drift");
+      const tools = getNextTools(fragment);
 
-});
+      renderResults(tools, fragment);
+    }
 
-}
+    function fillExample() {
+      document.getElementById("fragmentInput").value = "People say my ideas are too abstract";
+      document.getElementById("result").innerHTML = "";
+    }
 
-function example(){
+    function clearAll() {
+      document.getElementById("fragmentInput").value = "";
+      document.getElementById("result").innerHTML = "";
+    }
 
-document.getElementById("input").value =
-"People say my ideas are too abstract";
-
-}
-
-function clearInput(){
-
-document.getElementById("input").value="";
-document.getElementById("result").innerHTML="";
-
-}
-
-</script>
-
+    document.getElementById("runBtn").addEventListener("click", runRouter);
+    document.getElementById("exampleBtn").addEventListener("click", fillExample);
+    document.getElementById("clearBtn").addEventListener("click", clearAll);
+  </script>
 </body>
 </html>
