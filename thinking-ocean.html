@@ -1,754 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thinking Ocean</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Ocean</title>
 
-    :root {
-      --line: rgba(115, 151, 255, 0.22);
-      --text: #f4f7ff;
-      --muted: #9eb0d8;
-      --blue: #66b6ff;
-      --purple: #9a72ff;
-      --cyan: #70f0ff;
-      --glow-blue: 0 0 0 1px rgba(102, 182, 255, 0.18), 0 0 28px rgba(70, 120, 255, 0.18);
-      --glow-purple: 0 0 0 1px rgba(154, 114, 255, 0.18), 0 0 28px rgba(154, 114, 255, 0.18);
-    }
+<style>
 
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(102, 182, 255, 0.16), transparent 30%),
-        radial-gradient(circle at 85% 10%, rgba(154, 114, 255, 0.16), transparent 30%),
-        radial-gradient(circle at 50% 120%, rgba(60, 120, 255, 0.12), transparent 40%),
-        linear-gradient(180deg, #050914 0%, #071024 45%, #040816 100%);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.45;
-    }
+body{
+background:#030712;
+color:white;
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+margin:0;
+padding:20px;
+}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.65;
-      background-image:
-        radial-gradient(2px 2px at 8% 14%, rgba(255,255,255,0.8), transparent 60%),
-        radial-gradient(1.5px 1.5px at 18% 32%, rgba(255,255,255,0.55), transparent 60%),
-        radial-gradient(2px 2px at 28% 76%, rgba(255,255,255,0.7), transparent 60%),
-        radial-gradient(1.5px 1.5px at 37% 18%, rgba(255,255,255,0.55), transparent 60%),
-        radial-gradient(2px 2px at 45% 56%, rgba(255,255,255,0.75), transparent 60%),
-        radial-gradient(1.5px 1.5px at 54% 8%, rgba(255,255,255,0.55), transparent 60%),
-        radial-gradient(2px 2px at 63% 34%, rgba(255,255,255,0.7), transparent 60%),
-        radial-gradient(1.5px 1.5px at 72% 68%, rgba(255,255,255,0.55), transparent 60%),
-        radial-gradient(2px 2px at 84% 22%, rgba(255,255,255,0.8), transparent 60%),
-        radial-gradient(1.5px 1.5px at 92% 82%, rgba(255,255,255,0.55), transparent 60%);
-    }
+.container{
+max-width:900px;
+margin:auto;
+}
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 18px 16px 42px;
-    }
+textarea{
+width:100%;
+height:120px;
+background:#0b1220;
+border:1px solid #1f2937;
+border-radius:12px;
+color:white;
+padding:14px;
+font-size:16px;
+}
 
-    .shell {
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(8, 15, 36, 0.92), rgba(7, 13, 28, 0.9));
-      box-shadow:
-        0 0 0 1px rgba(120, 145, 255, 0.08),
-        0 24px 60px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      overflow: hidden;
-    }
+button{
+margin-top:10px;
+margin-right:8px;
+padding:12px 16px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+}
 
-    .top-line {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(135, 159, 255, 0.45), transparent);
-    }
+.primary{
+background:#7c3aed;
+color:white;
+}
 
-    .inner {
-      padding: 22px 16px 26px;
-    }
+.card{
+margin-top:20px;
+padding:16px;
+background:#0b1220;
+border-radius:14px;
+border:1px solid #1f2937;
+}
 
-    .back-link {
-      display: inline-block;
-      margin-bottom: 18px;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 15px;
-    }
+.tag{
+display:inline-block;
+padding:4px 10px;
+border-radius:999px;
+background:#111827;
+margin-right:6px;
+font-size:12px;
+}
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-      line-height: 1.05;
-      letter-spacing: -0.03em;
-    }
+.meta{
+margin-top:10px;
+font-size:14px;
+color:#9ca3af;
+}
 
-    .desc {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 17px;
-    }
+.open{
+margin-top:10px;
+display:inline-block;
+padding:10px 14px;
+background:#14b8a6;
+border-radius:10px;
+color:white;
+text-decoration:none;
+}
 
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(14, 27, 67, 0.88), rgba(10, 20, 49, 0.92));
-      box-shadow: var(--glow-blue);
-      overflow: hidden;
-    }
+.remove{
+background:#1f2937;
+color:white;
+}
 
-    textarea {
-      width: 100%;
-      min-height: 140px;
-      padding: 22px 20px;
-      border: 0;
-      outline: none;
-      resize: vertical;
-      background: transparent;
-      color: var(--text);
-      font: inherit;
-      font-size: 18px;
-      line-height: 1.55;
-    }
+</style>
 
-    textarea::placeholder {
-      color: rgba(210, 221, 255, 0.5);
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    button {
-      width: 100%;
-      min-height: 58px;
-      padding: 16px 18px;
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(12, 27, 67, 0.96), rgba(10, 23, 56, 0.96));
-      color: var(--text);
-      font: inherit;
-      font-size: 17px;
-      cursor: pointer;
-      box-shadow: var(--glow-blue);
-    }
-
-    button.primary {
-      border-color: rgba(153, 123, 255, 0.42);
-      background: linear-gradient(180deg, rgba(70, 46, 139, 0.96), rgba(41, 31, 96, 0.96));
-      box-shadow: var(--glow-purple);
-    }
-
-    .summary-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .summary-card {
-      border: 1px solid rgba(113, 149, 255, 0.24);
-      border-radius: 22px;
-      padding: 16px 14px;
-      background: linear-gradient(180deg, rgba(11, 24, 58, 0.95), rgba(8, 18, 43, 0.97));
-      box-shadow: var(--glow-blue);
-    }
-
-    .summary-label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .summary-value {
-      font-size: 28px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .ocean {
-      margin-top: 18px;
-      padding: 18px 14px 22px;
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(9, 18, 45, 0.88), rgba(6, 13, 31, 0.94));
-      box-shadow: var(--glow-blue);
-    }
-
-    .ocean-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 14px;
-    }
-
-    .ocean-title {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .ocean-sub {
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 16px;
-    }
-
-    .ocean-mode {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(113, 149, 255, 0.24);
-      background: rgba(10, 20, 49, 0.82);
-      color: var(--text);
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    .layer-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .layer-tab {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(113, 149, 255, 0.24);
-      background: rgba(10, 20, 49, 0.82);
-      color: var(--text);
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .layer-tab.active {
-      border-color: rgba(153, 123, 255, 0.42);
-      background: linear-gradient(180deg, rgba(70, 46, 139, 0.96), rgba(41, 31, 96, 0.96));
-      box-shadow: var(--glow-purple);
-    }
-
-    .ocean-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .fragment-card {
-      border: 1px solid rgba(146, 119, 255, 0.34);
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(42, 23, 79, 0.92), rgba(23, 20, 62, 0.94));
-      box-shadow: var(--glow-purple);
-      padding: 18px 16px 16px;
-    }
-
-    .fragment-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .fragment-pill {
-      display: inline-block;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(146, 119, 255, 0.28);
-      color: var(--muted);
-      font-size: 13px;
-      background: rgba(20, 14, 47, 0.7);
-      white-space: nowrap;
-    }
-
-    .fragment-text {
-      font-size: 20px;
-      line-height: 1.35;
-      font-weight: 600;
-      margin: 0 0 14px;
-      word-break: break-word;
-    }
-
-    .meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .mini-pill {
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(113, 149, 255, 0.24);
-      background: rgba(10, 20, 49, 0.82);
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    .history-box {
-      margin-bottom: 14px;
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(113, 149, 255, 0.18);
-      background: rgba(8, 18, 43, 0.75);
-    }
-
-    .history-label {
-      color: var(--blue);
-      font-size: 13px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .history-text {
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .card-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .open-btn,
-    .drift-btn,
-    .remove-btn {
-      display: block;
-      width: 100%;
-      padding: 14px 14px;
-      border-radius: 18px;
-      text-align: center;
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .open-btn {
-      border: 1px solid rgba(113, 240, 255, 0.28);
-      background: linear-gradient(180deg, rgba(37, 93, 108, 0.92), rgba(24, 62, 80, 0.96));
-      box-shadow: 0 0 0 1px rgba(112, 240, 255, 0.12), 0 0 24px rgba(83, 202, 255, 0.12);
-    }
-
-    .drift-btn,
-    .remove-btn {
-      border: 1px solid rgba(113, 149, 255, 0.18);
-      background: linear-gradient(180deg, rgba(12, 26, 61, 0.95), rgba(8, 18, 43, 0.97));
-      box-shadow: var(--glow-blue);
-    }
-
-    .empty {
-      color: var(--muted);
-      font-size: 16px;
-      padding: 8px 4px;
-    }
-
-    .footer {
-      margin-top: 22px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    @media (max-width: 760px) {
-      .summary-row {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .inner {
-        padding: 18px 14px 22px;
-      }
-
-      h1 {
-        font-size: 28px;
-      }
-
-      .desc {
-        font-size: 16px;
-      }
-
-      textarea {
-        min-height: 136px;
-        font-size: 17px;
-      }
-
-      button {
-        min-height: 54px;
-        font-size: 16px;
-      }
-
-      .buttons,
-      .card-buttons {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .fragment-top,
-      .ocean-head {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .fragment-text {
-        font-size: 18px;
-      }
-
-      .summary-value {
-        font-size: 24px;
-      }
-    }
-  </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="shell">
-      <div class="top-line"></div>
-      <div class="inner">
-        <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
 
-        <h1>Thinking Ocean</h1>
-        <p class="desc">Drop your fragments into a private ocean. Tap one to open its galaxy.</p>
+<div class="container">
 
-        <div class="panel">
-          <textarea id="input" placeholder="Example:
+<a href="./index.html">← Back to REFRAME Studio</a>
+
+<h1>Thinking Ocean</h1>
+
+<p>Drop fragments into your private thinking ocean.</p>
+
+<textarea id="input" placeholder="Example:
 People say my ideas are too abstract
-I feel stuck and cannot decide what to build next
-AI tools feel repetitive"></textarea>
-        </div>
+I feel stuck and cannot decide what to build next"></textarea>
 
-        <div class="buttons">
-          <button class="primary" id="addBtn">Drop fragment</button>
-          <button id="exampleBtn">Try example</button>
-          <button id="clearInputBtn">Clear input</button>
-          <button id="clearOceanBtn">Clear ocean</button>
-        </div>
+<br>
 
-        <div class="summary-row">
-          <div class="summary-card">
-            <div class="summary-label">Fragments</div>
-            <div class="summary-value" id="countValue">0</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Surface</div>
-            <div class="summary-value" id="surfaceValue">0</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Middle</div>
-            <div class="summary-value" id="middleValue">0</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Deep</div>
-            <div class="summary-value" id="deepValue">0</div>
-          </div>
-        </div>
+<button class="primary" onclick="addFragment()">Drop fragment</button>
+<button onclick="example()">Try example</button>
+<button onclick="clearInput()">Clear input</button>
+<button onclick="clearOcean()">Clear ocean</button>
 
-        <div class="ocean">
-          <div class="ocean-head">
-            <div>
-              <div class="ocean-title">My Ocean</div>
-              <div class="ocean-sub">Private fragments in your browser only.</div>
-            </div>
-            <div class="ocean-mode">Stable Ocean</div>
-          </div>
+<h2 style="margin-top:40px">My Ocean</h2>
 
-          <div class="layer-tabs">
-            <button class="layer-tab active" data-layer="all" type="button">All</button>
-            <button class="layer-tab" data-layer="surface" type="button">Surface</button>
-            <button class="layer-tab" data-layer="middle" type="button">Middle</button>
-            <button class="layer-tab" data-layer="deep" type="button">Deep</button>
-          </div>
+<div id="ocean"></div>
 
-          <div class="ocean-grid" id="oceanGrid">
-            <div class="empty">Your fragments will appear here.</div>
-          </div>
-        </div>
+<p style="margin-top:40px;color:#6b7280">
+No login. No tracking. Runs entirely in your browser.
+</p>
 
-        <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
-      </div>
-    </div>
-  </div>
+</div>
 
-  <script src="./fragment.js"></script>
-  <script src="./router.js"></script>
+<script src="./fragment.js"></script>
+<script src="./router.js"></script>
 
-  <script>
-    var STORAGE_KEY = "reframe-thinking-ocean-v2";
-    var currentLayer = "all";
+<script>
 
-    function escapeHtml(text) {
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
+/* =====================
+STORAGE
+===================== */
 
-    function loadOcean() {
-      try {
-        var raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return [];
-        var data = JSON.parse(raw);
-        return Array.isArray(data) ? data : [];
-      } catch (error) {
-        return [];
-      }
-    }
+const STORAGE="reframe-ocean"
 
-    function saveOcean(items) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    }
 
-    function scoreFragment(fragment) {
-      var text = fragment.text || "";
-      var lengthScore = Math.min(Math.ceil(text.length / 30), 4);
-      var typeBonus = fragment.sourceType === "idea" ? 2 : 1;
-      var historyBonus = Array.isArray(fragment.history) ? Math.min(fragment.history.length, 3) : 0;
-      return lengthScore + typeBonus + historyBonus;
-    }
+function loadOcean(){
+return JSON.parse(localStorage.getItem(STORAGE)||"[]")
+}
 
-    function getDepthLabel(score) {
-      if (score >= 6) return "deep";
-      if (score >= 4) return "middle";
-      return "surface";
-    }
+function saveOcean(data){
+localStorage.setItem(STORAGE,JSON.stringify(data))
+}
 
-    function capitalize(text) {
-      if (!text) return "";
-      return text.charAt(0).toUpperCase() + text.slice(1);
-    }
 
-    function getHistoryText(fragment) {
-      var history = Array.isArray(fragment.history) ? fragment.history : [];
-      if (!history.length) {
-        return "Drop → " + capitalize(fragment.sourceType);
-      }
-      return history.join(" → ");
-    }
+/* =====================
+DRIFT ENGINE
+===================== */
 
-    function updateSummary(items) {
-      var surface = 0;
-      var middle = 0;
-      var deep = 0;
+function driftFragments(list){
 
-      items.forEach(function (item) {
-        if (item.depth === "surface") surface += 1;
-        if (item.depth === "middle") middle += 1;
-        if (item.depth === "deep") deep += 1;
-      });
+return list.map(f=>{
 
-      document.getElementById("countValue").textContent = String(items.length);
-      document.getElementById("surfaceValue").textContent = String(surface);
-      document.getElementById("middleValue").textContent = String(middle);
-      document.getElementById("deepValue").textContent = String(deep);
-    }
+let score=f.score||0
+let history=f.history?f.history.length:0
+let drift=0
 
-    function getFilteredItems(items) {
-      if (currentLayer === "all") return items;
-      return items.filter(function (item) {
-        return item.depth === currentLayer;
-      });
-    }
+// gravity
+if(score>=6)drift++
 
-    function renderOcean() {
-      var grid = document.getElementById("oceanGrid");
-      var items = loadOcean();
+// friction
+if(history<=1)drift--
 
-      items.forEach(function (item) {
-        item.score = scoreFragment(item);
-        item.depth = getDepthLabel(item.score);
-      });
+// noise
+if(Math.random()<0.25){
+drift+=Math.random()<0.5?1:-1
+}
 
-      items.sort(function (a, b) {
-        return b.score - a.score;
-      });
+let depth=f.depth||"surface"
 
-      saveOcean(items);
-      updateSummary(items);
+if(drift>0){
+if(depth==="surface")depth="middle"
+else if(depth==="middle")depth="deep"
+}
 
-      var filtered = getFilteredItems(items);
+if(drift<0){
+if(depth==="deep")depth="middle"
+else if(depth==="middle")depth="surface"
+}
 
-      if (!filtered.length) {
-        grid.innerHTML = '<div class="empty">No fragments in this layer.</div>';
-        return;
-      }
+f.depth=depth
 
-      var html = "";
+return f
+})
 
-      filtered.forEach(function (item) {
-        html += '<div class="fragment-card">';
-        html += '<div class="fragment-top">';
-        html += '<div class="fragment-pill">' + escapeHtml(item.sourceType) + '</div>';
-        html += '<div class="fragment-pill">' + escapeHtml(capitalize(item.depth)) + '</div>';
-        html += '</div>';
+}
 
-        html += '<div class="fragment-text">' + escapeHtml(item.text) + '</div>';
 
-        html += '<div class="meta-row">';
-        html += '<div class="mini-pill">Mutation potential ' + escapeHtml(String(item.score)) + '</div>';
-        html += '<div class="mini-pill">Mode ' + escapeHtml(item.mode || "stable") + '</div>';
-        html += '</div>';
+/* =====================
+UTIL
+===================== */
 
-        html += '<div class="history-box">';
-        html += '<div class="history-label">Mutation history</div>';
-        html += '<div class="history-text">' + escapeHtml(getHistoryText(item)) + '</div>';
-        html += '</div>';
+function score(text){
+return Math.min(Math.ceil(text.length/30)+1,7)
+}
 
-        html += '<div class="card-buttons">';
-        html += '<a class="open-btn" href="./thought-galaxy-router.html?fragment=' + encodeURIComponent(item.text) + '">Open galaxy</a>';
-        html += '<button class="drift-btn" type="button" data-id="' + escapeHtml(item.id) + '">Drift deeper</button>';
-        html += '<button class="remove-btn" type="button" data-remove="' + escapeHtml(item.id) + '">Remove</button>';
-        html += '</div>';
+function depthFromScore(s){
+if(s>=6)return"deep"
+if(s>=4)return"middle"
+return"surface"
+}
 
-        html += '</div>';
-      });
 
-      grid.innerHTML = html;
+/* =====================
+ADD
+===================== */
 
-      Array.prototype.forEach.call(grid.querySelectorAll(".drift-btn"), function (button) {
-        button.addEventListener("click", function () {
-          driftFragment(button.getAttribute("data-id"));
-        });
-      });
+function addFragment(){
 
-      Array.prototype.forEach.call(grid.querySelectorAll(".remove-btn"), function (button) {
-        button.addEventListener("click", function () {
-          removeFragment(button.getAttribute("data-remove"));
-        });
-      });
-    }
+let input=document.getElementById("input")
+let text=input.value.trim()
 
-    function addFragment() {
-      var input = document.getElementById("input");
-      var text = input.value.trim();
+if(!text)return alert("Enter something")
 
-      if (!text) {
-        alert("Enter something first.");
-        return;
-      }
+let type=detectSourceType?detectSourceType(text):"idea"
 
-      var sourceType = window.detectSourceType ? window.detectSourceType(text) : "idea";
-      var fragment = window.createFragment ? window.createFragment(text, sourceType, "stable") : {
-        id: "frag_" + Date.now(),
-        text: text,
-        sourceType: sourceType,
-        mode: "stable",
-        history: []
-      };
+let fragment={
+id:Date.now(),
+text,
+sourceType:type,
+history:["Drop",type],
+score:score(text),
+depth:depthFromScore(score(text))
+}
 
-      fragment.history = ["Drop", capitalize(sourceType)];
-      fragment.score = scoreFragment(fragment);
-      fragment.depth = getDepthLabel(fragment.score);
+let ocean=loadOcean()
 
-      var items = loadOcean();
-      items.unshift(fragment);
-      saveOcean(items);
+ocean.unshift(fragment)
 
-      input.value = "";
-      renderOcean();
-    }
+saveOcean(ocean)
 
-    function driftFragment(id) {
-      var items = loadOcean();
+input.value=""
 
-      items = items.map(function (item) {
-        if (item.id !== id) return item;
+render()
 
-        var nextStep = "Drift";
-        if (item.depth === "surface") {
-          nextStep = "Middle";
-        } else if (item.depth === "middle") {
-          nextStep = "Deep";
-        } else {
-          nextStep = "Deep";
-        }
+}
 
-        if (!Array.isArray(item.history)) {
-          item.history = [];
-        }
 
-        item.history.push(nextStep);
-        item.score = scoreFragment(item);
-        item.depth = getDepthLabel(item.score);
-        return item;
-      });
+/* =====================
+REMOVE
+===================== */
 
-      saveOcean(items);
-      renderOcean();
-    }
+function removeFragment(id){
 
-    function removeFragment(id) {
-      var items = loadOcean().filter(function (item) {
-        return item.id !== id;
-      });
-      saveOcean(items);
-      renderOcean();
-    }
+let ocean=loadOcean()
 
-    function tryExample() {
-      document.getElementById("input").value = "People say my ideas are too abstract";
-    }
+ocean=ocean.filter(f=>f.id!=id)
 
-    function clearInput() {
-      document.getElementById("input").value = "";
-    }
+saveOcean(ocean)
 
-    function clearOcean() {
-      localStorage.removeItem(STORAGE_KEY);
-      renderOcean();
-    }
+render()
 
-    function fillFromUrl() {
-      var params = new URLSearchParams(window.location.search);
-      var fragment = params.get("fragment");
+}
 
-      if (fragment) {
-        document.getElementById("input").value = fragment;
-      }
-    }
 
-    function setLayer(layer) {
-      currentLayer = layer;
+/* =====================
+RENDER
+===================== */
 
-      Array.prototype.forEach.call(document.querySelectorAll(".layer-tab"), function (button) {
-        button.classList.toggle("active", button.getAttribute("data-layer") === layer);
-      });
+function render(){
 
-      renderOcean();
-    }
+let ocean=loadOcean()
 
-    document.getElementById("addBtn").addEventListener("click", addFragment);
-    document.getElementById("exampleBtn").addEventListener("click", tryExample);
-    document.getElementById("clearInputBtn").addEventListener("click", clearInput);
-    document.getElementById("clearOceanBtn").addEventListener("click", clearOcean);
+ocean=driftFragments(ocean)
 
-    Array.prototype.forEach.call(document.querySelectorAll(".layer-tab"), function (button) {
-      button.addEventListener("click", function () {
-        setLayer(button.getAttribute("data-layer"));
-      });
-    });
+saveOcean(ocean)
 
-    fillFromUrl();
-    renderOcean();
-  </script>
+let el=document.getElementById("ocean")
+
+if(!ocean.length){
+
+el.innerHTML="<p style='color:#6b7280'>Your fragments will appear here.</p>"
+return
+}
+
+let html=""
+
+ocean.forEach(f=>{
+
+html+=`
+
+<div class="card">
+
+<div>
+
+<span class="tag">${f.sourceType}</span>
+<span class="tag">${f.depth}</span>
+
+</div>
+
+<h3>${f.text}</h3>
+
+<div class="meta">
+Mutation potential ${f.score}
+</div>
+
+<div class="meta">
+History: ${f.history.join(" → ")}
+</div>
+
+<a class="open" href="./thought-galaxy-router.html?fragment=${encodeURIComponent(f.text)}">
+Open galaxy
+</a>
+
+<button class="remove" onclick="removeFragment(${f.id})">
+Remove
+</button>
+
+</div>
+
+`
+
+})
+
+el.innerHTML=html
+
+}
+
+
+/* =====================
+HELPERS
+===================== */
+
+function example(){
+document.getElementById("input").value="People say my ideas are too abstract"
+}
+
+function clearInput(){
+document.getElementById("input").value=""
+}
+
+function clearOcean(){
+localStorage.removeItem(STORAGE)
+render()
+}
+
+
+/* =====================
+INIT
+===================== */
+
+render()
+
+</script>
+
 </body>
 </html>
