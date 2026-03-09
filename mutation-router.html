@@ -100,6 +100,14 @@
       margin-bottom: 14px;
     }
 
+    .result-box {
+      border: 2px solid #efefef;
+      border-radius: 20px;
+      padding: 18px;
+      background: #ffffff;
+      min-height: 120px;
+    }
+
     .card {
       border: 2px solid #efefef;
       border-radius: 20px;
@@ -118,7 +126,6 @@
       margin: 0 0 12px;
       font-size: 16px;
       color: #444444;
-      white-space: pre-wrap;
     }
 
     .open-link {
@@ -126,14 +133,6 @@
       color: #111111;
       font-weight: 600;
       text-decoration: none;
-    }
-
-    .result-box {
-      border: 2px solid #efefef;
-      border-radius: 20px;
-      padding: 18px;
-      background: #ffffff;
-      min-height: 120px;
     }
 
     .footer {
@@ -195,30 +194,10 @@ Content creation feels exhausting"></textarea>
     <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
   </div>
 
-  <script>
-    const TOOLS = {
-      thoughtGalaxy: {
-        title: "Thought Galaxy",
-        file: "thought-galaxy.html",
-        note: "Open the fragment in a wider thinking space."
-      },
-      mutationEngine: {
-        title: "Mutation Engine",
-        file: "mutation-engine.html",
-        note: "Push the fragment into a stronger mutation."
-      },
-      mutationFlow: {
-        title: "Mutation Flow v1",
-        file: "mutation-flow-v1.html",
-        note: "Keep the mutation moving into a next form."
-      },
-      toolBirth: {
-        title: "Tool Birth Engine v1",
-        file: "tool-birth-engine-v1.html",
-        note: "Turn mutation into a possible new tool."
-      }
-    };
+  <script src="./fragment.js"></script>
+  <script src="./router.js"></script>
 
+  <script>
     function escapeHtml(text) {
       return String(text)
         .replace(/&/g, "&amp;")
@@ -228,88 +207,26 @@ Content creation feels exhausting"></textarea>
         .replace(/'/g, "&#39;");
     }
 
-    function detectSourceType(text) {
-      const t = text.toLowerCase();
-
-      if (t.includes("people say") || t.includes("critic") || t.includes("too abstract")) {
-        return "criticism";
-      }
-
-      if (t.includes("feel") || t.includes("tired") || t.includes("exhaust") || t.includes("overwhelmed")) {
-        return "emotion";
-      }
-
-      if (t.includes("can't") || t.includes("cannot") || t.includes("stuck") || t.includes("problem")) {
-        return "problem";
-      }
-
-      if (t.includes("confused") || t.includes("unclear") || t.includes("why")) {
-        return "confusion";
-      }
-
-      if (t.includes("failed") || t.includes("didn't work") || t.includes("did not work")) {
-        return "failure";
-      }
-
-      return "idea";
-    }
-
-    function getNextTools(sourceType) {
-      if (sourceType === "idea") {
-        return [TOOLS.mutationEngine, TOOLS.mutationFlow];
-      }
-
-      if (sourceType === "criticism") {
-        return [TOOLS.mutationEngine, TOOLS.mutationFlow];
-      }
-
-      if (sourceType === "emotion") {
-        return [TOOLS.mutationEngine];
-      }
-
-      if (sourceType === "problem") {
-        return [TOOLS.mutationEngine, TOOLS.mutationFlow];
-      }
-
-      if (sourceType === "confusion") {
-        return [TOOLS.thoughtGalaxy, TOOLS.mutationFlow];
-      }
-
-      if (sourceType === "failure") {
-        return [TOOLS.mutationEngine, TOOLS.toolBirth];
-      }
-
-      return [TOOLS.mutationEngine];
-    }
-
-    function buildCopyText(sourceType, tools) {
-      let lines = [];
-      lines.push("Detected type: " + sourceType);
+    function buildCopyText(fragment, tools) {
+      var lines = [];
+      lines.push("Detected type: " + fragment.sourceType);
       lines.push("");
       lines.push("Next mutations:");
 
-      tools.forEach((tool, index) => {
+      tools.forEach(function (tool, index) {
         lines.push((index + 1) + ". " + tool.title + " — " + tool.file);
       });
 
       return lines.join("\n");
     }
 
-    function renderResult(text) {
-      const clean = text.trim();
+    function renderResult(fragment, tools) {
+      var resultBox = document.getElementById("result");
+      var html = "";
 
-      if (!clean) {
-        return "";
-      }
+      html += '<div class="result-title">Detected type: <strong>' + escapeHtml(fragment.sourceType) + '</strong></div>';
 
-      const sourceType = detectSourceType(clean);
-      const tools = getNextTools(sourceType);
-      const resultBox = document.getElementById("result");
-
-      let html = "";
-      html += '<div class="result-title">Detected type: <strong>' + escapeHtml(sourceType) + '</strong></div>';
-
-      tools.forEach(tool => {
+      tools.forEach(function (tool) {
         html += `
           <div class="card">
             <h3>${escapeHtml(tool.title)}</h3>
@@ -320,19 +237,22 @@ Content creation feels exhausting"></textarea>
       });
 
       resultBox.innerHTML = html;
-      resultBox.dataset.copyText = buildCopyText(sourceType, tools);
-      return html;
+      resultBox.dataset.copyText = buildCopyText(fragment, tools);
     }
 
     function runTool() {
-      const input = document.getElementById("input").value;
+      var input = document.getElementById("input").value.trim();
 
-      if (!input.trim()) {
+      if (!input) {
         alert("Enter something first.");
         return;
       }
 
-      renderResult(input);
+      var sourceType = detectSourceType(input);
+      var fragment = createFragment(input, sourceType, "drift");
+      var tools = getNextTools(fragment);
+
+      renderResult(fragment, tools);
     }
 
     function tryExample() {
@@ -348,8 +268,8 @@ Content creation feels exhausting"></textarea>
     }
 
     async function copyResult() {
-      const result = document.getElementById("result");
-      const text = result.dataset.copyText || "";
+      var result = document.getElementById("result");
+      var text = result.dataset.copyText || "";
 
       if (!text) {
         alert("Nothing to copy yet.");
