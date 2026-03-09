@@ -17,15 +17,15 @@ const TOOL_REGISTRY = [
   },
   {
     id: "mutation-flow",
-    title: "Mutation Flow",
-    file: "mutation-flow.html",
+    title: "Mutation Flow v1",
+    file: "mutation-flow-v1.html",
     inputField: "mutation",
     outputField: "mutation"
   },
   {
     id: "tool-birth-engine",
-    title: "Tool Birth Engine",
-    file: "tool-birth-engine.html",
+    title: "Tool Birth Engine v1",
+    file: "tool-birth-engine-v1.html",
     inputField: "mutation",
     outputField: "expression"
   }
