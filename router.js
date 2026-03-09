@@ -1,88 +1,129 @@
-const TOOL_REGISTRY = [
-  {
-    id: "thought-galaxy",
-    title: "Thought Galaxy",
-    file: "thought-galaxy.html",
-    note: "Open the fragment in a wider thinking space."
-  },
-  {
-    id: "mutation-engine",
-    title: "Mutation Engine",
-    file: "mutation-engine.html",
-    note: "Push the fragment into a stronger mutation."
-  },
-  {
-    id: "mutation-flow",
-    title: "Mutation Flow v1",
-    file: "mutation-flow-v1.html",
-    note: "Keep the mutation moving into a next form."
-  },
-  {
-    id: "tool-birth-engine",
-    title: "Tool Birth Engine v1",
-    file: "tool-birth-engine-v1.html",
-    note: "Turn mutation into a possible new tool."
-  }
-];
+(function () {
+  "use strict";
 
-function detectSourceType(text) {
-  const t = text.toLowerCase();
-
-  if (t.includes("people say") || t.includes("critic") || t.includes("too abstract")) {
-    return "criticism";
+  function getMap() {
+    if (typeof window !== "undefined" && window.REFRAME_MUTATION_MAP) {
+      return window.REFRAME_MUTATION_MAP;
+    }
+    return null;
   }
 
-  if (t.includes("feel") || t.includes("tired") || t.includes("exhaust") || t.includes("overwhelmed")) {
-    return "emotion";
+  function getZone(id) {
+    var map = getMap();
+    if (!map || !map.helpers || !map.helpers.getContactZoneById) {
+      return null;
+    }
+    return map.helpers.getContactZoneById(id);
   }
 
-  if (t.includes("can't") || t.includes("cannot") || t.includes("stuck") || t.includes("problem")) {
-    return "problem";
+  function toTool(zone) {
+    if (!zone) return null;
+
+    return {
+      id: zone.id,
+      title: zone.title,
+      file: zone.id + ".html",
+      note: zone.role || "Next mutation tool."
+    };
   }
 
-  if (t.includes("confused") || t.includes("unclear") || t.includes("why")) {
-    return "confusion";
+  function findZones(ids) {
+    return ids
+      .map(function (id) {
+        return getZone(id);
+      })
+      .filter(Boolean)
+      .map(toTool)
+      .filter(Boolean);
   }
 
-  if (t.includes("failed") || t.includes("didn't work") || t.includes("did not work")) {
-    return "failure";
+  function detectSourceType(text) {
+    var t = String(text || "").toLowerCase();
+
+    if (t.includes("people say") || t.includes("critic") || t.includes("too abstract")) {
+      return "criticism";
+    }
+
+    if (t.includes("feel") || t.includes("tired") || t.includes("exhaust") || t.includes("overwhelmed")) {
+      return "emotion";
+    }
+
+    if (t.includes("can't") || t.includes("cannot") || t.includes("stuck") || t.includes("problem")) {
+      return "problem";
+    }
+
+    if (t.includes("confused") || t.includes("unclear") || t.includes("why")) {
+      return "confusion";
+    }
+
+    if (t.includes("failed") || t.includes("didn't work") || t.includes("did not work")) {
+      return "failure";
+    }
+
+    return "idea";
   }
 
-  return "idea";
-}
+  function getNextTools(fragment) {
 
-function getNextTools(fragment) {
-  const type = fragment.sourceType;
+    var type = fragment && fragment.sourceType ? fragment.sourceType : "idea";
 
-  if (type === "idea") {
-    return findTools(["mutation-engine", "mutation-flow"]);
+    if (type === "criticism") {
+      return findZones([
+        "problem-to-options",
+        "emotion-to-action",
+        "next-step-finder"
+      ]);
+    }
+
+    if (type === "emotion") {
+      return findZones([
+        "emotion-to-action",
+        "next-step-finder",
+        "constraint-to-action"
+      ]);
+    }
+
+    if (type === "problem") {
+      return findZones([
+        "problem-to-root-cause",
+        "problem-to-constraints",
+        "problem-to-options"
+      ]);
+    }
+
+    if (type === "confusion") {
+      return findZones([
+        "thought-map",
+        "thought-map-v2",
+        "stuck-to-tool"
+      ]);
+    }
+
+    if (type === "failure") {
+      return findZones([
+        "problem-to-root-cause",
+        "emotion-to-action",
+        "next-step-finder"
+      ]);
+    }
+
+    return findZones([
+      "idea-to-tool-spec",
+      "tool-factory",
+      "thought-map-v2"
+    ]);
   }
 
-  if (type === "criticism") {
-    return findTools(["mutation-engine", "mutation-flow"]);
+  if (typeof window !== "undefined") {
+    window.detectSourceType = detectSourceType;
+    window.getNextTools = getNextTools;
   }
 
-  if (type === "emotion") {
-    return findTools(["mutation-engine"]);
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = {
+      detectSourceType: detectSourceType,
+      getNextTools: getNextTools
+    };
   }
 
-  if (type === "problem") {
-    return findTools(["mutation-engine", "mutation-flow"]);
-  }
-
-  if (type === "confusion") {
-    return findTools(["thought-galaxy", "mutation-flow"]);
-  }
-
-  if (type === "failure") {
-    return findTools(["mutation-engine", "tool-birth-engine"]);
-  }
-
-  return findTools(["mutation-engine"]);
-}
-
-function findTools(ids) {
-  return TOOL_REGISTRY.filter(function (tool) {
-    return ids.includes(tool.id);
-  });
-}
+})();
