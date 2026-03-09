@@ -1,76 +1,145 @@
-(function(){
+(function () {
+  "use strict";
 
-"use strict";
+  function getToolsForZone(zoneId, zoneTitle) {
+    var byId = {
+      "next-step-finder": [
+        "next-step-finder.html",
+        "problem-to-options.html",
+        "constraint-to-action.html"
+      ],
+      "tool-factory": [
+        "idea-to-tool-spec.html",
+        "tool-generator-v3.html",
+        "tool-factory-pro.html"
+      ],
+      "constraint-to-action": [
+        "constraint-to-action.html",
+        "problem-to-constraints.html"
+      ],
+      "problem-to-root-cause": [
+        "problem-to-root-cause.html",
+        "problem-to-constraints.html"
+      ],
+      "problem-to-options": [
+        "problem-to-options.html",
+        "next-step-finder.html"
+      ],
+      "problem-to-constraints": [
+        "problem-to-constraints.html",
+        "constraint-to-action.html"
+      ],
+      "stuck-to-tool": [
+        "next-step-finder.html",
+        "problem-to-options.html",
+        "problem-to-root-cause.html"
+      ],
+      "idea-to-tool-spec": [
+        "idea-to-tool-spec.html",
+        "tool-generator-v3.html",
+        "tool-factory.html"
+      ],
+      "tool-factory-pro": [
+        "tool-factory-pro.html",
+        "tool-generator-v3.html",
+        "idea-to-tool-spec.html"
+      ],
+      "emotion-to-action": [
+        "emotion-to-action.html",
+        "next-step-finder.html"
+      ]
+    };
 
-function getToolsForZone(zone){
+    if (zoneId && byId[zoneId]) {
+      return byId[zoneId];
+    }
 
-if(!zone) return [];
+    var byTitle = {
+      "Next Step Finder": [
+        "next-step-finder.html",
+        "problem-to-options.html",
+        "constraint-to-action.html"
+      ],
+      "Tool Factory": [
+        "idea-to-tool-spec.html",
+        "tool-generator-v3.html",
+        "tool-factory-pro.html"
+      ],
+      "Constraint → Action": [
+        "constraint-to-action.html",
+        "problem-to-constraints.html"
+      ],
+      "Problem → Root Causes": [
+        "problem-to-root-cause.html",
+        "problem-to-constraints.html"
+      ],
+      "Problem → Options": [
+        "problem-to-options.html",
+        "next-step-finder.html"
+      ],
+      "Problem → Constraints": [
+        "problem-to-constraints.html",
+        "constraint-to-action.html"
+      ],
+      "Stuck → Best Tool": [
+        "next-step-finder.html",
+        "problem-to-options.html",
+        "problem-to-root-cause.html"
+      ],
+      "Idea → Tool Spec": [
+        "idea-to-tool-spec.html",
+        "tool-generator-v3.html",
+        "tool-factory.html"
+      ],
+      "Tool Factory Pro": [
+        "tool-factory-pro.html",
+        "tool-generator-v3.html",
+        "idea-to-tool-spec.html"
+      ],
+      "Emotion → Action": [
+        "emotion-to-action.html",
+        "next-step-finder.html"
+      ]
+    };
 
-var map = {
+    return byTitle[zoneTitle] || [];
+  }
 
-"Next Step Finder":[
-"next-step-finder.html",
-"problem-to-options.html",
-"constraint-to-action.html"
-],
+  function navigate(input) {
+    if (!window.REFRAME_MUTATION_LOOP) {
+      return {
+        error: "REFRAME_MUTATION_LOOP is missing."
+      };
+    }
 
-"Tool Factory":[
-"idea-to-tool-spec.html",
-"tool-generator-v3.html"
-],
+    var loop = window.REFRAME_MUTATION_LOOP.runLoop(input, {
+      mode: "stable",
+      steps: 3,
+      limit: 3
+    });
 
-"Constraint → Action":[
-"constraint-to-action.html",
-"problem-to-constraints.html"
-],
+    var path = window.REFRAME_MUTATION_LOOP.getLoopPath(loop);
 
-"Problem → Root Cause":[
-"problem-to-root-cause.html",
-"problem-to-constraints.html"
-],
+    if (!path || !path.length) {
+      return {
+        error: "No path was created."
+      };
+    }
 
-"Problem → Options":[
-"problem-to-options.html",
-"next-step-finder.html"
-]
+    var last = path[path.length - 1];
+    var zoneId = last.zoneId || "";
+    var zoneTitle = last.zoneTitle || "";
 
-};
+    return {
+      zoneId: zoneId,
+      zone: zoneTitle,
+      tools: getToolsForZone(zoneId, zoneTitle),
+      path: path,
+      loop: loop
+    };
+  }
 
-return map[zone] || [];
-
-}
-
-function navigate(input){
-
-if(!window.REFRAME_MUTATION_LOOP){
-console.log("Mutation loop missing");
-return null;
-}
-
-var loop = window.REFRAME_MUTATION_LOOP.runLoop(input,{
-mode:"stable",
-steps:3,
-limit:3
-});
-
-var path = window.REFRAME_MUTATION_LOOP.getLoopPath(loop);
-
-if(!path || !path.length){
-return null;
-}
-
-var zone = path[path.length-1].zoneTitle;
-
-return {
-zone:zone,
-tools:getToolsForZone(zone),
-path:path
-};
-
-}
-
-window.REFRAME_NAVIGATOR = {
-navigate:navigate
-};
-
+  window.REFRAME_NAVIGATOR = {
+    navigate: navigate
+  };
 })();
