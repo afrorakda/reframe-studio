@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy → Tool Builder</title>
+<style>
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:#0b0e14;
+color:#e8ecf1;
+line-height:1.6;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:24px;
+}
+
+a.back{
+display:inline-block;
+margin-bottom:18px;
+color:#9fb4ff;
+text-decoration:none;
+font-size:14px;
+}
+
+h1{
+margin:0 0 8px 0;
+font-size:42px;
+line-height:1.1;
+}
+
+.sub{
+color:#9aa4b2;
+font-size:18px;
+margin-bottom:24px;
+}
+
+.card{
+background:#121722;
+border:1px solid #283042;
+border-radius:16px;
+padding:18px;
+margin-bottom:16px;
+}
+
+label{
+display:block;
+font-size:14px;
+margin-bottom:8px;
+color:#dce4ef;
+}
+
+textarea{
+width:100%;
+min-height:120px;
+background:#0b0f17;
+border:1px solid #33405a;
+border-radius:12px;
+color:#e8ecf1;
+padding:14px;
+font-size:15px;
+resize:vertical;
+}
+
+button{
+appearance:none;
+border:none;
+border-radius:12px;
+padding:11px 16px;
+font:inherit;
+cursor:pointer;
+background:#2b6cff;
+color:white;
+margin-right:8px;
+margin-top:12px;
+}
+
+button.secondary{
+background:#2a3140;
+color:#e8ecf1;
+}
+
+.pill{
+display:inline-block;
+padding:6px 10px;
+border-radius:999px;
+background:#1d2632;
+border:1px solid #33405a;
+font-size:13px;
+color:#dbe5ff;
+margin:4px 6px 0 0;
+}
+
+.output{
+background:#0b0f17;
+border:1px solid #33405a;
+border-radius:12px;
+padding:14px;
+white-space:pre-wrap;
+word-break:break-word;
+font-size:14px;
+}
+
+.small{
+font-size:13px;
+color:#9aa4b2;
+}
+
+.link{
+display:inline-block;
+margin-top:12px;
+color:#9fb4ff;
+text-decoration:none;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+<h1>Galaxy → Tool Builder</h1>
+<p class="sub">Turn a mutation direction into a ready tool concept.</p>
+
+<div class="card">
+<label for="inputText">Input</label>
+<textarea id="inputText">I feel stuck and cannot decide what to build next.</textarea>
+
+<label for="directionText" style="margin-top:14px;">Galaxy direction</label>
+<textarea id="directionText">tool idea</textarea>
+
+<button onclick="buildTool()">Build tool</button>
+<button class="secondary" onclick="example1()">Example 1</button>
+<button class="secondary" onclick="example2()">Example 2</button>
+<button class="secondary" onclick="clearAll()">Clear</button>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0;">Suggested Tool</h3>
+<div id="toolTitle">No result yet.</div>
+<div id="toolTags" style="margin-top:10px;"></div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0;">Tool Spec</h3>
+<div id="toolSpec" class="output">No result yet.</div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0;">Next Move</h3>
+<div id="nextMove" class="small">No result yet.</div>
+<a id="nextLink" class="link" href="./idea-to-tool-spec.html" style="display:none;">Open Idea → Tool Spec</a>
+</div>
+
+</div>
+
+<script>
+function clean(text){
+return String(text || "").trim();
+}
+
+function titleCase(text){
+return text.replace(/\b\w/g,function(m){ return m.toUpperCase(); });
+}
+
+function detectLanguage(text){
+return /[ぁ-んァ-ン一-龯]/.test(text) ? "ja" : "en";
+}
+
+function buildFromDirection(input,direction){
+var lang = detectLanguage(input + " " + direction);
+var d = clean(direction).toLowerCase();
+var i = clean(input);
+
+var map = [
+{
+keys:["tool idea","idea","build","spec"],
+en:{
+title:"Idea → Tool Shape",
+file:"idea-to-tool-shape.html",
+transformation:"Idea → Tool Shape",
+description:"Turn a rough idea into a simple usable tool shape.",
+button:"Shape tool",
+next:"Paste this into Idea → Tool Spec next."
+},
+ja:{
+title:"アイデア → ツール形",
+file:"idea-to-tool-shape.html",
+transformation:"アイデア → ツール形",
+description:"あいまいなアイデアをシンプルなツールの形にする。",
+button:"ツール化する",
+next:"次に Idea → Tool Spec に貼って進める。"
+}
+},
+{
+keys:["constraint","bottleneck","block"],
+en:{
+title:"Constraint → Build Move",
+file:"constraint-to-build-move.html",
+transformation:"Constraint → Build Move",
+description:"Turn one bottleneck into one tool-building move.",
+button:"Find build move",
+next:"Paste this into Idea → Tool Spec next."
+},
+ja:{
+title:"制約 → 制作アクション",
+file:"constraint-to-build-move.html",
+transformation:"制約 → 制作アクション",
+description:"1つの制約を1つの制作アクションに変える。",
+button:"制作アクションを出す",
+next:"次に Idea → Tool Spec に貼って進める。"
+}
+},
+{
+keys:["question","why","ask"],
+en:{
+title:"Question → Tool Prompt",
+file:"question-to-tool-prompt.html",
+transformation:"Question → Tool Prompt",
+description:"Turn one question into a tool prompt.",
+button:"Make prompt",
+next:"Paste this into Tool Spec → HTML or Idea → Tool Spec."
+},
+ja:{
+title:"問い → ツールプロンプト",
+file:"question-to-tool-prompt.html",
+transformation:"問い → ツールプロンプト",
+description:"1つの問いをツール用プロンプトに変える。",
+button:"プロンプト化する",
+next:"次に Tool Spec → HTML か Idea → Tool Spec に貼る。"
+}
+},
+{
+keys:["contrast","difference","option"],
+en:{
+title:"Contrast → Decision Tool",
+file:"contrast-to-decision-tool.html",
+transformation:"Contrast → Decision Tool",
+description:"Turn two different directions into one decision tool.",
+button:"Compare directions",
+next:"Paste this into Idea → Tool Spec next."
+},
+ja:{
+title:"対比 → 決定ツール",
+file:"contrast-to-decision-tool.html",
+transformation:"対比 → 決定ツール",
+description:"2つの方向性を1つの決定ツールに変える。",
+button:"方向を比較する",
+next:"次に Idea → Tool Spec に貼って進める。"
+}
+},
+{
+keys:["sequence","step","action"],
+en:{
+title:"Sequence → Next Build Tool",
+file:"sequence-to-build-tool.html",
+transformation:"Sequence → Next Build Tool",
+description:"Turn a sequence into the next tool-building step.",
+button:"Find next step",
+next:"Paste this into Idea → Tool Spec next."
+},
+ja:{
+title:"順序 → 次の制作ツール",
+file:"sequence-to-build-tool.html",
+transformation:"順序 → 次の制作ツール",
+description:"流れを次の制作ステップ用ツールに変える。",
+button:"次の一歩を出す",
+next:"次に Idea → Tool Spec に貼って進める。"
+}
+}
+];
+
+var picked = map[0];
+for(var idx=0; idx<map.length; idx++){
+  var item = map[idx];
+  for(var k=0; k<item.keys.length; k++){
+    if(d.indexOf(item.keys[k]) !== -1){
+      picked = item;
+      idx = map.length;
+      break;
+    }
+  }
+}
+
+var pack = lang === "ja" ? picked.ja : picked.en;
+
+var spec;
+if(lang === "ja"){
+spec =
+"Tool name: " + pack.title + "\n" +
+"File name: " + pack.file + "\n" +
+"Transformation: " + pack.transformation + "\n" +
+"Description: " + pack.description + "\n" +
+"Main button: " + pack.button + "\n" +
+"Example input: " + i + "\n" +
+"Galaxy direction: " + direction;
+}else{
+spec =
+"Tool name: " + pack.title + "\n" +
+"File name: " + pack.file + "\n" +
+"Transformation: " + pack.transformation + "\n" +
+"Description: " + pack.description + "\n" +
+"Main button: " + pack.button + "\n" +
+"Example input: " + i + "\n" +
+"Galaxy direction: " + direction;
+}
+
+return {
+lang:lang,
+title:pack.title,
+file:pack.file,
+transformation:pack.transformation,
+description:pack.description,
+button:pack.button,
+next:pack.next,
+spec:spec
+};
+}
+
+function renderPills(items){
+var html = "";
+items.forEach(function(item){
+html += "<span class='pill'>" + escapeHtml(item) + "</span>";
+});
+return html;
+}
+
+function escapeHtml(text){
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#39;");
+}
+
+function buildTool(){
+var input = clean(document.getElementById("inputText").value);
+var direction = clean(document.getElementById("directionText").value);
+
+if(!input || !direction){
+document.getElementById("toolTitle").innerHTML = "Please enter both input and direction.";
+document.getElementById("toolTags").innerHTML = "";
+document.getElementById("toolSpec").textContent = "";
+document.getElementById("nextMove").innerHTML = "";
+document.getElementById("nextLink").style.display = "none";
+return;
+}
+
+var result = buildFromDirection(input,direction);
+
+document.getElementById("toolTitle").innerHTML = "<strong>" + escapeHtml(result.title) + "</strong>";
+document.getElementById("toolTags").innerHTML = renderPills([
+result.file,
+result.transformation,
+direction
+]);
+document.getElementById("toolSpec").textContent = result.spec;
+document.getElementById("nextMove").innerHTML = escapeHtml(result.next);
+document.getElementById("nextLink").style.display = "inline-block";
+}
+
+function example1(){
+document.getElementById("inputText").value = "I feel stuck and cannot decide what to build next.";
+document.getElementById("directionText").value = "tool idea";
+}
+
+function example2(){
+document.getElementById("inputText").value = "アイデアはあるのにツールの形にできない。";
+document.getElementById("directionText").value = "constraint";
+}
+
+function clearAll(){
+document.getElementById("inputText").value = "";
+document.getElementById("directionText").value = "";
+document.getElementById("toolTitle").innerHTML = "No result yet.";
+document.getElementById("toolTags").innerHTML = "";
+document.getElementById("toolSpec").textContent = "No result yet.";
+document.getElementById("nextMove").innerHTML = "No result yet.";
+document.getElementById("nextLink").style.display = "none";
+}
+</script>
+
+</body>
+</html>
