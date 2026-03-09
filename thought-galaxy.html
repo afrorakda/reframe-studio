@@ -98,7 +98,7 @@ padding:16px 16px 0 16px;
 
 .galaxy-wrap{
 position:relative;
-height:700px;
+height:720px;
 margin-top:10px;
 background:
 radial-gradient(circle at 20% 20%, rgba(85,125,255,0.20), transparent 28%),
@@ -205,6 +205,18 @@ border-color:#7db7ff;
 box-shadow:0 0 0 1px rgba(128,186,255,0.18), 0 10px 32px rgba(0,0,0,0.34), 0 0 24px rgba(79,147,255,0.16);
 }
 
+.node.mutation-link{
+text-decoration:none;
+cursor:pointer;
+transition:transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node.mutation-link:hover,
+.node.mutation-link:active{
+border-color:#b08cff;
+box-shadow:0 0 0 1px rgba(176,140,255,0.18), 0 10px 32px rgba(0,0,0,0.34), 0 0 24px rgba(155,113,255,0.18);
+}
+
 @keyframes floaty{
 0%{transform:translate(-50%,-50%) translateY(0px);}
 50%{transform:translate(-50%,-50%) translateY(-10px);}
@@ -268,6 +280,18 @@ text-decoration:none;
 color:#e8ecf1;
 }
 
+.builder-link{
+display:inline-block;
+margin-top:8px;
+padding:8px 12px;
+border-radius:10px;
+background:#1d1730;
+border:1px solid #5b4ca6;
+text-decoration:none;
+color:#efeaff;
+font-size:14px;
+}
+
 .helper{
 font-size:13px;
 color:#9aa4b2;
@@ -285,7 +309,7 @@ h1{
 font-size:42px;
 }
 .galaxy-wrap{
-height:760px;
+height:780px;
 }
 .node{
 font-size:14px;
@@ -301,7 +325,7 @@ max-width:220px;
 <body>
 <div class="container">
   <h1>Thought Galaxy</h1>
-  <p class="sub">Turn one thought into a small universe of mutations, routes, and tools.</p>
+  <p class="sub">Turn one thought into a small universe of mutations, routes, tools, and build directions.</p>
 
   <div class="card">
     <textarea id="input">I feel stuck and cannot decide what to build next.</textarea>
@@ -317,7 +341,7 @@ max-width:220px;
   <div class="card galaxy-card">
     <div class="galaxy-head">
       <h2 style="margin:0 0 6px;">Galaxy View</h2>
-      <div class="muted">Input in the center. Tap a tool star to warp into that tool.</div>
+      <div class="muted">Tap a tool star to open a tool. Tap a mutation star to build a new tool from that direction.</div>
     </div>
     <div class="galaxy-wrap">
       <div class="starfield" id="starfield"></div>
@@ -326,9 +350,9 @@ max-width:220px;
     </div>
     <div class="legend">
       <span class="pill">Input core</span>
-      <span class="pill">Mutation stars</span>
+      <span class="pill">Mutation stars (tap = build)</span>
       <span class="pill">Route stars</span>
-      <span class="pill">Tool stars (tap)</span>
+      <span class="pill">Tool stars (tap = open)</span>
     </div>
   </div>
 
@@ -341,7 +365,7 @@ max-width:220px;
     <div class="card">
       <h3 style="margin-top:0;">Detected Directions</h3>
       <div id="directionsView" class="muted">No galaxy yet.</div>
-      <div class="helper">Tool stars in the galaxy and tool links below both open the next tool.</div>
+      <div class="helper">Mutation stars can jump into Galaxy → Tool Builder with the direction already set.</div>
     </div>
   </div>
 </div>
@@ -434,6 +458,12 @@ function toolNodeHtml(x, y, file, delay){
   return "<a class='node tool small tool-link' href='./"+encodeURI(file)+"' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'>"+escapeHtml(label)+"</a>";
 }
 
+function mutationNodeHtml(x, y, mutation, delay){
+  const input = document.getElementById("input").value.trim();
+  const href = "./galaxy-to-tool-builder.html?input=" + encodeURIComponent(input) + "&direction=" + encodeURIComponent(mutation);
+  return "<a class='node mutation small mutation-link' href='" + href + "' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'>" + escapeHtml(mutation) + "</a>";
+}
+
 function example1(){
   document.getElementById("input").value = "I feel stuck and cannot decide what to build next.";
 }
@@ -459,6 +489,9 @@ function renderRoutes(routes){
     html += "<div>";
     route.mutations.forEach(function(m){
       html += "<span class='pill'>"+escapeHtml(m)+"</span>";
+      html += "<a class='builder-link' href='./galaxy-to-tool-builder.html?input=" +
+        encodeURIComponent(document.getElementById("input").value.trim()) +
+        "&direction=" + encodeURIComponent(m) + "'>Build from " + escapeHtml(m) + "</a>";
     });
     html += "</div>";
     html += "<div style='margin-top:10px;'>";
@@ -475,11 +508,13 @@ function renderRoutes(routes){
 function renderDirections(routes){
   const allMutations = uniqueArray(routes.flatMap(function(r){ return r.mutations; }));
   const allTools = uniqueArray(routes.flatMap(function(r){ return r.tools; }));
+  const input = document.getElementById("input").value.trim();
 
   let html = "";
   html += "<div style='margin-bottom:10px;'><strong>Mutation stars</strong></div>";
   allMutations.forEach(function(m){
-    html += "<span class='pill'>"+escapeHtml(m)+"</span>";
+    html += "<a class='builder-link' href='./galaxy-to-tool-builder.html?input=" +
+      encodeURIComponent(input) + "&direction=" + encodeURIComponent(m) + "'>" + escapeHtml(m) + "</a>";
   });
 
   html += "<div style='margin:14px 0 10px;'><strong>Tool stars</strong></div>";
@@ -529,7 +564,7 @@ function runGalaxy(){
     route.mutations.forEach(function(mutation, mi){
       const mp = mutationPos[i][mi];
       svgHtml += line(rp.x+"%", rp.y+"%", mp.x+"%", mp.y+"%", "#8b78ff", "1.8", "0.55");
-      nodeHtmlAll += nodeHtml("mutation small", mp.x, mp.y, mutation, (i + mi) * 0.6);
+      nodeHtmlAll += mutationNodeHtml(mp.x, mp.y, mutation, (i + mi) * 0.6);
     });
 
     route.tools.slice(0,2).forEach(function(tool, ti){
@@ -544,7 +579,7 @@ function runGalaxy(){
 
   renderRoutes(routes);
   renderDirections(routes);
-  document.getElementById("status").innerHTML = "Galaxy generated. Tap a tool star to open it.";
+  document.getElementById("status").innerHTML = "Galaxy generated. Tap a tool star to open a tool. Tap a mutation star to build a new tool.";
 }
 
 createStars();
