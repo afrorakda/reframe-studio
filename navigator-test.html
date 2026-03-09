@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Navigator Test</title>
-
 <style>
 body{
 background:#0f1115;
@@ -13,21 +12,17 @@ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 margin:0;
 padding:20px;
 }
-
 .container{
 max-width:900px;
 margin:auto;
 }
-
 h1{
 margin-bottom:8px;
 }
-
 .sub{
 color:#9aa4b2;
 margin-bottom:24px;
 }
-
 .card{
 background:#171a21;
 border:1px solid #2a3140;
@@ -35,7 +30,6 @@ border-radius:14px;
 padding:16px;
 margin-bottom:18px;
 }
-
 textarea{
 width:100%;
 min-height:120px;
@@ -46,7 +40,6 @@ color:#e8ecf1;
 padding:12px;
 font-size:14px;
 }
-
 button{
 background:#2b6cff;
 border:none;
@@ -57,11 +50,9 @@ cursor:pointer;
 margin-right:6px;
 margin-top:10px;
 }
-
 button.secondary{
 background:#2a3140;
 }
-
 .pill{
 display:inline-block;
 padding:5px 10px;
@@ -71,7 +62,6 @@ border:1px solid #33405a;
 font-size:13px;
 margin:4px 4px 0 0;
 }
-
 .tool-link{
 display:block;
 padding:12px 14px;
@@ -82,26 +72,20 @@ border:1px solid #33405a;
 color:#dbe5ff;
 text-decoration:none;
 }
-
-.tool-link:hover{
-border-color:#4a69b8;
-}
-
 .small{
 font-size:13px;
 color:#9aa4b2;
 }
-
 .empty{
 color:#9aa4b2;
 }
+.error{
+color:#ffb4b4;
+}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
 <h1>Navigator Test</h1>
 <p class="sub">Input your thought. See the zone. Open the next tools.</p>
 
@@ -130,6 +114,10 @@ color:#9aa4b2;
 <div id="toolsView" class="empty">No result yet.</div>
 </div>
 
+<div class="card">
+<h3>Status</h3>
+<div id="statusView" class="small">Ready.</div>
+</div>
 </div>
 
 <script src="./mutation-map.js"></script>
@@ -143,22 +131,23 @@ color:#9aa4b2;
 <script>
 function example1(){
 document.getElementById("input").value =
-"I feel stuck and cannot decide what to build next."
+"I feel stuck and cannot decide what to build next.";
 }
 
 function example2(){
 document.getElementById("input").value =
-"アイデアはあるのにツールの形にできない。"
+"アイデアはあるのにツールの形にできない。";
 }
 
 function clearAll(){
-document.getElementById("zoneView").innerHTML = "No result yet."
-document.getElementById("pathView").innerHTML = "No result yet."
-document.getElementById("toolsView").innerHTML = "No result yet."
+document.getElementById("zoneView").innerHTML = "No result yet.";
+document.getElementById("pathView").innerHTML = "No result yet.";
+document.getElementById("toolsView").innerHTML = "No result yet.";
+document.getElementById("statusView").innerHTML = "Ready.";
 }
 
 function pill(text){
-return "<span class='pill'>" + text + "</span>";
+return "<span class='pill'>" + escapeHtml(text) + "</span>";
 }
 
 function escapeHtml(text){
@@ -171,27 +160,40 @@ return String(text)
 }
 
 function runNavigator(){
+var status = document.getElementById("statusView");
 
 if(!window.REFRAME_NAVIGATOR){
-document.getElementById("zoneView").innerHTML = "Navigator not loaded."
-document.getElementById("pathView").innerHTML = ""
-document.getElementById("toolsView").innerHTML = ""
+status.innerHTML = "<span class='error'>REFRAME_NAVIGATOR is not loaded.</span>";
 return;
 }
 
+try{
 var input = document.getElementById("input").value;
 var result = window.REFRAME_NAVIGATOR.navigate(input);
 
 if(!result){
-document.getElementById("zoneView").innerHTML = "No result."
-document.getElementById("pathView").innerHTML = ""
-document.getElementById("toolsView").innerHTML = ""
+status.innerHTML = "<span class='error'>Navigator returned no result.</span>";
+return;
+}
+
+if(result.error){
+status.innerHTML = "<span class='error'>" + escapeHtml(result.error) + "</span>";
+document.getElementById("zoneView").innerHTML = "No result.";
+document.getElementById("pathView").innerHTML = "No result.";
+document.getElementById("toolsView").innerHTML = "No result.";
 return;
 }
 
 renderZone(result.zone);
 renderPath(result.path);
 renderTools(result.tools);
+
+status.innerHTML =
+"OK. Zone: " + escapeHtml(result.zone || "none") +
+(result.zoneId ? " (" + escapeHtml(result.zoneId) + ")" : "");
+}catch(err){
+status.innerHTML = "<span class='error'>" + escapeHtml(err.message) + "</span>";
+}
 }
 
 function renderZone(zone){
@@ -201,34 +203,29 @@ zone ? pill(zone) : "<span class='empty'>No zone found.</span>";
 
 function renderPath(path){
 if(!path || !path.length){
-document.getElementById("pathView").innerHTML = "No path."
+document.getElementById("pathView").innerHTML = "No path.";
 return;
 }
 
 var html = "";
-
 path.forEach(function(step){
 html += pill("Step " + step.stepNumber + ": " + step.zoneTitle);
 });
-
 document.getElementById("pathView").innerHTML = html;
 }
 
 function renderTools(tools){
 if(!tools || !tools.length){
-document.getElementById("toolsView").innerHTML = "No tools found."
+document.getElementById("toolsView").innerHTML = "No tools found for this zone.";
 return;
 }
 
 var html = "";
-
 tools.forEach(function(tool){
 html += '<a class="tool-link" href="./' + encodeURI(tool) + '">' + escapeHtml(tool) + '</a>';
 });
-
 document.getElementById("toolsView").innerHTML = html;
 }
 </script>
-
 </body>
 </html>
