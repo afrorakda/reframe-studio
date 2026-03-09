@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REFRAME Router Test</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f1115;
+      color: #f5f7fb;
+      line-height: 1.6;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #9fb4ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .sub {
+      margin: 0 0 24px;
+      color: #aeb7c6;
+      font-size: 15px;
+    }
+
+    .panel,
+    .card {
+      background: #171a21;
+      border: 1px solid #2a3140;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #d9e0ea;
+    }
+
+    textarea,
+    select {
+      width: 100%;
+      background: #0f1115;
+      color: #f5f7fb;
+      border: 1px solid #333c4d;
+      border-radius: 12px;
+      padding: 12px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+      margin-top: 12px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font: inherit;
+      cursor: pointer;
+      background: #2b6cff;
+      color: white;
+    }
+
+    button.secondary {
+      background: #2a3140;
+      color: #e7ecf5;
+    }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .muted {
+      color: #aeb7c6;
+      font-size: 14px;
+    }
+
+    .empty {
+      color: #8f98a8;
+      font-size: 14px;
+    }
+
+    .score {
+      display: inline-block;
+      margin-left: 8px;
+      font-size: 12px;
+      color: #9fb4ff;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #222938;
+      border: 1px solid #33405a;
+      font-size: 13px;
+      color: #dbe5ff;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #aeb7c6;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 13px;
+      background: #0f1115;
+      border: 1px solid #2b3344;
+      border-radius: 12px;
+      padding: 12px;
+      color: #dbe5ff;
+      overflow: auto;
+    }
+
+    @media (min-width: 760px) {
+      .row {
+        grid-template-columns: 1fr 180px;
+      }
+
+      .grid {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <h1>Router Test</h1>
+    <p class="sub">Test field reading and contact zone matching.</p>
+
+    <div class="panel">
+      <label for="inputText">Input</label>
+      <textarea id="inputText" placeholder="Example:
+I have ideas but I cannot turn them into tools.
+
+例:
+アイデアはあるのにツールの形にできない。"></textarea>
+
+      <div class="row">
+        <div>
+          <label for="modeSelect">Mode</label>
+          <select id="modeSelect">
+            <option value="stable">Stable</option>
+            <option value="drift">Drift</option>
+            <option value="chaos">Chaos</option>
+          </select>
+        </div>
+        <div>
+          <label for="limitSelect">Results</label>
+          <select id="limitSelect">
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="runBtn">Run router</button>
+        <button id="exampleBtn" class="secondary">Try example</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h2>Primary Zone</h2>
+          <div id="primaryZone" class="empty">No result yet.</div>
+        </div>
+
+        <div class="card">
+          <h2>Nearby Zones</h2>
+          <div id="nearbyZones" class="empty">No result yet.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>Field Read</h2>
+          <div id="fieldRead" class="empty">No result yet.</div>
+        </div>
+
+        <div class="card">
+          <h2>Debug JSON</h2>
+          <pre id="debugJson">No result yet.</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./mutation-map.js"></script>
+  <script src="./router-v2.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var inputText = document.getElementById("inputText");
+      var modeSelect = document.getElementById("modeSelect");
+      var limitSelect = document.getElementById("limitSelect");
+      var runBtn = document.getElementById("runBtn");
+      var exampleBtn = document.getElementById("exampleBtn");
+      var clearBtn = document.getElementById("clearBtn");
+
+      var primaryZoneEl = document.getElementById("primaryZone");
+      var nearbyZonesEl = document.getElementById("nearbyZones");
+      var fieldReadEl = document.getElementById("fieldRead");
+      var debugJsonEl = document.getElementById("debugJson");
+
+      function topItems(bucket, limit) {
+        return Object.keys(bucket)
+          .map(function (key) {
+            return { key: key, score: bucket[key] };
+          })
+          .filter(function (item) {
+            return item.score > 0;
+          })
+          .sort(function (a, b) {
+            return b.score - a.score;
+          })
+          .slice(0, limit || 3);
+      }
+
+      function makePills(items) {
+        if (!items.length) return '<div class="empty">None</div>';
+
+        return (
+          '<div class="pill-list">' +
+          items.map(function (item) {
+            return '<span class="pill">' + item + '</span>';
+          }).join("") +
+          "</div>"
+        );
+      }
+
+      function renderPrimaryZone(primary) {
+        if (!primary) {
+          primaryZoneEl.innerHTML = '<div class="empty">No zone found.</div>';
+          return;
+        }
+
+        primaryZoneEl.innerHTML =
+          "<h3>" + escapeHtml(primary.title) +
+          '<span class="score">score ' + primary.score + "</span></h3>" +
+          '<div class="muted">' + escapeHtml(primary.cluster) + "</div>" +
+          '<p>' + escapeHtml(primary.role) + "</p>" +
+          '<p class="small">' + escapeHtml(primary.why.text) + "</p>" +
+          '<div class="small">Output state</div>' +
+          makePills(primary.outputState) +
+          '<div class="small" style="margin-top:12px;">Next openings</div>' +
+          makePills(primary.nextOpenings);
+      }
+
+      function renderNearbyZones(zones) {
+        if (!zones || !zones.length) {
+          nearbyZonesEl.innerHTML = '<div class="empty">No nearby zones.</div>';
+          return;
+        }
+
+        nearbyZonesEl.innerHTML = zones.map(function (zone) {
+          return (
+            '<div style="margin-bottom:14px;">' +
+              "<h3>" + escapeHtml(zone.title) +
+              '<span class="score">score ' + zone.score + "</span></h3>" +
+              '<div class="muted">' + escapeHtml(zone.cluster) + "</div>" +
+              '<div class="small" style="margin-top:8px;">Next openings</div>' +
+              makePills(zone.nextOpenings) +
+            "</div>"
+          );
+        }).join("");
+      }
+
+      function renderFieldRead(fieldState) {
+        if (!fieldState) {
+          fieldReadEl.innerHTML = '<div class="empty">No field read.</div>';
+          return;
+        }
+
+        var topFriction = topItems(fieldState.friction, 4);
+        var topMutation = topItems(fieldState.mutation, 4);
+        var topExpression = topItems(fieldState.expression, 4);
+
+        fieldReadEl.innerHTML =
+          "<h3>Friction</h3>" +
+          makePills(topFriction.map(function (item) {
+            return item.key + " " + item.score.toFixed(2);
+          })) +
+          "<h3 style='margin-top:14px;'>Mutation</h3>" +
+          makePills(topMutation.map(function (item) {
+            return item.key + " " + item.score.toFixed(2);
+          })) +
+          "<h3 style='margin-top:14px;'>Expression</h3>" +
+          makePills(topExpression.map(function (item) {
+            return item.key + " " + item.score.toFixed(2);
+          }));
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function runRouter() {
+        if (!window.REFRAME_ROUTER_V2) {
+          primaryZoneEl.innerHTML = '<div class="empty">router-v2.js is not loaded.</div>';
+          nearbyZonesEl.innerHTML = "";
+          fieldReadEl.innerHTML = "";
+          debugJsonEl.textContent = "router-v2.js is missing.";
+          return;
+        }
+
+        try {
+          var result = window.REFRAME_ROUTER_V2.routeInput(inputText.value, {
+            mode: modeSelect.value,
+            limit: Number(limitSelect.value)
+          });
+
+          renderPrimaryZone(result.primaryZone);
+          renderNearbyZones(result.nearbyZones);
+          renderFieldRead(result.fieldState);
+          debugJsonEl.textContent = JSON.stringify(result, null, 2);
+        } catch (error) {
+          primaryZoneEl.innerHTML = '<div class="empty">Error: ' + escapeHtml(error.message) + "</div>";
+          nearbyZonesEl.innerHTML = "";
+          fieldReadEl.innerHTML = "";
+          debugJsonEl.textContent = String(error && error.stack ? error.stack : error);
+        }
+      }
+
+      exampleBtn.addEventListener("click", function () {
+        inputText.value = "I have ideas but I cannot turn them into tools.";
+        modeSelect.value = "stable";
+        limitSelect.value = "3";
+        runRouter();
+      });
+
+      clearBtn.addEventListener("click", function () {
+        inputText.value = "";
+        modeSelect.value = "stable";
+        limitSelect.value = "3";
+        primaryZoneEl.innerHTML = '<div class="empty">No result yet.</div>';
+        nearbyZonesEl.innerHTML = '<div class="empty">No result yet.</div>';
+        fieldReadEl.innerHTML = '<div class="empty">No result yet.</div>';
+        debugJsonEl.textContent = "No result yet.";
+      });
+
+      runBtn.addEventListener("click", runRouter);
+    })();
+  </script>
+</body>
+</html>
