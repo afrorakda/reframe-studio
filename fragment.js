@@ -1,8 +1,10 @@
-{
-  id: "frag_1710000000000",
-  text: "People say my ideas are too abstract",
-  sourceType: "idea",
-  currentField: "friction",
-  mode: "drift",
-  history: []
+function createFragment(text, sourceType = "idea", mode = "drift") {
+  return {
+    id: "frag_" + Date.now(),
+    text: text.trim(),
+    sourceType: sourceType,
+    currentField: "friction",
+    mode: mode,
+    history: []
+  };
 }
