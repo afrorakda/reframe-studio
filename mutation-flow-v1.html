@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutation Flow v1</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0b1730;
+      --panel:#101c35;
+      --panel2:#142342;
+      --panel3:#182a50;
+      --line:#263a67;
+      --text:#eef4ff;
+      --muted:#9fb0d7;
+      --soft:#7ed4ff;
+      --violet:#9a8cff;
+      --mint:#67f0cf;
+      --gold:#ffd37a;
+      --rose:#ff97b6;
+      --danger:#ff8f8f;
+      --shadow:0 14px 36px rgba(0,0,0,.28);
+      --radius:20px;
+      --radius-sm:14px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(154,140,255,.16), transparent 26%),
+        radial-gradient(circle at 88% 12%, rgba(103,240,207,.10), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(126,212,255,.08), transparent 30%),
+        linear-gradient(180deg, #07111f 0%, #09162b 100%);
+      line-height:1.45;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .wrap{
+      width:min(100%, 1180px);
+      margin:0 auto;
+      padding:16px 12px 40px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:12px;
+      opacity:.95;
+    }
+
+    .hero{
+      background:linear-gradient(180deg, rgba(16,28,53,.98), rgba(16,28,53,.90));
+      border:1px solid var(--line);
+      border-radius:28px;
+      padding:20px 16px;
+      box-shadow:var(--shadow);
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--mint);
+      margin-bottom:10px;
+    }
+
+    h1{
+      margin:0;
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+
+    .sub{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:15px;
+      max-width:760px;
+    }
+
+    .principles{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .pill{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 12px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr 1.35fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(16,28,53,.96), rgba(16,28,53,.88));
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:14px;
+      box-shadow:var(--shadow);
+      min-width:0;
+    }
+
+    .panel h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.02em;
+    }
+
+    .panel .desc{
+      margin:6px 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .field-tabs{
+      display:flex;
+      gap:8px;
+      margin-top:14px;
+      overflow:auto;
+      padding-bottom:2px;
+      scrollbar-width:none;
+    }
+    .field-tabs::-webkit-scrollbar{display:none}
+
+    .tab{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:12px;
+      white-space:nowrap;
+      cursor:pointer;
+    }
+
+    .tab.active{
+      border-color:var(--soft);
+      box-shadow:0 0 0 1px rgba(126,212,255,.12) inset;
+    }
+
+    .galaxy-list{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+      max-height:520px;
+      overflow:auto;
+      padding-right:2px;
+    }
+
+    .node{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, var(--panel2), rgba(20,35,66,.82));
+      border-radius:18px;
+      padding:12px;
+      cursor:pointer;
+      transition:.18s ease;
+      width:100%;
+      color:var(--text);
+      text-align:left;
+    }
+
+    .node:hover{transform:translateY(-1px)}
+    .node.active{
+      border-color:var(--violet);
+      box-shadow:0 0 0 1px rgba(154,140,255,.16) inset;
+    }
+
+    .node-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .node-type{
+      font-size:11px;
+      color:var(--soft);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .node-score{
+      font-size:11px;
+      color:var(--gold);
+      background:rgba(255,211,122,.10);
+      border:1px solid rgba(255,211,122,.20);
+      border-radius:999px;
+      padding:5px 8px;
+      white-space:nowrap;
+    }
+
+    .node-text{
+      font-size:14px;
+      color:var(--text);
+      word-break:break-word;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .small{
+      font-size:12px;
+    }
+
+    .add-box{
+      margin-top:12px;
+      border-top:1px solid var(--line);
+      padding-top:12px;
+    }
+
+    textarea,input,select{
+      width:100%;
+      background:var(--panel2);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px;
+      font:inherit;
+      outline:none;
+    }
+
+    textarea{
+      resize:vertical;
+      min-height:120px;
+    }
+
+    textarea::placeholder,
+    input::placeholder{
+      color:#8393bc;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .row > *{min-width:0}
+
+    .modes{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .mode{
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      border-radius:18px;
+      padding:12px;
+      text-align:left;
+      cursor:pointer;
+      min-height:86px;
+      width:100%;
+    }
+
+    .mode strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:15px;
+    }
+
+    .mode span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .mode.active{
+      border-color:var(--mint);
+      box-shadow:0 0 0 1px rgba(103,240,207,.16) inset;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      font:inherit;
+      cursor:pointer;
+      color:var(--text);
+      background:var(--panel3);
+      border:1px solid var(--line);
+      transition:.18s ease;
+    }
+
+    button:hover{transform:translateY(-1px)}
+
+    .primary{
+      background:linear-gradient(180deg, rgba(154,140,255,.22), rgba(154,140,255,.12));
+      border-color:rgba(154,140,255,.45);
+    }
+
+    .secondary{
+      background:linear-gradient(180deg, rgba(126,212,255,.16), rgba(126,212,255,.08));
+      border-color:rgba(126,212,255,.36);
+    }
+
+    .success{
+      background:linear-gradient(180deg, rgba(103,240,207,.18), rgba(103,240,207,.08));
+      border-color:rgba(103,240,207,.35);
+    }
+
+    .ghost{
+      background:var(--panel2);
+    }
+
+    .status{
+      margin-top:10px;
+      min-height:20px;
+      color:var(--soft);
+      font-size:12px;
+    }
+
+    .selected-card{
+      margin-top:12px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+      border-radius:18px;
+      padding:12px;
+    }
+
+    .selected-card .tagline{
+      color:var(--soft);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+
+    .mutations{
+      margin-top:14px;
+      display:grid;
+      gap:12px;
+    }
+
+    .mutation-card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, var(--panel2), rgba(20,35,66,.78));
+      border-radius:20px;
+      padding:14px;
+    }
+
+    .mutation-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+
+    .mutation-title{
+      font-size:16px;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .mode-chip{
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .block{
+      margin-top:10px;
+      border-top:1px solid rgba(255,255,255,.06);
+      padding-top:10px;
+    }
+
+    .block-label{
+      font-size:11px;
+      color:var(--soft);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+
+    .block-text{
+      font-size:14px;
+      color:var(--text);
+      word-break:break-word;
+    }
+
+    .next-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .next-btn{
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:12px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .toolbox{
+      margin-top:12px;
+      display:grid;
+      gap:10px;
+    }
+
+    .tool-spec{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, var(--panel2), rgba(20,35,66,.82));
+      border-radius:20px;
+      padding:12px;
+    }
+
+    .tool-spec pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+      font:inherit;
+      color:var(--text);
+    }
+
+    .history{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .history button{
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:12px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .footer{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+      opacity:.9;
+    }
+
+    @media (max-width:980px){
+      .grid{
+        grid-template-columns:1fr;
+      }
+      .galaxy-list{
+        max-height:none;
+      }
+    }
+
+    @media (max-width:640px){
+      h1{font-size:28px}
+      .principles{grid-template-columns:1fr}
+      .modes{grid-template-columns:1fr}
+      .actions button{flex:1 1 auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="eyebrow">REFRAME Studio • Mutation Flow v1</div>
+      <h1>Thought Galaxy × Mutation Engine</h1>
+      <p class="sub">
+        Select a thought fragment from the galaxy, mutate it, then branch into the next mutations or send it toward tool building.
+      </p>
+      <div class="principles">
+        <div class="pill">No login</div>
+        <div class="pill">No tracking</div>
+        <div class="pill">No personal data</div>
+        <div class="pill">Runs entirely in browser</div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>1. Thought Galaxy</h2>
+        <p class="desc">Fragments live in fields. Pick one to start the drift.</p>
+
+        <div class="field-tabs" id="fieldTabs"></div>
+
+        <div class="galaxy-list" id="galaxyList"></div>
+
+        <div class="add-box">
+          <div class="row" style="margin-bottom:10px;">
+            <select id="newField">
+              <option value="All">All</option>
+              <option value="Criticism">Criticism</option>
+              <option value="Emotion">Emotion</option>
+              <option value="Problem">Problem</option>
+              <option value="Confusion">Confusion</option>
+              <option value="Failure">Failure</option>
+              <option value="Idea">Idea</option>
+            </select>
+          </div>
+          <textarea id="newFragment" placeholder="Drop a new thought fragment here.&#10;&#10;Example: People react to my posts but I can't turn those reactions into new ideas."></textarea>
+          <div class="actions">
+            <button class="secondary" id="addFragmentBtn">Add fragment</button>
+            <button class="ghost" id="shuffleBtn">Random fragment</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>2. Mutation Engine</h2>
+        <p class="desc">Input → Mutation → Output → Next mutation</p>
+
+        <div class="selected-card" id="selectedCard">
+          <div class="tagline">Selected fragment</div>
+          <div class="block-text muted">Choose a fragment from the galaxy or add your own.</div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div class="small muted" style="margin-bottom:8px;">Current input</div>
+          <textarea id="engineInput" placeholder="Your fragment appears here. You can edit it before mutation."></textarea>
+        </div>
+
+        <div class="modes">
+          <button class="mode active" data-mode="stable">
+            <strong>Stable</strong>
+            <span>Logical path. Clear next moves.</span>
+          </button>
+          <button class="mode" data-mode="drift">
+            <strong>Drift</strong>
+            <span>Slightly unexpected angle. New direction.</span>
+          </button>
+          <button class="mode" data-mode="chaos">
+            <strong>Chaos</strong>
+            <span>High mutation. More surprising jumps.</span>
+          </button>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="mutateBtn">Generate mutations</button>
+          <button class="ghost" id="tryExampleBtn">Try example</button>
+          <button class="ghost" id="clearBtn">Clear</button>
+          <button class="ghost" id="copyOutputBtn">Copy result</button>
+        </div>
+
+        <div class="status" id="status">Ready.</div>
+
+        <div class="mutations" id="mutations"></div>
+
+        <div class="history" id="history"></div>
+      </div>
+
+      <div class="panel">
+        <h2>3. Galaxy → Tool Builder</h2>
+        <p class="desc">Turn a mutation into a ready next tool direction.</p>
+
+        <div class="toolbox" id="toolbox">
+          <div class="tool-spec">
+            <div class="block-label">Tool builder state</div>
+            <div class="block-text muted">Generate mutations first, then choose one to convert into a tool seed.</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="success" id="buildToolBtn">Build tool seed from selected mutation</button>
+          <button class="ghost" id="copyToolBtn">Copy tool seed</button>
+        </div>
+
+        <div class="footer">
+          Mutation Flow v1 turns Thought Galaxy from a view into a movement system.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function(){
+      const fields = ["All","Criticism","Emotion","Problem","Confusion","Failure","Idea"];
+
+      const fragments = [
+        { field:"Criticism", text:"People say my ideas are too abstract.", score:84 },
+        { field:"Emotion", text:"Content creation feels exhausting lately.", score:78 },
+        { field:"Problem", text:"I have many tool ideas but can't choose what to build next.", score:91 },
+        { field:"Confusion", text:"I don't know whether REFRAME Studio is a tool collection or a thinking system.", score:88 },
+        { field:"Failure", text:"I made a tool, but it feels like a normal productivity app.", score:82 },
+        { field:"Idea", text:"What if every tool output always suggested the next mutation?", score:95 },
+        { field:"Idea", text:"Thought Weather could change how drift behaves.", score:89 },
+        { field:"Problem", text:"Users may not understand where to start inside a large thinking playground.", score:86 },
+        { field:"Criticism", text:"AI tools all feel repetitive and predictable.", score:87 },
+        { field:"Confusion", text:"I want chaos, but I also want structure. How do both coexist?", score:90 },
+        { field:"Failure", text:"The interface worked, but the thought did not continue.", score:80 },
+        { field:"Emotion", text:"I get excited when a tool creates an unexpected angle.", score:83 }
+      ];
+
+      const templates = {
+        stable: {
+          Criticism: [
+            { type:"Lesson", title:"Criticism → Lesson" },
+            { type:"Question", title:"Criticism → Question" },
+            { type:"Reframe", title:"Criticism → Reframe" }
+          ],
+          Emotion: [
+            { type:"Question", title:"Emotion → Question" },
+            { type:"Action", title:"Emotion → Action Direction" },
+            { type:"Lesson", title:"Emotion → Lesson" }
+          ],
+          Problem: [
+            { type:"Constraint", title:"Problem → Constraint Lens" },
+            { type:"Question", title:"Problem → Clarifying Question" },
+            { type:"Reframe", title:"Problem → Reframe" }
+          ],
+          Confusion: [
+            { type:"Question", title:"Confusion → Question" },
+            { type:"Structure", title:"Confusion → Structure" },
+            { type:"Action", title:"Confusion → Action Path" }
+          ],
+          Failure: [
+            { type:"Lesson", title:"Failure → Lesson" },
+            { type:"Constraint", title:"Failure → Hidden Constraint" },
+            { type:"Action", title:"Failure → Recovery Action" }
+          ],
+          Idea: [
+            { type:"Metaphor", title:"Idea → Metaphor" },
+            { type:"Angle", title:"Idea → Angle" },
+            { type:"Tool", title:"Idea → Tool Direction" }
+          ]
+        },
+        drift: {
+          Criticism: [
+            { type:"Opposite", title:"Criticism → Opposite" },
+            { type:"Metaphor", title:"Criticism → Metaphor" },
+            { type:"Angle", title:"Criticism → Angle" }
+          ],
+          Emotion: [
+            { type:"Metaphor", title:"Emotion → Metaphor" },
+            { type:"Opposite", title:"Emotion → Opposite Energy" },
+            { type:"Angle", title:"Emotion → Expression Angle" }
+          ],
+          Problem: [
+            { type:"Metaphor", title:"Problem → Metaphor" },
+            { type:"Opposite", title:"Problem → Opposite Assumption" },
+            { type:"Tool", title:"Problem → Tool Mutation" }
+          ],
+          Confusion: [
+            { type:"Metaphor", title:"Confusion → Metaphor" },
+            { type:"Opposite", title:"Confusion → Opposite Question" },
+            { type:"Angle", title:"Confusion → Unexpected Angle" }
+          ],
+          Failure: [
+            { type:"Opposite", title:"Failure → Opposite Reading" },
+            { type:"Metaphor", title:"Failure → Metaphor" },
+            { type:"Angle", title:"Failure → New Angle" }
+          ],
+          Idea: [
+            { type:"Opposite", title:"Idea → Opposite" },
+            { type:"Question", title:"Idea → Dangerous Question" },
+            { type:"Tool", title:"Idea → Weird Tool Direction" }
+          ]
+        },
+        chaos: {
+          Criticism: [
+            { type:"World", title:"Criticism → Alternate World" },
+            { type:"Mutation", title:"Criticism → Mutation Burst" },
+            { type:"Tool", title:"Criticism → Strange Tool" }
+          ],
+          Emotion: [
+            { type:"World", title:"Emotion → Weather System" },
+            { type:"Mutation", title:"Emotion → Mutation Burst" },
+            { type:"Tool", title:"Emotion → Strange Tool" }
+          ],
+          Problem: [
+            { type:"World", title:"Problem → Alternate System" },
+            { type:"Mutation", title:"Problem → Mutation Burst" },
+            { type:"Tool", title:"Problem → Radical Tool" }
+          ],
+          Confusion: [
+            { type:"World", title:"Confusion → Alternate Map" },
+            { type:"Mutation", title:"Confusion → Mutation Burst" },
+            { type:"Tool", title:"Confusion → Radical Tool" }
+          ],
+          Failure: [
+            { type:"World", title:"Failure → Alternate World" },
+            { type:"Mutation", title:"Failure → Mutation Burst" },
+            { type:"Tool", title:"Failure → Radical Tool" }
+          ],
+          Idea: [
+            { type:"World", title:"Idea → Alternate World" },
+            { type:"Mutation", title:"Idea → Mutation Burst" },
+            { type:"Tool", title:"Idea → Radical Tool" }
+          ]
+        }
+      };
+
+      const nextTemplates = {
+        Lesson:["Angle","Question","Action","Hook"],
+        Question:["Structure","Angle","Action","Tool"],
+        Reframe:["Angle","Hook","Thread","Tool"],
+        Constraint:["Action","Tool","Question","Structure"],
+        Structure:["Action","Tool","Thread","Angle"],
+        Action:["Tool","Hook","Thread","Angle"],
+        Metaphor:["Angle","Hook","Tool","Thread"],
+        Opposite:["Question","Angle","Hook","Tool"],
+        Angle:["Hook","Thread","Tool","Post"],
+        Tool:["Idea → Tool Spec","Tool Generator","HTML Tool","Mutation again"],
+        World:["Question","Tool","Thread","Mutation again"],
+        Mutation:["Angle","Tool","Hook","Mutation again"]
+      };
+
+      const galaxyList = document.getElementById("galaxyList");
+      const fieldTabs = document.getElementById("fieldTabs");
+      const selectedCard = document.getElementById("selectedCard");
+      const engineInput = document.getElementById("engineInput");
+      const mutationsEl = document.getElementById("mutations");
+      const statusEl = document.getElementById("status");
+      const historyEl = document.getElementById("history");
+      const toolboxEl = document.getElementById("toolbox");
+
+      const newField = document.getElementById("newField");
+      const newFragment = document.getElementById("newFragment");
+
+      let activeField = "All";
+      let activeMode = "stable";
+      let selectedIndex = -1;
+      let lastMutations = [];
+      let selectedMutationIndex = -1;
+      let history = [];
+
+      function escapeHtml(str){
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function detectField(text){
+        const t = text.toLowerCase();
+        if(/feel|exhaust|tired|excited|afraid|emotion|anxious/.test(t)) return "Emotion";
+        if(/why|don't know|confused|unclear|how do/.test(t)) return "Confusion";
+        if(/failed|did not|didn't work|failure/.test(t)) return "Failure";
+        if(/idea|what if|could|maybe/.test(t)) return "Idea";
+        if(/people say|criticism|too abstract|they say/.test(t)) return "Criticism";
+        return "Problem";
+      }
+
+      function titleCase(str){
+        return str.replace(/\b\w/g, c => c.toUpperCase());
+      }
+
+      function slugify(str){
+        return String(str)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 42) || "tool";
+      }
+
+      function createTabs(){
+        fieldTabs.innerHTML = fields.map(field => `
+          <button class="tab ${field===activeField ? 'active':''}" data-field="${escapeHtml(field)}">${escapeHtml(field)}</button>
+        `).join("");
+
+        fieldTabs.querySelectorAll(".tab").forEach(btn => {
+          btn.addEventListener("click", () => {
+            activeField = btn.dataset.field;
+            createTabs();
+            renderGalaxy();
+          });
+        });
+      }
+
+      function renderGalaxy(){
+        const visible = fragments
+          .map((item, originalIndex) => ({...item, originalIndex}))
+          .filter(item => activeField === "All" ? true : item.field === activeField);
+
+        galaxyList.innerHTML = visible.map(item => `
+          <button class="node ${item.originalIndex===selectedIndex ? 'active':''}" data-index="${item.originalIndex}">
+            <div class="node-top">
+              <div class="node-type">${escapeHtml(item.field)}</div>
+              <div class="node-score">Potential ${item.score}</div>
+            </div>
+            <div class="node-text">${escapeHtml(item.text)}</div>
+          </button>
+        `).join("");
+
+        galaxyList.querySelectorAll(".node").forEach(btn => {
+          btn.addEventListener("click", () => {
+            selectedIndex = Number(btn.dataset.index);
+            const item = fragments[selectedIndex];
+            engineInput.value = item.text;
+            selectedCard.innerHTML = `
+              <div class="tagline">${escapeHtml(item.field)} fragment selected</div>
+              <div class="block-text">${escapeHtml(item.text)}</div>
+            `;
+            createTabs();
+            renderGalaxy();
+            statusEl.textContent = "Fragment loaded into Mutation Engine.";
+          });
+        });
+      }
+
+      function modeIntensity(mode){
+        if(mode === "stable") return "clear";
+        if(mode === "drift") return "unexpected";
+        return "radical";
+      }
+
+      function buildOutput(type, input, field, mode){
+        const intensity = modeIntensity(mode);
+        const trimmed = input.trim();
+
+        const map = {
+          Lesson: `The friction in this fragment may be teaching that the visible issue is not the real blockage. In ${intensity} mode, the useful lesson is: "${trimmed}" may actually be a signal to redesign the path, not force the current one.`,
+          Question: `A better next question might be: What becomes easier if "${trimmed}" is treated as a starting material instead of a problem to remove?`,
+          Reframe: `Reframe this fragment from obstacle to engine: "${trimmed}" is not just resistance. It may be the shape of the next tool or the next field of exploration.`,
+          Constraint: `The hidden constraint inside this fragment may be that the system has too many possible paths and not enough visible next moves.`,
+          Structure: `A usable structure could be: Fragment → Mutation → Expression → Next Fragment. This turns confusion into a repeatable path.`,
+          Action: `One next action: extract one small tool, one interface move, or one visible decision from "${trimmed}" and test only that.`,
+          Metaphor: `Treat this fragment like a drifting object in a thinking ocean. It does not need resolution first. It needs current, collision, and transformation.`,
+          Opposite: `Opposite reading: what if "${trimmed}" is not a weakness but the exact thing that makes the system different from normal AI tools?`,
+          Angle: `Angle: the real story may not be the fragment itself, but the mutation pressure hidden inside it.`,
+          Tool: `Tool direction: convert this fragment into a single-purpose browser tool that performs one mutation and suggests 2–4 next mutations.`,
+          World: `Alternate world: imagine a system where "${trimmed}" is considered valuable because it increases thought drift rather than decreases it.`,
+          Mutation: `Mutation burst: split "${trimmed}" into signal, tension, and possible expression. Then make each branch its own next tool or next node.`
+        };
+
+        return map[type] || `Mutation generated from "${trimmed}".`;
+      }      function buildNexts(type, input, mode){
+        const pool = nextTemplates[type] || ["Angle","Action","Tool","Thread"];
+        const shuffled = shuffle([...pool]).slice(0, mode === "stable" ? 2 : mode === "drift" ? 3 : 4);
+        return shuffled.map(label => {
+          if(label === "Mutation again") return `Mutate again from: ${input}`;
+          if(label === "Idea → Tool Spec") return `Turn this into Idea → Tool Spec`;
+          if(label === "Tool Generator") return `Send this to Tool Generator`;
+          if(label === "HTML Tool") return `Turn this into HTML Tool`;
+          return `Go to ${label}`;
+        });
+      }
+
+      function generateMutations(){
+        const input = engineInput.value.trim();
+        if(!input){
+          statusEl.textContent = "Add or select a fragment first.";
+          mutationsEl.innerHTML = "";
+          return;
+        }
+
+        const field = selectedIndex >= 0 ? fragments[selectedIndex].field : detectField(input);
+        const templateSet = templates[activeMode][field] || templates[activeMode].Problem;
+        lastMutations = templateSet.map((item, index) => ({
+          title: item.title,
+          type: item.type,
+          output: buildOutput(item.type, input, field, activeMode),
+          nexts: buildNexts(item.type, input, activeMode),
+          input,
+          field,
+          mode: activeMode,
+          id: Date.now() + "-" + index
+        }));
+        selectedMutationIndex = 0;
+
+        renderMutations();
+        pushHistory(input);
+        statusEl.textContent = `Generated ${lastMutations.length} mutations in ${titleCase(activeMode)} mode.`;
+        renderToolSeedPlaceholder();
+      }
+
+      function renderMutations(){
+        if(!lastMutations.length){
+          mutationsEl.innerHTML = "";
+          return;
+        }
+
+        mutationsEl.innerHTML = lastMutations.map((m, i) => `
+          <div class="mutation-card">
+            <div class="mutation-head">
+              <div class="mutation-title">${escapeHtml(m.title)}</div>
+              <div class="mode-chip">${escapeHtml(titleCase(m.mode))} • ${escapeHtml(m.field)}</div>
+            </div>
+
+            <div class="block">
+              <div class="block-label">Transformation</div>
+              <div class="block-text">${escapeHtml(m.type)}</div>
+            </div>
+
+            <div class="block">
+              <div class="block-label">Output</div>
+              <div class="block-text">${escapeHtml(m.output)}</div>
+            </div>
+
+            <div class="block">
+              <div class="block-label">Next mutations</div>
+              <div class="next-list">
+                ${m.nexts.map(next => `<button class="next-btn" data-next="${escapeHtml(next)}" data-card="${i}">${escapeHtml(next)}</button>`).join("")}
+              </div>
+            </div>
+
+            <div class="actions" style="margin-top:10px;">
+              <button class="${i===selectedMutationIndex ? 'success' : 'ghost'} select-mutation" data-card="${i}">${i===selectedMutationIndex ? 'Selected for Tool Builder' : 'Select for Tool Builder'}</button>
+              <button class="ghost send-output" data-card="${i}">Use output as new input</button>
+            </div>
+          </div>
+        `).join("");
+
+        mutationsEl.querySelectorAll(".next-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const nextText = btn.dataset.next;
+            handleNextMutation(nextText);
+          });
+        });
+
+        mutationsEl.querySelectorAll(".select-mutation").forEach(btn => {
+          btn.addEventListener("click", () => {
+            selectedMutationIndex = Number(btn.dataset.card);
+            renderMutations();
+            renderToolSeedPlaceholder();
+            statusEl.textContent = "Mutation selected for Tool Builder.";
+          });
+        });
+
+        mutationsEl.querySelectorAll(".send-output").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const idx = Number(btn.dataset.card);
+            engineInput.value = lastMutations[idx].output;
+            selectedIndex = -1;
+            selectedCard.innerHTML = `
+              <div class="tagline">Mutation output loaded</div>
+              <div class="block-text">${escapeHtml(lastMutations[idx].output)}</div>
+            `;
+            statusEl.textContent = "Mutation output moved into input. Generate again to continue the loop.";
+          });
+        });
+      }
+
+      function handleNextMutation(nextText){
+        if(/^Go to /.test(nextText)){
+          const target = nextText.replace(/^Go to /, "");
+          engineInput.value = `${engineInput.value.trim()} → ${target}`;
+        }else if(nextText === "Turn this into Idea → Tool Spec"){
+          buildToolSeed();
+          statusEl.textContent = "Built tool seed from selected mutation.";
+          return;
+        }else if(nextText === "Send this to Tool Generator"){
+          engineInput.value = `Tool Generator direction: ${engineInput.value.trim()}`;
+        }else if(nextText === "Turn this into HTML Tool"){
+          engineInput.value = `HTML Tool direction: ${engineInput.value.trim()}`;
+        }else if(/^Mutate again from: /.test(nextText)){
+          engineInput.value = nextText.replace(/^Mutate again from: /, "");
+        }else{
+          engineInput.value = nextText;
+        }
+        selectedIndex = -1;
+        selectedCard.innerHTML = `
+          <div class="tagline">Next mutation loaded</div>
+          <div class="block-text">${escapeHtml(engineInput.value)}</div>
+        `;
+        generateMutations();
+      }
+
+      function pushHistory(text){
+        if(!text) return;
+        history = [text, ...history.filter(item => item !== text)].slice(0, 8);
+        renderHistory();
+      }
+
+      function renderHistory(){
+        historyEl.innerHTML = history.map(item => `
+          <button data-history="${escapeHtml(item)}">${escapeHtml(item.length > 48 ? item.slice(0,48) + "…" : item)}</button>
+        `).join("");
+
+        historyEl.querySelectorAll("button").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const raw = btn.getAttribute("data-history");
+            engineInput.value = raw;
+            selectedIndex = -1;
+            selectedCard.innerHTML = `
+              <div class="tagline">History fragment loaded</div>
+              <div class="block-text">${escapeHtml(raw)}</div>
+            `;
+            statusEl.textContent = "History fragment loaded.";
+          });
+        });
+      }
+
+      function buildToolSeed(){
+        if(!lastMutations.length){
+          toolboxEl.innerHTML = `
+            <div class="tool-spec">
+              <div class="block-label">Tool builder state</div>
+              <div class="block-text muted">Generate mutations first.</div>
+            </div>
+          `;
+          return;
+        }
+
+        const m = lastMutations[Math.max(0, selectedMutationIndex)];
+        const core = m.type === "Tool"
+          ? m.output
+          : `${m.title}: ${m.output}`;
+
+        const titleBase = {
+          Lesson:"Criticism → Lesson",
+          Question:"Confusion → Question",
+          Reframe:"Problem → Reframe",
+          Constraint:"Problem → Constraint",
+          Structure:"Confusion → Structure",
+          Action:"Constraint → Action",
+          Metaphor:"Idea → Metaphor",
+          Opposite:"Idea → Opposite",
+          Angle:"Fragment → Angle",
+          Tool:"Mutation → Tool",
+          World:"Fragment → Alternate World",
+          Mutation:"Fragment → Mutation Burst"
+        }[m.type] || "Fragment → Tool";
+
+        const fileName = slugify(titleBase) + ".html";
+        const buttonLabel = {
+          Lesson:"Find lesson",
+          Question:"Generate questions",
+          Reframe:"Reframe it",
+          Constraint:"Find constraint",
+          Structure:"Build structure",
+          Action:"Find action",
+          Metaphor:"Generate metaphor",
+          Opposite:"Find opposite",
+          Angle:"Find angle",
+          Tool:"Generate tool",
+          World:"Open alternate world",
+          Mutation:"Burst mutations"
+        }[m.type] || "Generate";
+
+        const spec = [
+          `Tool name: ${titleBase}`,
+          `File name: ${fileName}`,
+          `Transformation: ${m.field} → ${m.type}`,
+          `Description: ${core}`,
+          `Main button: ${buttonLabel}`,
+          ``,
+          `Output structure:`,
+          `Input`,
+          `↓`,
+          `Transformation`,
+          `↓`,
+          `Output`,
+          `↓`,
+          `Next mutations`,
+          ``,
+          `Next mutation ideas:`,
+          ...m.nexts.map(n => `- ${n}`)
+        ].join("\n");
+
+        toolboxEl.innerHTML = `
+          <div class="tool-spec">
+            <div class="block-label">Selected mutation</div>
+            <div class="block-text">${escapeHtml(m.title)}</div>
+          </div>
+          <div class="tool-spec">
+            <div class="block-label">Tool seed</div>
+            <pre>${escapeHtml(spec)}</pre>
+          </div>
+        `;
+      }
+
+      function renderToolSeedPlaceholder(){
+        if(!lastMutations.length){
+          toolboxEl.innerHTML = `
+            <div class="tool-spec">
+              <div class="block-label">Tool builder state</div>
+              <div class="block-text muted">Generate mutations first, then select one.</div>
+            </div>
+          `;
+          return;
+        }
+        const m = lastMutations[Math.max(0, selectedMutationIndex)];
+        toolboxEl.innerHTML = `
+          <div class="tool-spec">
+            <div class="block-label">Selected mutation</div>
+            <div class="block-text">${escapeHtml(m.title)}</div>
+          </div>
+          <div class="tool-spec">
+            <div class="block-label">Tool builder state</div>
+            <div class="block-text muted">Press “Build tool seed from selected mutation”.</div>
+          </div>
+        `;
+      }
+
+      function shuffle(arr){
+        for(let i = arr.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function tryExample(){
+        selectedIndex = 2;
+        activeField = "All";
+        createTabs();
+        renderGalaxy();
+        const item = fragments[selectedIndex];
+        engineInput.value = item.text;
+        selectedCard.innerHTML = `
+          <div class="tagline">${escapeHtml(item.field)} fragment selected</div>
+          <div class="block-text">${escapeHtml(item.text)}</div>
+        `;
+        statusEl.textContent = "Example fragment loaded.";
+        generateMutations();
+      }
+
+      function clearAll(){
+        selectedIndex = -1;
+        selectedMutationIndex = -1;
+        engineInput.value = "";
+        newFragment.value = "";
+        lastMutations = [];
+        selectedCard.innerHTML = `
+          <div class="tagline">Selected fragment</div>
+          <div class="block-text muted">Choose a fragment from the galaxy or add your own.</div>
+        `;
+        mutationsEl.innerHTML = "";
+        toolboxEl.innerHTML = `
+          <div class="tool-spec">
+            <div class="block-label">Tool builder state</div>
+            <div class="block-text muted">Generate mutations first, then choose one to convert into a tool seed.</div>
+          </div>
+        `;
+        renderGalaxy();
+        statusEl.textContent = "Cleared.";
+      }
+
+      function copyText(text, successMessage){
+        if(!text){
+          statusEl.textContent = "Nothing to copy yet.";
+          return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+          statusEl.textContent = successMessage;
+        }).catch(() => {
+          statusEl.textContent = "Copy failed on this browser.";
+        });
+      }
+
+      document.querySelectorAll(".mode").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeMode = btn.dataset.mode;
+          document.querySelectorAll(".mode").forEach(el => el.classList.toggle("active", el === btn));
+          statusEl.textContent = `${titleCase(activeMode)} mode selected.`;
+        });
+      });
+
+      document.getElementById("mutateBtn").addEventListener("click", generateMutations);
+      document.getElementById("tryExampleBtn").addEventListener("click", tryExample);
+      document.getElementById("clearBtn").addEventListener("click", clearAll);
+
+      document.getElementById("copyOutputBtn").addEventListener("click", () => {
+        const text = lastMutations.map((m, i) => {
+          return [
+            `${i + 1}. ${m.title}`,
+            `Transformation: ${m.type}`,
+            `Output: ${m.output}`,
+            `Next: ${m.nexts.join(" | ")}`
+          ].join("\n");
+        }).join("\n\n");
+        copyText(text, "Mutation results copied.");
+      });
+
+      document.getElementById("addFragmentBtn").addEventListener("click", () => {
+        const text = newFragment.value.trim();
+        if(!text){
+          statusEl.textContent = "Write a fragment first.";
+          return;
+        }
+        const field = newField.value === "All" ? detectField(text) : newField.value;
+        fragments.unshift({
+          field,
+          text,
+          score: Math.floor(76 + Math.random() * 20)
+        });
+        newFragment.value = "";
+        activeField = "All";
+        createTabs();
+        renderGalaxy();
+        statusEl.textContent = "New fragment added to Thought Galaxy.";
+      });
+
+      document.getElementById("shuffleBtn").addEventListener("click", () => {
+        const visible = fragments
+          .map((item, originalIndex) => ({...item, originalIndex}))
+          .filter(item => activeField === "All" ? true : item.field === activeField);
+        if(!visible.length) return;
+        const pick = visible[Math.floor(Math.random() * visible.length)];
+        selectedIndex = pick.originalIndex;
+        engineInput.value = pick.text;
+        selectedCard.innerHTML = `
+          <div class="tagline">${escapeHtml(pick.field)} fragment selected</div>
+          <div class="block-text">${escapeHtml(pick.text)}</div>
+        `;
+        renderGalaxy();
+        statusEl.textContent = "Random fragment selected.";
+      });
+
+      document.getElementById("buildToolBtn").addEventListener("click", () => {
+        buildToolSeed();
+        statusEl.textContent = "Tool seed built.";
+      });
+
+      document.getElementById("copyToolBtn").addEventListener("click", () => {
+        const pre = toolboxEl.querySelector("pre");
+        copyText(pre ? pre.innerText : "", "Tool seed copied.");
+      });
+
+      createTabs();
+      renderGalaxy();
+      tryExample();
+    })();
+  </script>
+</body>
+</html>
