@@ -9,141 +9,327 @@
       box-sizing: border-box;
     }
 
-    body {
+    :root {
+      --bg: #040816;
+      --panel: #0b1430;
+      --panel-2: #101d42;
+      --line: rgba(115, 151, 255, 0.22);
+      --line-strong: rgba(140, 164, 255, 0.42);
+      --text: #f4f7ff;
+      --muted: #9eb0d8;
+      --blue: #66b6ff;
+      --purple: #9a72ff;
+      --cyan: #70f0ff;
+      --glow-blue: 0 0 0 1px rgba(102, 182, 255, 0.18), 0 0 28px rgba(70, 120, 255, 0.18);
+      --glow-purple: 0 0 0 1px rgba(154, 114, 255, 0.18), 0 0 28px rgba(154, 114, 255, 0.18);
+    }
+
+    html, body {
       margin: 0;
-      background: #ffffff;
-      color: #111111;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(102, 182, 255, 0.16), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(154, 114, 255, 0.16), transparent 30%),
+        radial-gradient(circle at 50% 120%, rgba(60, 120, 255, 0.12), transparent 40%),
+        linear-gradient(180deg, #050914 0%, #071024 45%, #040816 100%);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.45;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.65;
+      background-image:
+        radial-gradient(2px 2px at 8% 14%, rgba(255,255,255,0.8), transparent 60%),
+        radial-gradient(1.5px 1.5px at 18% 32%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 28% 76%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1.5px 1.5px at 37% 18%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 45% 56%, rgba(255,255,255,0.75), transparent 60%),
+        radial-gradient(1.5px 1.5px at 54% 8%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 63% 34%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1.5px 1.5px at 72% 68%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 84% 22%, rgba(255,255,255,0.8), transparent 60%),
+        radial-gradient(1.5px 1.5px at 92% 82%, rgba(255,255,255,0.55), transparent 60%);
+    }
+
     .wrap {
-      max-width: 760px;
+      max-width: 820px;
       margin: 0 auto;
-      padding: 20px 18px 40px;
+      padding: 18px 16px 42px;
+    }
+
+    .shell {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(8, 15, 36, 0.92), rgba(7, 13, 28, 0.9));
+      box-shadow:
+        0 0 0 1px rgba(120, 145, 255, 0.08),
+        0 24px 60px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+
+    .top-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(135, 159, 255, 0.45), transparent);
+    }
+
+    .inner {
+      padding: 22px 16px 26px;
     }
 
     .back-link {
       display: inline-block;
       margin-bottom: 18px;
-      color: #666666;
+      color: var(--muted);
       text-decoration: none;
       font-size: 15px;
     }
 
     h1 {
       margin: 0 0 10px;
-      font-size: 48px;
+      font-size: 34px;
       line-height: 1.05;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
+      color: var(--text);
     }
 
     .desc {
-      margin: 0 0 26px;
-      font-size: 18px;
-      color: #666666;
-      max-width: 640px;
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(14, 27, 67, 0.88), rgba(10, 20, 49, 0.92));
+      box-shadow: var(--glow-blue);
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 35%);
     }
 
     textarea {
       width: 100%;
-      min-height: 150px;
-      border: 2px solid #e6e6e6;
-      border-radius: 18px;
-      padding: 20px;
+      min-height: 170px;
+      padding: 22px 20px;
+      border: 0;
+      outline: none;
+      resize: vertical;
+      background: transparent;
+      color: var(--text);
       font: inherit;
       font-size: 18px;
-      color: #111111;
-      background: #ffffff;
-      resize: vertical;
-      outline: none;
+      line-height: 1.55;
     }
 
-    textarea:focus {
-      border-color: #111111;
+    textarea::placeholder {
+      color: rgba(210, 221, 255, 0.5);
     }
 
     .buttons {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 16px;
     }
 
     button {
-      border: none;
-      border-radius: 16px;
-      padding: 16px 22px;
+      width: 100%;
+      min-height: 58px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(12, 27, 67, 0.96), rgba(10, 23, 56, 0.96));
+      color: var(--text);
       font: inherit;
       font-size: 17px;
       cursor: pointer;
-      min-height: 56px;
+      box-shadow: var(--glow-blue);
     }
 
-    .primary {
-      background: #111111;
-      color: #ffffff;
+    button.primary {
+      border-color: rgba(153, 123, 255, 0.42);
+      background: linear-gradient(180deg, rgba(70, 46, 139, 0.96), rgba(41, 31, 96, 0.96));
+      box-shadow: var(--glow-purple);
     }
 
-    .secondary {
-      background: #efefef;
-      color: #111111;
+    .status {
+      margin-top: 18px;
+      color: var(--blue);
+      font-size: 15px;
+      min-height: 22px;
     }
 
     .result {
-      margin-top: 28px;
-    }
-
-    .result-title {
-      font-size: 15px;
-      color: #666666;
-      margin-bottom: 14px;
+      margin-top: 18px;
     }
 
     .result-box {
-      border: 2px solid #efefef;
-      border-radius: 20px;
-      padding: 18px;
-      background: #ffffff;
-      min-height: 120px;
+      min-height: 140px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(9, 18, 45, 0.88), rgba(6, 13, 31, 0.94));
+      box-shadow: var(--glow-blue);
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .detected {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .detected strong {
+      color: var(--text);
+      font-weight: 700;
     }
 
     .card {
-      border: 2px solid #efefef;
-      border-radius: 20px;
+      position: relative;
+      margin-bottom: 14px;
       padding: 18px;
-      background: #ffffff;
-      margin-bottom: 12px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(13, 27, 67, 0.92), rgba(9, 20, 48, 0.96));
+      box-shadow: var(--glow-blue);
+      overflow: hidden;
+    }
+
+    .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 35%);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 14px;
     }
 
     .card h3 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      line-height: 1.2;
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      color: var(--text);
     }
 
-    .card p {
-      margin: 0 0 12px;
+    .pill {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(135, 159, 255, 0.28);
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+      background: rgba(13, 23, 56, 0.65);
+    }
+
+    .label {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(135, 159, 255, 0.14);
+      color: var(--blue);
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .value {
+      margin-top: 8px;
       font-size: 16px;
-      color: #444444;
+      color: var(--text);
+    }
+
+    .next-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .mini-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(135, 159, 255, 0.22);
+      background: rgba(11, 22, 53, 0.7);
+      color: var(--text);
+      font-size: 15px;
     }
 
     .open-link {
-      display: inline-block;
-      color: #111111;
-      font-weight: 600;
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      text-align: center;
       text-decoration: none;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 600;
+      border: 1px solid rgba(109, 238, 255, 0.28);
+      background: linear-gradient(180deg, rgba(37, 93, 108, 0.92), rgba(24, 62, 80, 0.96));
+      box-shadow: 0 0 0 1px rgba(112, 240, 255, 0.12), 0 0 30px rgba(83, 202, 255, 0.14);
+    }
+
+    .reuse-link {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 500;
+      border: 1px solid rgba(135, 159, 255, 0.18);
+      background: linear-gradient(180deg, rgba(12, 26, 61, 0.95), rgba(8, 18, 43, 0.97));
+      box-shadow: var(--glow-blue);
+      cursor: pointer;
     }
 
     .footer {
-      margin-top: 34px;
+      margin-top: 22px;
+      color: var(--muted);
       font-size: 14px;
-      color: #777777;
     }
 
     @media (max-width: 640px) {
+      .inner {
+        padding: 18px 14px 22px;
+      }
+
       h1 {
-        font-size: 34px;
+        font-size: 28px;
       }
 
       .desc {
@@ -151,49 +337,73 @@
       }
 
       textarea {
-        font-size: 16px;
-        min-height: 140px;
+        min-height: 154px;
+        font-size: 17px;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr 1fr;
       }
 
       button {
+        min-height: 54px;
         font-size: 16px;
-        padding: 15px 18px;
-        min-height: 52px;
+      }
+
+      .card-head {
+        flex-direction: column;
+        align-items: flex-start;
       }
 
       .card h3 {
-        font-size: 20px;
+        font-size: 22px;
+      }
+
+      .open-link,
+      .reuse-link {
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+    <div class="shell">
+      <div class="top-line"></div>
+      <div class="inner">
+        <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
 
-    <h1>Mutation Router</h1>
-    <p class="desc">Drop a thought fragment. Discover possible next mutations.</p>
+        <h1>Mutation Router</h1>
+        <p class="desc">Drop a thought fragment. Discover possible next mutations.</p>
 
-    <textarea id="input" placeholder="Example:
+        <div class="panel">
+          <textarea id="input" placeholder="Example:
 People say my ideas are too abstract
 AI tools feel repetitive
 Content creation feels exhausting"></textarea>
+        </div>
 
-    <div class="buttons">
-      <button class="primary" id="runBtn">Generate</button>
-      <button class="secondary" id="exampleBtn">Try example</button>
-      <button class="secondary" id="clearBtn">Clear</button>
-      <button class="secondary" id="copyBtn">Copy result</button>
+        <div class="buttons">
+          <button class="primary" id="runBtn">Generate mutations</button>
+          <button id="exampleBtn">Try example</button>
+          <button id="clearBtn">Clear</button>
+          <button id="copyBtn">Copy result</button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="result">
+          <div class="result-box" id="result">
+            <div class="empty">Your result will appear here.</div>
+          </div>
+        </div>
+
+        <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
+      </div>
     </div>
-
-    <div class="result">
-      <div class="result-title">Result</div>
-      <div class="result-box" id="result">Your result will appear here.</div>
-    </div>
-
-    <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
   </div>
 
+  <script src="./mutation-map.js"></script>
   <script src="./fragment.js"></script>
   <script src="./router.js"></script>
 
@@ -207,63 +417,143 @@ Content creation feels exhausting"></textarea>
         .replace(/'/g, "&#39;");
     }
 
+    function getMapZone(toolId) {
+      if (
+        typeof window !== "undefined" &&
+        window.REFRAME_MUTATION_MAP &&
+        window.REFRAME_MUTATION_MAP.helpers &&
+        window.REFRAME_MUTATION_MAP.helpers.getContactZoneById
+      ) {
+        return window.REFRAME_MUTATION_MAP.helpers.getContactZoneById(toolId);
+      }
+      return null;
+    }
+
+    function toTitleCase(text) {
+      return String(text || "")
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, function (m) {
+          return m.toUpperCase();
+        });
+    }
+
     function buildCopyText(fragment, tools) {
       var lines = [];
       lines.push("Detected type: " + fragment.sourceType);
       lines.push("");
-      lines.push("Next mutations:");
 
       tools.forEach(function (tool, index) {
-        lines.push((index + 1) + ". " + tool.title + " — " + tool.file);
+        lines.push((index + 1) + ". " + tool.title);
+        lines.push("File: " + tool.file);
+        lines.push("Note: " + tool.note);
+
+        var zone = getMapZone(tool.id);
+        if (zone && zone.mutationProfile && zone.mutationProfile.primary) {
+          lines.push("Transformation: " + zone.mutationProfile.primary.join(", "));
+        }
+        if (zone && Array.isArray(zone.nextOpenings) && zone.nextOpenings.length) {
+          lines.push("Next mutations: " + zone.nextOpenings.slice(0, 3).join(", "));
+        }
+        lines.push("");
       });
 
-      return lines.join("\n");
+      return lines.join("\n").trim();
     }
 
     function renderResult(fragment, tools) {
       var resultBox = document.getElementById("result");
-      var html = "";
+      var status = document.getElementById("status");
 
-      html += '<div class="result-title">Detected type: <strong>' + escapeHtml(fragment.sourceType) + '</strong></div>';
+      if (!tools || !tools.length) {
+        resultBox.innerHTML = '<div class="empty">No mutations found.</div>';
+        status.textContent = "No mutations found.";
+        return;
+      }
+
+      status.textContent = "Generated " + tools.length + " mutations in Stable mode.";
+
+      var html = '';
+      html += '<div class="detected">Detected type: <strong>' + escapeHtml(fragment.sourceType) + '</strong></div>';
 
       tools.forEach(function (tool) {
-        html += `
-          <div class="card">
-            <h3>${escapeHtml(tool.title)}</h3>
-            <p>${escapeHtml(tool.note)}</p>
-            <a class="open-link" href="./${escapeHtml(tool.file)}">Open tool →</a>
-          </div>
-        `;
+        var zone = getMapZone(tool.id);
+        var transformation = "Mutation";
+        var nextMutations = [];
+
+        if (zone && zone.mutationProfile && Array.isArray(zone.mutationProfile.primary) && zone.mutationProfile.primary.length) {
+          transformation = zone.mutationProfile.primary[0];
+        }
+
+        if (zone && Array.isArray(zone.nextOpenings)) {
+          nextMutations = zone.nextOpenings.slice(0, 3).map(function (id) {
+            return toTitleCase(id.replace(/-/g, " "));
+          });
+        }
+
+        html += '<div class="card">';
+        html += '<div class="card-head">';
+        html += '<h3>' + escapeHtml(tool.title) + '</h3>';
+        html += '<div class="pill">Stable · ' + escapeHtml(toTitleCase(fragment.sourceType)) + '</div>';
+        html += '</div>';
+
+        html += '<div class="label">Transformation</div>';
+        html += '<div class="value">' + escapeHtml(toTitleCase(transformation)) + '</div>';
+
+        html += '<div class="label">Output</div>';
+        html += '<div class="value">' + escapeHtml(tool.note) + '</div>';
+
+        if (nextMutations.length) {
+          html += '<div class="label">Next mutations</div>';
+          html += '<div class="next-row">';
+          nextMutations.forEach(function (item) {
+            html += '<div class="mini-pill">' + escapeHtml(item) + '</div>';
+          });
+          html += '</div>';
+        }
+
+        html += '<a class="open-link" href="./' + escapeHtml(tool.file) + '">Open tool →</a>';
+        html += '<button class="reuse-link" type="button" data-note="' + escapeHtml(tool.note) + '">Use output as new input</button>';
+        html += '</div>';
       });
 
       resultBox.innerHTML = html;
       resultBox.dataset.copyText = buildCopyText(fragment, tools);
+
+      Array.prototype.forEach.call(resultBox.querySelectorAll(".reuse-link"), function (button) {
+        button.addEventListener("click", function () {
+          var note = button.getAttribute("data-note") || "";
+          document.getElementById("input").value = note;
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
     }
 
     function runTool() {
-      var input = document.getElementById("input").value.trim();
+      var text = document.getElementById("input").value.trim();
 
-      if (!input) {
+      if (!text) {
         alert("Enter something first.");
         return;
       }
 
-      var sourceType = detectSourceType(input);
-      var fragment = createFragment(input, sourceType, "drift");
-      var tools = getNextTools(fragment);
+      var sourceType = window.detectSourceType(text);
+      var fragment = window.createFragment(text, sourceType, "stable");
+      var tools = window.getNextTools(fragment);
 
       renderResult(fragment, tools);
     }
 
     function tryExample() {
       document.getElementById("input").value = "People say my ideas are too abstract";
-      document.getElementById("result").textContent = "Your result will appear here.";
+      document.getElementById("result").innerHTML = '<div class="empty">Your result will appear here.</div>';
+      document.getElementById("status").textContent = "";
       delete document.getElementById("result").dataset.copyText;
     }
 
     function clearAll() {
       document.getElementById("input").value = "";
-      document.getElementById("result").textContent = "Your result will appear here.";
+      document.getElementById("result").innerHTML = '<div class="empty">Your result will appear here.</div>';
+      document.getElementById("status").textContent = "";
       delete document.getElementById("result").dataset.copyText;
     }
 
