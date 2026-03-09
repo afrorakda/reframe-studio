@@ -40,19 +40,7 @@
     return fieldState;
   }
 
-  function getPrimaryZoneText(zone) {
-    if (!zone) return "";
-
-    return [
-      zone.title || "",
-      zone.cluster || "",
-      zone.role || "",
-      Array.isArray(zone.outputState) ? zone.outputState.join(" ") : "",
-      Array.isArray(zone.nextOpenings) ? zone.nextOpenings.join(" ") : ""
-    ].join(" ");
-  }
-
-  function createLoopOutputState(zone) {
+  function createLoopOutputState(zone, inputText) {
     if (!zone) {
       return {
         tags: ["unresolved"],
@@ -60,8 +48,40 @@
       };
     }
 
+    var text = String(inputText || "").toLowerCase();
+    var tags = Array.isArray(zone.outputState) ? zone.outputState.slice() : [];
+
+    if (
+      text.indexOf("idea") !== -1 ||
+      text.indexOf("tool") !== -1 ||
+      text.indexOf("アイデア") !== -1 ||
+      text.indexOf("ツール") !== -1
+    ) {
+      tags.push("idea");
+      tags.push("tool");
+    }
+
+    if (
+      text.indexOf("problem") !== -1 ||
+      text.indexOf("issue") !== -1 ||
+      text.indexOf("問題") !== -1
+    ) {
+      tags.push("problem");
+    }
+
+    if (
+      text.indexOf("feel") !== -1 ||
+      text.indexOf("emotion") !== -1 ||
+      text.indexOf("不安") !== -1 ||
+      text.indexOf("感情") !== -1
+    ) {
+      tags.push("emotion");
+    }
+
+    tags = Array.from(new Set(tags));
+
     return {
-      tags: Array.isArray(zone.outputState) ? zone.outputState.slice() : [],
+      tags: tags,
       text:
         (zone.title || "Unknown Zone") +
         " surfaced as the best contact. " +
@@ -151,6 +171,26 @@
         addScore(nextField.mutation, "sequence", 0.08);
         addScore(nextField.expression, "structure", 0.08);
       }
+
+      if (tag === "idea") {
+        addScore(nextField.mutation, "convert", 0.1);
+        addScore(nextField.expression, "structure", 0.1);
+      }
+
+      if (tag === "tool") {
+        addScore(nextField.mutation, "sequence", 0.08);
+        addScore(nextField.expression, "action", 0.08);
+      }
+
+      if (tag === "problem") {
+        addScore(nextField.mutation, "decompose", 0.08);
+        addScore(nextField.expression, "list", 0.08);
+      }
+
+      if (tag === "emotion") {
+        addScore(nextField.mutation, "externalize", 0.08);
+        addScore(nextField.expression, "statement", 0.08);
+      }
     });
 
     if (primaryZone) {
@@ -197,13 +237,7 @@
       ? step.primaryZone.nextOpenings.join(", ")
       : "next openings";
 
-    return (
-      previousText +
-      " -> " +
-      step.primaryZone.title +
-      " -> " +
-      nextNames
-    );
+    return previousText + " -> " + step.primaryZone.title + " -> " + nextNames;
   }
 
   function createLoopStep(params) {
@@ -216,7 +250,7 @@
 
     var primaryZone = rankedZones && rankedZones.length ? rankedZones[0] : null;
     var nearbyZones = rankedZones && rankedZones.length ? rankedZones.slice(1) : [];
-    var outputState = createLoopOutputState(primaryZone);
+    var outputState = createLoopOutputState(primaryZone, inputText);
     var nextFieldState = applyOutputCarryOver(
       driftResult.driftedFieldState,
       outputState,
@@ -261,6 +295,23 @@
       limit: limit
     });
 
+    if (window.REFRAME_DRIFT_MEMORY) {
+      driftResult.rankedZones = window.REFRAME_DRIFT_MEMORY.apply(driftResult.rankedZones);
+    }
+
+    var previewZone = driftResult.rankedZones && driftResult.rankedZones.length
+      ? driftResult.rankedZones[0]
+      : null;
+
+    var previewOutputState = createLoopOutputState(previewZone, inputText);
+
+    if (window.REFRAME_GRAVITY_ENGINE) {
+      driftResult.rankedZones = window.REFRAME_GRAVITY_ENGINE.apply(
+        driftResult.rankedZones,
+        previewOutputState
+      );
+    }
+
     return createLoopStep({
       stepNumber: options.stepNumber || 1,
       inputText: inputText,
@@ -281,6 +332,10 @@
 
     var currentInputText = inputText;
     var currentFieldState = null;
+
+    if (window.REFRAME_DRIFT_MEMORY && window.REFRAME_DRIFT_MEMORY.reset) {
+      window.REFRAME_DRIFT_MEMORY.reset();
+    }
 
     for (var i = 0; i < maxSteps; i += 1) {
       var step = runSingleStep(currentInputText, {
@@ -317,10 +372,7 @@
     });
 
     return {
-      text:
-        "The loop moved through " +
-        path.join(" → ") +
-        ".",
+      text: "The loop moved through " + path.join(" → ") + ".",
       path: path
     };
   }
@@ -338,7 +390,7 @@
   }
 
   var mutationLoop = {
-    version: "1.0",
+    version: "1.1",
     name: "REFRAME Mutation Loop Engine v1",
     description: "Turns one mutation result into the next field state and continues the chain.",
     runSingleStep: runSingleStep,
