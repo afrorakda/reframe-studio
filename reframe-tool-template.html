@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REFRAME Tool Template</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 18px 40px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #666666;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 48px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .desc {
+      margin: 0 0 26px;
+      font-size: 18px;
+      color: #666666;
+      max-width: 640px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      border: 2px solid #e6e6e6;
+      border-radius: 18px;
+      padding: 20px;
+      font: inherit;
+      font-size: 18px;
+      color: #111111;
+      background: #ffffff;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #111111;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 16px 22px;
+      font: inherit;
+      font-size: 17px;
+      cursor: pointer;
+      min-height: 56px;
+    }
+
+    .primary {
+      background: #111111;
+      color: #ffffff;
+    }
+
+    .secondary {
+      background: #efefef;
+      color: #111111;
+    }
+
+    .result {
+      margin-top: 28px;
+    }
+
+    .result-title {
+      font-size: 15px;
+      color: #666666;
+      margin-bottom: 14px;
+    }
+
+    .result-box {
+      border: 2px solid #efefef;
+      border-radius: 20px;
+      padding: 18px;
+      background: #ffffff;
+      min-height: 120px;
+      white-space: pre-wrap;
+      font-size: 16px;
+      color: #222222;
+    }
+
+    .footer {
+      margin-top: 34px;
+      font-size: 14px;
+      color: #777777;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 34px;
+      }
+
+      .desc {
+        font-size: 16px;
+      }
+
+      textarea {
+        font-size: 16px;
+        min-height: 140px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 15px 18px;
+        min-height: 52px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+
+    <h1>REFRAME Tool Template</h1>
+    <p class="desc">Use this file as the base for all future REFRAME Studio tools.</p>
+
+    <textarea id="input" placeholder="Example:
+Describe the thought, problem, criticism, emotion, or idea."></textarea>
+
+    <div class="buttons">
+      <button class="primary" id="runBtn">Generate</button>
+      <button class="secondary" id="exampleBtn">Try example</button>
+      <button class="secondary" id="clearBtn">Clear</button>
+      <button class="secondary" id="copyBtn">Copy result</button>
+    </div>
+
+    <div class="result">
+      <div class="result-title">Result</div>
+      <div class="result-box" id="result">Your result will appear here.</div>
+    </div>
+
+    <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
+  </div>
+
+  <script>
+    const EXAMPLE_TEXT = "People react to my posts, but I do not know how to turn that into my next idea.";
+
+    function generateResult(text) {
+      const clean = text.trim();
+
+      if (!clean) {
+        return "";
+      }
+
+      return "Replace this logic with one mutation.\n\nInput:\n" + clean + "\n\nOutput:\nOne clear transformed result.";
+    }
+
+    function runTool() {
+      const input = document.getElementById("input").value;
+      const result = generateResult(input);
+
+      if (!result) {
+        alert("Enter something first.");
+        return;
+      }
+
+      document.getElementById("result").textContent = result;
+    }
+
+    function tryExample() {
+      document.getElementById("input").value = EXAMPLE_TEXT;
+      document.getElementById("result").textContent = "Your result will appear here.";
+    }
+
+    function clearAll() {
+      document.getElementById("input").value = "";
+      document.getElementById("result").textContent = "Your result will appear here.";
+    }
+
+    async function copyResult() {
+      const text = document.getElementById("result").textContent;
+
+      if (!text || text === "Your result will appear here.") {
+        alert("Nothing to copy yet.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied.");
+      } catch (error) {
+        alert("Copy failed.");
+      }
+    }
+
+    document.getElementById("runBtn").addEventListener("click", runTool);
+    document.getElementById("exampleBtn").addEventListener("click", tryExample);
+    document.getElementById("clearBtn").addEventListener("click", clearAll);
+    document.getElementById("copyBtn").addEventListener("click", copyResult);
+  </script>
+</body>
+</html>
