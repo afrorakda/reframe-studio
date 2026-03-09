@@ -10,7 +10,6 @@
     }
 
     :root {
-      --bg: #040816;
       --line: rgba(115, 151, 255, 0.22);
       --text: #f4f7ff;
       --muted: #9eb0d8;
@@ -54,7 +53,7 @@
     }
 
     .wrap {
-      max-width: 900px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 18px 16px 42px;
     }
@@ -153,6 +152,35 @@
       box-shadow: var(--glow-purple);
     }
 
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .summary-card {
+      border: 1px solid rgba(113, 149, 255, 0.24);
+      border-radius: 22px;
+      padding: 16px 14px;
+      background: linear-gradient(180deg, rgba(11, 24, 58, 0.95), rgba(8, 18, 43, 0.97));
+      box-shadow: var(--glow-blue);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .summary-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
     .ocean {
       margin-top: 18px;
       padding: 18px 14px 22px;
@@ -163,6 +191,10 @@
     }
 
     .ocean-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
       margin-bottom: 14px;
     }
 
@@ -176,6 +208,39 @@
       margin-top: 6px;
       color: var(--muted);
       font-size: 16px;
+    }
+
+    .ocean-mode {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(113, 149, 255, 0.24);
+      background: rgba(10, 20, 49, 0.82);
+      color: var(--text);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .layer-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .layer-tab {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(113, 149, 255, 0.24);
+      background: rgba(10, 20, 49, 0.82);
+      color: var(--text);
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .layer-tab.active {
+      border-color: rgba(153, 123, 255, 0.42);
+      background: linear-gradient(180deg, rgba(70, 46, 139, 0.96), rgba(41, 31, 96, 0.96));
+      box-shadow: var(--glow-purple);
     }
 
     .ocean-grid {
@@ -235,6 +300,28 @@
       font-size: 14px;
     }
 
+    .history-box {
+      margin-bottom: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(113, 149, 255, 0.18);
+      background: rgba(8, 18, 43, 0.75);
+    }
+
+    .history-label {
+      color: var(--blue);
+      font-size: 13px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .history-text {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
     .card-buttons {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -242,6 +329,7 @@
     }
 
     .open-btn,
+    .drift-btn,
     .remove-btn {
       display: block;
       width: 100%;
@@ -252,12 +340,16 @@
       color: var(--text);
       font-weight: 600;
       font-size: 16px;
-      border: 1px solid rgba(113, 240, 255, 0.28);
-      background: linear-gradient(180deg, rgba(37, 93, 108, 0.92), rgba(24, 62, 80, 0.96));
-      box-shadow: 0 0 0 1px rgba(112, 240, 255, 0.12), 0 0 24px rgba(83, 202, 255, 0.12);
       cursor: pointer;
     }
 
+    .open-btn {
+      border: 1px solid rgba(113, 240, 255, 0.28);
+      background: linear-gradient(180deg, rgba(37, 93, 108, 0.92), rgba(24, 62, 80, 0.96));
+      box-shadow: 0 0 0 1px rgba(112, 240, 255, 0.12), 0 0 24px rgba(83, 202, 255, 0.12);
+    }
+
+    .drift-btn,
     .remove-btn {
       border: 1px solid rgba(113, 149, 255, 0.18);
       background: linear-gradient(180deg, rgba(12, 26, 61, 0.95), rgba(8, 18, 43, 0.97));
@@ -274,6 +366,12 @@
       margin-top: 22px;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .summary-row {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (max-width: 640px) {
@@ -304,13 +402,18 @@
         grid-template-columns: 1fr 1fr;
       }
 
-      .fragment-top {
+      .fragment-top,
+      .ocean-head {
         flex-direction: column;
         align-items: flex-start;
       }
 
       .fragment-text {
         font-size: 18px;
+      }
+
+      .summary-value {
+        font-size: 24px;
       }
     }
   </style>
@@ -339,10 +442,39 @@ AI tools feel repetitive"></textarea>
           <button id="clearOceanBtn">Clear ocean</button>
         </div>
 
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-label">Fragments</div>
+            <div class="summary-value" id="countValue">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Surface</div>
+            <div class="summary-value" id="surfaceValue">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Middle</div>
+            <div class="summary-value" id="middleValue">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Deep</div>
+            <div class="summary-value" id="deepValue">0</div>
+          </div>
+        </div>
+
         <div class="ocean">
           <div class="ocean-head">
-            <div class="ocean-title">My Ocean</div>
-            <div class="ocean-sub">Private fragments in your browser only.</div>
+            <div>
+              <div class="ocean-title">My Ocean</div>
+              <div class="ocean-sub">Private fragments in your browser only.</div>
+            </div>
+            <div class="ocean-mode">Stable Ocean</div>
+          </div>
+
+          <div class="layer-tabs">
+            <button class="layer-tab active" data-layer="all" type="button">All</button>
+            <button class="layer-tab" data-layer="surface" type="button">Surface</button>
+            <button class="layer-tab" data-layer="middle" type="button">Middle</button>
+            <button class="layer-tab" data-layer="deep" type="button">Deep</button>
           </div>
 
           <div class="ocean-grid" id="oceanGrid">
@@ -359,7 +491,8 @@ AI tools feel repetitive"></textarea>
   <script src="./router.js"></script>
 
   <script>
-    var STORAGE_KEY = "reframe-thinking-ocean-v1";
+    var STORAGE_KEY = "reframe-thinking-ocean-v2";
+    var currentLayer = "all";
 
     function escapeHtml(text) {
       return String(text)
@@ -389,35 +522,83 @@ AI tools feel repetitive"></textarea>
       var text = fragment.text || "";
       var lengthScore = Math.min(Math.ceil(text.length / 30), 4);
       var typeBonus = fragment.sourceType === "idea" ? 2 : 1;
-      return lengthScore + typeBonus;
+      var historyBonus = Array.isArray(fragment.history) ? Math.min(fragment.history.length, 3) : 0;
+      return lengthScore + typeBonus + historyBonus;
     }
 
     function getDepthLabel(score) {
-      if (score >= 5) return "Deep";
-      if (score >= 3) return "Middle";
-      return "Surface";
+      if (score >= 6) return "deep";
+      if (score >= 4) return "middle";
+      return "surface";
+    }
+
+    function capitalize(text) {
+      if (!text) return "";
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+
+    function getHistoryText(fragment) {
+      var history = Array.isArray(fragment.history) ? fragment.history : [];
+      if (!history.length) {
+        return "Drop → " + capitalize(fragment.sourceType);
+      }
+      return history.join(" → ");
+    }
+
+    function updateSummary(items) {
+      var surface = 0;
+      var middle = 0;
+      var deep = 0;
+
+      items.forEach(function (item) {
+        if (item.depth === "surface") surface += 1;
+        if (item.depth === "middle") middle += 1;
+        if (item.depth === "deep") deep += 1;
+      });
+
+      document.getElementById("countValue").textContent = String(items.length);
+      document.getElementById("surfaceValue").textContent = String(surface);
+      document.getElementById("middleValue").textContent = String(middle);
+      document.getElementById("deepValue").textContent = String(deep);
+    }
+
+    function getFilteredItems(items) {
+      if (currentLayer === "all") return items;
+      return items.filter(function (item) {
+        return item.depth === currentLayer;
+      });
     }
 
     function renderOcean() {
       var grid = document.getElementById("oceanGrid");
       var items = loadOcean();
 
-      if (!items.length) {
-        grid.innerHTML = '<div class="empty">Your fragments will appear here.</div>';
-        return;
-      }
+      items.forEach(function (item) {
+        item.score = scoreFragment(item);
+        item.depth = getDepthLabel(item.score);
+      });
 
       items.sort(function (a, b) {
         return b.score - a.score;
       });
 
+      saveOcean(items);
+      updateSummary(items);
+
+      var filtered = getFilteredItems(items);
+
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="empty">No fragments in this layer.</div>';
+        return;
+      }
+
       var html = "";
 
-      items.forEach(function (item, index) {
+      filtered.forEach(function (item) {
         html += '<div class="fragment-card">';
         html += '<div class="fragment-top">';
         html += '<div class="fragment-pill">' + escapeHtml(item.sourceType) + '</div>';
-        html += '<div class="fragment-pill">' + escapeHtml(item.depth) + '</div>';
+        html += '<div class="fragment-pill">' + escapeHtml(capitalize(item.depth)) + '</div>';
         html += '</div>';
 
         html += '<div class="fragment-text">' + escapeHtml(item.text) + '</div>';
@@ -427,9 +608,15 @@ AI tools feel repetitive"></textarea>
         html += '<div class="mini-pill">Mode ' + escapeHtml(item.mode || "stable") + '</div>';
         html += '</div>';
 
+        html += '<div class="history-box">';
+        html += '<div class="history-label">Mutation history</div>';
+        html += '<div class="history-text">' + escapeHtml(getHistoryText(item)) + '</div>';
+        html += '</div>';
+
         html += '<div class="card-buttons">';
         html += '<a class="open-btn" href="./thought-galaxy-router.html?fragment=' + encodeURIComponent(item.text) + '">Open galaxy</a>';
-        html += '<button class="remove-btn" type="button" data-index="' + index + '">Remove</button>';
+        html += '<button class="drift-btn" type="button" data-id="' + escapeHtml(item.id) + '">Drift deeper</button>';
+        html += '<button class="remove-btn" type="button" data-remove="' + escapeHtml(item.id) + '">Remove</button>';
         html += '</div>';
 
         html += '</div>';
@@ -437,15 +624,15 @@ AI tools feel repetitive"></textarea>
 
       grid.innerHTML = html;
 
+      Array.prototype.forEach.call(grid.querySelectorAll(".drift-btn"), function (button) {
+        button.addEventListener("click", function () {
+          driftFragment(button.getAttribute("data-id"));
+        });
+      });
+
       Array.prototype.forEach.call(grid.querySelectorAll(".remove-btn"), function (button) {
         button.addEventListener("click", function () {
-          var removeIndex = Number(button.getAttribute("data-index"));
-          var latest = loadOcean().sort(function (a, b) {
-            return b.score - a.score;
-          });
-          latest.splice(removeIndex, 1);
-          saveOcean(latest);
-          renderOcean();
+          removeFragment(button.getAttribute("data-remove"));
         });
       });
     }
@@ -464,9 +651,11 @@ AI tools feel repetitive"></textarea>
         id: "frag_" + Date.now(),
         text: text,
         sourceType: sourceType,
-        mode: "stable"
+        mode: "stable",
+        history: []
       };
 
+      fragment.history = ["Drop", capitalize(sourceType)];
       fragment.score = scoreFragment(fragment);
       fragment.depth = getDepthLabel(fragment.score);
 
@@ -475,6 +664,43 @@ AI tools feel repetitive"></textarea>
       saveOcean(items);
 
       input.value = "";
+      renderOcean();
+    }
+
+    function driftFragment(id) {
+      var items = loadOcean();
+
+      items = items.map(function (item) {
+        if (item.id !== id) return item;
+
+        var nextStep = "Drift";
+        if (item.depth === "surface") {
+          nextStep = "Middle";
+        } else if (item.depth === "middle") {
+          nextStep = "Deep";
+        } else {
+          nextStep = "Deep";
+        }
+
+        if (!Array.isArray(item.history)) {
+          item.history = [];
+        }
+
+        item.history.push(nextStep);
+        item.score = scoreFragment(item);
+        item.depth = getDepthLabel(item.score);
+        return item;
+      });
+
+      saveOcean(items);
+      renderOcean();
+    }
+
+    function removeFragment(id) {
+      var items = loadOcean().filter(function (item) {
+        return item.id !== id;
+      });
+      saveOcean(items);
       renderOcean();
     }
 
@@ -500,10 +726,26 @@ AI tools feel repetitive"></textarea>
       }
     }
 
+    function setLayer(layer) {
+      currentLayer = layer;
+
+      Array.prototype.forEach.call(document.querySelectorAll(".layer-tab"), function (button) {
+        button.classList.toggle("active", button.getAttribute("data-layer") === layer);
+      });
+
+      renderOcean();
+    }
+
     document.getElementById("addBtn").addEventListener("click", addFragment);
     document.getElementById("exampleBtn").addEventListener("click", tryExample);
     document.getElementById("clearInputBtn").addEventListener("click", clearInput);
     document.getElementById("clearOceanBtn").addEventListener("click", clearOcean);
+
+    Array.prototype.forEach.call(document.querySelectorAll(".layer-tab"), function (button) {
+      button.addEventListener("click", function () {
+        setLayer(button.getAttribute("data-layer"));
+      });
+    });
 
     fillFromUrl();
     renderOcean();
