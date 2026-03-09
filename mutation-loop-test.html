@@ -1,479 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REFRAME Mutation Loop Test</title>
-  <style>
-    * { box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutation Loop Test</title>
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f1115;
-      color: #f5f7fb;
-      line-height: 1.6;
-    }
+<style>
+body{
+background:#0f1115;
+color:#e8ecf1;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+margin:0;
+padding:20px;
+}
 
-    .wrap {
-      width: 100%;
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 24px 16px 48px;
-    }
+.container{
+max-width:900px;
+margin:auto;
+}
 
-    .back {
-      display: inline-block;
-      margin-bottom: 18px;
-      color: #9fb4ff;
-      text-decoration: none;
-      font-size: 14px;
-    }
+h1{
+margin-bottom:8px;
+}
 
-    .back:hover { text-decoration: underline; }
+.sub{
+color:#9aa4b2;
+margin-bottom:24px;
+}
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      line-height: 1.2;
-    }
+.card{
+background:#171a21;
+border:1px solid #2a3140;
+border-radius:14px;
+padding:16px;
+margin-bottom:18px;
+}
 
-    .sub {
-      margin: 0 0 24px;
-      color: #aeb7c6;
-      font-size: 15px;
-    }
+textarea{
+width:100%;
+min-height:120px;
+background:#0f1115;
+border:1px solid #333c4d;
+border-radius:10px;
+color:#e8ecf1;
+padding:12px;
+font-size:14px;
+}
 
-    .panel,
-    .card,
-    .step-card {
-      background: #171a21;
-      border: 1px solid #2a3140;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
+select{
+background:#0f1115;
+border:1px solid #333c4d;
+color:#e8ecf1;
+border-radius:10px;
+padding:8px;
+}
 
-    label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: #d9e0ea;
-    }
+button{
+background:#2b6cff;
+border:none;
+padding:10px 14px;
+border-radius:10px;
+color:white;
+cursor:pointer;
+margin-right:6px;
+margin-top:10px;
+}
 
-    textarea,
-    select {
-      width: 100%;
-      background: #0f1115;
-      color: #f5f7fb;
-      border: 1px solid #333c4d;
-      border-radius: 12px;
-      padding: 12px;
-      font: inherit;
-    }
+button.secondary{
+background:#2a3140;
+}
 
-    textarea {
-      min-height: 140px;
-      resize: vertical;
-    }
+.pill{
+display:inline-block;
+padding:5px 10px;
+border-radius:999px;
+background:#222938;
+border:1px solid #33405a;
+font-size:13px;
+margin:4px 4px 0 0;
+}
 
-    .row {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1fr;
-      margin-top: 12px;
-    }
+.step{
+background:#0f1115;
+border:1px solid #2a3140;
+border-radius:12px;
+padding:12px;
+margin-top:12px;
+}
 
-    .buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
+.small{
+font-size:13px;
+color:#9aa4b2;
+}
+</style>
 
-    button {
-      appearance: none;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font: inherit;
-      cursor: pointer;
-      background: #2b6cff;
-      color: white;
-    }
-
-    button.secondary {
-      background: #2a3140;
-      color: #e7ecf5;
-    }
-
-    button:hover { opacity: 0.95; }
-
-    h2 {
-      margin: 0 0 12px;
-      font-size: 18px;
-    }
-
-    h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-    }
-
-    .muted {
-      color: #aeb7c6;
-      font-size: 14px;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #aeb7c6;
-    }
-
-    .empty {
-      color: #8f98a8;
-      font-size: 14px;
-    }
-
-    .score {
-      display: inline-block;
-      margin-left: 8px;
-      font-size: 12px;
-      color: #9fb4ff;
-    }
-
-    .pill-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #222938;
-      border: 1px solid #33405a;
-      font-size: 13px;
-      color: #dbe5ff;
-    }
-
-    .grid {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: 1fr;
-    }
-
-    .step-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .step-number {
-      font-size: 13px;
-      color: #9fb4ff;
-    }
-
-    pre {
-      margin: 0;
-      white-space: pre-wrap;
-      word-break: break-word;
-      font-size: 13px;
-      background: #0f1115;
-      border: 1px solid #2b3344;
-      border-radius: 12px;
-      padding: 12px;
-      color: #dbe5ff;
-      overflow: auto;
-    }
-
-    @media (min-width: 760px) {
-      .row {
-        grid-template-columns: 1fr 180px 140px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-  </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-    <h1>Mutation Loop Test</h1>
-    <p class="sub">Test repeated mutation steps across the REFRAME field.</p>
+<div class="container">
 
-    <div class="panel">
-      <label for="inputText">Input</label>
-      <textarea id="inputText" placeholder="Example:
+<h1>Mutation Loop Test</h1>
+<p class="sub">Observe how mutation drifts through zones.</p>
+
+<div class="card">
+
+<label>Input</label>
+
+<textarea id="input">
 I feel stuck and cannot decide what to build next.
+</textarea>
 
-例:
-アイデアはあるのにツールの形にできない。"></textarea>
+<br><br>
 
-      <div class="row">
-        <div>
-          <label for="modeSelect">Mode</label>
-          <select id="modeSelect">
-            <option value="stable">Stable</option>
-            <option value="drift">Drift</option>
-            <option value="chaos">Chaos</option>
-          </select>
-        </div>
-        <div>
-          <label for="stepsSelect">Steps</label>
-          <select id="stepsSelect">
-            <option value="2">2</option>
-            <option value="3" selected>3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-        <div>
-          <label for="limitSelect">Results</label>
-          <select id="limitSelect">
-            <option value="3" selected>3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-      </div>
+Mode
+<select id="mode">
+<option value="stable">Stable</option>
+<option value="drift">Drift</option>
+<option value="chaos">Chaos</option>
+</select>
 
-      <div class="buttons">
-        <button id="runBtn">Run loop</button>
-        <button id="example1Btn" class="secondary">Example 1</button>
-        <button id="example2Btn" class="secondary">Example 2</button>
-        <button id="clearBtn" class="secondary">Clear</button>
-      </div>
-    </div>
+Steps
+<select id="steps">
+<option>2</option>
+<option selected>3</option>
+<option>4</option>
+<option>5</option>
+</select>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Loop Summary</h2>
-        <div id="loopSummary" class="empty">No result yet.</div>
-      </div>
+Results
+<select id="limit">
+<option selected>3</option>
+<option>4</option>
+<option>5</option>
+</select>
 
-      <div class="card">
-        <h2>Path</h2>
-        <div id="loopPath" class="empty">No result yet.</div>
-      </div>
-    </div>
+<br>
 
-    <div class="card">
-      <h2>Steps</h2>
-      <div id="stepsArea" class="empty">No result yet.</div>
-    </div>
+<button onclick="run()">Run loop</button>
+<button class="secondary" onclick="example1()">Example 1</button>
+<button class="secondary" onclick="example2()">Example 2</button>
+<button class="secondary" onclick="clearAll()">Clear</button>
 
-    <div class="card">
-      <h2>Debug JSON</h2>
-      <pre id="debugJson">No result yet.</pre>
-    </div>
-  </div>
+</div>
 
-  <script src="./mutation-map.js"></script>
-  <script src="./router-v2.js"></script>
-  <script src="./drift-engine.js"></script>
-  <script src="./mutation-loop.js"></script>
-  <script>
-    (function () {
-      "use strict";
+<div class="card">
+<h3>Loop Summary</h3>
+<div id="summary"></div>
+</div>
 
-      var inputText = document.getElementById("inputText");
-      var modeSelect = document.getElementById("modeSelect");
-      var stepsSelect = document.getElementById("stepsSelect");
-      var limitSelect = document.getElementById("limitSelect");
+<div class="card">
+<h3>Path</h3>
+<div id="path"></div>
+</div>
 
-      var runBtn = document.getElementById("runBtn");
-      var example1Btn = document.getElementById("example1Btn");
-      var example2Btn = document.getElementById("example2Btn");
-      var clearBtn = document.getElementById("clearBtn");
+<div class="card">
+<h3>Steps</h3>
+<div id="stepsView"></div>
+</div>
 
-      var loopSummaryEl = document.getElementById("loopSummary");
-      var loopPathEl = document.getElementById("loopPath");
-      var stepsAreaEl = document.getElementById("stepsArea");
-      var debugJsonEl = document.getElementById("debugJson");
+</div>
 
-      function escapeHtml(value) {
-        return String(value)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
-      }
 
-      function topItems(bucket, limit) {
-        return Object.keys(bucket)
-          .map(function (key) {
-            return { key: key, score: bucket[key] };
-          })
-          .filter(function (item) {
-            return item.score > 0;
-          })
-          .sort(function (a, b) {
-            return b.score - a.score;
-          })
-          .slice(0, limit || 3);
-      }
+<script src="./mutation-map.js"></script>
+<script src="./router-v2.js"></script>
+<script src="./drift-engine.js"></script>
+<script src="./drift-memory.js"></script>
+<script src="./mutation-loop.js"></script>
 
-      function makePills(items) {
-        if (!items || !items.length) return '<div class="empty">None</div>';
+<script>
 
-        return (
-          '<div class="pill-list">' +
-          items.map(function (item) {
-            return '<span class="pill">' + escapeHtml(item) + '</span>';
-          }).join("") +
-          "</div>"
-        );
-      }
+function example1(){
+document.getElementById("input").value =
+"I feel stuck and cannot decide what to build next."
+}
 
-      function renderLoopSummary(summary) {
-        if (!summary) {
-          loopSummaryEl.innerHTML = '<div class="empty">No summary.</div>';
-          return;
-        }
+function example2(){
+document.getElementById("input").value =
+"アイデアはあるのにツールの形にできない。"
+}
 
-        loopSummaryEl.innerHTML =
-          '<p>' + escapeHtml(summary.text) + '</p>' +
-          '<div class="small">Path</div>' +
-          makePills(summary.path || []);
-      }
+function clearAll(){
+document.getElementById("summary").innerHTML=""
+document.getElementById("path").innerHTML=""
+document.getElementById("stepsView").innerHTML=""
+}
 
-      function renderLoopPath(path) {
-        if (!path || !path.length) {
-          loopPathEl.innerHTML = '<div class="empty">No path yet.</div>';
-          return;
-        }
+function pill(text){
+return "<span class='pill'>"+text+"</span>"
+}
 
-        loopPathEl.innerHTML = makePills(path.map(function (item) {
-          return "Step " + item.stepNumber + ": " + (item.zoneTitle || "No zone");
-        }));
-      }
+function run(){
 
-      function renderStepField(fieldState) {
-        if (!fieldState) return '<div class="empty">No field.</div>';
+const text =
+document.getElementById("input").value
 
-        var friction = topItems(fieldState.friction, 3).map(function (item) {
-          return item.key + " " + item.score.toFixed(2);
-        });
+const steps =
+Number(document.getElementById("steps").value)
 
-        var mutation = topItems(fieldState.mutation, 4).map(function (item) {
-          return item.key + " " + item.score.toFixed(2);
-        });
+const mode =
+document.getElementById("mode").value
 
-        var expression = topItems(fieldState.expression, 3).map(function (item) {
-          return item.key + " " + item.score.toFixed(2);
-        });
+const limit =
+Number(document.getElementById("limit").value)
 
-        return (
-          '<div class="small">Field before</div>' +
-          '<div class="small" style="margin-top:8px;">Friction</div>' +
-          makePills(friction) +
-          '<div class="small" style="margin-top:10px;">Mutation</div>' +
-          makePills(mutation) +
-          '<div class="small" style="margin-top:10px;">Expression</div>' +
-          makePills(expression)
-        );
-      }
+const result =
+window.REFRAME_MUTATION_LOOP.runLoop(text,{
+mode:mode,
+steps:steps,
+limit:limit
+})
 
-      function renderSteps(steps) {
-        if (!steps || !steps.length) {
-          stepsAreaEl.innerHTML = '<div class="empty">No steps yet.</div>';
-          return;
-        }
+const summary =
+window.REFRAME_MUTATION_LOOP.summarizeLoop(result)
 
-        stepsAreaEl.innerHTML = steps.map(function (step) {
-          var primaryTitle = step.primaryZone ? step.primaryZone.title : "No zone";
-          var nearby = (step.nearbyZones || []).map(function (zone) {
-            return zone.title;
-          });
+const path =
+window.REFRAME_MUTATION_LOOP.getLoopPath(result)
 
-          return (
-            '<div class="step-card">' +
-              '<div class="step-head">' +
-                '<h3 style="margin:0;">' + escapeHtml(primaryTitle) + '</h3>' +
-                '<div class="step-number">Step ' + step.stepNumber + '</div>' +
-              '</div>' +
-              '<p class="small">' + escapeHtml(step.summary || "") + '</p>' +
-              '<div class="small">Next openings</div>' +
-              makePills(step.nextOpenings || []) +
-              '<div class="small" style="margin-top:12px;">Output state</div>' +
-              makePills((step.outputState && step.outputState.tags) || []) +
-              '<div class="small" style="margin-top:12px;">Nearby zones</div>' +
-              makePills(nearby) +
-              '<div style="margin-top:12px;">' + renderStepField(step.fieldStateBefore) + '</div>' +
-            '</div>'
-          );
-        }).join("");
-      }
+renderSummary(summary)
+renderPath(path)
+renderSteps(result.steps)
 
-      function runLoop() {
-        if (!window.REFRAME_MUTATION_LOOP) {
-          loopSummaryEl.innerHTML = '<div class="empty">mutation-loop.js is not loaded.</div>';
-          loopPathEl.innerHTML = "";
-          stepsAreaEl.innerHTML = "";
-          debugJsonEl.textContent = "mutation-loop.js is missing.";
-          return;
-        }
+}
 
-        try {
-          var result = window.REFRAME_MUTATION_LOOP.runLoop(inputText.value, {
-            mode: modeSelect.value,
-            steps: Number(stepsSelect.value),
-            limit: Number(limitSelect.value)
-          });
+function renderSummary(summary){
 
-          var summary = window.REFRAME_MUTATION_LOOP.summarizeLoop(result);
-          var path = window.REFRAME_MUTATION_LOOP.getLoopPath(result);
+let html = "<p>"+summary.text+"</p>"
 
-          renderLoopSummary(summary);
-          renderLoopPath(path);
-          renderSteps(result.steps);
-          debugJsonEl.textContent = JSON.stringify(result, null, 2);
-        } catch (error) {
-          loopSummaryEl.innerHTML = '<div class="empty">Error: ' + escapeHtml(error.message) + '</div>';
-          loopPathEl.innerHTML = "";
-          stepsAreaEl.innerHTML = "";
-          debugJsonEl.textContent = String(error && error.stack ? error.stack : error);
-        }
-      }
+summary.path.forEach(p=>{
+html += pill(p)
+})
 
-      example1Btn.addEventListener("click", function () {
-        inputText.value = "I feel stuck and cannot decide what to build next.";
-        modeSelect.value = "stable";
-        stepsSelect.value = "3";
-        limitSelect.value = "3";
-        runLoop();
-      });
+document.getElementById("summary").innerHTML = html
 
-      example2Btn.addEventListener("click", function () {
-        inputText.value = "アイデアはあるのにツールの形にできない。";
-        modeSelect.value = "drift";
-        stepsSelect.value = "4";
-        limitSelect.value = "3";
-        runLoop();
-      });
+}
 
-      clearBtn.addEventListener("click", function () {
-        inputText.value = "";
-        modeSelect.value = "stable";
-        stepsSelect.value = "3";
-        limitSelect.value = "3";
-        loopSummaryEl.innerHTML = '<div class="empty">No result yet.</div>';
-        loopPathEl.innerHTML = '<div class="empty">No result yet.</div>';
-        stepsAreaEl.innerHTML = '<div class="empty">No result yet.</div>';
-        debugJsonEl.textContent = "No result yet.";
-      });
+function renderPath(path){
 
-      runBtn.addEventListener("click", runLoop);
-    })();
-  </script>
+let html = ""
+
+path.forEach(p=>{
+html += pill("Step "+p.stepNumber+": "+p.zoneTitle)
+})
+
+document.getElementById("path").innerHTML = html
+
+}
+
+function renderSteps(steps){
+
+let html = ""
+
+steps.forEach(step=>{
+
+let nearby =
+(step.nearbyZones||[])
+.map(z=>pill(z.title))
+.join("")
+
+let openings =
+(step.nextOpenings||[])
+.map(o=>pill(o))
+.join("")
+
+let tags =
+(step.outputState?.tags||[])
+.map(t=>pill(t))
+.join("")
+
+html += `
+<div class="step">
+
+<b>${step.primaryZone?.title || "None"}</b>
+
+<div class="small">
+${step.summary}
+</div>
+
+<div class="small">Next openings</div>
+${openings}
+
+<div class="small">Output state</div>
+${tags}
+
+<div class="small">Nearby zones</div>
+${nearby}
+
+</div>
+`
+
+})
+
+document.getElementById("stepsView").innerHTML = html
+
+}
+
+</script>
+
 </body>
 </html>
