@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thinking Ocean</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #040816;
+      --line: rgba(115, 151, 255, 0.22);
+      --text: #f4f7ff;
+      --muted: #9eb0d8;
+      --blue: #66b6ff;
+      --purple: #9a72ff;
+      --cyan: #70f0ff;
+      --glow-blue: 0 0 0 1px rgba(102, 182, 255, 0.18), 0 0 28px rgba(70, 120, 255, 0.18);
+      --glow-purple: 0 0 0 1px rgba(154, 114, 255, 0.18), 0 0 28px rgba(154, 114, 255, 0.18);
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(102, 182, 255, 0.16), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(154, 114, 255, 0.16), transparent 30%),
+        radial-gradient(circle at 50% 120%, rgba(60, 120, 255, 0.12), transparent 40%),
+        linear-gradient(180deg, #050914 0%, #071024 45%, #040816 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.65;
+      background-image:
+        radial-gradient(2px 2px at 8% 14%, rgba(255,255,255,0.8), transparent 60%),
+        radial-gradient(1.5px 1.5px at 18% 32%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 28% 76%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1.5px 1.5px at 37% 18%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 45% 56%, rgba(255,255,255,0.75), transparent 60%),
+        radial-gradient(1.5px 1.5px at 54% 8%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 63% 34%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1.5px 1.5px at 72% 68%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(2px 2px at 84% 22%, rgba(255,255,255,0.8), transparent 60%),
+        radial-gradient(1.5px 1.5px at 92% 82%, rgba(255,255,255,0.55), transparent 60%);
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px 16px 42px;
+    }
+
+    .shell {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(8, 15, 36, 0.92), rgba(7, 13, 28, 0.9));
+      box-shadow:
+        0 0 0 1px rgba(120, 145, 255, 0.08),
+        0 24px 60px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+
+    .top-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(135, 159, 255, 0.45), transparent);
+    }
+
+    .inner {
+      padding: 22px 16px 26px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .desc {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(14, 27, 67, 0.88), rgba(10, 20, 49, 0.92));
+      box-shadow: var(--glow-blue);
+      overflow: hidden;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 22px 20px;
+      border: 0;
+      outline: none;
+      resize: vertical;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+
+    textarea::placeholder {
+      color: rgba(210, 221, 255, 0.5);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 58px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(12, 27, 67, 0.96), rgba(10, 23, 56, 0.96));
+      color: var(--text);
+      font: inherit;
+      font-size: 17px;
+      cursor: pointer;
+      box-shadow: var(--glow-blue);
+    }
+
+    button.primary {
+      border-color: rgba(153, 123, 255, 0.42);
+      background: linear-gradient(180deg, rgba(70, 46, 139, 0.96), rgba(41, 31, 96, 0.96));
+      box-shadow: var(--glow-purple);
+    }
+
+    .ocean {
+      margin-top: 18px;
+      padding: 18px 14px 22px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(9, 18, 45, 0.88), rgba(6, 13, 31, 0.94));
+      box-shadow: var(--glow-blue);
+    }
+
+    .ocean-head {
+      margin-bottom: 14px;
+    }
+
+    .ocean-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .ocean-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .ocean-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .fragment-card {
+      border: 1px solid rgba(146, 119, 255, 0.34);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(42, 23, 79, 0.92), rgba(23, 20, 62, 0.94));
+      box-shadow: var(--glow-purple);
+      padding: 18px 16px 16px;
+    }
+
+    .fragment-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .fragment-pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(146, 119, 255, 0.28);
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(20, 14, 47, 0.7);
+      white-space: nowrap;
+    }
+
+    .fragment-text {
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 600;
+      margin: 0 0 14px;
+      word-break: break-word;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .mini-pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(113, 149, 255, 0.24);
+      background: rgba(10, 20, 49, 0.82);
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .card-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .open-btn,
+    .remove-btn {
+      display: block;
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 18px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 16px;
+      border: 1px solid rgba(113, 240, 255, 0.28);
+      background: linear-gradient(180deg, rgba(37, 93, 108, 0.92), rgba(24, 62, 80, 0.96));
+      box-shadow: 0 0 0 1px rgba(112, 240, 255, 0.12), 0 0 24px rgba(83, 202, 255, 0.12);
+      cursor: pointer;
+    }
+
+    .remove-btn {
+      border: 1px solid rgba(113, 149, 255, 0.18);
+      background: linear-gradient(180deg, rgba(12, 26, 61, 0.95), rgba(8, 18, 43, 0.97));
+      box-shadow: var(--glow-blue);
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 16px;
+      padding: 8px 4px;
+    }
+
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .inner {
+        padding: 18px 14px 22px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .desc {
+        font-size: 16px;
+      }
+
+      textarea {
+        min-height: 136px;
+        font-size: 17px;
+      }
+
+      button {
+        min-height: 54px;
+        font-size: 16px;
+      }
+
+      .buttons,
+      .card-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .fragment-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .fragment-text {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="shell">
+      <div class="top-line"></div>
+      <div class="inner">
+        <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+
+        <h1>Thinking Ocean</h1>
+        <p class="desc">Drop your fragments into a private ocean. Tap one to open its galaxy.</p>
+
+        <div class="panel">
+          <textarea id="input" placeholder="Example:
+People say my ideas are too abstract
+I feel stuck and cannot decide what to build next
+AI tools feel repetitive"></textarea>
+        </div>
+
+        <div class="buttons">
+          <button class="primary" id="addBtn">Drop fragment</button>
+          <button id="exampleBtn">Try example</button>
+          <button id="clearInputBtn">Clear input</button>
+          <button id="clearOceanBtn">Clear ocean</button>
+        </div>
+
+        <div class="ocean">
+          <div class="ocean-head">
+            <div class="ocean-title">My Ocean</div>
+            <div class="ocean-sub">Private fragments in your browser only.</div>
+          </div>
+
+          <div class="ocean-grid" id="oceanGrid">
+            <div class="empty">Your fragments will appear here.</div>
+          </div>
+        </div>
+
+        <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./fragment.js"></script>
+  <script src="./router.js"></script>
+
+  <script>
+    var STORAGE_KEY = "reframe-thinking-ocean-v1";
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function loadOcean() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        var data = JSON.parse(raw);
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveOcean(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function scoreFragment(fragment) {
+      var text = fragment.text || "";
+      var lengthScore = Math.min(Math.ceil(text.length / 30), 4);
+      var typeBonus = fragment.sourceType === "idea" ? 2 : 1;
+      return lengthScore + typeBonus;
+    }
+
+    function getDepthLabel(score) {
+      if (score >= 5) return "Deep";
+      if (score >= 3) return "Middle";
+      return "Surface";
+    }
+
+    function renderOcean() {
+      var grid = document.getElementById("oceanGrid");
+      var items = loadOcean();
+
+      if (!items.length) {
+        grid.innerHTML = '<div class="empty">Your fragments will appear here.</div>';
+        return;
+      }
+
+      items.sort(function (a, b) {
+        return b.score - a.score;
+      });
+
+      var html = "";
+
+      items.forEach(function (item, index) {
+        html += '<div class="fragment-card">';
+        html += '<div class="fragment-top">';
+        html += '<div class="fragment-pill">' + escapeHtml(item.sourceType) + '</div>';
+        html += '<div class="fragment-pill">' + escapeHtml(item.depth) + '</div>';
+        html += '</div>';
+
+        html += '<div class="fragment-text">' + escapeHtml(item.text) + '</div>';
+
+        html += '<div class="meta-row">';
+        html += '<div class="mini-pill">Mutation potential ' + escapeHtml(String(item.score)) + '</div>';
+        html += '<div class="mini-pill">Mode ' + escapeHtml(item.mode || "stable") + '</div>';
+        html += '</div>';
+
+        html += '<div class="card-buttons">';
+        html += '<a class="open-btn" href="./thought-galaxy-router.html?fragment=' + encodeURIComponent(item.text) + '">Open galaxy</a>';
+        html += '<button class="remove-btn" type="button" data-index="' + index + '">Remove</button>';
+        html += '</div>';
+
+        html += '</div>';
+      });
+
+      grid.innerHTML = html;
+
+      Array.prototype.forEach.call(grid.querySelectorAll(".remove-btn"), function (button) {
+        button.addEventListener("click", function () {
+          var removeIndex = Number(button.getAttribute("data-index"));
+          var latest = loadOcean().sort(function (a, b) {
+            return b.score - a.score;
+          });
+          latest.splice(removeIndex, 1);
+          saveOcean(latest);
+          renderOcean();
+        });
+      });
+    }
+
+    function addFragment() {
+      var input = document.getElementById("input");
+      var text = input.value.trim();
+
+      if (!text) {
+        alert("Enter something first.");
+        return;
+      }
+
+      var sourceType = window.detectSourceType ? window.detectSourceType(text) : "idea";
+      var fragment = window.createFragment ? window.createFragment(text, sourceType, "stable") : {
+        id: "frag_" + Date.now(),
+        text: text,
+        sourceType: sourceType,
+        mode: "stable"
+      };
+
+      fragment.score = scoreFragment(fragment);
+      fragment.depth = getDepthLabel(fragment.score);
+
+      var items = loadOcean();
+      items.unshift(fragment);
+      saveOcean(items);
+
+      input.value = "";
+      renderOcean();
+    }
+
+    function tryExample() {
+      document.getElementById("input").value = "People say my ideas are too abstract";
+    }
+
+    function clearInput() {
+      document.getElementById("input").value = "";
+    }
+
+    function clearOcean() {
+      localStorage.removeItem(STORAGE_KEY);
+      renderOcean();
+    }
+
+    function fillFromUrl() {
+      var params = new URLSearchParams(window.location.search);
+      var fragment = params.get("fragment");
+
+      if (fragment) {
+        document.getElementById("input").value = fragment;
+      }
+    }
+
+    document.getElementById("addBtn").addEventListener("click", addFragment);
+    document.getElementById("exampleBtn").addEventListener("click", tryExample);
+    document.getElementById("clearInputBtn").addEventListener("click", clearInput);
+    document.getElementById("clearOceanBtn").addEventListener("click", clearOcean);
+
+    fillFromUrl();
+    renderOcean();
+  </script>
+</body>
+</html>
