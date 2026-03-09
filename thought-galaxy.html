@@ -98,7 +98,7 @@ padding:16px 16px 0 16px;
 
 .galaxy-wrap{
 position:relative;
-height:900px;
+height:960px;
 margin-top:10px;
 background:
 radial-gradient(circle at 20% 20%, rgba(85,125,255,0.20), transparent 28%),
@@ -149,10 +149,10 @@ z-index:3;
 .node{
 position:absolute;
 transform:translate(-50%,-50%);
-min-width:128px;
-max-width:240px;
-padding:14px 16px;
-border-radius:999px;
+min-width:132px;
+max-width:250px;
+padding:14px 16px 12px;
+border-radius:22px;
 text-align:center;
 font-weight:600;
 font-size:16px;
@@ -167,7 +167,7 @@ z-index:3;
 
 .node.small{
 font-size:15px;
-min-width:118px;
+min-width:124px;
 }
 
 .node.input{
@@ -175,8 +175,9 @@ background:rgba(28,41,72,0.95);
 border-color:#5e82ff;
 box-shadow:0 0 24px rgba(76,117,255,0.22);
 max-width:300px;
-border-radius:20px;
+border-radius:24px;
 font-weight:700;
+padding:18px 18px;
 }
 
 .node.route{
@@ -185,15 +186,15 @@ border-color:#5a74c4;
 }
 
 .node.tool{
-background:rgba(14,22,35,0.96);
-border-color:#3e587e;
+background:rgba(10,22,40,0.97);
+border-color:#63a2ff;
 font-weight:500;
 z-index:5;
 }
 
 .node.mutation{
-background:rgba(22,18,38,0.96);
-border-color:#6d63c6;
+background:rgba(28,18,46,0.97);
+border-color:#9b78ff;
 color:#efeaff;
 z-index:6;
 }
@@ -215,8 +216,36 @@ box-shadow:0 0 0 1px rgba(128,186,255,0.18), 0 10px 32px rgba(0,0,0,0.34), 0 0 2
 
 .node.mutation-link:hover,
 .node.mutation-link:active{
-border-color:#b08cff;
-box-shadow:0 0 0 1px rgba(176,140,255,0.18), 0 10px 32px rgba(0,0,0,0.34), 0 0 24px rgba(155,113,255,0.18);
+border-color:#c29cff;
+box-shadow:0 0 0 1px rgba(194,156,255,0.18), 0 10px 32px rgba(0,0,0,0.34), 0 0 24px rgba(155,113,255,0.18);
+}
+
+.node-label{
+display:block;
+line-height:1.25;
+}
+
+.node-kind{
+display:inline-block;
+margin-top:8px;
+padding:4px 9px;
+border-radius:999px;
+font-size:11px;
+font-weight:700;
+letter-spacing:0.04em;
+text-transform:uppercase;
+}
+
+.node.mutation .node-kind{
+background:rgba(171,124,255,0.18);
+border:1px solid rgba(171,124,255,0.45);
+color:#eadbff;
+}
+
+.node.tool .node-kind{
+background:rgba(92,165,255,0.16);
+border:1px solid rgba(92,165,255,0.42);
+color:#d8edff;
 }
 
 @keyframes floaty{
@@ -312,12 +341,12 @@ h1{
 font-size:42px;
 }
 .galaxy-wrap{
-height:980px;
+height:1040px;
 }
 .node{
 font-size:15px;
-min-width:124px;
-padding:12px 14px;
+min-width:126px;
+padding:12px 14px 10px;
 }
 .node.input{
 max-width:240px;
@@ -344,7 +373,7 @@ max-width:240px;
   <div class="card galaxy-card">
     <div class="galaxy-head">
       <h2 style="margin:0 0 6px;">Galaxy View</h2>
-      <div class="muted">Tap a tool star to open a tool. Tap a mutation star to build a new tool from that direction.</div>
+      <div class="muted">Purple stars build. Blue stars open.</div>
     </div>
     <div class="galaxy-wrap">
       <div class="starfield" id="starfield"></div>
@@ -352,10 +381,9 @@ max-width:240px;
       <div class="node-layer" id="galaxyNodes"></div>
     </div>
     <div class="legend">
-      <span class="pill">Input core</span>
-      <span class="pill">Mutation stars (tap = build)</span>
-      <span class="pill">Route stars</span>
-      <span class="pill">Tool stars (tap = open)</span>
+      <span class="pill">Purple = Build</span>
+      <span class="pill">Blue = Open</span>
+      <span class="pill">Routes = Center path</span>
     </div>
   </div>
 
@@ -368,7 +396,7 @@ max-width:240px;
     <div class="card">
       <h3 style="margin-top:0;">Detected Directions</h3>
       <div id="directionsView" class="muted">No galaxy yet.</div>
-      <div class="helper">Mutation stars can jump into Galaxy → Tool Builder with the direction already set.</div>
+      <div class="helper">Purple buttons build from a mutation. Blue links open an existing tool.</div>
     </div>
   </div>
 </div>
@@ -452,19 +480,23 @@ function escapeHtml(text){
     .replace(/'/g, "&#39;");
 }
 
-function nodeHtml(cls, x, y, text, delay){
-  return "<div class='node "+cls+"' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'>"+escapeHtml(text)+"</div>";
+function inputNodeHtml(x, y, text){
+  return "<div class='node input' style='left:"+x+"%;top:"+y+"%;'><span class='node-label'>" + escapeHtml(text) + "</span></div>";
+}
+
+function routeNodeHtml(x, y, text, delay){
+  return "<div class='node route small' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'><span class='node-label'>" + escapeHtml(text) + "</span></div>";
 }
 
 function toolNodeHtml(x, y, file, delay){
   const label = file.replace(".html","");
-  return "<a class='node tool small tool-link' href='./"+encodeURI(file)+"' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'>"+escapeHtml(label)+"</a>";
+  return "<a class='node tool small tool-link' href='./"+encodeURI(file)+"' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'><span class='node-label'>" + escapeHtml(label) + "</span><span class='node-kind'>Open</span></a>";
 }
 
 function mutationNodeHtml(x, y, mutation, delay){
   const input = document.getElementById("input").value.trim();
   const href = "./galaxy-to-tool-builder.html?input=" + encodeURIComponent(input) + "&direction=" + encodeURIComponent(mutation);
-  return "<a class='node mutation small mutation-link' href='" + href + "' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'>" + escapeHtml(mutation) + "</a>";
+  return "<a class='node mutation small mutation-link' href='" + href + "' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'><span class='node-label'>" + escapeHtml(mutation) + "</span><span class='node-kind'>Build</span></a>";
 }
 
 function example1(){
@@ -491,7 +523,7 @@ function renderRoutes(routes){
     html += "<div class='route-title'>Route "+(idx+1)+"</div>";
     html += "<div>";
     route.mutations.forEach(function(m){
-      html += "<span class='pill'>"+escapeHtml(m)+"</span>";
+      html += "<span class='pill'>Build: "+escapeHtml(m)+"</span>";
       html += "<a class='builder-link' href='./galaxy-to-tool-builder.html?input=" +
         encodeURIComponent(document.getElementById("input").value.trim()) +
         "&direction=" + encodeURIComponent(m) + "'>Build from " + escapeHtml(m) + "</a>";
@@ -499,7 +531,7 @@ function renderRoutes(routes){
     html += "</div>";
     html += "<div style='margin-top:10px;'>";
     route.tools.forEach(function(tool){
-      html += "<a class='tool-link-list' href='./"+encodeURI(tool)+"'>"+escapeHtml(tool)+"</a>";
+      html += "<a class='tool-link-list' href='./"+encodeURI(tool)+"'>Open " + escapeHtml(tool) + "</a>";
     });
     html += "</div>";
     html += "</div>";
@@ -514,15 +546,15 @@ function renderDirections(routes){
   const input = document.getElementById("input").value.trim();
 
   let html = "";
-  html += "<div style='margin-bottom:10px;'><strong>Mutation stars</strong></div>";
+  html += "<div style='margin-bottom:10px;'><strong>Build directions</strong></div>";
   allMutations.forEach(function(m){
     html += "<a class='builder-link' href='./galaxy-to-tool-builder.html?input=" +
-      encodeURIComponent(input) + "&direction=" + encodeURIComponent(m) + "'>" + escapeHtml(m) + "</a>";
+      encodeURIComponent(input) + "&direction=" + encodeURIComponent(m) + "'>Build from " + escapeHtml(m) + "</a>";
   });
 
-  html += "<div style='margin:14px 0 10px;'><strong>Tool stars</strong></div>";
+  html += "<div style='margin:16px 0 10px;'><strong>Open tools</strong></div>";
   allTools.forEach(function(t){
-    html += "<span class='pill'>"+escapeHtml(t)+"</span>";
+    html += "<a class='tool-link-list' href='./"+encodeURI(t)+"'>Open " + escapeHtml(t) + "</a>";
   });
 
   document.getElementById("directionsView").innerHTML = html;
@@ -540,42 +572,42 @@ function runGalaxy(){
 
   const routePos = [
     {x:22,y:36},
-    {x:50,y:34},
+    {x:50,y:36},
     {x:78,y:36}
   ];
 
   const mutationPos = [
-    [{x:14,y:24},{x:12,y:54}],
-    [{x:40,y:22},{x:52,y:54}],
-    [{x:86,y:24},{x:86,y:54}]
+    [{x:12,y:24},{x:12,y:58}],
+    [{x:40,y:22},{x:50,y:58}],
+    [{x:88,y:24},{x:88,y:58}]
   ];
 
   const toolPos = [
-    [{x:20,y:70},{x:12,y:84}],
-    [{x:50,y:70},{x:50,y:86}],
-    [{x:80,y:70},{x:88,y:84}]
+    [{x:20,y:76},{x:12,y:90}],
+    [{x:50,y:76},{x:50,y:92}],
+    [{x:80,y:76},{x:88,y:90}]
   ];
 
   let svgHtml = "";
   let nodeHtmlAll = "";
 
-  nodeHtmlAll += nodeHtml("input", inputPos.x, inputPos.y, input || "Input", 0);
+  nodeHtmlAll += inputNodeHtml(inputPos.x, inputPos.y, input || "Input");
 
   routes.forEach(function(route, i){
     const rp = routePos[i];
 
     svgHtml += line(inputPos.x+"%", inputPos.y+"%", rp.x+"%", rp.y+"%", "#5e82ff", "2.2", "0.62");
-    nodeHtmlAll += nodeHtml("route", rp.x, rp.y, "Route " + (i+1), i * 0.5);
+    nodeHtmlAll += routeNodeHtml(rp.x, rp.y, "Route " + (i+1), i * 0.5);
 
     route.mutations.forEach(function(mutation, mi){
       const mp = mutationPos[i][mi];
-      svgHtml += line(rp.x+"%", rp.y+"%", mp.x+"%", mp.y+"%", "#8b78ff", "1.8", "0.55");
+      svgHtml += line(rp.x+"%", rp.y+"%", mp.x+"%", mp.y+"%", "#a884ff", "1.8", "0.6");
       nodeHtmlAll += mutationNodeHtml(mp.x, mp.y, mutation, (i + mi) * 0.6);
     });
 
     route.tools.slice(0,2).forEach(function(tool, ti){
       const tp = toolPos[i][ti];
-      svgHtml += line(rp.x+"%", rp.y+"%", tp.x+"%", tp.y+"%", "#6db6ff", "1.8", "0.55");
+      svgHtml += line(rp.x+"%", rp.y+"%", tp.x+"%", tp.y+"%", "#6db6ff", "1.8", "0.6");
       nodeHtmlAll += toolNodeHtml(tp.x, tp.y, tool, (i + ti) * 0.7);
     });
   });
@@ -585,7 +617,7 @@ function runGalaxy(){
 
   renderRoutes(routes);
   renderDirections(routes);
-  document.getElementById("status").innerHTML = "Galaxy generated. Tap a tool star to open a tool. Tap a mutation star to build a new tool.";
+  document.getElementById("status").innerHTML = "Galaxy generated. Purple builds. Blue opens.";
 }
 
 createStars();
