@@ -1,35 +1,55 @@
-// REFRAME Studio — Mutation Router v1
-
 const TOOL_REGISTRY = [
   {
     id: "thought-galaxy",
     title: "Thought Galaxy",
     file: "thought-galaxy.html",
-    inputField: "friction",
-    outputField: "mutation"
+    note: "Open the fragment in a wider thinking space."
   },
   {
     id: "mutation-engine",
     title: "Mutation Engine",
     file: "mutation-engine.html",
-    inputField: "friction",
-    outputField: "mutation"
+    note: "Push the fragment into a stronger mutation."
   },
   {
     id: "mutation-flow",
     title: "Mutation Flow v1",
     file: "mutation-flow-v1.html",
-    inputField: "mutation",
-    outputField: "mutation"
+    note: "Keep the mutation moving into a next form."
   },
   {
     id: "tool-birth-engine",
     title: "Tool Birth Engine v1",
     file: "tool-birth-engine-v1.html",
-    inputField: "mutation",
-    outputField: "expression"
+    note: "Turn mutation into a possible new tool."
   }
 ];
+
+function detectSourceType(text) {
+  const t = text.toLowerCase();
+
+  if (t.includes("people say") || t.includes("critic") || t.includes("too abstract")) {
+    return "criticism";
+  }
+
+  if (t.includes("feel") || t.includes("tired") || t.includes("exhaust") || t.includes("overwhelmed")) {
+    return "emotion";
+  }
+
+  if (t.includes("can't") || t.includes("cannot") || t.includes("stuck") || t.includes("problem")) {
+    return "problem";
+  }
+
+  if (t.includes("confused") || t.includes("unclear") || t.includes("why")) {
+    return "confusion";
+  }
+
+  if (t.includes("failed") || t.includes("didn't work") || t.includes("did not work")) {
+    return "failure";
+  }
+
+  return "idea";
+}
 
 function getNextTools(fragment) {
   const type = fragment.sourceType;
@@ -51,7 +71,7 @@ function getNextTools(fragment) {
   }
 
   if (type === "confusion") {
-    return findTools(["mutation-flow"]);
+    return findTools(["thought-galaxy", "mutation-flow"]);
   }
 
   if (type === "failure") {
@@ -62,5 +82,7 @@ function getNextTools(fragment) {
 }
 
 function findTools(ids) {
-  return TOOL_REGISTRY.filter(tool => ids.includes(tool.id));
+  return TOOL_REGISTRY.filter(function (tool) {
+    return ids.includes(tool.id);
+  });
 }
