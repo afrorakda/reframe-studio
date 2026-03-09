@@ -4,287 +4,555 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REFRAME Studio</title>
-
   <style>
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    body{
-      margin:0;
-      font-family:Arial, sans-serif;
-      background:#f7f7f7;
-      color:#111;
+    body {
+      margin: 0;
+      background: #0f1115;
+      color: #e8ecf1;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
     }
 
-    .wrap{
-      max-width:720px;
-      margin:0 auto;
-      padding:20px 16px 40px;
-      text-align:center;
+    .wrap {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
     }
 
-    h1{
-      margin:10px 0 12px;
-      font-size:clamp(42px, 8vw, 72px);
-      line-height:1.05;
-      font-weight:800;
-      letter-spacing:-0.02em;
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      line-height: 1.15;
     }
 
-    .subtitle{
-      margin:0 0 16px;
-      font-size:clamp(18px, 4vw, 30px);
-      line-height:1.3;
+    h2 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      line-height: 1.2;
     }
 
-    textarea{
-      width:100%;
-      min-height:110px;
-      padding:16px;
-      font-size:18px;
-      line-height:1.5;
-      border:2px solid #d8d8d8;
-      border-radius:18px;
-      background:#fff;
-      resize:vertical;
-      outline:none;
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.3;
     }
 
-    textarea:focus{
-      border-color:#999;
+    p {
+      margin: 0 0 10px;
     }
 
-    .main-button,
-    .secondary-button,
-    .ghost-button,
-    .chaos-button{
-      width:100%;
-      border:none;
-      border-radius:18px;
-      cursor:pointer;
-      font-weight:800;
-      text-align:center;
+    .sub {
+      color: #9aa4b2;
+      font-size: 16px;
+      margin-bottom: 8px;
     }
 
-    .main-button{
-      margin-top:16px;
-      padding:18px 20px;
-      background:#111;
-      color:#fff;
-      font-size:clamp(22px, 5vw, 34px);
+    .lead {
+      color: #b7c0cd;
+      margin-bottom: 28px;
+      max-width: 760px;
     }
 
-    .ghost-button{
-      margin-top:12px;
-      padding:14px 18px;
-      background:#e9e9e9;
-      color:#111;
-      font-size:clamp(18px, 4.2vw, 24px);
+    .section {
+      margin-top: 30px;
+      margin-bottom: 30px;
     }
 
-    .chaos-button{
-      margin-top:12px;
-      padding:16px 18px;
-      background:#ffcc00;
-      color:#111;
-      font-size:clamp(20px, 4.4vw, 26px);
+    .card {
+      background: #171a21;
+      border: 1px solid #2a3140;
+      border-radius: 16px;
+      padding: 16px;
     }
 
-    .output-card{
-      margin-top:18px;
-      padding:18px 16px;
-      min-height:72px;
-      border-radius:18px;
-      background:#fff;
-      border:1px solid #e4e4e4;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .hero {
+      margin-bottom: 22px;
     }
 
-    #output{
-      margin:0;
-      font-size:clamp(22px, 4.6vw, 34px);
-      line-height:1.45;
-      font-weight:500;
+    .muted {
+      color: #9aa4b2;
     }
 
-    .nav{
-      margin-top:18px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
+    .small {
+      font-size: 13px;
+      color: #9aa4b2;
     }
 
-    .secondary-button{
-      display:block;
-      padding:18px 20px;
-      background:#fff;
-      color:#111;
-      border:2px solid #dfdfdf;
-      font-size:clamp(20px, 4.5vw, 30px);
-      text-decoration:none;
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
     }
 
-    .hint{
-      margin-top:14px;
-      color:#666;
-      font-size:14px;
-      line-height:1.5;
+    .tool-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
     }
 
-    @media (min-width: 768px){
-      .wrap{
-        padding-top:28px;
+    .tool-card,
+    .feature-card {
+      background: #171a21;
+      border: 1px solid #2a3140;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .feature-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      background: #0f1115;
+      border: 1px solid #333c4d;
+      border-radius: 12px;
+      color: #e8ecf1;
+      padding: 12px;
+      font-size: 15px;
+      resize: vertical;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button,
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      background: #2b6cff;
+      color: white;
+    }
+
+    button.secondary,
+    .btn.secondary {
+      background: #2a3140;
+      color: #e8ecf1;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #222938;
+      border: 1px solid #33405a;
+      font-size: 13px;
+      margin: 4px 6px 0 0;
+      color: #dbe5ff;
+    }
+
+    .tool-link {
+      display: block;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #0f1115;
+      border: 1px solid #33405a;
+      color: #dbe5ff;
+      text-decoration: none;
+    }
+
+    .tool-link:hover,
+    .btn:hover,
+    button:hover,
+    .tool-card:hover,
+    .feature-card:hover {
+      border-color: #4b69b7;
+    }
+
+    .tool-card a.title-link {
+      color: #e8ecf1;
+      text-decoration: none;
+    }
+
+    .tool-card p {
+      color: #b7c0cd;
+      margin-bottom: 12px;
+    }
+
+    .tool-actions {
+      margin-top: 12px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #242b38;
+      margin: 12px 0;
+    }
+
+    .status {
+      color: #9aa4b2;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .empty {
+      color: #9aa4b2;
+    }
+
+    .footer {
+      margin-top: 40px;
+      color: #7f8998;
+      font-size: 13px;
+    }
+
+    @media (min-width: 760px) {
+      .grid {
+        grid-template-columns: 1.2fr 1fr;
       }
 
-      textarea{
-        min-height:130px;
+      .tool-grid {
+        grid-template-columns: 1fr 1fr;
       }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>REFRAME Studio</h1>
-    <p class="subtitle">What's on your mind?</p>
-
-    <textarea
-      id="input"
-      placeholder="Criticism, emotion, confusion, idea... anything."
-    ></textarea>
-
-    <button class="main-button" onclick="reframe()">REFRAME</button>
-    <button class="ghost-button" onclick="reframeAgain()">Reframe Again</button>
-    <button class="chaos-button" onclick="chaosMode()">CHAOS</button>
-
-    <div class="output-card">
-      <p id="output">A new angle appears here.</p>
+    <div class="hero">
+      <h1>REFRAME Studio</h1>
+      <p class="sub">Browser-native Thinking Playground</p>
+      <p class="lead">
+        AI usually goes from question to answer.
+        REFRAME goes from input to unexpected angle.
+        This is not a tool shelf. It is a mutation system.
+      </p>
     </div>
 
-    <div class="nav">
-      <a class="secondary-button" href="thought-map.html">Thought Map</a>
-      <button class="secondary-button" onclick="surpriseMe()">Surprise Me</button>
-    </div>
+    <section class="section">
+      <h2>Start here</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Navigator</h3>
+          <p class="muted">Write where you are stuck. REFRAME will read the thought field and suggest the next tools.</p>
+          <textarea id="navInput">I feel stuck and cannot decide what to build next.</textarea>
+          <div class="buttons">
+            <button onclick="runNavigator()">Run navigator</button>
+            <button class="secondary" onclick="navExample1()">Example 1</button>
+            <button class="secondary" onclick="navExample2()">Example 2</button>
+            <button class="secondary" onclick="navClear()">Clear</button>
+          </div>
+          <div id="navStatus" class="status">Ready.</div>
+        </div>
 
-    <p class="hint">
-      Not an answer engine. An angle engine.
-    </p>
+        <div class="feature-card">
+          <strong>What this does</strong>
+          <p class="muted">Input → field read → drift → zone → suggested tools</p>
+          <div class="divider"></div>
+          <strong>Core rule</strong>
+          <p class="muted">1 tool = 1 thought mutation</p>
+          <div class="divider"></div>
+          <strong>Modes already inside</strong>
+          <p class="muted">Stable / Drift / Chaos</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="grid">
+        <div class="card">
+          <h3>Detected Zone</h3>
+          <div id="zoneView" class="empty">No result yet.</div>
+        </div>
+        <div class="card">
+          <h3>Path</h3>
+          <div id="pathView" class="empty">No result yet.</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <h3>Suggested Tools</h3>
+        <div id="toolsView" class="empty">No result yet.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Core flow</h2>
+      <div class="tool-grid" id="coreFlow"></div>
+    </section>
+
+    <section class="section">
+      <h2>Build tools</h2>
+      <div class="tool-grid" id="buildFlow"></div>
+    </section>
+
+    <section class="section">
+      <h2>Explore</h2>
+      <div class="tool-grid" id="exploreFlow"></div>
+    </section>
+
+    <section class="section">
+      <h2>All tools</h2>
+      <div class="tool-grid" id="allTools"></div>
+    </section>
+
+    <div class="footer">
+      No login. No tracking. No personal data collected. Runs entirely in your browser.
+    </div>
   </div>
 
+  <script src="./mutation-map.js"></script>
+  <script src="./router-v2.js"></script>
+  <script src="./drift-engine.js"></script>
+  <script src="./drift-memory.js"></script>
+  <script src="./gravity-engine.js"></script>
+  <script src="./mutation-loop.js"></script>
+  <script src="./reframe-navigator.js"></script>
+
   <script>
-    const angles = [
-      "Maybe the criticism is pointing at something interesting.",
-      "Cringe might mean you're not generic.",
-      "What if the opposite was true?",
-      "Maybe the problem is actually the advantage.",
-      "What assumption might be wrong?",
-      "What looks like confusion might be raw material.",
-      "The friction may be the signal, not the obstacle.",
-      "What if this is not a flaw, but a character trait?",
-      "The thing you want to hide may be the hook.",
-      "Maybe the problem is not lack of ideas, but lack of permission."
-    ];
+    var toolData = {
+      coreFlow: [
+        {
+          title: "Stuck → Best Tool",
+          file: "stuck-to-tool.html",
+          desc: "Describe where you're stuck and get the best next tool."
+        },
+        {
+          title: "Problem → Root Causes",
+          file: "problem-to-root-cause.html",
+          desc: "Turn a problem into possible root causes."
+        },
+        {
+          title: "Problem → Constraints",
+          file: "problem-to-constraints.html",
+          desc: "Find the key constraints behind a problem."
+        },
+        {
+          title: "Problem → Options",
+          file: "problem-to-options.html",
+          desc: "Create useful next options from a stuck problem."
+        },
+        {
+          title: "Emotion → Action",
+          file: "emotion-to-action.html",
+          desc: "Turn emotional friction into one usable action."
+        },
+        {
+          title: "Next Step Finder",
+          file: "next-step-finder.html",
+          desc: "Find one useful next step."
+        }
+      ],
+      buildFlow: [
+        {
+          title: "Idea → Tool Spec",
+          file: "idea-to-tool-spec.html",
+          desc: "Turn a rough idea into REFRAME tool specs."
+        },
+        {
+          title: "Tool Generator v3",
+          file: "tool-generator-v3.html",
+          desc: "Turn a tool idea into HTML and registry-ready output."
+        },
+        {
+          title: "Tool Factory",
+          file: "tool-factory.html",
+          desc: "Turn one idea into multiple REFRAME tools."
+        },
+        {
+          title: "Tool Factory Pro",
+          file: "tool-factory-pro.html",
+          desc: "Generate multiple tool directions at once."
+        }
+      ],
+      exploreFlow: [
+        {
+          title: "Thought Map",
+          file: "thought-map.html",
+          desc: "Explore REFRAME through a visual tool map."
+        },
+        {
+          title: "Thought Map v2",
+          file: "thought-map-v2.html",
+          desc: "See the tool landscape as a living map."
+        },
+        {
+          title: "Router Test",
+          file: "router-test.html",
+          desc: "Test field reading and contact zone matching."
+        },
+        {
+          title: "Drift Test",
+          file: "drift-test.html",
+          desc: "Test Stable, Drift, and Chaos."
+        },
+        {
+          title: "Mutation Loop Test",
+          file: "mutation-loop-test.html",
+          desc: "Watch mutation move across zones."
+        },
+        {
+          title: "Navigator Test",
+          file: "navigator-test.html",
+          desc: "Input thought and see the next tools."
+        }
+      ],
+      allTools: [
+        "stuck-to-tool.html",
+        "problem-to-root-cause.html",
+        "problem-to-constraints.html",
+        "problem-to-options.html",
+        "emotion-to-action.html",
+        "next-step-finder.html",
+        "idea-to-tool-spec.html",
+        "tool-generator-v3.html",
+        "tool-factory.html",
+        "tool-factory-pro.html",
+        "thought-map.html",
+        "thought-map-v2.html",
+        "router-test.html",
+        "drift-test.html",
+        "mutation-loop-test.html",
+        "navigator-test.html"
+      ]
+    };
 
-    const tools = [
-      "about.html",
-      "comment-to-content.html",
-      "comment-to-question.html",
-      "complexity-cleaner.html",
-      "confusion-question-builder.html",
-      "confusion-to-question.html",
-      "constraint-to-action.html",
-      "criticism-to-idea.html",
-      "criticism-to-lesson.html",
-      "criticism-to-question.html",
-      "draft-fixer.html",
-      "emotion-to-action.html",
-      "failure-to-lesson.html",
-      "hate-to-content.html",
-      "hate-to-signal.html",
-      "hook-generator.html",
-      "idea-to-counterargument.html",
-      "idea-to-debate.html",
-      "idea-to-example.html",
-      "idea-to-metaphor.html",
-      "idea-to-opposite.html",
-      "idea-to-post-angles.html",
-      "idea-to-priority.html",
-      "idea-to-thread.html",
-      "idea-to-tool-spec.html",
-      "negative-comment-to-thread.html",
-      "next-step-finder.html",
-      "overthinking-breaker.html",
-      "reframe-studio.html",
-      "reframe_tool_factory.html",
-      "roadmap.html",
-      "stuck-to-tool.html",
-      "thought-map-v2.html",
-      "thought-map.html",
-      "thought-to-structure.html",
-      "thread-navigator.html",
-      "title-refiner.html",
-      "tool-factory.html",
-      "tool-generator-v2.html",
-      "tool-generator-v3.html",
-      "tool-spec-to-html.html",
-      "troll-to-pattern.html",
-      "tweet-polisher.html"
-    ];
-
-    const chaosPrompts = [
-      "Turn this into a controversial opinion.",
-      "Make this absurd.",
-      "What would the opposite thinker say?",
-      "Turn this into satire.",
-      "What would a troll say?",
-      "What hidden advantage might exist?",
-      "What would make this go viral?",
-      "How would a comedian frame this?",
-      "What assumption is wrong here?",
-      "What would a contrarian argue?"
-    ];
-
-    function pickRandom(list){
-      return list[Math.floor(Math.random() * list.length)];
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
-    function showAngle(){
-      document.getElementById("output").innerText = pickRandom(angles);
+    function pill(text) {
+      return '<span class="pill">' + escapeHtml(text) + '</span>';
     }
 
-    function reframe(){
-      showAngle();
+    function makeToolCard(item) {
+      return (
+        '<div class="tool-card">' +
+          '<h3><a class="title-link" href="./' + encodeURI(item.file) + '">' + escapeHtml(item.title) + '</a></h3>' +
+          '<p>' + escapeHtml(item.desc) + '</p>' +
+          '<div class="tool-actions">' +
+            '<a class="btn secondary" href="./' + encodeURI(item.file) + '">Open tool</a>' +
+          '</div>' +
+        '</div>'
+      );
     }
 
-    function reframeAgain(){
-      showAngle();
+    function renderSection(id, items) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = items.map(makeToolCard).join("");
     }
 
-    function surpriseMe(){
-      const randomTool = pickRandom(tools);
-      window.location.href = randomTool;
+    function renderAllTools() {
+      var el = document.getElementById("allTools");
+      if (!el) return;
+
+      var html = toolData.allTools.map(function(file) {
+        return (
+          '<a class="tool-link" href="./' + encodeURI(file) + '">' +
+          escapeHtml(file) +
+          '</a>'
+        );
+      }).join("");
+
+      el.innerHTML = html;
     }
 
-    function chaosMode(){
-      const input = document.getElementById("input");
-      const randomPrompt = pickRandom(chaosPrompts);
-      const randomTool = pickRandom(tools);
+    function navExample1() {
+      document.getElementById("navInput").value =
+        "I feel stuck and cannot decide what to build next.";
+    }
 
-      if(input.value.trim() === ""){
-        input.value = randomPrompt;
-      } else {
-        input.value = randomPrompt + "\n\n" + input.value;
+    function navExample2() {
+      document.getElementById("navInput").value =
+        "アイデアはあるのにツールの形にできない。";
+    }
+
+    function navClear() {
+      document.getElementById("zoneView").innerHTML = "No result yet.";
+      document.getElementById("pathView").innerHTML = "No result yet.";
+      document.getElementById("toolsView").innerHTML = "No result yet.";
+      document.getElementById("navStatus").innerHTML = "Ready.";
+    }
+
+    function renderZone(zone) {
+      var el = document.getElementById("zoneView");
+      el.innerHTML = zone ? pill(zone) : '<span class="empty">No zone found.</span>';
+    }
+
+    function renderPath(path) {
+      var el = document.getElementById("pathView");
+      if (!path || !path.length) {
+        el.innerHTML = "No path.";
+        return;
       }
 
-      document.getElementById("output").innerText =
-        "Chaos prompt added: " + randomPrompt + " → Opening " + randomTool;
+      var html = path.map(function(step) {
+        return pill("Step " + step.stepNumber + ": " + step.zoneTitle);
+      }).join("");
 
-      setTimeout(function(){
-        window.location.href = randomTool;
-      }, 700);
+      el.innerHTML = html;
     }
+
+    function renderTools(tools) {
+      var el = document.getElementById("toolsView");
+      if (!tools || !tools.length) {
+        el.innerHTML = "No tools found for this zone.";
+        return;
+      }
+
+      var html = tools.map(function(tool) {
+        return '<a class="tool-link" href="./' + encodeURI(tool) + '">' + escapeHtml(tool) + '</a>';
+      }).join("");
+
+      el.innerHTML = html;
+    }
+
+    function runNavigator() {
+      var status = document.getElementById("navStatus");
+
+      if (!window.REFRAME_NAVIGATOR) {
+        status.innerHTML = "Navigator is not loaded.";
+        return;
+      }
+
+      try {
+        var input = document.getElementById("navInput").value;
+        var result = window.REFRAME_NAVIGATOR.navigate(input);
+
+        if (!result || result.error) {
+          renderZone("");
+          renderPath([]);
+          renderTools([]);
+          status.innerHTML = result && result.error ? escapeHtml(result.error) : "No result.";
+          return;
+        }
+
+        renderZone(result.zone);
+        renderPath(result.path);
+        renderTools(result.tools);
+        status.innerHTML = "OK. Zone: " + escapeHtml(result.zone || "none");
+      } catch (err) {
+        status.innerHTML = escapeHtml(err.message);
+      }
+    }
+
+    renderSection("coreFlow", toolData.coreFlow);
+    renderSection("buildFlow", toolData.buildFlow);
+    renderSection("exploreFlow", toolData.exploreFlow);
+    renderAllTools();
   </script>
 </body>
 </html>
