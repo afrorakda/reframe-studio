@@ -2,451 +2,1154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REFRAME Studio | REFRAME Studio</title>
-  <meta name="description" content="Turn harsh comments into useful feedback." />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>REFRAME Studio</title>
   <style>
-    :root{
-      --bg:#f5f5f5;
-      --card:#ffffff;
-      --soft:#fafafa;
-      --text:#111111;
-      --muted:#666666;
-      --line:#dddddd;
-      --accent:#1e3a5f;
-      --accent-hover:#16314f;
-      --chip:#f2f2f2;
-      --shadow:0 1px 2px rgba(0,0,0,0.04);
+    :root {
+      --bg: #0b0d12;
+      --bg-soft: #121620;
+      --panel: #171c27;
+      --panel-2: #1d2432;
+      --text: #f5f7fb;
+      --muted: #a3adbf;
+      --line: #2b3447;
+      --accent: #8b5cf6;
+      --accent-2: #06b6d4;
+      --accent-3: #22c55e;
+      --accent-4: #f97316;
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --max: 1120px;
     }
 
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    html{
-      -webkit-text-size-adjust:100%;
+    html, body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 26%),
+        radial-gradient(circle at top right, rgba(6, 182, 212, 0.10), transparent 28%),
+        linear-gradient(180deg, #0a0c11 0%, #0d1118 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
     }
 
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.5;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .wrap{
-      max-width:760px;
-      margin:0 auto;
-      padding:24px 16px 40px;
+    button,
+    textarea,
+    input,
+    select {
+      font: inherit;
     }
 
-    .topbar{
-      margin-bottom:18px;
+    .page {
+      min-height: 100vh;
+      padding: 22px 16px 56px;
     }
 
-    .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      text-decoration:none;
-      color:var(--muted);
-      font-size:14px;
+    .shell {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
     }
 
-    .back-link:hover{
-      color:var(--text);
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
-    .hero{
-      margin-bottom:20px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
-    h1{
-      margin:0 0 4px;
-      font-size:34px;
-      line-height:1.05;
-      letter-spacing:-0.02em;
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(139, 92, 246, 0.25), rgba(6, 182, 212, 0.18));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      font-weight: 800;
+      letter-spacing: -0.04em;
     }
 
-    .brand{
-      font-size:14px;
-      color:var(--muted);
-      margin:0 0 10px;
+    .brand-copy {
+      min-width: 0;
     }
 
-    .tagline{
-      font-size:16px;
-      color:var(--text);
-      margin:0;
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: -0.03em;
     }
 
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      box-shadow:var(--shadow);
+    .brand-copy p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    label{
-      display:block;
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:8px;
+    .privacy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 0.88rem;
     }
 
-    textarea{
-      width:100%;
-      min-height:150px;
-      padding:14px;
-      font:inherit;
-      color:var(--text);
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      resize:vertical;
+    .hero {
+      background:
+        radial-gradient(circle at 80% 10%, rgba(139, 92, 246, 0.15), transparent 20%),
+        radial-gradient(circle at 20% 0%, rgba(6, 182, 212, 0.10), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
+    .hero-inner {
+      padding: 28px 24px 24px;
+      display: grid;
+      gap: 22px;
     }
 
-    .chip{
-      appearance:none;
-      border:1px solid var(--line);
-      background:var(--chip);
-      color:var(--text);
-      border-radius:999px;
-      padding:8px 10px;
-      font:inherit;
-      font-size:13px;
-      cursor:pointer;
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.24);
+      color: #cebaff;
+      font-size: 0.83rem;
+      margin-bottom: 12px;
     }
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:16px;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: start;
     }
 
-    button{
-      appearance:none;
-      border:none;
-      border-radius:12px;
-      padding:12px 14px;
-      font:inherit;
-      cursor:pointer;
-      background:var(--accent);
-      color:#fff;
+    .hero-copy h2 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
     }
 
-    button:hover{
-      background:var(--accent-hover);
+    .hero-copy p {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 1.02rem;
     }
 
-    button.secondary{
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--line);
+    .hero-points {
+      display: grid;
+      gap: 10px;
     }
 
-    button.secondary:hover{
-      background:#f8f8f8;
+    .hero-point {
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 14px;
     }
 
-    .status{
-      min-height:22px;
-      margin-top:12px;
-      font-size:13px;
-      color:var(--muted);
+    .hero-point strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.96rem;
     }
 
-    .result{
-      display:none;
-      margin-top:18px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:var(--soft);
-      padding:18px;
+    .hero-point span {
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
-    .block + .block{
-      margin-top:18px;
-      padding-top:18px;
-      border-top:1px solid var(--line);
+    .composer {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 18px;
     }
 
-    .label{
-      font-weight:700;
-      font-size:12px;
-      color:var(--muted);
-      letter-spacing:0.04em;
-      text-transform:uppercase;
-      margin-bottom:8px;
+    .composer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: end;
+      flex-wrap: wrap;
     }
 
-    .result-text{
-      font-size:16px;
-      white-space:pre-wrap;
-      word-break:break-word;
+    .composer-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
     }
 
-    .inline-footer{
-      margin-top:18px;
-      padding-top:16px;
-      border-top:1px solid var(--line);
-      font-size:12px;
-      color:#777;
-      line-height:1.6;
+    .composer-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
-    .global-footer{
-      margin-top:36px;
-      font-size:12px;
-      color:#666;
-      line-height:1.7;
+    textarea {
+      width: 100%;
+      min-height: 132px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #0e131c;
+      color: var(--text);
+      padding: 16px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
-    .global-footer p{
-      margin:0 0 14px;
+    textarea:focus,
+    select:focus {
+      border-color: rgba(139, 92, 246, 0.72);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+    }
+
+    .composer-controls {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 10px;
+    }
+
+    select {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0e131c;
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: #4d5870;
+    }
+
+    .button:active {
+      transform: translateY(0);
+    }
+
+    .button.primary {
+      background: linear-gradient(180deg, #9d71ff, #7b50f7);
+      border-color: transparent;
+      color: white;
+      font-weight: 700;
+    }
+
+    .button.cyan {
+      background: linear-gradient(180deg, #0ec9eb, #099fbe);
+      border-color: transparent;
+      color: white;
+      font-weight: 700;
+    }
+
+    .button.ghost {
+      background: transparent;
+    }
+
+    .button.small {
+      padding: 10px 12px;
+      font-size: 0.92rem;
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .section {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-head h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .card-body {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .entry {
+      display: block;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.025);
+      transition: transform 0.16s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .entry:hover {
+      transform: translateY(-2px);
+      border-color: rgba(139, 92, 246, 0.4);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .entry-tag {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #cbb9ff;
+      letter-spacing: 0.02em;
+    }
+
+    .entry-title {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      line-height: 1.25;
+    }
+
+    .entry-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .map {
+      display: grid;
+      gap: 14px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 8px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .path-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .path {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .path strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.94rem;
+    }
+
+    .path span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .result-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-box {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      white-space: pre-wrap;
+    }
+
+    .next-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .next-card {
+      display: block;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      transition: transform 0.16s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .next-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(6, 182, 212, 0.46);
+      background: rgba(255,255,255,0.045);
+    }
+
+    .next-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: #8de8f7;
+      font-size: 0.81rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .next-card h4 {
+      margin: 0 0 6px;
+      font-size: 0.98rem;
+      line-height: 1.25;
+    }
+
+    .next-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 920px) {
+      .hero-grid,
+      .grid-2,
+      .grid-3,
+      .next-grid,
+      .composer-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .hero-inner,
+      .card-head,
+      .card-body {
+        padding: 16px;
+      }
+
+      .hero-copy h2 {
+        font-size: 2.2rem;
+      }
+
+      textarea {
+        min-height: 120px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <a class="back-link" href="./">← Back to REFRAME Studio</a>
-    </div>
-
-    <div class="hero">
-      <h1>REFRAME Studio</h1>
-      <p class="brand">by REFRAME Studio</p>
-      <p class="tagline">Turn harsh comments into useful feedback.</p>
-    </div>
-
-    <div class="panel">
-      <label for="input">Paste a harsh comment</label>
-      <textarea id="input" placeholder="Paste a harsh comment here"></textarea>
-
-      <div class="chips">
-        <button class="chip" type="button" id="exampleEn">Try English example</button>
-        <button class="chip" type="button" id="exampleJa">日本語の例を入れる</button>
-      </div>
-
-      <div class="actions">
-        <button id="btn" type="button">Reframe</button>
-        <button id="copyBtn" type="button" class="secondary">Copy result</button>
-        <button id="copyPostBtn" type="button" class="secondary">Copy as Post</button>
-        <button id="shareBtn" type="button" class="secondary">Share on X</button>
-        <button id="clearBtn" type="button" class="secondary">Clear</button>
-      </div>
-
-      <div id="status" class="status"></div>
-
-      <div id="output" class="result">
-        <div class="block">
-          <div class="label">Cleaned Signal</div>
-          <div id="signal" class="result-text"></div>
+  <main class="page">
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">R</div>
+          <div class="brand-copy">
+            <h1>REFRAME Studio</h1>
+            <p>Browser-native Thinking Playground</p>
+          </div>
         </div>
+        <div class="privacy-badge">Simple / Private / Fast</div>
+      </header>
 
-        <div class="block">
-          <div class="label">Core Request</div>
-          <div id="request" class="result-text"></div>
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="eyebrow">Input → Unexpected Angle</div>
+              <h2>Chaos → Creation</h2>
+              <p>
+                REFRAME Studio is not an AI answer machine.
+                It is a thinking playground for friction, mutation, and unexpected angles.
+                Start with criticism, emotion, confusion, failure, or an unfinished idea.
+              </p>
+            </div>
+
+            <div class="hero-points">
+              <div class="hero-point">
+                <strong>Intent</strong>
+                <span>Start from what you are stuck with and jump into the best first mutation.</span>
+              </div>
+              <div class="hero-point">
+                <strong>Structure</strong>
+                <span>See the thinking graph so your thought can keep moving.</span>
+              </div>
+              <div class="hero-point">
+                <strong>Serendipity</strong>
+                <span>Use surprise and controlled chaos to create a new angle.</span>
+              </div>
+            </div>
+          </div>
+
+          <section class="composer">
+            <div class="composer-top">
+              <div>
+                <h3 class="composer-title">Start with your current friction</h3>
+                <p class="composer-subtitle">
+                  EN: criticism, emotion, problem, failure, confusion, idea
+                  <br />
+                  JP: 批判、感情、問題、失敗、混乱、アイデア
+                </p>
+              </div>
+            </div>
+
+            <textarea
+              id="input"
+              placeholder="EN: Write the thought friction you want to mutate...
+
+JP: 変異させたい思考摩擦を書いてください..."
+            ></textarea>
+
+            <div class="composer-controls">
+              <select id="input-type" aria-label="Input type">
+                <option value="criticism">Criticism</option>
+                <option value="emotion">Emotion</option>
+                <option value="problem">Problem</option>
+                <option value="confusion">Confusion</option>
+                <option value="failure">Failure</option>
+                <option value="idea">Idea</option>
+              </select>
+
+              <div class="actions">
+                <button class="button" id="try-example" type="button">Try example</button>
+                <button class="button primary" id="start-best-tool" type="button">Start with Best Tool</button>
+                <button class="button cyan" id="chaos-button" type="button">CHAOS</button>
+                <button class="button ghost" id="surprise-button" type="button">Surprise Me</button>
+              </div>
+            </div>
+
+            <div class="status" id="status"></div>
+          </section>
         </div>
+      </section>
 
-        <div class="block">
-          <div class="label">Strategic Move</div>
-          <div id="move" class="result-text"></div>
+      <section class="section grid-3">
+        <article class="card">
+          <div class="card-head">
+            <h3>Intent</h3>
+            <p>Start from friction and jump into the best first mutation.</p>
+          </div>
+          <div class="card-body">
+            <a class="entry" href="criticism-to-lesson.html">
+              <span class="entry-tag">BEST TOOL</span>
+              <h4 class="entry-title">Criticism → Lesson</h4>
+              <p class="entry-desc">Turn negative feedback into usable signal.</p>
+            </a>
+
+            <a class="entry" href="confusion-to-question.html">
+              <span class="entry-tag">UNTANGLE</span>
+              <h4 class="entry-title">Confusion → Question</h4>
+              <p class="entry-desc">Turn vague fog into a sharper question.</p>
+            </a>
+
+            <a class="entry" href="idea-to-metaphor.html">
+              <span class="entry-tag">SHIFT</span>
+              <h4 class="entry-title">Idea → Metaphor</h4>
+              <p class="entry-desc">Translate a raw idea into a more vivid lens.</p>
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Structure</h3>
+            <p>See the graph behind the tools, not just the tools themselves.</p>
+          </div>
+          <div class="card-body map">
+            <div>
+              <div class="chip-row">
+                <span class="chip">Criticism</span>
+                <span class="chip">Emotion</span>
+                <span class="chip">Problem</span>
+                <span class="chip">Idea</span>
+                <span class="chip">Failure</span>
+                <span class="chip">Confusion</span>
+              </div>
+            </div>
+
+            <div class="path-grid">
+              <div class="path">
+                <strong>Criticism → Lesson → Angle → Thread</strong>
+                <span>Negativity becomes perspective, then content.</span>
+              </div>
+              <div class="path">
+                <strong>Confusion → Question → Structure → Action</strong>
+                <span>Fog becomes movement through clarification.</span>
+              </div>
+              <div class="path">
+                <strong>Idea → Opposite / Metaphor → Hook → Thread</strong>
+                <span>A raw thought becomes tension, then expression.</span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <a class="button small" href="thought-map.html">Open Thought Map</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Serendipity</h3>
+            <p>Use randomness and controlled chaos to escape familiar thought paths.</p>
+          </div>
+          <div class="card-body">
+            <button class="entry" id="random-tool-card" type="button" style="text-align:left;">
+              <span class="entry-tag">SURPRISE</span>
+              <h4 class="entry-title">Surprise Me</h4>
+              <p class="entry-desc">Jump to a random thought mutation tool.</p>
+            </button>
+
+            <button class="entry" id="chaos-card" type="button" style="text-align:left;">
+              <span class="entry-tag">CHAOS</span>
+              <h4 class="entry-title">Chaos Prompt + Tool</h4>
+              <p class="entry-desc">Inject a strange angle, then mutate it immediately.</p>
+            </button>
+
+            <a class="entry" href="reframe-again.html">
+              <span class="entry-tag">RANDOM ANGLE</span>
+              <h4 class="entry-title">Reframe Again</h4>
+              <p class="entry-desc">Force a different perspective without overthinking.</p>
+            </a>
+          </div>
+        </article>
+      </section>
+
+      <section class="section card hidden" id="launch-panel">
+        <div class="card-head">
+          <h3>Launch result</h3>
+          <p>The first mutation starts here. The thought should continue, not stop.</p>
         </div>
+        <div class="card-body result-panel">
+          <div class="result-box" id="launch-result"></div>
 
-        <div class="inline-footer">
-          Reframed with REFRAME Studio<br>
-          REFRAME = 批判を「改善要望」に変換する思考ツール<br>
-          Runs entirely in your browser. No data is stored.<br>
-          #Reframed
+          <div class="actions">
+            <button class="button small" id="copy-launch-text" type="button">Copy result</button>
+            <button class="button small" id="copy-share-link" type="button">Copy page link</button>
+          </div>
+
+          <div>
+            <h3 style="margin:0 0 10px; font-size:1rem;">Next mutation</h3>
+            <div class="next-grid" id="next-grid"></div>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <footer class="global-footer">
-      <p><strong>Built by REFRAME Studio</strong></p>
-
-      <p>
-        Turn harsh criticism into useful signals.<br>
-        #Reframed
+      <p class="footer-note">
+        No login / No tracking / No personal data collected / Runs entirely in your browser
       </p>
-
-      <p>
-        Open-source style tools. Simple. Private. Fast.
-      </p>
-
-      <p>
-        No login. No tracking. No personal data collected.<br>
-        Runs entirely in your browser.
-      </p>
-    </footer>
-  </div>
+    </div>
+  </main>
 
   <script>
-    const $ = (id) => document.getElementById(id);
+    const inputEl = document.getElementById("input");
+    const inputTypeEl = document.getElementById("input-type");
+    const tryExampleBtn = document.getElementById("try-example");
+    const startBestToolBtn = document.getElementById("start-best-tool");
+    const chaosButton = document.getElementById("chaos-button");
+    const surpriseButton = document.getElementById("surprise-button");
+    const randomToolCard = document.getElementById("random-tool-card");
+    const chaosCard = document.getElementById("chaos-card");
+    const statusEl = document.getElementById("status");
+    const launchPanel = document.getElementById("launch-panel");
+    const launchResultEl = document.getElementById("launch-result");
+    const nextGridEl = document.getElementById("next-grid");
+    const copyLaunchTextBtn = document.getElementById("copy-launch-text");
+    const copyShareLinkBtn = document.getElementById("copy-share-link");
 
-    function isJapanese(text) {
-      return /[ぁ-んァ-ン一-龯]/.test(text);
-    }
+    const EXAMPLES = {
+      criticism: [
+        "People say my posts are too abstract and hard to understand.",
+        "『言ってることは面白いけど、結局何が言いたいのかわからない』と言われた。"
+      ],
+      emotion: [
+        "I feel frustrated because I have ideas but nothing feels sharp enough to post.",
+        "発信したいのに、出す前に全部弱く見えて止まる。"
+      ],
+      problem: [
+        "I have too many content ideas and no clear priority.",
+        "やることは多いのに、何から手をつけるべきか決まらない。"
+      ],
+      confusion: [
+        "I know something is interesting here, but I can’t explain what the core question is.",
+        "考えはあるのに、論点が自分でもまだ掴めていない。"
+      ],
+      failure: [
+        "I posted consistently for a month and nothing really landed.",
+        "頑張って発信したのに、まったく反応が伸びなかった。"
+      ],
+      idea: [
+        "I want to talk about how criticism can become a creative asset.",
+        "批判を創造の燃料に変える話をしたい。"
+      ]
+    };
 
-    function setStatus(msg) {
-      $("status").textContent = msg;
-    }
-
-    function showOutput() {
-      $("output").style.display = "block";
-    }
-
-    function hideOutput() {
-      $("output").style.display = "none";
-    }
-
-    function reframe() {
-      const raw = $("input").value.trim();
-
-      if (!raw) {
-        setStatus("Paste a comment first.");
-        hideOutput();
-        return;
+    const TOOLS = {
+      criticism: {
+        best: "criticism-to-lesson.html",
+        label: "Criticism → Lesson"
+      },
+      emotion: {
+        best: "emotion-to-action.html",
+        label: "Emotion → Action"
+      },
+      problem: {
+        best: "problem-to-action.html",
+        label: "Problem → Action"
+      },
+      confusion: {
+        best: "confusion-to-question.html",
+        label: "Confusion → Question"
+      },
+      failure: {
+        best: "failure-to-lesson.html",
+        label: "Failure → Lesson"
+      },
+      idea: {
+        best: "idea-to-metaphor.html",
+        label: "Idea → Metaphor"
       }
+    };
 
-      const lang = isJapanese(raw) ? "ja" : "en";
+    const RANDOM_TOOLS = [
+      "criticism-to-lesson.html",
+      "idea-to-metaphor.html",
+      "idea-to-opposite.html",
+      "confusion-to-question.html",
+      "failure-to-lesson.html",
+      "lesson-to-angle.html",
+      "lesson-to-hook.html",
+      "lesson-to-thread.html",
+      "emotion-to-action.html",
+      "problem-to-action.html"
+    ];
 
-      let signal = "";
-      let request = "";
-      let move = "";
+    const CHAOS_PROMPTS = [
+      "Turn this into a satire, not a solution.",
+      "What would make this thought feel dangerously honest?",
+      "Make the idea 30% more absurd without breaking the truth.",
+      "Translate the problem into a character trait.",
+      "Invert the emotional logic and see what survives.",
+      "What would the audience misunderstand first — and how could that become the hook?",
+      "Push the idea toward weirdness, then rebuild usefulness."
+    ];
 
-      if (lang === "ja") {
-        signal = "内容や伝え方を改善してほしいという要望。";
-        request = "・分かりやすくする\n・構造を整理する\n・相手が理解しやすい形にする";
-        move = "次の一手：\n1. 説明を短くする\n2. 一番言いたいことを先に出す\n3. 具体例を1つ加える";
+    function setStatus(message) {
+      statusEl.textContent = message || "";
+    }
+
+    function normalizeText(text) {
+      return text.replace(/\s+/g, " ").trim();
+    }
+
+    function pickRandom(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function getURLInput() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("input") || "";
+    }
+
+    function getURLType() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("type") || "";
+    }
+
+    function updateShareURL() {
+      const text = normalizeText(inputEl.value);
+      const type = inputTypeEl.value;
+      const url = new URL(window.location.href);
+      url.searchParams.set("type", type);
+      if (text) {
+        url.searchParams.set("input", text);
       } else {
-        signal = "There is likely a request to improve clarity, structure, or usability.";
-        request = "- Make it easier to understand\n- Improve structure\n- Make the point clearer";
-        move = "Next move:\n1. Shorten the explanation\n2. Put the main point first\n3. Add one concrete example";
+        url.searchParams.delete("input");
       }
-
-      $("signal").innerText = signal;
-      $("request").innerText = request;
-      $("move").innerText = move;
-
-      showOutput();
-      setStatus("Reframed.");
+      window.history.replaceState({}, "", url.toString());
     }
 
-    function insertEnglishExample() {
-      $("input").value = "Your UI is confusing and looks outdated.";
-      setStatus("English example inserted.");
+    function chooseBestTool(type) {
+      return TOOLS[type] || TOOLS.criticism;
     }
 
-    function insertJapaneseExample() {
-      $("input").value = "何を言いたいのか分かりにくいし、説明が長すぎる。";
-      setStatus("日本語の例を入れました。");
+    function buildToolURL(base, input, extraParams = {}) {
+      const url = new URL(base, window.location.href);
+      if (input) url.searchParams.set("input", input);
+      Object.entries(extraParams).forEach(([key, value]) => {
+        if (value) url.searchParams.set(key, value);
+      });
+      return url.toString();
     }
 
-    async function copyResult() {
-      if ($("output").style.display === "none" || !$("signal").innerText) {
-        setStatus("Nothing to copy yet.");
+    function launchBestTool() {
+      const input = normalizeText(inputEl.value);
+      const type = inputTypeEl.value;
+      const tool = chooseBestTool(type);
+
+      if (!input) {
+        setStatus("Write your current friction first.");
+        inputEl.focus();
         return;
       }
 
-      const text =
-`REFRAME Studio
+      updateShareURL();
+      window.location.href = buildToolURL(tool.best, input, { from: "reframe-studio", type });
+    }
 
-Cleaned Signal
-${$("signal").innerText}
+    function launchRandomTool() {
+      const input = normalizeText(inputEl.value);
+      const tool = pickRandom(RANDOM_TOOLS);
+      updateShareURL();
+      window.location.href = buildToolURL(tool, input, { from: "surprise-me" });
+    }
 
-Core Request
-${$("request").innerText}
+    function runChaosMode() {
+      const input = normalizeText(inputEl.value);
+      const type = inputTypeEl.value;
+      const prompt = pickRandom(CHAOS_PROMPTS);
+      const tool = pickRandom([
+        "idea-to-opposite.html",
+        "idea-to-metaphor.html",
+        "lesson-to-angle.html",
+        "lesson-to-hook.html"
+      ]);
 
-Strategic Move
-${$("move").innerText}
+      const sourceText = input || pickExampleForType(type);
+      const chaosText = `Original thought: ${sourceText}\n\nChaos prompt: ${prompt}`;
+      launchPanel.classList.remove("hidden");
+      launchResultEl.textContent = chaosText;
 
-#Reframed`;
+      renderNextMutations(chaosText, [
+        {
+          label: "CHAOS",
+          title: "Mutate with random tool",
+          description: "Push this chaos into a different thought mutation.",
+          href: buildToolURL(tool, chaosText, { from: "chaos" })
+        },
+        {
+          label: "ANGLE",
+          title: "Chaos → Angle",
+          description: "Turn the chaos into a sharper perspective.",
+          href: buildToolURL("lesson-to-angle.html", chaosText, { from: "chaos" })
+        },
+        {
+          label: "HOOK",
+          title: "Chaos → Hook",
+          description: "Turn the strange tension into a stronger opening line.",
+          href: buildToolURL("lesson-to-hook.html", chaosText, { from: "chaos" })
+        }
+      ]);
 
+      setStatus("Chaos injected. Keep the thought moving.");
+      updateShareURL();
+    }
+
+    function renderNextMutations(text, customRoutes) {
+      const routes = customRoutes || chooseLaunchRoutes(text);
+      nextGridEl.innerHTML = "";
+
+      routes.forEach(route => {
+        const a = document.createElement("a");
+        a.className = "next-card";
+        a.href = route.href;
+        a.innerHTML = `
+          <span class="next-label">${escapeHTML(route.label)}</span>
+          <h4>${escapeHTML(route.title)}</h4>
+          <p>${escapeHTML(route.description)}</p>
+        `;
+        nextGridEl.appendChild(a);
+      });
+    }
+
+    function chooseLaunchRoutes(text) {
+      const lower = text.toLowerCase();
+
+      if (/criticism|negative|feedback|批判|否定/.test(lower)) {
+        return [
+          {
+            label: "LESSON",
+            title: "Criticism → Lesson",
+            description: "Extract usable signal from the friction.",
+            href: buildToolURL("criticism-to-lesson.html", text, { from: "launch" })
+          },
+          {
+            label: "ANGLE",
+            title: "Lesson → Angle",
+            description: "Sharpen the lesson into perspective.",
+            href: buildToolURL("lesson-to-angle.html", text, { from: "launch" })
+          },
+          {
+            label: "THREAD",
+            title: "Lesson → Thread",
+            description: "Expand the tension into content structure.",
+            href: buildToolURL("lesson-to-thread.html", text, { from: "launch" })
+          }
+        ];
+      }
+
+      if (/confus|question|混乱|わから|論点/.test(lower)) {
+        return [
+          {
+            label: "QUESTION",
+            title: "Confusion → Question",
+            description: "Turn fog into a sharper question.",
+            href: buildToolURL("confusion-to-question.html", text, { from: "launch" })
+          },
+          {
+            label: "STRUCTURE",
+            title: "Question → Structure",
+            description: "Turn the question into a usable frame.",
+            href: buildToolURL("question-to-structure.html", text, { from: "launch" })
+          },
+          {
+            label: "ACTION",
+            title: "Structure → Action",
+            description: "Move from frame to next step.",
+            href: buildToolURL("structure-to-action.html", text, { from: "launch" })
+          }
+        ];
+      }
+
+      if (/idea|metaphor|opposite|アイデア/.test(lower)) {
+        return [
+          {
+            label: "METAPHOR",
+            title: "Idea → Metaphor",
+            description: "Translate the idea into a more vivid lens.",
+            href: buildToolURL("idea-to-metaphor.html", text, { from: "launch" })
+          },
+          {
+            label: "OPPOSITE",
+            title: "Idea → Opposite",
+            description: "Find tension by inversion.",
+            href: buildToolURL("idea-to-opposite.html", text, { from: "launch" })
+          },
+          {
+            label: "HOOK",
+            title: "Idea → Hook",
+            description: "Push the idea toward expression.",
+            href: buildToolURL("lesson-to-hook.html", text, { from: "launch" })
+          }
+        ];
+      }
+
+      return [
+        {
+          label: "BEST TOOL",
+          title: "Start with Best Tool",
+          description: "Use the most natural first mutation for this thought.",
+          href: buildToolURL(chooseBestTool(inputTypeEl.value).best, text, { from: "launch" })
+        },
+        {
+          label: "SURPRISE",
+          title: "Surprise Me",
+          description: "Break the expected route with a random tool.",
+          href: buildToolURL(pickRandom(RANDOM_TOOLS), text, { from: "launch" })
+        },
+        {
+          label: "CHAOS",
+          title: "Chaos Route",
+          description: "Add a strange angle before continuing.",
+          href: buildToolURL("idea-to-opposite.html", text, { from: "launch" })
+        }
+      ];
+    }
+
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function pickExampleForType(type) {
+      const list = EXAMPLES[type] || EXAMPLES.criticism;
+      return pickRandom(list);
+    }
+
+    function insertExample() {
+      const type = inputTypeEl.value;
+      inputEl.value = pickExampleForType(type);
+      setStatus("Example inserted.");
+      updateShareURL();
+      inputEl.focus();
+    }
+
+    function initFromURL() {
+      const urlInput = getURLInput();
+      const urlType = getURLType();
+
+      if (urlType && TOOLS[urlType]) {
+        inputTypeEl.value = urlType;
+      }
+
+      if (urlInput) {
+        inputEl.value = urlInput;
+        setStatus("Prefilled input loaded from URL.");
+      }
+    }
+
+    async function copyText(text, message) {
       try {
         await navigator.clipboard.writeText(text);
-        setStatus("Result copied.");
-      } catch (e) {
-        setStatus("Copy failed.");
+        setStatus(message);
+      } catch (error) {
+        setStatus("Copy failed. Please copy manually.");
+        console.error(error);
       }
     }
 
-    async function copyPost() {
-      if ($("output").style.display === "none" || !$("signal").innerText) {
-        setStatus("Nothing to copy yet.");
-        return;
-      }
-
-      const text =
-`I reframed a harsh comment using REFRAME Studio.
-
-Cleaned Signal:
-${$("signal").innerText}
-
-Core Request:
-${$("request").innerText}
-
-Strategic Move:
-${$("move").innerText}
-
-#Reframed`;
-
-      try {
-        await navigator.clipboard.writeText(text);
-        setStatus("Post copied.");
-      } catch (e) {
-        setStatus("Copy failed.");
-      }
+    function showLaunchResult(text, modeLabel) {
+      launchPanel.classList.remove("hidden");
+      launchResultEl.textContent = `${modeLabel}\n\n${text}`;
+      renderNextMutations(text);
     }
 
-    function shareOnX() {
-      const text = "I reframed a harsh comment using REFRAME Studio. #Reframed";
-      const url = location.href;
-      window.open(
-        "https://twitter.com/intent/tweet?text=" +
-        encodeURIComponent(text) +
-        "&url=" +
-        encodeURIComponent(url),
-        "_blank"
-      );
-    }
+    tryExampleBtn.addEventListener("click", insertExample);
 
-    function clearAll() {
-      $("input").value = "";
-      $("signal").innerText = "";
-      $("request").innerText = "";
-      $("move").innerText = "";
-      hideOutput();
-      setStatus("Cleared.");
-    }
+    inputTypeEl.addEventListener("change", () => {
+      updateShareURL();
+      setStatus("Input type changed.");
+    });
 
-    $("btn").addEventListener("click", reframe);
-    $("exampleEn").addEventListener("click", insertEnglishExample);
-    $("exampleJa").addEventListener("click", insertJapaneseExample);
-    $("copyBtn").addEventListener("click", copyResult);
-    $("copyPostBtn").addEventListener("click", copyPost);
-    $("shareBtn").addEventListener("click", shareOnX);
-    $("clearBtn").addEventListener("click", clearAll);
+    inputEl.addEventListener("input", updateShareURL);
 
-    $("input").addEventListener("keydown", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        reframe();
+    startBestToolBtn.addEventListener("click", launchBestTool);
+    surpriseButton.addEventListener("click", launchRandomTool);
+    randomToolCard.addEventListener("click", launchRandomTool);
+
+    chaosButton.addEventListener("click", runChaosMode);
+    chaosCard.addEventListener("click", runChaosMode);
+
+    inputEl.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        const input = normalizeText(inputEl.value);
+        if (!input) {
+          launchBestTool();
+          return;
+        }
+        showLaunchResult(input, "Launch preview");
+        setStatus("Launch preview generated. Continue with the next mutation.");
       }
     });
 
-    setStatus("Loaded.");
+    copyLaunchTextBtn.addEventListener("click", () => {
+      const text = launchResultEl.textContent.trim();
+      if (!text) {
+        setStatus("No launch result to copy yet.");
+        return;
+      }
+      copyText(text, "Launch result copied.");
+    });
+
+    copyShareLinkBtn.addEventListener("click", () => {
+      copyText(window.location.href, "Page link copied.");
+    });
+
+    initFromURL();
   </script>
 </body>
 </html>
