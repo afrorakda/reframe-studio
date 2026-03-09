@@ -98,12 +98,12 @@ padding:16px 16px 0 16px;
 
 .galaxy-wrap{
 position:relative;
-height:620px;
+height:700px;
 margin-top:10px;
 background:
-radial-gradient(circle at 20% 20%, rgba(85,125,255,0.18), transparent 28%),
-radial-gradient(circle at 80% 30%, rgba(120,86,255,0.14), transparent 22%),
-radial-gradient(circle at 50% 80%, rgba(84,181,255,0.12), transparent 24%),
+radial-gradient(circle at 20% 20%, rgba(85,125,255,0.20), transparent 28%),
+radial-gradient(circle at 80% 30%, rgba(120,86,255,0.16), transparent 22%),
+radial-gradient(circle at 50% 80%, rgba(84,181,255,0.14), transparent 24%),
 linear-gradient(180deg, #05070d 0%, #070b14 100%);
 border-top:1px solid #1d2635;
 overflow:hidden;
@@ -113,17 +113,22 @@ overflow:hidden;
 position:absolute;
 inset:0;
 pointer-events:none;
-opacity:0.9;
+opacity:0.95;
 }
 
 .starfield span{
 position:absolute;
 display:block;
-width:2px;
-height:2px;
 border-radius:50%;
-background:rgba(255,255,255,0.8);
-box-shadow:0 0 6px rgba(255,255,255,0.35);
+background:rgba(255,255,255,0.85);
+box-shadow:0 0 8px rgba(255,255,255,0.35);
+animation:twinkle linear infinite;
+}
+
+@keyframes twinkle{
+0%{opacity:0.2;transform:scale(0.8);}
+50%{opacity:1;transform:scale(1.2);}
+100%{opacity:0.25;transform:scale(0.85);}
 }
 
 .galaxy-svg{
@@ -134,11 +139,16 @@ height:100%;
 pointer-events:none;
 }
 
+.node-layer{
+position:absolute;
+inset:0;
+}
+
 .node{
 position:absolute;
 transform:translate(-50%,-50%);
 min-width:110px;
-max-width:200px;
+max-width:220px;
 padding:12px 14px;
 border-radius:999px;
 text-align:center;
@@ -149,6 +159,7 @@ background:rgba(12,18,30,0.88);
 box-shadow:0 0 0 1px rgba(98,125,198,0.06), 0 8px 28px rgba(0,0,0,0.28);
 color:#eef3ff;
 backdrop-filter:blur(4px);
+animation:floaty 7s ease-in-out infinite;
 }
 
 .node.small{
@@ -159,14 +170,14 @@ min-width:100px;
 .node.input{
 background:rgba(28,41,72,0.95);
 border-color:#5e82ff;
-box-shadow:0 0 24px rgba(76,117,255,0.2);
-max-width:280px;
+box-shadow:0 0 24px rgba(76,117,255,0.22);
+max-width:290px;
 border-radius:20px;
 font-weight:700;
 }
 
 .node.route{
-background:rgba(16,27,44,0.95);
+background:rgba(16,27,44,0.96);
 border-color:#5a74c4;
 }
 
@@ -180,6 +191,12 @@ font-weight:500;
 background:rgba(22,18,38,0.92);
 border-color:#6d63c6;
 color:#efeaff;
+}
+
+@keyframes floaty{
+0%{transform:translate(-50%,-50%) translateY(0px);}
+50%{transform:translate(-50%,-50%) translateY(-10px);}
+100%{transform:translate(-50%,-50%) translateY(0px);}
 }
 
 .legend{
@@ -239,18 +256,18 @@ text-decoration:none;
 color:#e8ecf1;
 }
 
-@media (min-width: 860px){
+@media (min-width:860px){
 .meta-grid{
 grid-template-columns:1fr 1fr;
 }
 }
 
-@media (max-width: 640px){
+@media (max-width:640px){
 h1{
 font-size:42px;
 }
 .galaxy-wrap{
-height:700px;
+height:760px;
 }
 .node{
 font-size:14px;
@@ -284,10 +301,10 @@ max-width:220px;
       <h2 style="margin:0 0 6px;">Galaxy View</h2>
       <div class="muted">Input in the center. Mutations, routes, and tools orbit around it.</div>
     </div>
-    <div class="galaxy-wrap" id="galaxyWrap">
+    <div class="galaxy-wrap">
       <div class="starfield" id="starfield"></div>
       <svg class="galaxy-svg" id="galaxySvg"></svg>
-      <div id="galaxyNodes"></div>
+      <div class="node-layer" id="galaxyNodes"></div>
     </div>
     <div class="legend">
       <span class="pill">Input core</span>
@@ -363,13 +380,16 @@ function buildRoute(){
 function createStars(){
   const field = document.getElementById("starfield");
   let html = "";
-  const count = 80;
+  const count = 110;
+
   for(let i=0;i<count;i++){
     const x = Math.random() * 100;
     const y = Math.random() * 100;
-    const s = Math.random() * 2 + 1;
-    html += "<span style='left:"+x+"%;top:"+y+"%;width:"+s+"px;height:"+s+"px;opacity:"+(0.3 + Math.random()*0.6)+";'></span>";
+    const s = Math.random() * 2.8 + 1;
+    const d = 2 + Math.random() * 5;
+    html += "<span style='left:"+x+"%;top:"+y+"%;width:"+s+"px;height:"+s+"px;animation-duration:"+d+"s;'></span>";
   }
+
   field.innerHTML = html;
 }
 
@@ -377,17 +397,17 @@ function line(x1,y1,x2,y2,color,width,opacity){
   return "<line x1='"+x1+"' y1='"+y1+"' x2='"+x2+"' y2='"+y2+"' stroke='"+color+"' stroke-width='"+width+"' stroke-opacity='"+opacity+"' />";
 }
 
-function nodeHtml(cls, x, y, text){
-  return "<div class='node "+cls+"' style='left:"+x+"%;top:"+y+"%;'>"+escapeHtml(text)+"</div>";
-}
-
 function escapeHtml(text){
   return String(text)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+    .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function nodeHtml(cls, x, y, text, delay){
+  return "<div class='node "+cls+"' style='left:"+x+"%;top:"+y+"%;animation-delay:"+delay+"s;'>"+escapeHtml(text)+"</div>";
 }
 
 function example1(){
@@ -404,6 +424,7 @@ function clearGalaxy(){
   document.getElementById("routesView").innerHTML = "No galaxy yet.";
   document.getElementById("directionsView").innerHTML = "No galaxy yet.";
   document.getElementById("status").innerHTML = "Ready.";
+  createStars();
 }
 
 function renderRoutes(routes){
@@ -418,7 +439,7 @@ function renderRoutes(routes){
     html += "</div>";
     html += "<div style='margin-top:10px;'>";
     route.tools.forEach(function(tool){
-      html += "<a class='tool-link' href='./"+encodeURI(tool)+"'>"+escapeHtml(tool)+"</a>";
+      html += "<div class='tool-link'>"+escapeHtml(tool)+"</div>";
     });
     html += "</div>";
     html += "</div>";
@@ -473,23 +494,24 @@ function runGalaxy(){
   let svgHtml = "";
   let nodeHtmlAll = "";
 
-  nodeHtmlAll += nodeHtml("input", inputPos.x, inputPos.y, input || "Input");
+  nodeHtmlAll += nodeHtml("input", inputPos.x, inputPos.y, input || "Input", 0);
 
   routes.forEach(function(route, i){
     const rp = routePos[i];
-    svgHtml += line(inputPos.x+"%", inputPos.y+"%", rp.x+"%", rp.y+"%", "#5e82ff", "2", "0.65");
-    nodeHtmlAll += nodeHtml("route", rp.x, rp.y, "Route " + (i+1));
+
+    svgHtml += line(inputPos.x+"%", inputPos.y+"%", rp.x+"%", rp.y+"%", "#5e82ff", "2.2", "0.62");
+    nodeHtmlAll += nodeHtml("route", rp.x, rp.y, "Route " + (i+1), i * 0.5);
 
     route.mutations.forEach(function(mutation, mi){
       const mp = mutationPos[i][mi];
       svgHtml += line(rp.x+"%", rp.y+"%", mp.x+"%", mp.y+"%", "#8b78ff", "1.8", "0.55");
-      nodeHtmlAll += nodeHtml("mutation small", mp.x, mp.y, mutation);
+      nodeHtmlAll += nodeHtml("mutation small", mp.x, mp.y, mutation, (i + mi) * 0.6);
     });
 
     route.tools.slice(0,2).forEach(function(tool, ti){
       const tp = toolPos[i][ti];
       svgHtml += line(rp.x+"%", rp.y+"%", tp.x+"%", tp.y+"%", "#6db6ff", "1.6", "0.48");
-      nodeHtmlAll += nodeHtml("tool small", tp.x, tp.y, tool.replace(".html",""));
+      nodeHtmlAll += nodeHtml("tool small", tp.x, tp.y, tool.replace(".html",""), (i + ti) * 0.7);
     });
   });
 
