@@ -14,7 +14,6 @@
       --panel: #0b1430;
       --panel-2: #101d42;
       --line: rgba(115, 151, 255, 0.22);
-      --line-strong: rgba(140, 164, 255, 0.42);
       --text: #f4f7ff;
       --muted: #9eb0d8;
       --blue: #66b6ff;
@@ -192,7 +191,7 @@
 
     .space {
       position: relative;
-      min-height: 720px;
+      min-height: 760px;
       overflow: hidden;
       border: 1px solid rgba(135, 159, 255, 0.14);
       border-radius: 26px;
@@ -224,11 +223,11 @@
 
     .fragment-node {
       position: absolute;
-      top: 48px;
+      top: 44px;
       left: 50%;
       transform: translateX(-50%);
-      width: min(82%, 420px);
-      padding: 28px 22px;
+      width: min(82%, 430px);
+      padding: 26px 22px;
       text-align: center;
       border-radius: 28px;
       border: 1px solid rgba(113, 149, 255, 0.42);
@@ -246,7 +245,7 @@
 
     .route-labels {
       position: absolute;
-      top: 228px;
+      top: 224px;
       left: 50%;
       transform: translateX(-50%);
       width: min(92%, 720px);
@@ -270,7 +269,7 @@
 
     .tool-nodes {
       position: absolute;
-      top: 320px;
+      top: 316px;
       left: 50%;
       transform: translateX(-50%);
       width: min(96%, 760px);
@@ -282,7 +281,7 @@
 
     .tool-node {
       position: relative;
-      min-height: 290px;
+      min-height: 310px;
       padding: 18px 16px 16px;
       border-radius: 24px;
       border: 1px solid rgba(146, 119, 255, 0.34);
@@ -372,6 +371,10 @@
         grid-template-columns: 1fr;
       }
 
+      .tool-node {
+        min-height: 0;
+      }
+
       .tool-node p {
         min-height: 0;
       }
@@ -455,7 +458,7 @@ AI tools feel repetitive."></textarea>
           </div>
 
           <div class="space" id="space">
-            <div class="empty" id="emptyState" style="color: var(--muted); padding: 8px 4px;">Your galaxy will appear here.</div>
+            <div class="empty" style="color: var(--muted); padding: 8px 4px;">Your galaxy will appear here.</div>
           </div>
         </div>
 
@@ -523,6 +526,17 @@ AI tools feel repetitive."></textarea>
       return lines.join("\n").trim();
     }
 
+    function buildLineSvg(routeCount) {
+      var centers = [128, 380, 632];
+      var html = '<svg class="lines" viewBox="0 0 760 760" preserveAspectRatio="none" aria-hidden="true">';
+      for (var i = 0; i < routeCount; i++) {
+        var color = i === 1 ? 'rgba(102,182,255,0.55)' : 'rgba(154,114,255,0.55)';
+        html += '<line x1="380" y1="118" x2="' + centers[i] + '" y2="294" stroke="' + color + '" stroke-width="3"/>';
+      }
+      html += '</svg>';
+      return html;
+    }
+
     function renderGalaxy(fragment, tools) {
       var space = document.getElementById("space");
       var status = document.getElementById("status");
@@ -537,34 +551,20 @@ AI tools feel repetitive."></textarea>
       status.textContent = "Generated " + tools.length + " galaxy routes in Stable mode.";
 
       var html = '';
-
-      html += '<svg class="lines" viewBox="0 0 760 720" preserveAspectRatio="none" aria-hidden="true">';
-      html += '<line x1="380" y1="118" x2="128" y2="294" stroke="rgba(102,182,255,0.55)" stroke-width="3"/>';
-      html += '<line x1="380" y1="118" x2="380" y2="294" stroke="rgba(102,182,255,0.55)" stroke-width="3"/>';
-      html += '<line x1="380" y1="118" x2="632" y2="294" stroke="rgba(154,114,255,0.55)" stroke-width="3"/>';
-      html += '</svg>';
+      html += buildLineSvg(tools.length);
 
       html += '<div class="fragment-node">';
       html += '<div class="fragment-text">' + escapeHtml(fragment.text) + '</div>';
       html += '</div>';
 
       html += '<div class="route-labels">';
-      tools.forEach(function (tool, index) {
-        html += '<div class="route-pill">Route ' + (index + 1) + '</div>';
-      });
-      while (tools.length < 3) {
-        html += '<div class="route-pill">Route</div>';
-        tools.push(null);
+      for (var i = 0; i < tools.length; i++) {
+        html += '<div class="route-pill">Route ' + (i + 1) + '</div>';
       }
       html += '</div>';
 
       html += '<div class="tool-nodes">';
-      tools.slice(0, 3).forEach(function (tool, index) {
-        if (!tool) {
-          html += '<div class="tool-node"><div class="mini">Empty</div><h3>Open route</h3><p>Add another mutation later.</p></div>';
-          return;
-        }
-
+      tools.forEach(function (tool, index) {
         html += '<div class="tool-node">';
         html += '<div class="mini">' + escapeHtml(summarizeTransformation(tool)) + '</div>';
         html += '<h3>' + escapeHtml(tool.title) + '</h3>';
@@ -575,7 +575,7 @@ AI tools feel repetitive."></textarea>
       html += '</div>';
 
       space.innerHTML = html;
-      space.dataset.copyText = buildCopyText(fragment, tools.filter(Boolean));
+      space.dataset.copyText = buildCopyText(fragment, tools);
     }
 
     function runTool() {
