@@ -2,28 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REFRAME Studio</title>
+
+  <script src="router.js"></script>
+
   <style>
     :root {
-      --bg: #0b0d12;
-      --bg-soft: #121620;
-      --panel: #171c27;
-      --panel-2: #1d2432;
-      --text: #f5f7fb;
-      --muted: #a3adbf;
-      --line: #2b3447;
-      --accent: #8b5cf6;
-      --accent-2: #06b6d4;
-      --accent-3: #22c55e;
-      --accent-4: #f97316;
-      --shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
-      --radius: 20px;
-      --radius-sm: 14px;
-      --max: 1120px;
+      --bg: #0b0f18;
+      --panel: #121826;
+      --panel-2: #171e2f;
+      --line: #293246;
+      --text: #f6f8fb;
+      --muted: #98a3b8;
+      --purple: #7c5cff;
+      --purple-2: #6b4ef2;
+      --cyan: #22c7e8;
+      --green: #22c55e;
+      --orange: #fb923c;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+      --max: 1100px;
     }
 
     * {
@@ -34,12 +34,12 @@
       margin: 0;
       padding: 0;
       background:
-        radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 26%),
-        radial-gradient(circle at top right, rgba(6, 182, 212, 0.10), transparent 28%),
-        linear-gradient(180deg, #0a0c11 0%, #0d1118 100%);
+        radial-gradient(circle at top left, rgba(124, 92, 255, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(34, 199, 232, 0.09), transparent 26%),
+        linear-gradient(180deg, #090d15 0%, #0b0f18 100%);
       color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.55;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
     }
 
     a {
@@ -49,14 +49,13 @@
 
     button,
     textarea,
-    input,
     select {
       font: inherit;
     }
 
     .page {
       min-height: 100vh;
-      padding: 22px 16px 56px;
+      padding: 20px 16px 56px;
     }
 
     .shell {
@@ -68,8 +67,8 @@
     .topbar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       gap: 12px;
+      align-items: center;
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
@@ -78,7 +77,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      min-width: 0;
     }
 
     .brand-mark {
@@ -87,34 +85,26 @@
       border-radius: 14px;
       display: grid;
       place-items: center;
-      background:
-        linear-gradient(180deg, rgba(139, 92, 246, 0.25), rgba(6, 182, 212, 0.18));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: var(--shadow);
       font-weight: 800;
       letter-spacing: -0.04em;
-    }
-
-    .brand-copy {
-      min-width: 0;
+      background: linear-gradient(180deg, rgba(124,92,255,0.35), rgba(34,199,232,0.16));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
     }
 
     .brand-copy h1 {
       margin: 0;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       letter-spacing: -0.03em;
     }
 
     .brand-copy p {
       margin: 2px 0 0;
+      font-size: 0.9rem;
       color: var(--muted);
-      font-size: 0.92rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .privacy-badge {
+    .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -127,31 +117,31 @@
     }
 
     .hero {
-      background:
-        radial-gradient(circle at 80% 10%, rgba(139, 92, 246, 0.15), transparent 20%),
-        radial-gradient(circle at 20% 0%, rgba(6, 182, 212, 0.10), transparent 26%),
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      border-radius: 24px;
       overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 0%, rgba(124, 92, 255, 0.14), transparent 22%),
+        radial-gradient(circle at 20% 0%, rgba(34, 199, 232, 0.09), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      box-shadow: var(--shadow);
     }
 
     .hero-inner {
-      padding: 28px 24px 24px;
+      padding: 28px 22px 22px;
       display: grid;
       gap: 22px;
     }
 
     .eyebrow {
       display: inline-block;
+      margin-bottom: 12px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(139, 92, 246, 0.12);
-      border: 1px solid rgba(139, 92, 246, 0.24);
-      color: #cebaff;
-      font-size: 0.83rem;
-      margin-bottom: 12px;
+      background: rgba(124, 92, 255, 0.12);
+      border: 1px solid rgba(124, 92, 255, 0.22);
+      color: #cfbeff;
+      font-size: 0.82rem;
     }
 
     .hero-grid {
@@ -163,16 +153,16 @@
 
     .hero-copy h2 {
       margin: 0 0 10px;
-      font-size: clamp(2rem, 5vw, 4rem);
-      line-height: 0.98;
-      letter-spacing: -0.05em;
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      line-height: 0.97;
+      letter-spacing: -0.055em;
     }
 
     .hero-copy p {
       margin: 0;
-      max-width: 720px;
       color: var(--muted);
-      font-size: 1.02rem;
+      max-width: 740px;
+      font-size: 1rem;
     }
 
     .hero-points {
@@ -182,9 +172,9 @@
 
     .hero-point {
       padding: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
       border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
     }
 
     .hero-point strong {
@@ -201,13 +191,13 @@
     .composer {
       display: grid;
       gap: 14px;
-      padding: 18px;
-      background: rgba(255,255,255,0.03);
       border: 1px solid var(--line);
       border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      padding: 18px;
     }
 
-    .composer-top {
+    .composer-head {
       display: flex;
       justify-content: space-between;
       gap: 12px;
@@ -229,11 +219,11 @@
 
     textarea {
       width: 100%;
-      min-height: 132px;
+      min-height: 136px;
       resize: vertical;
       border-radius: 16px;
       border: 1px solid var(--line);
-      background: #0e131c;
+      background: #0e1420;
       color: var(--text);
       padding: 16px;
       outline: none;
@@ -242,20 +232,20 @@
 
     textarea:focus,
     select:focus {
-      border-color: rgba(139, 92, 246, 0.72);
-      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+      border-color: rgba(124, 92, 255, 0.75);
+      box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.12);
     }
 
-    .composer-controls {
+    .controls {
       display: grid;
-      grid-template-columns: 200px 1fr;
+      grid-template-columns: 180px 180px 1fr;
       gap: 10px;
     }
 
     select {
       border-radius: 12px;
       border: 1px solid var(--line);
-      background: #0e131c;
+      background: #0e1420;
       color: var(--text);
       padding: 12px 14px;
       outline: none;
@@ -272,15 +262,15 @@
       border: 1px solid var(--line);
       background: var(--panel-2);
       color: var(--text);
-      padding: 12px 16px;
       border-radius: 12px;
+      padding: 12px 16px;
       cursor: pointer;
       transition: transform 0.15s ease, border-color 0.18s ease, background 0.18s ease;
     }
 
     .button:hover {
       transform: translateY(-1px);
-      border-color: #4d5870;
+      border-color: #4b5872;
     }
 
     .button:active {
@@ -288,21 +278,17 @@
     }
 
     .button.primary {
-      background: linear-gradient(180deg, #9d71ff, #7b50f7);
+      background: linear-gradient(180deg, #8a68ff, var(--purple-2));
       border-color: transparent;
       color: white;
       font-weight: 700;
     }
 
     .button.cyan {
-      background: linear-gradient(180deg, #0ec9eb, #099fbe);
+      background: linear-gradient(180deg, #22d0f0, #0faaca);
       border-color: transparent;
       color: white;
       font-weight: 700;
-    }
-
-    .button.ghost {
-      background: transparent;
     }
 
     .button.small {
@@ -322,12 +308,6 @@
       gap: 14px;
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-
     .grid-3 {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -336,9 +316,8 @@
 
     .card {
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -377,7 +356,7 @@
 
     .entry:hover {
       transform: translateY(-2px);
-      border-color: rgba(139, 92, 246, 0.4);
+      border-color: rgba(124, 92, 255, 0.4);
       background: rgba(255,255,255,0.04);
     }
 
@@ -400,11 +379,6 @@
       margin: 0;
       color: var(--muted);
       font-size: 0.92rem;
-    }
-
-    .map {
-      display: grid;
-      gap: 14px;
     }
 
     .chip-row {
@@ -445,7 +419,7 @@
       font-size: 0.9rem;
     }
 
-    .result-panel {
+    .launch-panel {
       display: grid;
       gap: 14px;
     }
@@ -475,7 +449,7 @@
 
     .next-card:hover {
       transform: translateY(-2px);
-      border-color: rgba(6, 182, 212, 0.46);
+      border-color: rgba(34, 199, 232, 0.46);
       background: rgba(255,255,255,0.045);
     }
 
@@ -513,10 +487,9 @@
 
     @media (max-width: 920px) {
       .hero-grid,
-      .grid-2,
       .grid-3,
       .next-grid,
-      .composer-controls {
+      .controls {
         grid-template-columns: 1fr;
       }
     }
@@ -529,7 +502,7 @@
       }
 
       .hero-copy h2 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
       }
 
       textarea {
@@ -549,7 +522,7 @@
             <p>Browser-native Thinking Playground</p>
           </div>
         </div>
-        <div class="privacy-badge">Simple / Private / Fast</div>
+        <div class="badge">Simple / Private / Fast</div>
       </header>
 
       <section class="hero">
@@ -559,36 +532,36 @@
               <div class="eyebrow">Input → Unexpected Angle</div>
               <h2>Chaos → Creation</h2>
               <p>
-                REFRAME Studio is not an AI answer machine.
-                It is a thinking playground for friction, mutation, and unexpected angles.
-                Start with criticism, emotion, confusion, failure, or an unfinished idea.
+                REFRAME Studio is not an answer machine.
+                It is a browser-native playground for mutation, drift, and unexpected angles.
+                Start with criticism, emotion, problem, failure, confusion, or an unfinished idea.
               </p>
             </div>
 
             <div class="hero-points">
               <div class="hero-point">
                 <strong>Intent</strong>
-                <span>Start from what you are stuck with and jump into the best first mutation.</span>
+                <span>Start from your current friction and jump into the best first mutation.</span>
               </div>
               <div class="hero-point">
                 <strong>Structure</strong>
-                <span>See the thinking graph so your thought can keep moving.</span>
+                <span>See the graph behind the tools, not just the tools themselves.</span>
               </div>
               <div class="hero-point">
                 <strong>Serendipity</strong>
-                <span>Use surprise and controlled chaos to create a new angle.</span>
+                <span>Use randomness and controlled chaos to escape familiar thought paths.</span>
               </div>
             </div>
           </div>
 
           <section class="composer">
-            <div class="composer-top">
+            <div class="composer-head">
               <div>
                 <h3 class="composer-title">Start with your current friction</h3>
                 <p class="composer-subtitle">
-                  EN: criticism, emotion, problem, failure, confusion, idea
+                  EN: criticism, emotion, problem, confusion, failure, idea
                   <br />
-                  JP: 批判、感情、問題、失敗、混乱、アイデア
+                  JP: 批判、感情、問題、混乱、失敗、アイデア
                 </p>
               </div>
             </div>
@@ -600,7 +573,7 @@
 JP: 変異させたい思考摩擦を書いてください..."
             ></textarea>
 
-            <div class="composer-controls">
+            <div class="controls">
               <select id="input-type" aria-label="Input type">
                 <option value="criticism">Criticism</option>
                 <option value="emotion">Emotion</option>
@@ -610,11 +583,17 @@ JP: 変異させたい思考摩擦を書いてください..."
                 <option value="idea">Idea</option>
               </select>
 
+              <select id="mode" aria-label="Thinking mode">
+                <option value="stable">Stable</option>
+                <option value="drift">Drift</option>
+                <option value="chaos">Chaos</option>
+              </select>
+
               <div class="actions">
                 <button class="button" id="try-example" type="button">Try example</button>
                 <button class="button primary" id="start-best-tool" type="button">Start with Best Tool</button>
                 <button class="button cyan" id="chaos-button" type="button">CHAOS</button>
-                <button class="button ghost" id="surprise-button" type="button">Surprise Me</button>
+                <button class="button" id="surprise-button" type="button">Surprise Me</button>
               </div>
             </div>
 
@@ -655,16 +634,14 @@ JP: 変異させたい思考摩擦を書いてください..."
             <h3>Structure</h3>
             <p>See the graph behind the tools, not just the tools themselves.</p>
           </div>
-          <div class="card-body map">
-            <div>
-              <div class="chip-row">
-                <span class="chip">Criticism</span>
-                <span class="chip">Emotion</span>
-                <span class="chip">Problem</span>
-                <span class="chip">Idea</span>
-                <span class="chip">Failure</span>
-                <span class="chip">Confusion</span>
-              </div>
+          <div class="card-body">
+            <div class="chip-row">
+              <span class="chip">Criticism</span>
+              <span class="chip">Emotion</span>
+              <span class="chip">Problem</span>
+              <span class="chip">Idea</span>
+              <span class="chip">Failure</span>
+              <span class="chip">Confusion</span>
             </div>
 
             <div class="path-grid">
@@ -717,10 +694,10 @@ JP: 変異させたい思考摩擦を書いてください..."
 
       <section class="section card hidden" id="launch-panel">
         <div class="card-head">
-          <h3>Launch result</h3>
-          <p>The first mutation starts here. The thought should continue, not stop.</p>
+          <h3>Launch preview</h3>
+          <p>The thought should continue, not stop.</p>
         </div>
-        <div class="card-body result-panel">
+        <div class="card-body launch-panel">
           <div class="result-box" id="launch-result"></div>
 
           <div class="actions">
@@ -742,8 +719,11 @@ JP: 変異させたい思考摩擦を書いてください..."
   </main>
 
   <script>
+    const router = window.REFRAME_ROUTER;
+
     const inputEl = document.getElementById("input");
     const inputTypeEl = document.getElementById("input-type");
+    const modeEl = document.getElementById("mode");
     const tryExampleBtn = document.getElementById("try-example");
     const startBestToolBtn = document.getElementById("start-best-tool");
     const chaosButton = document.getElementById("chaos-button");
@@ -771,7 +751,7 @@ JP: 変異させたい思考摩擦を書いてください..."
         "やることは多いのに、何から手をつけるべきか決まらない。"
       ],
       confusion: [
-        "I know something is interesting here, but I can’t explain what the core question is.",
+        "I know something is interesting here, but I can’t explain the core question yet.",
         "考えはあるのに、論点が自分でもまだ掴めていない。"
       ],
       failure: [
@@ -784,285 +764,25 @@ JP: 変異させたい思考摩擦を書いてください..."
       ]
     };
 
-    const TOOLS = {
-      criticism: {
-        best: "criticism-to-lesson.html",
-        label: "Criticism → Lesson"
-      },
-      emotion: {
-        best: "emotion-to-action.html",
-        label: "Emotion → Action"
-      },
-      problem: {
-        best: "problem-to-action.html",
-        label: "Problem → Action"
-      },
-      confusion: {
-        best: "confusion-to-question.html",
-        label: "Confusion → Question"
-      },
-      failure: {
-        best: "failure-to-lesson.html",
-        label: "Failure → Lesson"
-      },
-      idea: {
-        best: "idea-to-metaphor.html",
-        label: "Idea → Metaphor"
-      }
-    };
-
     const RANDOM_TOOLS = [
-      "criticism-to-lesson.html",
-      "idea-to-metaphor.html",
-      "idea-to-opposite.html",
-      "confusion-to-question.html",
-      "failure-to-lesson.html",
-      "lesson-to-angle.html",
-      "lesson-to-hook.html",
-      "lesson-to-thread.html",
-      "emotion-to-action.html",
-      "problem-to-action.html"
-    ];
-
-    const CHAOS_PROMPTS = [
-      "Turn this into a satire, not a solution.",
-      "What would make this thought feel dangerously honest?",
-      "Make the idea 30% more absurd without breaking the truth.",
-      "Translate the problem into a character trait.",
-      "Invert the emotional logic and see what survives.",
-      "What would the audience misunderstand first — and how could that become the hook?",
-      "Push the idea toward weirdness, then rebuild usefulness."
+      "criticism-to-lesson",
+      "idea-to-metaphor",
+      "idea-to-opposite",
+      "confusion-to-question",
+      "failure-to-lesson",
+      "lesson-to-angle",
+      "lesson-to-hook",
+      "lesson-to-thread",
+      "emotion-to-action",
+      "problem-to-action"
     ];
 
     function setStatus(message) {
       statusEl.textContent = message || "";
     }
 
-    function normalizeText(text) {
-      return text.replace(/\s+/g, " ").trim();
-    }
-
     function pickRandom(array) {
       return array[Math.floor(Math.random() * array.length)];
-    }
-
-    function getURLInput() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("input") || "";
-    }
-
-    function getURLType() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("type") || "";
-    }
-
-    function updateShareURL() {
-      const text = normalizeText(inputEl.value);
-      const type = inputTypeEl.value;
-      const url = new URL(window.location.href);
-      url.searchParams.set("type", type);
-      if (text) {
-        url.searchParams.set("input", text);
-      } else {
-        url.searchParams.delete("input");
-      }
-      window.history.replaceState({}, "", url.toString());
-    }
-
-    function chooseBestTool(type) {
-      return TOOLS[type] || TOOLS.criticism;
-    }
-
-    function buildToolURL(base, input, extraParams = {}) {
-      const url = new URL(base, window.location.href);
-      if (input) url.searchParams.set("input", input);
-      Object.entries(extraParams).forEach(([key, value]) => {
-        if (value) url.searchParams.set(key, value);
-      });
-      return url.toString();
-    }
-
-    function launchBestTool() {
-      const input = normalizeText(inputEl.value);
-      const type = inputTypeEl.value;
-      const tool = chooseBestTool(type);
-
-      if (!input) {
-        setStatus("Write your current friction first.");
-        inputEl.focus();
-        return;
-      }
-
-      updateShareURL();
-      window.location.href = buildToolURL(tool.best, input, { from: "reframe-studio", type });
-    }
-
-    function launchRandomTool() {
-      const input = normalizeText(inputEl.value);
-      const tool = pickRandom(RANDOM_TOOLS);
-      updateShareURL();
-      window.location.href = buildToolURL(tool, input, { from: "surprise-me" });
-    }
-
-    function runChaosMode() {
-      const input = normalizeText(inputEl.value);
-      const type = inputTypeEl.value;
-      const prompt = pickRandom(CHAOS_PROMPTS);
-      const tool = pickRandom([
-        "idea-to-opposite.html",
-        "idea-to-metaphor.html",
-        "lesson-to-angle.html",
-        "lesson-to-hook.html"
-      ]);
-
-      const sourceText = input || pickExampleForType(type);
-      const chaosText = `Original thought: ${sourceText}\n\nChaos prompt: ${prompt}`;
-      launchPanel.classList.remove("hidden");
-      launchResultEl.textContent = chaosText;
-
-      renderNextMutations(chaosText, [
-        {
-          label: "CHAOS",
-          title: "Mutate with random tool",
-          description: "Push this chaos into a different thought mutation.",
-          href: buildToolURL(tool, chaosText, { from: "chaos" })
-        },
-        {
-          label: "ANGLE",
-          title: "Chaos → Angle",
-          description: "Turn the chaos into a sharper perspective.",
-          href: buildToolURL("lesson-to-angle.html", chaosText, { from: "chaos" })
-        },
-        {
-          label: "HOOK",
-          title: "Chaos → Hook",
-          description: "Turn the strange tension into a stronger opening line.",
-          href: buildToolURL("lesson-to-hook.html", chaosText, { from: "chaos" })
-        }
-      ]);
-
-      setStatus("Chaos injected. Keep the thought moving.");
-      updateShareURL();
-    }
-
-    function renderNextMutations(text, customRoutes) {
-      const routes = customRoutes || chooseLaunchRoutes(text);
-      nextGridEl.innerHTML = "";
-
-      routes.forEach(route => {
-        const a = document.createElement("a");
-        a.className = "next-card";
-        a.href = route.href;
-        a.innerHTML = `
-          <span class="next-label">${escapeHTML(route.label)}</span>
-          <h4>${escapeHTML(route.title)}</h4>
-          <p>${escapeHTML(route.description)}</p>
-        `;
-        nextGridEl.appendChild(a);
-      });
-    }
-
-    function chooseLaunchRoutes(text) {
-      const lower = text.toLowerCase();
-
-      if (/criticism|negative|feedback|批判|否定/.test(lower)) {
-        return [
-          {
-            label: "LESSON",
-            title: "Criticism → Lesson",
-            description: "Extract usable signal from the friction.",
-            href: buildToolURL("criticism-to-lesson.html", text, { from: "launch" })
-          },
-          {
-            label: "ANGLE",
-            title: "Lesson → Angle",
-            description: "Sharpen the lesson into perspective.",
-            href: buildToolURL("lesson-to-angle.html", text, { from: "launch" })
-          },
-          {
-            label: "THREAD",
-            title: "Lesson → Thread",
-            description: "Expand the tension into content structure.",
-            href: buildToolURL("lesson-to-thread.html", text, { from: "launch" })
-          }
-        ];
-      }
-
-      if (/confus|question|混乱|わから|論点/.test(lower)) {
-        return [
-          {
-            label: "QUESTION",
-            title: "Confusion → Question",
-            description: "Turn fog into a sharper question.",
-            href: buildToolURL("confusion-to-question.html", text, { from: "launch" })
-          },
-          {
-            label: "STRUCTURE",
-            title: "Question → Structure",
-            description: "Turn the question into a usable frame.",
-            href: buildToolURL("question-to-structure.html", text, { from: "launch" })
-          },
-          {
-            label: "ACTION",
-            title: "Structure → Action",
-            description: "Move from frame to next step.",
-            href: buildToolURL("structure-to-action.html", text, { from: "launch" })
-          }
-        ];
-      }
-
-      if (/idea|metaphor|opposite|アイデア/.test(lower)) {
-        return [
-          {
-            label: "METAPHOR",
-            title: "Idea → Metaphor",
-            description: "Translate the idea into a more vivid lens.",
-            href: buildToolURL("idea-to-metaphor.html", text, { from: "launch" })
-          },
-          {
-            label: "OPPOSITE",
-            title: "Idea → Opposite",
-            description: "Find tension by inversion.",
-            href: buildToolURL("idea-to-opposite.html", text, { from: "launch" })
-          },
-          {
-            label: "HOOK",
-            title: "Idea → Hook",
-            description: "Push the idea toward expression.",
-            href: buildToolURL("lesson-to-hook.html", text, { from: "launch" })
-          }
-        ];
-      }
-
-      return [
-        {
-          label: "BEST TOOL",
-          title: "Start with Best Tool",
-          description: "Use the most natural first mutation for this thought.",
-          href: buildToolURL(chooseBestTool(inputTypeEl.value).best, text, { from: "launch" })
-        },
-        {
-          label: "SURPRISE",
-          title: "Surprise Me",
-          description: "Break the expected route with a random tool.",
-          href: buildToolURL(pickRandom(RANDOM_TOOLS), text, { from: "launch" })
-        },
-        {
-          label: "CHAOS",
-          title: "Chaos Route",
-          description: "Add a strange angle before continuing.",
-          href: buildToolURL("idea-to-opposite.html", text, { from: "launch" })
-        }
-      ];
-    }
-
-    function escapeHTML(str) {
-      return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
     }
 
     function pickExampleForType(type) {
@@ -1070,79 +790,156 @@ JP: 変異させたい思考摩擦を書いてください..."
       return pickRandom(list);
     }
 
-    function insertExample() {
-      const type = inputTypeEl.value;
-      inputEl.value = pickExampleForType(type);
-      setStatus("Example inserted.");
-      updateShareURL();
-      inputEl.focus();
+    function updatePageURL() {
+      router.updateCurrentPageURL({
+        input: router.normalizeText(inputEl.value),
+        type: inputTypeEl.value,
+        mode: modeEl.value
+      });
     }
 
     function initFromURL() {
-      const urlInput = getURLInput();
-      const urlType = getURLType();
+      const params = router.getParams();
 
-      if (urlType && TOOLS[urlType]) {
-        inputTypeEl.value = urlType;
+      if (params.input) {
+        inputEl.value = params.input;
       }
 
-      if (urlInput) {
-        inputEl.value = urlInput;
-        setStatus("Prefilled input loaded from URL.");
+      if (params.type && inputTypeEl.querySelector(`option[value="${params.type}"]`)) {
+        inputTypeEl.value = params.type;
       }
+
+      modeEl.value = router.getMode(params.mode || "stable");
     }
 
-    async function copyText(text, message) {
+    function launchBestTool() {
+      const input = router.normalizeText(inputEl.value);
+      const type = inputTypeEl.value;
+      const mode = modeEl.value;
+
+      if (!input) {
+        setStatus("Write your current friction first.");
+        inputEl.focus();
+        return;
+      }
+
+      updatePageURL();
+
+      const toolKey = router.pickBestToolByType(type);
+      router.goTo(toolKey, input, {
+        from: "reframe-studio",
+        type,
+        mode
+      });
+    }
+
+    function launchRandomTool() {
+      const input = router.normalizeText(inputEl.value);
+      const type = inputTypeEl.value;
+      const mode = modeEl.value;
+
+      updatePageURL();
+
+      const toolKey = pickRandom(RANDOM_TOOLS);
+      router.goTo(toolKey, input, {
+        from: "surprise-me",
+        type,
+        mode
+      });
+    }
+
+    function runChaosMode() {
+      const baseText = router.normalizeText(inputEl.value) || pickExampleForType(inputTypeEl.value);
+      const prompt = router.pickDriftPrompt();
+      const driftText = router.createDriftText(baseText, prompt);
+
+      launchPanel.classList.remove("hidden");
+      launchResultEl.textContent = driftText;
+
+      router.renderNextMutations(nextGridEl, {
+        text: driftText,
+        outputType: "lesson",
+        currentTool: "reframe-studio",
+        mode: "chaos"
+      });
+
+      setStatus("Chaos injected. Let the thought drift a little.");
+      updatePageURL();
+    }
+
+    function showLaunchPreview() {
+      const input = router.normalizeText(inputEl.value);
+      const type = inputTypeEl.value;
+      const mode = modeEl.value;
+
+      if (!input) {
+        setStatus("Write your current friction first.");
+        inputEl.focus();
+        return;
+      }
+
+      launchPanel.classList.remove("hidden");
+      launchResultEl.textContent = `Input type: ${type}\nMode: ${mode}\n\n${input}`;
+
+      router.renderNextMutations(nextGridEl, {
+        text: input,
+        outputType: type,
+        currentTool: "reframe-studio",
+        mode
+      });
+
+      setStatus("Launch preview generated. The thought can continue from here.");
+      updatePageURL();
+    }
+
+    async function copyText(text, successMessage) {
       try {
         await navigator.clipboard.writeText(text);
-        setStatus(message);
+        setStatus(successMessage);
       } catch (error) {
         setStatus("Copy failed. Please copy manually.");
         console.error(error);
       }
     }
 
-    function showLaunchResult(text, modeLabel) {
-      launchPanel.classList.remove("hidden");
-      launchResultEl.textContent = `${modeLabel}\n\n${text}`;
-      renderNextMutations(text);
-    }
+    tryExampleBtn.addEventListener("click", () => {
+      inputEl.value = pickExampleForType(inputTypeEl.value);
+      setStatus("Example inserted.");
+      updatePageURL();
+      inputEl.focus();
+    });
 
-    tryExampleBtn.addEventListener("click", insertExample);
+    inputEl.addEventListener("input", updatePageURL);
 
     inputTypeEl.addEventListener("change", () => {
-      updateShareURL();
+      updatePageURL();
       setStatus("Input type changed.");
     });
 
-    inputEl.addEventListener("input", updateShareURL);
+    modeEl.addEventListener("change", () => {
+      updatePageURL();
+      setStatus("Thinking mode changed.");
+    });
 
     startBestToolBtn.addEventListener("click", launchBestTool);
     surpriseButton.addEventListener("click", launchRandomTool);
     randomToolCard.addEventListener("click", launchRandomTool);
-
     chaosButton.addEventListener("click", runChaosMode);
     chaosCard.addEventListener("click", runChaosMode);
 
     inputEl.addEventListener("keydown", (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        const input = normalizeText(inputEl.value);
-        if (!input) {
-          launchBestTool();
-          return;
-        }
-        showLaunchResult(input, "Launch preview");
-        setStatus("Launch preview generated. Continue with the next mutation.");
+        showLaunchPreview();
       }
     });
 
     copyLaunchTextBtn.addEventListener("click", () => {
       const text = launchResultEl.textContent.trim();
       if (!text) {
-        setStatus("No launch result to copy yet.");
+        setStatus("No launch preview to copy yet.");
         return;
       }
-      copyText(text, "Launch result copied.");
+      copyText(text, "Launch preview copied.");
     });
 
     copyShareLinkBtn.addEventListener("click", () => {
