@@ -104,8 +104,8 @@
       border: 2px solid #efefef;
       border-radius: 20px;
       padding: 18px;
-      margin-bottom: 14px;
       background: #ffffff;
+      margin-bottom: 12px;
     }
 
     .card h3 {
@@ -114,30 +114,26 @@
       line-height: 1.2;
     }
 
-    .meta {
-      font-size: 14px;
-      color: #666666;
-      margin-bottom: 10px;
-    }
-
     .card p {
-      margin: 0;
+      margin: 0 0 12px;
       font-size: 16px;
       color: #444444;
+      white-space: pre-wrap;
     }
 
     .open-link {
       display: inline-block;
-      margin-top: 14px;
       color: #111111;
       font-weight: 600;
       text-decoration: none;
     }
 
-    .empty {
-      color: #666666;
-      font-size: 16px;
-      padding: 6px 2px;
+    .result-box {
+      border: 2px solid #efefef;
+      border-radius: 20px;
+      padding: 18px;
+      background: #ffffff;
+      min-height: 120px;
     }
 
     .footer {
@@ -179,65 +175,63 @@
     <h1>Mutation Router</h1>
     <p class="desc">Drop a thought fragment. Discover possible next mutations.</p>
 
-    <textarea id="fragmentInput" placeholder="Example:
+    <textarea id="input" placeholder="Example:
 People say my ideas are too abstract
 AI tools feel repetitive
 Content creation feels exhausting"></textarea>
 
     <div class="buttons">
-      <button class="primary" id="runBtn">Find next mutations</button>
+      <button class="primary" id="runBtn">Generate</button>
       <button class="secondary" id="exampleBtn">Try example</button>
       <button class="secondary" id="clearBtn">Clear</button>
+      <button class="secondary" id="copyBtn">Copy result</button>
     </div>
 
-    <div class="result" id="result"></div>
+    <div class="result">
+      <div class="result-title">Result</div>
+      <div class="result-box" id="result">Your result will appear here.</div>
+    </div>
 
     <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
   </div>
 
   <script>
-    const TOOL_REGISTRY = [
-      {
-        id: "thought-galaxy",
+    const TOOLS = {
+      thoughtGalaxy: {
         title: "Thought Galaxy",
         file: "thought-galaxy.html",
-        note: "Start from a floating fragment and open mutation paths."
+        note: "Open the fragment in a wider thinking space."
       },
-      {
-        id: "mutation-engine",
+      mutationEngine: {
         title: "Mutation Engine",
         file: "mutation-engine.html",
         note: "Push the fragment into a stronger mutation."
       },
-      {
-        id: "mutation-flow",
+      mutationFlow: {
         title: "Mutation Flow v1",
         file: "mutation-flow-v1.html",
         note: "Keep the mutation moving into a next form."
       },
-      {
-        id: "tool-birth-engine",
+      toolBirth: {
         title: "Tool Birth Engine v1",
         file: "tool-birth-engine-v1.html",
         note: "Turn mutation into a possible new tool."
       }
-    ];
+    };
 
-    function createFragment(text, sourceType = "idea", mode = "drift") {
-      return {
-        id: "frag_" + Date.now(),
-        text: text.trim(),
-        sourceType: sourceType,
-        currentField: "friction",
-        mode: mode,
-        history: []
-      };
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     function detectSourceType(text) {
       const t = text.toLowerCase();
 
-      if (t.includes("people say") || t.includes("criticism") || t.includes("critic")) {
+      if (t.includes("people say") || t.includes("critic") || t.includes("too abstract")) {
         return "criticism";
       }
 
@@ -249,7 +243,7 @@ Content creation feels exhausting"></textarea>
         return "problem";
       }
 
-      if (t.includes("confused") || t.includes("why") || t.includes("unclear")) {
+      if (t.includes("confused") || t.includes("unclear") || t.includes("why")) {
         return "confusion";
       }
 
@@ -260,102 +254,120 @@ Content creation feels exhausting"></textarea>
       return "idea";
     }
 
-    function findTools(ids) {
-      return TOOL_REGISTRY.filter(tool => ids.includes(tool.id));
+    function getNextTools(sourceType) {
+      if (sourceType === "idea") {
+        return [TOOLS.mutationEngine, TOOLS.mutationFlow];
+      }
+
+      if (sourceType === "criticism") {
+        return [TOOLS.mutationEngine, TOOLS.mutationFlow];
+      }
+
+      if (sourceType === "emotion") {
+        return [TOOLS.mutationEngine];
+      }
+
+      if (sourceType === "problem") {
+        return [TOOLS.mutationEngine, TOOLS.mutationFlow];
+      }
+
+      if (sourceType === "confusion") {
+        return [TOOLS.thoughtGalaxy, TOOLS.mutationFlow];
+      }
+
+      if (sourceType === "failure") {
+        return [TOOLS.mutationEngine, TOOLS.toolBirth];
+      }
+
+      return [TOOLS.mutationEngine];
     }
 
-    function getNextTools(fragment) {
-      const type = fragment.sourceType;
+    function buildCopyText(sourceType, tools) {
+      let lines = [];
+      lines.push("Detected type: " + sourceType);
+      lines.push("");
+      lines.push("Next mutations:");
 
-      if (type === "idea") {
-        return findTools(["mutation-engine", "mutation-flow"]);
-      }
+      tools.forEach((tool, index) => {
+        lines.push((index + 1) + ". " + tool.title + " — " + tool.file);
+      });
 
-      if (type === "criticism") {
-        return findTools(["mutation-engine", "mutation-flow"]);
-      }
-
-      if (type === "emotion") {
-        return findTools(["mutation-engine"]);
-      }
-
-      if (type === "problem") {
-        return findTools(["mutation-engine", "mutation-flow"]);
-      }
-
-      if (type === "confusion") {
-        return findTools(["thought-galaxy", "mutation-flow"]);
-      }
-
-      if (type === "failure") {
-        return findTools(["mutation-engine", "tool-birth-engine"]);
-      }
-
-      return findTools(["mutation-engine"]);
+      return lines.join("\n");
     }
 
-    function renderResults(tools, fragment) {
-      const result = document.getElementById("result");
+    function renderResult(text) {
+      const clean = text.trim();
 
-      if (!tools || tools.length === 0) {
-        result.innerHTML = '<div class="empty">No next mutations found.</div>';
-        return;
+      if (!clean) {
+        return "";
       }
 
-      let html = '<div class="result-title">Next mutations for: <strong>' + escapeHtml(fragment.sourceType) + '</strong></div>';
+      const sourceType = detectSourceType(clean);
+      const tools = getNextTools(sourceType);
+      const resultBox = document.getElementById("result");
+
+      let html = "";
+      html += '<div class="result-title">Detected type: <strong>' + escapeHtml(sourceType) + '</strong></div>';
 
       tools.forEach(tool => {
         html += `
           <div class="card">
             <h3>${escapeHtml(tool.title)}</h3>
-            <div class="meta">Next mutation tool</div>
             <p>${escapeHtml(tool.note)}</p>
             <a class="open-link" href="./${escapeHtml(tool.file)}">Open tool →</a>
           </div>
         `;
       });
 
-      result.innerHTML = html;
+      resultBox.innerHTML = html;
+      resultBox.dataset.copyText = buildCopyText(sourceType, tools);
+      return html;
     }
 
-    function escapeHtml(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
+    function runTool() {
+      const input = document.getElementById("input").value;
 
-    function runRouter() {
-      const input = document.getElementById("fragmentInput");
-      const text = input.value.trim();
-
-      if (!text) {
-        alert("Enter a thought fragment.");
+      if (!input.trim()) {
+        alert("Enter something first.");
         return;
       }
 
-      const sourceType = detectSourceType(text);
-      const fragment = createFragment(text, sourceType, "drift");
-      const tools = getNextTools(fragment);
-
-      renderResults(tools, fragment);
+      renderResult(input);
     }
 
-    function fillExample() {
-      document.getElementById("fragmentInput").value = "People say my ideas are too abstract";
-      document.getElementById("result").innerHTML = "";
+    function tryExample() {
+      document.getElementById("input").value = "People say my ideas are too abstract";
+      document.getElementById("result").textContent = "Your result will appear here.";
+      delete document.getElementById("result").dataset.copyText;
     }
 
     function clearAll() {
-      document.getElementById("fragmentInput").value = "";
-      document.getElementById("result").innerHTML = "";
+      document.getElementById("input").value = "";
+      document.getElementById("result").textContent = "Your result will appear here.";
+      delete document.getElementById("result").dataset.copyText;
     }
 
-    document.getElementById("runBtn").addEventListener("click", runRouter);
-    document.getElementById("exampleBtn").addEventListener("click", fillExample);
+    async function copyResult() {
+      const result = document.getElementById("result");
+      const text = result.dataset.copyText || "";
+
+      if (!text) {
+        alert("Nothing to copy yet.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied.");
+      } catch (error) {
+        alert("Copy failed.");
+      }
+    }
+
+    document.getElementById("runBtn").addEventListener("click", runTool);
+    document.getElementById("exampleBtn").addEventListener("click", tryExample);
     document.getElementById("clearBtn").addEventListener("click", clearAll);
+    document.getElementById("copyBtn").addEventListener("click", copyResult);
   </script>
 </body>
 </html>
