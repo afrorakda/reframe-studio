@@ -6,584 +6,197 @@
 <title>REFRAME Studio</title>
 
 <style>
-:root{
-  --bg:#0b0f18;
-  --bg-2:#090d15;
-  --panel:#121826;
-  --panel-2:#171e2f;
-  --line:#293246;
-  --text:#f6f8fb;
-  --muted:#98a3b8;
-  --purple:#7c5cff;
-  --purple-2:#6b4ef2;
-  --cyan:#22c7e8;
-  --shadow:0 12px 40px rgba(0,0,0,0.28);
-  --max:1100px;
-}
 
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
-    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
-  color:var(--text);
-  line-height:1.6;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-.page{
-  min-height:100vh;
-  padding:20px 16px 56px;
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:#0b0f1a;
+color:white;
+margin:0;
+padding:24px;
 }
 
 .container{
-  max-width:var(--max);
-  margin:0 auto;
+max-width:900px;
+margin:auto;
 }
 
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
+h1{
+font-size:38px;
+margin-bottom:8px;
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.brand-mark{
-  width:42px;
-  height:42px;
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  font-weight:800;
-  letter-spacing:-0.04em;
-  background:linear-gradient(180deg, rgba(124,92,255,0.35), rgba(34,199,232,0.16));
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:var(--shadow);
-}
-
-.brand-copy h1{
-  margin:0;
-  font-size:1.02rem;
-  letter-spacing:-0.03em;
-}
-
-.brand-copy p{
-  margin:2px 0 0;
-  color:var(--muted);
-  font-size:0.9rem;
-}
-
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:9px 12px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  color:var(--muted);
-  font-size:0.88rem;
-}
-
-.hero{
-  border:1px solid var(--line);
-  border-radius:24px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 80% 0%, rgba(124,92,255,0.14), transparent 22%),
-    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.09), transparent 24%),
-    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-}
-
-.hero-inner{
-  padding:28px 22px 22px;
-  display:grid;
-  gap:22px;
-}
-
-.eyebrow{
-  display:inline-block;
-  margin-bottom:12px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:rgba(124,92,255,0.12);
-  border:1px solid rgba(124,92,255,0.22);
-  color:#cfbeff;
-  font-size:0.82rem;
-}
-
-.hero-grid{
-  display:grid;
-  grid-template-columns:1.15fr 0.85fr;
-  gap:18px;
-  align-items:start;
-}
-
-.hero-copy h2{
-  margin:0 0 10px;
-  font-size:clamp(2.3rem, 6vw, 4.7rem);
-  line-height:0.97;
-  letter-spacing:-0.055em;
-}
-
-.hero-copy p{
-  margin:0;
-  color:var(--muted);
-  max-width:760px;
-  font-size:1rem;
-}
-
-.hero-points{
-  display:grid;
-  gap:10px;
-}
-
-.hero-point{
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.hero-point strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.96rem;
-}
-
-.hero-point span{
-  color:var(--muted);
-  font-size:0.92rem;
+.subtitle{
+opacity:0.7;
+margin-bottom:28px;
 }
 
 .section{
-  margin-top:22px;
-  display:grid;
-  gap:14px;
-}
-
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.section-head h2{
-  margin:0;
-  font-size:1.45rem;
-  letter-spacing:-0.03em;
-}
-
-.section-head p{
-  margin:4px 0 0;
-  color:var(--muted);
-  font-size:0.94rem;
+margin-top:40px;
 }
 
 .grid{
-  display:grid;
-  gap:16px;
-}
-
-.grid-3{
-  grid-template-columns:repeat(3, minmax(0, 1fr));
+display:grid;
+grid-template-columns:1fr;
+gap:16px;
 }
 
 .card{
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-  overflow:hidden;
+background:#111827;
+border-radius:14px;
+padding:20px;
+border:1px solid #2a3348;
 }
 
-.card-head{
-  padding:18px 18px 14px;
-  border-bottom:1px solid var(--line);
-}
-
-.card-head h3{
-  margin:0 0 6px;
-  font-size:1.02rem;
-  letter-spacing:-0.02em;
-}
-
-.card-head p{
-  margin:0;
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.card-body{
-  padding:18px;
-  display:grid;
-  gap:12px;
-}
-
-.start-card{
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  min-height:220px;
-}
-
-.start-card p{
-  margin:0;
-  color:var(--muted);
-}
-
-.tag{
-  display:inline-block;
-  width:max-content;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid rgba(124,92,255,0.22);
-  background:rgba(124,92,255,0.12);
-  color:#cfbeff;
-  font-size:0.78rem;
-  font-weight:700;
-  letter-spacing:0.02em;
+.card h3{
+margin-top:0;
 }
 
 .button{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:max-content;
-  margin-top:4px;
-  border:1px solid var(--line);
-  background:var(--panel-2);
-  color:var(--text);
-  border-radius:12px;
-  padding:12px 16px;
-  cursor:pointer;
-  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+display:inline-block;
+margin-top:12px;
+padding:10px 16px;
+background:#4f46e5;
+border-radius:8px;
+color:white;
+text-decoration:none;
 }
 
 .button:hover{
-  transform:translateY(-1px);
-  border-color:#4b5872;
+opacity:0.9;
 }
 
-.button.primary{
-  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
+.small{
+opacity:0.6;
+font-size:14px;
+margin-top:30px;
 }
 
-.tool-grid{
-  display:grid;
-  gap:12px;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-}
-
-.tool{
-  display:block;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  transition:transform 0.16s ease,border-color 0.18s ease,background 0.18s ease;
-}
-
-.tool:hover{
-  transform:translateY(-2px);
-  border-color:rgba(124,92,255,0.4);
-  background:rgba(255,255,255,0.045);
-}
-
-.tool strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.96rem;
-  font-weight:700;
-}
-
-.tool span{
-  color:var(--muted);
-  font-size:0.9rem;
-}
-
-.mini-grid{
-  display:grid;
-  gap:12px;
-}
-
-.mini-box{
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.mini-box strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.94rem;
-}
-
-.mini-box span{
-  color:var(--muted);
-  font-size:0.9rem;
-}
-
-.footer{
-  margin-top:26px;
-  text-align:center;
-  color:var(--muted);
-  font-size:0.88rem;
-}
-
-@media (max-width:920px){
-  .hero-grid,
-  .grid-3{
-    grid-template-columns:1fr;
-  }
-}
-
-@media (max-width:720px){
-  .hero-inner,
-  .card-head,
-  .card-body{
-    padding:16px;
-  }
-
-  .hero-copy h2{
-    font-size:2.6rem;
-  }
-
-  .tool-grid{
-    grid-template-columns:1fr;
-  }
-}
 </style>
 </head>
 
 <body>
-<main class="page">
-  <div class="container">
 
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">R</div>
-        <div class="brand-copy">
-          <h1>REFRAME Studio</h1>
-          <p>Browser-native Thinking Playground</p>
-        </div>
-      </div>
-      <div class="badge">Simple / Private / Fast</div>
-    </header>
+<div class="container">
 
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <div class="eyebrow">Input → Unexpected Angle</div>
-            <h2>Chaos → Creation</h2>
-            <p>
-              REFRAME Studio is not built to give one correct answer.
-              It is a quiet place for thought drift, mutation, and new angles.
-              Start from friction. Move through tools. Keep the thought alive.
-            </p>
-          </div>
+<h1>REFRAME Studio</h1>
 
-          <div class="hero-points">
-            <div class="hero-point">
-              <strong>Fragment first</strong>
-              <span>Drop a thought fragment instead of asking a perfect question.</span>
-            </div>
-            <div class="hero-point">
-              <strong>1 tool = 1 mutation</strong>
-              <span>Each tool does one small transformation and opens the next step.</span>
-            </div>
-            <div class="hero-point">
-              <strong>Browser native</strong>
-              <span>No login. No tracking. No personal data collected. Runs entirely in your browser.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+<div class="subtitle">
+Browser-native Thinking Playground
+</div>
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Start Here</h2>
-          <p>Best first doors into the thinking playground.</p>
-        </div>
-      </div>
+<div class="section">
 
-      <div class="grid grid-3">
-        <article class="card">
-          <div class="card-head">
-            <h3>Stuck → Best Tool</h3>
-            <p>Fastest entry when you do not know where to begin.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag">ENTRY</span>
-            <p>
-              Describe where you're stuck and get the best next tool.
-            </p>
-            <a class="button primary" href="./stuck-to-tool.html">Open tool</a>
-          </div>
-        </article>
+<h2>Start thinking</h2>
 
-        <article class="card">
-          <div class="card-head">
-            <h3>REFRAME Studio</h3>
-            <p>Main playground with fragment input and Thinking Weather.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag">PLAYGROUND</span>
-            <p>
-              Drop a thought fragment, switch between Stable / Drift / Chaos, and see the next mutation.
-            </p>
-            <a class="button primary" href="./reframe-studio.html">Open studio</a>
-          </div>
-        </article>
+<div class="grid">
 
-        <article class="card">
-          <div class="card-head">
-            <h3>Thought Map</h3>
-            <p>See the landscape instead of choosing blindly.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag">MAP</span>
-            <p>
-              Explore the tools through a visual thinking map.
-            </p>
-            <a class="button primary" href="./thought-map.html">Open map</a>
-          </div>
-        </article>
-      </div>
-    </section>
+<div class="card">
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Core Flow</h2>
-          <p>Useful first mutations for real friction.</p>
-        </div>
-      </div>
+<h3>Fragment Drop</h3>
 
-      <div class="tool-grid">
-        <a class="tool" href="./problem-to-root-cause.html">
-          <strong>Problem → Root Causes</strong>
-          <span>Break a surface problem into deeper causes.</span>
-        </a>
+<p>
+Drop a thought fragment. The system suggests the first mutation.
+</p>
 
-        <a class="tool" href="./problem-to-constraints.html">
-          <strong>Problem → Constraints</strong>
-          <span>Reveal limits, pressure, and reality.</span>
-        </a>
+<a class="button" href="./fragment-drop.html">
+Open tool
+</a>
 
-        <a class="tool" href="./constraint-to-action.html">
-          <strong>Constraint → Action</strong>
-          <span>Turn limits into realistic next movement.</span>
-        </a>
+</div>
 
-        <a class="tool" href="./problem-to-options.html">
-          <strong>Problem → Options</strong>
-          <span>Open alternatives when thought feels trapped.</span>
-        </a>
+<div class="card">
 
-        <a class="tool" href="./emotion-to-action.html">
-          <strong>Emotion → Action</strong>
-          <span>Translate emotional weight into motion.</span>
-        </a>
+<h3>Mutation Trail</h3>
 
-        <a class="tool" href="./next-step-finder.html">
-          <strong>Next Step Finder</strong>
-          <span>Make the next move visible.</span>
-        </a>
-      </div>
-    </section>
+<p>
+See how one thought evolves through mutations and next openings.
+</p>
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Tool Creation</h2>
-          <p>Turn ideas into more tools and grow the ecosystem.</p>
-        </div>
-      </div>
+<a class="button" href="./mutation-trail.html">
+Open trail
+</a>
 
-      <div class="tool-grid">
-        <a class="tool" href="./idea-to-tool-spec.html">
-          <strong>Idea → Tool Spec</strong>
-          <span>Shape a rough idea into a tool structure.</span>
-        </a>
+</div>
 
-        <a class="tool" href="./tool-spec-to-html.html">
-          <strong>Tool Spec → HTML</strong>
-          <span>Convert a spec into implementation-ready form.</span>
-        </a>
+</div>
 
-        <a class="tool" href="./tool-generator-v3.html">
-          <strong>Tool Generator</strong>
-          <span>Generate a ready-to-paste tool file.</span>
-        </a>
+</div>
 
-        <a class="tool" href="./tool-factory.html">
-          <strong>Tool Factory</strong>
-          <span>Multiply one idea into many tool directions.</span>
-        </a>
-      </div>
-    </section>
+<div class="section">
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>REFRAME Logic</h2>
-          <p>The simple core behind the system.</p>
-        </div>
-      </div>
+<h2>Explore tools</h2>
 
-      <div class="grid grid-3">
-        <div class="mini-box">
-          <strong>Thought Fragment</strong>
-          <span>Users do not need a perfect question. A fragment is enough.</span>
-        </div>
+<div class="grid">
 
-        <div class="mini-box">
-          <strong>Mutation</strong>
-          <span>Each tool changes the thought a little, not all at once.</span>
-        </div>
+<div class="card">
+<h3>Stuck → Best Tool</h3>
+<p>Describe where you're stuck and get the best tool.</p>
+<a class="button" href="./stuck-to-tool.html">Open</a>
+</div>
 
-        <div class="mini-box">
-          <strong>Next Opening</strong>
-          <span>The result should lead to another move, not a dead end.</span>
-        </div>
-      </div>
-    </section>
+<div class="card">
+<h3>Thinking Ocean</h3>
+<p>See fragments and thought movement.</p>
+<a class="button" href="./thinking-ocean.html">Open</a>
+</div>
 
-    <div class="footer">
-      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
-    </div>
+<div class="card">
+<h3>Thought Map</h3>
+<p>Explore the full REFRAME tool graph.</p>
+<a class="button" href="./thought-map.html">Open</a>
+</div>
 
-  </div>
-</main>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>Core flow tools</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>Problem → Root Causes</h3>
+<a class="button" href="./problem-to-root-cause.html">Open</a>
+</div>
+
+<div class="card">
+<h3>Problem → Constraints</h3>
+<a class="button" href="./problem-to-constraints.html">Open</a>
+</div>
+
+<div class="card">
+<h3>Constraint → Action</h3>
+<a class="button" href="./constraint-to-action.html">Open</a>
+</div>
+
+<div class="card">
+<h3>Problem → Options</h3>
+<a class="button" href="./problem-to-options.html">Open</a>
+</div>
+
+<div class="card">
+<h3>Emotion → Action</h3>
+<a class="button" href="./emotion-to-action.html">Open</a>
+</div>
+
+<div class="card">
+<h3>Next Step Finder</h3>
+<a class="button" href="./next-step-finder.html">Open</a>
+</div>
+
+</div>
+
+</div>
+
+<div class="small">
+
+No login · No tracking · No personal data collected · Runs entirely in your browser
+
+</div>
+
+</div>
+
 </body>
 </html>
