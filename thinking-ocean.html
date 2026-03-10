@@ -701,6 +701,24 @@ select:focus{
 (function () {
   "use strict";
 
+function depthOffset(depth) {
+
+  if (depth === "surface") {
+    return -12;
+  }
+
+  if (depth === "middle") {
+    return 0;
+  }
+
+  if (depth === "deep") {
+    return 14;
+  }
+
+  return 0;
+
+}
+
   var router = window.REFRAME_ROUTER;
   var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v4";
 
@@ -1086,8 +1104,9 @@ select:focus{
       (item.id === selectedFragmentId ? " selected" : "") +
       (item.generated ? " generated" : "");
 
-    card.style.left = pos.left + "%";
-    card.style.top = pos.top + "%";
+card.style.left = pos.left + "%";
+card.style.top = pos.top + "%";
+card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
     card.style.animationDelay = ((index % 7) * 0.35) + "s";
 
     var tag = document.createElement("span");
