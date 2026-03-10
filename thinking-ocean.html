@@ -20,8 +20,8 @@
   --green:#22c55e;
   --danger-1:#ff7b7b;
   --danger-2:#d44d4d;
-  --shadow:0 12px 40px rgba(0,0,0,0.28);
   --max:1100px;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
 }
 
 *{
@@ -46,7 +46,6 @@ a{
 }
 
 button,
-textarea,
 select{
   font:inherit;
 }
@@ -164,6 +163,7 @@ h1{
   display:grid;
   grid-template-columns:180px 180px 1fr;
   gap:10px;
+  align-items:start;
 }
 
 select{
@@ -178,6 +178,12 @@ select{
 select:focus{
   border-color:rgba(124,92,255,0.75);
   box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
+
+.weather-control{
+  display:grid;
+  gap:10px;
+  margin-bottom:12px;
 }
 
 .actions{
@@ -200,6 +206,12 @@ select:focus{
 .button:hover{
   transform:translateY(-1px);
   border-color:#4b5872;
+}
+
+.button.active-weather{
+  border-color:rgba(124,92,255,0.75);
+  box-shadow:0 0 0 3px rgba(124,92,255,0.12);
+  background:rgba(124,92,255,0.12);
 }
 
 .button.primary{
@@ -276,7 +288,7 @@ select:focus{
 
 .ocean{
   position:relative;
-  min-height:860px;
+  min-height:980px;
   border:1px solid var(--line);
   border-radius:24px;
   overflow:hidden;
@@ -286,6 +298,22 @@ select:focus{
     radial-gradient(circle at 30% 82%, rgba(34,197,94,0.08), transparent 18%),
     linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
   box-shadow:var(--shadow);
+}
+
+.ocean.weather-calm{
+  filter:saturate(0.95);
+}
+
+.ocean.weather-drift{
+  filter:saturate(1.02);
+}
+
+.ocean.weather-storm{
+  background:
+    radial-gradient(circle at 22% 20%, rgba(34,199,232,0.16), transparent 18%),
+    radial-gradient(circle at 82% 18%, rgba(124,92,255,0.20), transparent 20%),
+    radial-gradient(circle at 35% 78%, rgba(255,110,110,0.10), transparent 18%),
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
 }
 
 .ocean::before{
@@ -310,8 +338,17 @@ select:focus{
 }
 
 .wave.one{ top:70px; }
-.wave.two{ top:310px; }
-.wave.three{ top:590px; }
+.wave.two{ top:340px; }
+.wave.three{ top:680px; }
+
+.ocean.weather-drift .wave{
+  opacity:0.48;
+}
+
+.ocean.weather-storm .wave{
+  opacity:0.65;
+  border-color:rgba(255,255,255,0.08);
+}
 
 .gravity-hint{
   position:absolute;
@@ -344,7 +381,7 @@ select:focus{
   width:360px;
   height:360px;
   left:20%;
-  top:40%;
+  top:42%;
 }
 
 .gravity-ring.criticism{
@@ -370,7 +407,7 @@ select:focus{
 
 .ocean-grid{
   position:relative;
-  min-height:860px;
+  min-height:980px;
 }
 
 .fragment{
@@ -387,7 +424,9 @@ select:focus{
     transform 0.18s ease,
     border-color 0.18s ease,
     background 0.18s ease,
-    box-shadow 0.18s ease;
+    box-shadow 0.18s ease,
+    left 0.28s ease,
+    top 0.28s ease;
   text-align:left;
   animation:floaty 6s ease-in-out infinite;
 }
@@ -401,9 +440,7 @@ select:focus{
 .fragment.selected{
   border-color:rgba(124,92,255,0.8);
   box-shadow:0 0 0 2px rgba(124,92,255,0.18), 0 10px 28px rgba(0,0,0,0.24);
-}
-
-.fragment.generated{
+} .fragment.generated{
   box-shadow:0 0 0 1px rgba(34,199,232,0.18), 0 10px 28px rgba(0,0,0,0.24);
 }
 
@@ -537,11 +574,11 @@ select:focus{
   }
 
   .ocean{
-    min-height:1020px;
+    min-height:1080px;
   }
 
   .ocean-grid{
-    min-height:1020px;
+    min-height:1080px;
   }
 
   .gravity-ring{
@@ -578,10 +615,10 @@ select:focus{
       <div class="hero-inner">
         <div class="hero-grid">
           <div>
-            <span class="eyebrow">Gravity ocean</span>
+            <span class="eyebrow">Gravity ocean + weather</span>
             <h1>Thinking Ocean</h1>
             <p class="subtitle">
-              Fragments drift here like unfinished thoughts. Similar thoughts gather near each other. Pick one, generate a new one, or mutate the selected fragment and let the ocean grow.
+              Fragments drift here like unfinished thoughts. Similar thoughts gather near each other. Depth changes where they float. Weather changes how the ocean behaves.
             </p>
           </div>
 
@@ -595,8 +632,8 @@ select:focus{
               <span>Similar fragment types gather into loose clusters.</span>
             </div>
             <div class="hero-point">
-              <strong>Memory</strong>
-              <span>Generated and mutated fragments stay saved on this device.</span>
+              <strong>Depth + Weather</strong>
+              <span>Surface floats up, deep sinks down, and weather changes movement.</span>
             </div>
           </div>
         </div>
@@ -604,7 +641,7 @@ select:focus{
         <section class="panel">
           <h2 class="panel-title">Ocean controls</h2>
           <p class="panel-note">
-            Filter the fragments, switch drift style, shuffle the surface, generate new fragments, mutate the selected one, or clear saved memory.
+            Filter the fragments, switch drift style, change the weather, shuffle the surface, generate new fragments, mutate the selected one, or clear saved memory.
           </p>
 
           <div class="controls">
@@ -625,12 +662,23 @@ select:focus{
               <option value="deep">Deep first</option>
             </select>
 
-            <div class="actions">
-              <button class="button" id="shuffle-button" type="button">Shuffle ocean</button>
-              <button class="button primary" id="generate-button" type="button">Generate fragment</button>
-              <button class="button green" id="mutate-button" type="button">Mutate selected</button>
-              <button class="button danger" id="clear-memory-button" type="button">Clear memory</button>
-              <a class="button cyan" href="./fragment-drop.html">Drop manually</a>
+            <div>
+              <div class="weather-control">
+                <h3 class="panel-title">Thought Weather</h3>
+                <div class="actions">
+                  <button class="button active-weather" id="weather-calm" type="button">Calm</button>
+                  <button class="button" id="weather-drift" type="button">Drift</button>
+                  <button class="button" id="weather-storm" type="button">Storm</button>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button class="button" id="shuffle-button" type="button">Shuffle ocean</button>
+                <button class="button primary" id="generate-button" type="button">Generate fragment</button>
+                <button class="button green" id="mutate-button" type="button">Mutate selected</button>
+                <button class="button danger" id="clear-memory-button" type="button">Clear memory</button>
+                <a class="button cyan" href="./fragment-drop.html">Drop manually</a>
+              </div>
             </div>
           </div>
 
@@ -648,7 +696,7 @@ select:focus{
         <div class="memory-note" id="memory-count">Saved generated fragments: 0</div>
       </div>
 
-      <div class="ocean">
+      <div class="ocean weather-calm" id="ocean-shell">
         <div class="wave one"></div>
         <div class="wave two"></div>
         <div class="wave three"></div>
@@ -701,34 +749,70 @@ select:focus{
 (function () {
   "use strict";
 
-function depthOffset(depth) {
+  function depthOffset(depth) {
+    if (depth === "surface") {
+      return -12;
+    }
 
-  if (depth === "surface") {
-    return -12;
-  }
+    if (depth === "middle") {
+      return 0;
+    }
 
-  if (depth === "middle") {
+    if (depth === "deep") {
+      return 14;
+    }
+
     return 0;
   }
 
-  if (depth === "deep") {
-    return 14;
+  function clampPercent(value, min, max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
   }
 
-  return 0;
+  function pickRandom(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
 
-}
+  function shuffle(array) {
+    var arr = array.slice();
+    for (var i = arr.length - 1; i > 0; i -= 1) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+    return arr;
+  }
+
+  function hashString(value) {
+    var hash = 0;
+    var text = String(value || "");
+    for (var i = 0; i < text.length; i += 1) {
+      hash = ((hash << 5) - hash) + text.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
 
   var router = window.REFRAME_ROUTER;
-  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v4";
+  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v5";
 
+  var oceanShellEl = document.getElementById("ocean-shell");
   var oceanGridEl = document.getElementById("ocean-grid");
   var filterTypeEl = document.getElementById("filter-type");
   var sortModeEl = document.getElementById("sort-mode");
+
+  var weatherCalmButton = document.getElementById("weather-calm");
+  var weatherDriftButton = document.getElementById("weather-drift");
+  var weatherStormButton = document.getElementById("weather-storm");
+
   var shuffleButton = document.getElementById("shuffle-button");
   var generateButton = document.getElementById("generate-button");
   var mutateButton = document.getElementById("mutate-button");
   var clearMemoryButton = document.getElementById("clear-memory-button");
+
   var statusEl = document.getElementById("status");
   var selectedFragmentEl = document.getElementById("selected-fragment");
   var selectedMutationEl = document.getElementById("selected-mutation");
@@ -745,9 +829,6 @@ function depthOffset(depth) {
     { id:"frag-7", type:"idea", text:"What if confusion is not a bug but a doorway?", depth:"deep" },
     { id:"frag-8", type:"problem", text:"I can see the value, but I cannot choose the first move.", depth:"middle" }
   ];
-
-  var GENERATED_FRAGMENTS = [];
-  var selectedFragmentId = null;
 
   var RANDOM_LIBRARY = {
     criticism: [
@@ -831,119 +912,109 @@ function depthOffset(depth) {
       { text:"Maybe this idea wants a stronger entry point.", type:"problem" },
       { text:"What question would unlock this idea further?", type:"confusion" }
     ]
-  };
-
-  var DEPTHS = ["surface", "middle", "deep"];
+  };  var DEPTHS = ["surface", "middle", "deep"];
 
   var GRAVITY_ZONES = {
     idea: {
       mobile: [
-        { left:"6%", top:"8%" },
-        { left:"36%", top:"7%" },
-        { left:"14%", top:"26%" },
-        { left:"42%", top:"23%" },
-        { left:"24%", top:"15%" }
+        { left:6, top:10 },
+        { left:34, top:12 },
+        { left:18, top:28 },
+        { left:42, top:26 }
       ],
       desktop: [
-        { left:"5%", top:"7%" },
-        { left:"24%", top:"8%" },
-        { left:"12%", top:"24%" },
-        { left:"30%", top:"22%" },
-        { left:"18%", top:"15%" }
+        { left:6, top:10 },
+        { left:24, top:11 },
+        { left:14, top:27 },
+        { left:32, top:24 }
       ]
     },
     problem: {
       mobile: [
-        { left:"56%", top:"8%" },
-        { left:"54%", top:"28%" },
-        { left:"58%", top:"48%" },
-        { left:"52%", top:"18%" },
-        { left:"60%", top:"38%" }
+        { left:54, top:10 },
+        { left:56, top:30 },
+        { left:58, top:48 },
+        { left:52, top:20 }
       ],
       desktop: [
-        { left:"60%", top:"8%" },
-        { left:"72%", top:"14%" },
-        { left:"64%", top:"30%" },
-        { left:"80%", top:"26%" },
-        { left:"70%", top:"40%" }
+        { left:60, top:10 },
+        { left:74, top:14 },
+        { left:64, top:30 },
+        { left:78, top:26 }
       ]
     },
     confusion: {
       mobile: [
-        { left:"28%", top:"42%" },
-        { left:"24%", top:"58%" },
-        { left:"30%", top:"72%" },
-        { left:"18%", top:"50%" },
-        { left:"34%", top:"62%" }
+        { left:24, top:44 },
+        { left:28, top:60 },
+        { left:34, top:74 },
+        { left:18, top:54 }
       ],
       desktop: [
-        { left:"34%", top:"44%" },
-        { left:"48%", top:"48%" },
-        { left:"40%", top:"62%" },
-        { left:"26%", top:"58%" },
-        { left:"54%", top:"64%" }
+        { left:32, top:46 },
+        { left:46, top:50 },
+        { left:38, top:66 },
+        { left:24, top:58 }
       ]
     },
     criticism: {
       mobile: [
-        { left:"6%", top:"76%" },
-        { left:"10%", top:"62%" },
-        { left:"4%", top:"88%" },
-        { left:"14%", top:"84%" }
+        { left:6, top:74 },
+        { left:12, top:84 },
+        { left:4, top:88 }
       ],
       desktop: [
-        { left:"6%", top:"66%" },
-        { left:"20%", top:"74%" },
-        { left:"8%", top:"82%" },
-        { left:"18%", top:"88%" }
+        { left:6, top:68 },
+        { left:18, top:78 },
+        { left:8, top:86 }
       ]
-    },    failure: {
+    },
+    failure: {
       mobile: [
-        { left:"54%", top:"74%" },
-        { left:"58%", top:"90%" },
-        { left:"50%", top:"60%" },
-        { left:"60%", top:"82%" }
+        { left:54, top:76 },
+        { left:58, top:88 },
+        { left:48, top:66 }
       ],
       desktop: [
-        { left:"74%", top:"64%" },
-        { left:"66%", top:"78%" },
-        { left:"82%", top:"82%" },
-        { left:"60%", top:"70%" }
+        { left:74, top:68 },
+        { left:66, top:82 },
+        { left:58, top:72 }
       ]
     },
     emotion: {
       mobile: [
-        { left:"54%", top:"58%" },
-        { left:"48%", top:"42%" },
-        { left:"60%", top:"66%" },
-        { left:"44%", top:"50%" }
+        { left:50, top:58 },
+        { left:44, top:44 },
+        { left:56, top:66 }
       ],
       desktop: [
-        { left:"54%", top:"46%" },
-        { left:"68%", top:"50%" },
-        { left:"58%", top:"58%" },
-        { left:"46%", top:"54%" }
+        { left:54, top:48 },
+        { left:66, top:52 },
+        { left:58, top:60 }
       ]
     }
   };
 
   var MIXED_POSITION_SETS = [
     [
-      { left:"6%", top:"8%" }, { left:"36%", top:"7%" }, { left:"66%", top:"10%" },
-      { left:"10%", top:"32%" }, { left:"45%", top:"28%" }, { left:"71%", top:"38%" },
-      { left:"22%", top:"57%" }, { left:"57%", top:"63%" }, { left:"7%", top:"78%" },
-      { left:"38%", top:"80%" }, { left:"68%", top:"74%" }, { left:"30%", top:"46%" }
+      { left:6, top:10 }, { left:36, top:11 }, { left:66, top:12 },
+      { left:10, top:34 }, { left:44, top:30 }, { left:70, top:40 },
+      { left:20, top:60 }, { left:56, top:66 }, { left:8, top:82 },
+      { left:38, top:82 }, { left:68, top:76 }, { left:28, top:48 }
     ],
     [
-      { left:"10%", top:"11%" }, { left:"43%", top:"6%" }, { left:"70%", top:"16%" },
-      { left:"5%", top:"38%" }, { left:"35%", top:"30%" }, { left:"65%", top:"42%" },
-      { left:"18%", top:"62%" }, { left:"53%", top:"68%" }, { left:"75%", top:"72%" },
-      { left:"12%", top:"80%" }, { left:"46%", top:"52%" }, { left:"28%", top:"21%" }
+      { left:10, top:12 }, { left:42, top:8 }, { left:70, top:18 },
+      { left:6, top:40 }, { left:34, top:32 }, { left:64, top:44 },
+      { left:16, top:64 }, { left:54, top:70 }, { left:74, top:74 },
+      { left:12, top:82 }, { left:46, top:54 }, { left:26, top:24 }
     ]
   ];
 
+  var GENERATED_FRAGMENTS = [];
+  var selectedFragmentId = null;
   var mixedActiveSet = MIXED_POSITION_SETS[0];
   var idCounter = 100;
+  var currentWeather = "calm";
 
   function setStatus(message) {
     statusEl.textContent = message || "";
@@ -951,25 +1022,6 @@ function depthOffset(depth) {
 
   function updateMemoryCount() {
     memoryCountEl.textContent = "Saved generated fragments: " + GENERATED_FRAGMENTS.length;
-  }
-
-  function isMobileLayout() {
-    return window.innerWidth <= 720;
-  }
-
-  function pickRandom(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-
-  function shuffle(array) {
-    var arr = array.slice();
-    for (var i = arr.length - 1; i > 0; i -= 1) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = temp;
-    }
-    return arr;
   }
 
   function saveGeneratedFragments() {
@@ -984,6 +1036,7 @@ function depthOffset(depth) {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
+
       var parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return;
 
@@ -999,11 +1052,16 @@ function depthOffset(depth) {
           maxId = last;
         }
       });
+
       idCounter = maxId + 1;
     } catch (error) {
       console.error(error);
       GENERATED_FRAGMENTS = [];
     }
+  }
+
+  function isMobileLayout() {
+    return window.innerWidth <= 720;
   }
 
   function getAllFragments() {
@@ -1049,6 +1107,28 @@ function depthOffset(depth) {
     return items;
   }
 
+  function applyWeatherToPosition(baseLeft, baseTop, item, index) {
+    var left = baseLeft;
+    var top = baseTop;
+    var seed = hashString(item.id + "-" + currentWeather);
+    var xSwing = ((seed % 11) - 5);
+    var ySwing = (((seed >> 3) % 11) - 5);
+
+    if (currentWeather === "drift") {
+      left += xSwing * 0.7;
+      top += ySwing * 0.5;
+    } else if (currentWeather === "storm") {
+      left += xSwing * 1.6;
+      top += ySwing * 1.3;
+      top += ((index % 2 === 0) ? -4 : 4);
+    }
+
+    return {
+      left: clampPercent(left, 2, 78),
+      top: clampPercent(top, 4, 90)
+    };
+  }
+
   function buildGravityPositions(items) {
     var deviceKey = isMobileLayout() ? "mobile" : "desktop";
     var counters = {
@@ -1061,19 +1141,25 @@ function depthOffset(depth) {
     };
     var positions = {};
 
-    items.forEach(function (item) {
-      var zone = GRAVITY_ZONES[item.type] ? GRAVITY_ZONES[item.type][deviceKey] : GRAVITY_ZONES.idea[deviceKey];
-      var index = counters[item.type] || 0;
-      var base = zone[index % zone.length];
-      counters[item.type] = index + 1;
+    items.forEach(function (item, index) {
+      var zoneGroup = GRAVITY_ZONES[item.type] || GRAVITY_ZONES.idea;
+      var zone = zoneGroup[deviceKey];
+      var counter = counters[item.type] || 0;
+      var base = zone[counter % zone.length];
 
-      var driftX = ((index % 3) - 1) * (isMobileLayout() ? 2 : 3);
-      var driftY = (((index + 1) % 3) - 1) * (isMobileLayout() ? 2 : 3);
+      counters[item.type] = counter + 1;
 
-      positions[item.id] = {
-        left: clampPercent(parseFloat(base.left) + driftX),
-        top: clampPercent(parseFloat(base.top) + driftY)
-      };
+      var driftX = ((counter % 3) - 1) * (isMobileLayout() ? 2 : 3);
+      var driftY = (((counter + 1) % 3) - 1) * (isMobileLayout() ? 2 : 3);
+
+      var pos = applyWeatherToPosition(
+        base.left + driftX,
+        base.top + driftY + depthOffset(item.depth),
+        item,
+        index
+      );
+
+      positions[item.id] = pos;
     });
 
     return positions;
@@ -1081,20 +1167,19 @@ function depthOffset(depth) {
 
   function buildMixedPositions(items) {
     var positions = {};
+
     items.forEach(function (item, index) {
       var base = mixedActiveSet[index % mixedActiveSet.length];
-      positions[item.id] = {
-        left: clampPercent(parseFloat(base.left)),
-        top: clampPercent(parseFloat(base.top))
-      };
+      var pos = applyWeatherToPosition(
+        base.left,
+        base.top + depthOffset(item.depth),
+        item,
+        index
+      );
+      positions[item.id] = pos;
     });
-    return positions;
-  }
 
-  function clampPercent(value) {
-    if (value < 2) return 2;
-    if (value > 78) return 78;
-    return value;
+    return positions;
   }
 
   function createFragmentCard(item, pos, index) {
@@ -1104,9 +1189,8 @@ function depthOffset(depth) {
       (item.id === selectedFragmentId ? " selected" : "") +
       (item.generated ? " generated" : "");
 
-card.style.left = pos.left + "%";
-card.style.top = pos.top + "%";
-card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
+    card.style.left = pos.left + "%";
+    card.style.top = pos.top + "%";
     card.style.animationDelay = ((index % 7) * 0.35) + "s";
 
     var tag = document.createElement("span");
@@ -1131,12 +1215,30 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
     return card;
   }
 
+  function renderWeatherUI() {
+    weatherCalmButton.classList.remove("active-weather");
+    weatherDriftButton.classList.remove("active-weather");
+    weatherStormButton.classList.remove("active-weather");
+
+    if (currentWeather === "calm") {
+      weatherCalmButton.classList.add("active-weather");
+    } else if (currentWeather === "drift") {
+      weatherDriftButton.classList.add("active-weather");
+    } else {
+      weatherStormButton.classList.add("active-weather");
+    }
+
+    oceanShellEl.classList.remove("weather-calm", "weather-drift", "weather-storm");
+    oceanShellEl.classList.add("weather-" + currentWeather);
+  }
+
   function renderOcean() {
     var items = getVisibleFragments();
     var mode = sortModeEl.value;
     var positions;
 
     oceanGridEl.innerHTML = "";
+    renderWeatherUI();
 
     if (!items.length) {
       var empty = document.createElement("div");
@@ -1160,7 +1262,6 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
 
     updateMemoryCount();
     mutateButton.disabled = !selectedFragmentId;
-    setStatus(items.length + " fragments drifting in the ocean.");
   }
 
   function makeLink(label, href, className) {
@@ -1213,7 +1314,7 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
       selectedLinksEl.appendChild(
         makeLink(
           "Open first mutation",
-          trailData.firstTool.file + "?" + router.buildQueryString({
+          "./" + trailData.firstTool.file + "?" + router.buildQueryString({
             fragment: item.text,
             type: item.type,
             mode: "stable"
@@ -1240,7 +1341,7 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
   function shuffleOcean() {
     mixedActiveSet = pickRandom(MIXED_POSITION_SETS);
     renderOcean();
-    setStatus(sortModeEl.value === "gravity" ? "Gravity ocean refreshed." : "Ocean shuffled.");
+    setStatus(currentWeather === "storm" ? "Storm shuffled the ocean." : "Ocean shuffled.");
   }
 
   function generateRandomFragment() {
@@ -1311,7 +1412,9 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
     renderOcean();
     selectFragment(newFragment);
     setStatus("Selected fragment mutated into a new fragment and returned to the ocean.");
-  }  function clearMemory() {
+  }
+
+  function clearMemory() {
     GENERATED_FRAGMENTS = [];
     saveGeneratedFragments();
     selectedFragmentId = null;
@@ -1324,10 +1427,30 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
 
   filterTypeEl.addEventListener("change", function () {
     renderOcean();
+    setStatus("Filter changed.");
   });
 
   sortModeEl.addEventListener("change", function () {
     renderOcean();
+    setStatus("Drift style changed.");
+  });
+
+  weatherCalmButton.addEventListener("click", function () {
+    currentWeather = "calm";
+    renderOcean();
+    setStatus("Weather changed to Calm.");
+  });
+
+  weatherDriftButton.addEventListener("click", function () {
+    currentWeather = "drift";
+    renderOcean();
+    setStatus("Weather changed to Drift.");
+  });
+
+  weatherStormButton.addEventListener("click", function () {
+    currentWeather = "storm";
+    renderOcean();
+    setStatus("Weather changed to Storm.");
   });
 
   shuffleButton.addEventListener("click", shuffleOcean);
@@ -1342,6 +1465,7 @@ card.style.top = (parseFloat(pos.top) + depthOffset(item.depth)) + "%";
   loadGeneratedFragments();
   mutateButton.disabled = true;
   renderOcean();
+  setStatus("Ocean ready. Calm weather active.");
 })();
 </script>
 </body>
