@@ -2,7 +2,7 @@
   "use strict";
 
   const mutationMap = {
-    version: "1.0",
+    version: "2.0",
     name: "REFRAME Mutation Map",
     description:
       "Three-field thinking model for REFRAME Studio. Thought drifts through fields and touches mutation contact zones.",
@@ -14,6 +14,69 @@
       "Output must create the next field state.",
       "Chaos is not random. Chaos is meaningful turbulence."
     ],
+
+    sourceTypes: {
+      criticism: {
+        id: "criticism",
+        label: "Criticism",
+        description: "Outside judgment creates friction and reaction.",
+        entryZones: [
+          "problem-to-options",
+          "emotion-to-action",
+          "next-step-finder"
+        ]
+      },
+      emotion: {
+        id: "emotion",
+        label: "Emotion",
+        description: "Emotional heaviness blocks movement.",
+        entryZones: [
+          "emotion-to-action",
+          "next-step-finder",
+          "constraint-to-action"
+        ]
+      },
+      problem: {
+        id: "problem",
+        label: "Problem",
+        description: "A concrete stuck point needs structure.",
+        entryZones: [
+          "problem-to-root-cause",
+          "problem-to-constraints",
+          "problem-to-options"
+        ]
+      },
+      confusion: {
+        id: "confusion",
+        label: "Confusion",
+        description: "The shape of the thought is not yet clear.",
+        entryZones: [
+          "thought-map",
+          "thought-map-v2",
+          "stuck-to-tool"
+        ]
+      },
+      failure: {
+        id: "failure",
+        label: "Failure",
+        description: "Past attempts failed and now need reframing.",
+        entryZones: [
+          "problem-to-root-cause",
+          "emotion-to-action",
+          "next-step-finder"
+        ]
+      },
+      idea: {
+        id: "idea",
+        label: "Idea",
+        description: "A floating idea needs shape or multiplication.",
+        entryZones: [
+          "idea-to-tool-spec",
+          "tool-factory",
+          "thought-map-v2"
+        ]
+      }
+    },
 
     fields: {
       friction: {
@@ -197,17 +260,26 @@
       stable: {
         id: "stable",
         label: "Stable",
-        description: "Stabilizes the field and reveals clear movement."
+        description: "Stabilizes the field and reveals clear movement.",
+        nextLimit: 3,
+        useFarOpenings: false,
+        randomize: false
       },
       drift: {
         id: "drift",
         label: "Drift",
-        description: "Adds slight directional change."
+        description: "Adds slight directional change.",
+        nextLimit: 3,
+        useFarOpenings: true,
+        randomize: true
       },
       chaos: {
         id: "chaos",
         label: "Chaos",
-        description: "Creates meaningful turbulence and unexpected angles."
+        description: "Creates meaningful turbulence and unexpected angles.",
+        nextLimit: 5,
+        useFarOpenings: true,
+        randomize: true
       }
     },
 
@@ -236,6 +308,10 @@
           "problem-to-options",
           "emotion-to-action",
           "next-step-finder"
+        ],
+        farOpenings: [
+          "thought-map-v2",
+          "idea-to-tool-spec"
         ]
       },
 
@@ -261,6 +337,10 @@
           "constraint-to-action",
           "problem-to-constraints",
           "problem-to-options"
+        ],
+        farOpenings: [
+          "emotion-to-action",
+          "thought-map"
         ]
       },
 
@@ -289,6 +369,10 @@
           "problem-to-options",
           "emotion-to-action",
           "idea-to-tool-spec"
+        ],
+        farOpenings: [
+          "tool-factory",
+          "thought-map-v2"
         ]
       },
 
@@ -315,6 +399,10 @@
           "stuck-to-tool",
           "problem-to-root-cause",
           "idea-to-tool-spec"
+        ],
+        farOpenings: [
+          "tool-factory",
+          "tool-generator-v3"
         ]
       },
 
@@ -341,6 +429,10 @@
           "problem-to-options",
           "constraint-to-action",
           "next-step-finder"
+        ],
+        farOpenings: [
+          "emotion-to-action",
+          "thought-map-v2"
         ]
       },
 
@@ -367,6 +459,10 @@
           "problem-to-options",
           "next-step-finder",
           "emotion-to-action"
+        ],
+        farOpenings: [
+          "thought-map",
+          "idea-to-tool-spec"
         ]
       },
 
@@ -393,6 +489,10 @@
           "next-step-finder",
           "problem-to-constraints",
           "idea-to-tool-spec"
+        ],
+        farOpenings: [
+          "tool-factory",
+          "thought-map-v2"
         ]
       },
 
@@ -418,6 +518,10 @@
           "next-step-finder",
           "constraint-to-action",
           "problem-to-root-cause"
+        ],
+        farOpenings: [
+          "thought-map",
+          "problem-to-options"
         ]
       },
 
@@ -443,6 +547,10 @@
           "next-step-finder",
           "problem-to-constraints",
           "problem-to-options"
+        ],
+        farOpenings: [
+          "emotion-to-action",
+          "thought-map-v2"
         ]
       },
 
@@ -469,6 +577,10 @@
           "tool-generator-v2",
           "tool-generator-v3",
           "tool-factory"
+        ],
+        farOpenings: [
+          "tool-factory-pro",
+          "thought-map-v2"
         ]
       },
 
@@ -494,6 +606,10 @@
           "tool-generator-v2",
           "tool-generator-v3",
           "tool-factory-pro"
+        ],
+        farOpenings: [
+          "tool-factory",
+          "thought-map"
         ]
       },
 
@@ -519,6 +635,10 @@
           "tool-generator-v3",
           "tool-factory",
           "thought-map"
+        ],
+        farOpenings: [
+          "tool-factory-pro",
+          "thought-map-v2"
         ]
       },
 
@@ -544,6 +664,10 @@
           "tool-factory",
           "tool-factory-pro",
           "thought-map-v2"
+        ],
+        farOpenings: [
+          "thought-map",
+          "stuck-to-tool"
         ]
       },
 
@@ -569,6 +693,10 @@
           "idea-to-tool-spec",
           "tool-generator-v3",
           "tool-factory-pro"
+        ],
+        farOpenings: [
+          "thought-map-v2",
+          "stuck-to-tool"
         ]
       },
 
@@ -594,10 +722,35 @@
           "tool-generator-v3",
           "thought-map-v2",
           "stuck-to-tool"
+        ],
+        farOpenings: [
+          "tool-factory",
+          "idea-to-tool-spec"
         ]
       }
     ]
   };
+
+  function shuffle(array) {
+    const arr = array.slice();
+    for (let i = arr.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+    return arr;
+  }
+
+  function uniqueById(items) {
+    const seen = {};
+    return items.filter(function (item) {
+      if (!item || !item.id) return false;
+      if (seen[item.id]) return false;
+      seen[item.id] = true;
+      return true;
+    });
+  }
 
   function getFieldIds(fieldName, groupName) {
     const field = mutationMap.fields[fieldName];
@@ -609,6 +762,14 @@
     return group.map(function (item) {
       return item.id;
     });
+  }
+
+  function getMode(modeId) {
+    return mutationMap.modes[modeId] || mutationMap.modes.stable;
+  }
+
+  function getSourceType(typeId) {
+    return mutationMap.sourceTypes[typeId] || mutationMap.sourceTypes.idea;
   }
 
   function getContactZoneById(id) {
@@ -623,6 +784,10 @@
     });
   }
 
+  function getZoneFile(id) {
+    return id + ".html";
+  }
+
   function getNextZones(id) {
     const zone = getContactZoneById(id);
     if (!zone) return [];
@@ -632,6 +797,60 @@
         return getContactZoneById(nextId);
       })
       .filter(Boolean);
+  }
+
+  function getFarZones(id) {
+    const zone = getContactZoneById(id);
+    if (!zone || !Array.isArray(zone.farOpenings)) return [];
+
+    return zone.farOpenings
+      .map(function (nextId) {
+        return getContactZoneById(nextId);
+      })
+      .filter(Boolean);
+  }
+
+  function getEntryZonesBySourceType(typeId) {
+    const sourceType = getSourceType(typeId);
+
+    return sourceType.entryZones
+      .map(function (zoneId) {
+        return getContactZoneById(zoneId);
+      })
+      .filter(Boolean);
+  }
+
+  function getNextZonesByMode(id, modeId) {
+    const mode = getMode(modeId);
+    const nearZones = getNextZones(id);
+    const farZones = mode.useFarOpenings ? getFarZones(id) : [];
+    let combined = uniqueById(nearZones.concat(farZones));
+
+    if (mode.randomize) {
+      combined = shuffle(combined);
+    }
+
+    return combined.slice(0, mode.nextLimit);
+  }
+
+  function toTool(zone) {
+    if (!zone) return null;
+
+    return {
+      id: zone.id,
+      title: zone.title,
+      file: getZoneFile(zone.id),
+      note: zone.role || "Next mutation tool.",
+      cluster: zone.cluster
+    };
+  }
+
+  function getNextToolsByMode(id, modeId) {
+    return getNextZonesByMode(id, modeId).map(toTool).filter(Boolean);
+  }
+
+  function getEntryToolsBySourceType(typeId) {
+    return getEntryZonesBySourceType(typeId).map(toTool).filter(Boolean);
   }
 
   function summarizeZone(id) {
@@ -645,16 +864,52 @@
       primaryFriction: zone.frictionProfile.primary.slice(),
       primaryMutation: zone.mutationProfile.primary.slice(),
       primaryExpression: zone.expressionProfile.primary.slice(),
-      nextOpenings: zone.nextOpenings.slice()
+      outputState: zone.outputState.slice(),
+      nextOpenings: zone.nextOpenings.slice(),
+      farOpenings: Array.isArray(zone.farOpenings) ? zone.farOpenings.slice() : []
+    };
+  }
+
+  function summarizeSourceType(typeId) {
+    const sourceType = getSourceType(typeId);
+
+    return {
+      id: sourceType.id,
+      label: sourceType.label,
+      description: sourceType.description,
+      entryZones: sourceType.entryZones.slice()
+    };
+  }
+
+  function summarizeMode(modeId) {
+    const mode = getMode(modeId);
+
+    return {
+      id: mode.id,
+      label: mode.label,
+      description: mode.description,
+      nextLimit: mode.nextLimit,
+      useFarOpenings: mode.useFarOpenings,
+      randomize: mode.randomize
     };
   }
 
   mutationMap.helpers = {
     getFieldIds: getFieldIds,
+    getMode: getMode,
+    getSourceType: getSourceType,
     getContactZoneById: getContactZoneById,
     getContactZonesByCluster: getContactZonesByCluster,
+    getZoneFile: getZoneFile,
     getNextZones: getNextZones,
-    summarizeZone: summarizeZone
+    getFarZones: getFarZones,
+    getEntryZonesBySourceType: getEntryZonesBySourceType,
+    getNextZonesByMode: getNextZonesByMode,
+    getNextToolsByMode: getNextToolsByMode,
+    getEntryToolsBySourceType: getEntryToolsBySourceType,
+    summarizeZone: summarizeZone,
+    summarizeSourceType: summarizeSourceType,
+    summarizeMode: summarizeMode
   };
 
   if (typeof window !== "undefined") {
