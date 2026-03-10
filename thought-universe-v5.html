@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thought Universe v5</title>
+<style>
+*{
+  box-sizing:border-box;
+}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(circle at 20% 10%, #1b2a5a, transparent 40%),
+    radial-gradient(circle at 80% 20%, #3c1b5a, transparent 40%),
+    linear-gradient(180deg, #020617, #020617);
+  min-height:100vh;
+}
+.wrap{
+  max-width:1000px;
+  margin:0 auto;
+  padding:20px;
+}
+.back{
+  color:#9ca3af;
+  text-decoration:none;
+  display:inline-block;
+  margin-bottom:20px;
+}
+h1{
+  font-size:34px;
+  margin:0 0 10px;
+}
+.desc{
+  color:#a5b4fc;
+  margin-bottom:20px;
+}
+.panel{
+  border:1px solid rgba(120,140,255,.2);
+  border-radius:24px;
+  padding:20px;
+  background:rgba(10,15,40,.6);
+  box-shadow:0 0 0 1px rgba(120,140,255,.08), 0 24px 60px rgba(0,0,0,.35);
+}
+.top-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:18px;
+}
+.action{
+  display:block;
+  padding:14px 16px;
+  border-radius:18px;
+  text-align:center;
+  text-decoration:none;
+  color:#fff;
+  border:1px solid rgba(120,140,255,.2);
+  background:linear-gradient(180deg, rgba(12,27,67,.96), rgba(10,23,56,.96));
+}
+.action.primary{
+  background:linear-gradient(180deg, rgba(70,46,139,.96), rgba(41,31,96,.96));
+}
+.summary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+.box{
+  border:1px solid rgba(120,140,255,.2);
+  border-radius:18px;
+  padding:14px;
+  background:rgba(8,18,43,.75);
+}
+.label{
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#9ca3af;
+  margin-bottom:8px;
+}
+.value{
+  font-size:28px;
+  font-weight:700;
+}
+.space{
+  position:relative;
+  height:640px;
+  border-radius:20px;
+  border:1px solid rgba(120,140,255,.15);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at center, #0f1c44, #020617);
+}
+.space::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.78;
+  background-image:
+    radial-gradient(2px 2px at 10% 14%, rgba(255,255,255,.8), transparent 60%),
+    radial-gradient(1.5px 1.5px at 22% 27%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(2px 2px at 35% 10%, rgba(255,255,255,.75), transparent 60%),
+    radial-gradient(1.5px 1.5px at 50% 18%, rgba(255,255,255,.65), transparent 60%),
+    radial-gradient(2px 2px at 68% 12%, rgba(255,255,255,.75), transparent 60%),
+    radial-gradient(1.5px 1.5px at 82% 23%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(2px 2px at 91% 15%, rgba(255,255,255,.8), transparent 60%),
+    radial-gradient(1.5px 1.5px at 16% 72%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(2px 2px at 34% 84%, rgba(255,255,255,.7), transparent 60%),
+    radial-gradient(1.5px 1.5px at 58% 78%, rgba(255,255,255,.6), transparent 60%),
+    radial-gradient(2px 2px at 77% 86%, rgba(255,255,255,.75), transparent 60%);
+}
+.empty{
+  padding:20px;
+  color:#94a3b8;
+  position:relative;
+  z-index:2;
+}
+.star{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  text-decoration:none;
+  color:#fff;
+  z-index:2;
+}
+.starCore{
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  background:linear-gradient(180deg,#3b82f6,#1e40af);
+  box-shadow:0 0 20px rgba(80,120,255,.6);
+  border:1px solid rgba(102,182,255,.28);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.star:hover .starCore,
+.star:active .starCore{
+  transform:scale(1.08);
+  box-shadow:0 0 30px rgba(80,120,255,.95);
+}
+.star.middle .starCore{
+  background:linear-gradient(180deg,#a855f7,#581c87);
+}
+.star.deep .starCore{
+  background:linear-gradient(180deg,#22d3ee,#155e75);
+}
+.starLabel{
+  font-size:12px;
+  color:#c7d2fe;
+  margin-top:6px;
+  max-width:120px;
+  line-height:1.3;
+}
+svg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:16px;
+}
+.legend-pill{
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(120,140,255,.2);
+  background:rgba(10,20,49,.82);
+  font-size:14px;
+}
+.footer{
+  margin-top:22px;
+  color:#9ca3af;
+  font-size:14px;
+}
+@media (max-width:760px){
+  .summary{
+    grid-template-columns:1fr 1fr;
+  }
+  .space{
+    height:560px;
+  }
+}
+@media (max-width:640px){
+  h1{
+    font-size:28px;
+  }
+  .top-actions{
+    grid-template-columns:1fr 1fr;
+  }
+  .value{
+    font-size:24px;
+  }
+  .starLabel{
+    max-width:90px;
+    font-size:11px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+  <h1>Thought Universe v5</h1>
+  <div class="desc">Stars spread wider. Bigger thoughts become bigger stars.</div>
+
+  <div class="panel">
+    <div class="top-actions">
+      <a class="action primary" href="./thinking-ocean.html">Open Thinking Ocean</a>
+      <a class="action" href="./thought-galaxy-router.html">Open Galaxy Router</a>
+    </div>
+
+    <div class="summary">
+      <div class="box">
+        <div class="label">Fragments</div>
+        <div class="value" id="countValue">0</div>
+      </div>
+      <div class="box">
+        <div class="label">Surface</div>
+        <div class="value" id="surfaceValue">0</div>
+      </div>
+      <div class="box">
+        <div class="label">Middle</div>
+        <div class="value" id="middleValue">0</div>
+      </div>
+      <div class="box">
+        <div class="label">Deep</div>
+        <div class="value" id="deepValue">0</div>
+      </div>
+    </div>
+
+    <div class="space" id="space">
+      <svg id="lines"></svg>
+      <div class="empty" id="emptyState">Your universe will appear here after you add fragments in Thinking Ocean.</div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-pill">Tap star = open galaxy</div>
+      <div class="legend-pill">Bigger score = bigger star</div>
+      <div class="legend-pill">Same type = connected</div>
+      <div class="legend-pill">Stars drift slowly</div>
+    </div>
+  </div>
+
+  <div class="footer">No login. No tracking. Runs entirely in your browser.</div>
+</div>
+
+<script>
+const STORAGE_KEYS = [
+  "reframe-thinking-ocean-v2",
+  "reframe-ocean"
+];
+
+function loadFragments(){
+  for(const key of STORAGE_KEYS){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const data = JSON.parse(raw);
+      if(Array.isArray(data) && data.length) return data;
+    }catch(e){}
+  }
+  return [];
+}
+
+function shortText(t){
+  if(!t) return "";
+  return t.length > 24 ? t.slice(0,24) + "…" : t;
+}
+
+function updateSummary(items){
+  let surface = 0;
+  let middle = 0;
+  let deep = 0;
+
+  items.forEach(item => {
+    if(item.depth === "surface") surface++;
+    if(item.depth === "middle") middle++;
+    if(item.depth === "deep") deep++;
+  });
+
+  document.getElementById("countValue").textContent = String(items.length);
+  document.getElementById("surfaceValue").textContent = String(surface);
+  document.getElementById("middleValue").textContent = String(middle);
+  document.getElementById("deepValue").textContent = String(deep);
+}
+
+function getStarSize(depth, score){
+  let base = 52;
+  if(depth === "middle") base = 66;
+  if(depth === "deep") base = 82;
+  return base + Math.min(score || 0, 6) * 6;
+}
+
+function hashString(str){
+  let h = 0;
+  const s = String(str || "");
+  for(let i = 0; i < s.length; i++){
+    h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
+function createStarData(items){
+  return items.slice(0, 16).map((item, i) => {
+    const seed = hashString((item.text || "") + "|" + i);
+    const x = 12 + (seed % 76);
+    const y = 12 + (Math.floor(seed / 97) % 76);
+    const vx = (((seed % 100) / 100) - 0.5) * 0.10;
+    const vy = ((((Math.floor(seed / 100)) % 100) / 100) - 0.5) * 0.10;
+
+    return {
+      item,
+      x,
+      y,
+      vx: vx === 0 ? 0.03 : vx,
+      vy: vy === 0 ? -0.03 : vy
+    };
+  });
+}
+
+function relaxStars(stars){
+  for(let step = 0; step < 120; step++){
+    for(let i = 0; i < stars.length; i++){
+      for(let j = i + 1; j < stars.length; j++){
+        const a = stars[i];
+        const b = stars[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+        const minDist = 16;
+
+        if(dist < minDist){
+          const push = (minDist - dist) * 0.08;
+          const ux = dx / dist;
+          const uy = dy / dist;
+
+          a.x += ux * push;
+          a.y += uy * push;
+          b.x -= ux * push;
+          b.y -= uy * push;
+        }
+      }
+
+      stars[i].x = Math.max(8, Math.min(92, stars[i].x));
+      stars[i].y = Math.max(10, Math.min(90, stars[i].y));
+    }
+  }
+  return stars;
+}
+
+function drawLines(stars){
+  const svg = document.getElementById("lines");
+  svg.innerHTML = "";
+
+  for(let i = 0; i < stars.length; i++){
+    for(let j = i + 1; j < stars.length; j++){
+      if(stars[i].item.sourceType === stars[j].item.sourceType){
+        const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+        line.setAttribute("x1", stars[i].x + "%");
+        line.setAttribute("y1", stars[i].y + "%");
+        line.setAttribute("x2", stars[j].x + "%");
+        line.setAttribute("y2", stars[j].y + "%");
+        line.setAttribute("stroke", "#647cff");
+        line.setAttribute("stroke-width", "1.2");
+        line.setAttribute("opacity", ".55");
+        svg.appendChild(line);
+      }
+    }
+  }
+}
+
+let starState = [];
+let starElements = [];
+let animationId = null;
+
+function renderUniverse(){
+  const items = loadFragments();
+  updateSummary(items);
+
+  const space = document.getElementById("space");
+  const empty = document.getElementById("emptyState");
+  const svg = document.getElementById("lines");
+
+  space.querySelectorAll(".star").forEach(el => el.remove());
+  svg.innerHTML = "";
+
+  if(!items.length){
+    empty.style.display = "block";
+    return;
+  }
+
+  empty.style.display = "none";
+
+  items.sort((a,b) => (b.score || 0) - (a.score || 0));
+  starState = relaxStars(createStarData(items));
+  starElements = [];
+
+  starState.forEach(star => {
+    const el = document.createElement("a");
+    el.className = "star " + (star.item.depth || "surface");
+    el.href = "./thought-galaxy-router.html?fragment=" + encodeURIComponent(star.item.text || "");
+
+    const size = getStarSize(star.item.depth, star.item.score || 0);
+
+    el.innerHTML = `
+      <div class="starCore" style="width:${size}px;height:${size}px;">✦</div>
+      <div class="starLabel">${shortText(star.item.text)}</div>
+    `;
+
+    space.appendChild(el);
+    starElements.push(el);
+  });
+
+  startAnimation();
+}
+
+function startAnimation(){
+  if(animationId) cancelAnimationFrame(animationId);
+
+  function tick(){
+    const minX = 8;
+    const maxX = 92;
+    const minY = 10;
+    const maxY = 90;
+
+    starState.forEach((star, i) => {
+      star.x += star.vx;
+      star.y += star.vy;
+
+      if(star.x < minX || star.x > maxX) star.vx *= -1;
+      if(star.y < minY || star.y > maxY) star.vy *= -1;
+
+      star.x = Math.max(minX, Math.min(maxX, star.x));
+      star.y = Math.max(minY, Math.min(maxY, star.y));
+
+      const el = starElements[i];
+      if(el){
+        el.style.left = star.x + "%";
+        el.style.top = star.y + "%";
+      }
+    });
+
+    drawLines(starState);
+    animationId = requestAnimationFrame(tick);
+  }
+
+  tick();
+}
+
+renderUniverse();
+</script>
+</body>
+</html>
