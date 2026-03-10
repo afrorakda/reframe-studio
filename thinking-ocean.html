@@ -276,14 +276,14 @@ select:focus{
 
 .ocean{
   position:relative;
-  min-height:820px;
+  min-height:860px;
   border:1px solid var(--line);
   border-radius:24px;
   overflow:hidden;
   background:
-    radial-gradient(circle at 20% 20%, rgba(34,199,232,0.10), transparent 20%),
+    radial-gradient(circle at 18% 22%, rgba(34,199,232,0.10), transparent 20%),
     radial-gradient(circle at 80% 15%, rgba(124,92,255,0.12), transparent 22%),
-    radial-gradient(circle at 30% 80%, rgba(34,197,94,0.08), transparent 18%),
+    radial-gradient(circle at 30% 82%, rgba(34,197,94,0.08), transparent 18%),
     linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
   box-shadow:var(--shadow);
 }
@@ -292,10 +292,10 @@ select:focus{
   content:"";
   position:absolute;
   inset:0;
+  pointer-events:none;
   background:
     radial-gradient(circle at 50% -10%, rgba(255,255,255,0.06), transparent 24%),
     linear-gradient(180deg, rgba(34,199,232,0.03), transparent 30%, rgba(124,92,255,0.04) 100%);
-  pointer-events:none;
 }
 
 .wave{
@@ -304,27 +304,82 @@ select:focus{
   width:110%;
   height:120px;
   border-radius:50%;
-  border:1px solid rgba(255,255,255,0.05);
+  border:1px dashed rgba(255,255,255,0.05);
   opacity:0.35;
   pointer-events:none;
 }
 
 .wave.one{ top:70px; }
-.wave.two{ top:300px; }
-.wave.three{ top:560px; }
+.wave.two{ top:310px; }
+.wave.three{ top:590px; }
+
+.gravity-hint{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.gravity-ring{
+  position:absolute;
+  border-radius:50%;
+  border:1px dashed rgba(255,255,255,0.05);
+  opacity:0.5;
+}
+
+.gravity-ring.idea{
+  width:340px;
+  height:340px;
+  left:2%;
+  top:4%;
+}
+
+.gravity-ring.problem{
+  width:360px;
+  height:360px;
+  right:2%;
+  top:6%;
+}
+
+.gravity-ring.confusion{
+  width:360px;
+  height:360px;
+  left:20%;
+  top:40%;
+}
+
+.gravity-ring.criticism{
+  width:320px;
+  height:320px;
+  left:0%;
+  bottom:2%;
+}
+
+.gravity-ring.failure{
+  width:320px;
+  height:320px;
+  right:0%;
+  bottom:4%;
+}
+
+.gravity-ring.emotion{
+  width:260px;
+  height:260px;
+  right:26%;
+  top:28%;
+}
 
 .ocean-grid{
   position:relative;
-  min-height:820px;
+  min-height:860px;
 }
 
 .fragment{
   position:absolute;
-  width:230px;
+  width:220px;
   padding:14px;
   border-radius:18px;
   border:1px solid var(--line);
-  background:rgba(13,19,31,0.86);
+  background:rgba(13,19,31,0.88);
   backdrop-filter:blur(8px);
   box-shadow:0 10px 28px rgba(0,0,0,0.24);
   cursor:pointer;
@@ -344,8 +399,12 @@ select:focus{
 }
 
 .fragment.selected{
-  border-color:rgba(124,92,255,0.75);
+  border-color:rgba(124,92,255,0.8);
   box-shadow:0 0 0 2px rgba(124,92,255,0.18), 0 10px 28px rgba(0,0,0,0.24);
+}
+
+.fragment.generated{
+  box-shadow:0 0 0 1px rgba(34,199,232,0.18), 0 10px 28px rgba(0,0,0,0.24);
 }
 
 .fragment-tag{
@@ -478,22 +537,26 @@ select:focus{
   }
 
   .ocean{
-    min-height:980px;
+    min-height:1020px;
   }
 
   .ocean-grid{
-    min-height:980px;
+    min-height:1020px;
+  }
+
+  .gravity-ring{
+    display:none;
   }
 
   .fragment{
     width:42vw;
     min-width:150px;
-    max-width:210px;
+    max-width:205px;
     padding:12px;
   }
 
   .fragment h3{
-    font-size:0.92rem;
+    font-size:0.9rem;
   }
 
   .fragment p{
@@ -515,25 +578,25 @@ select:focus{
       <div class="hero-inner">
         <div class="hero-grid">
           <div>
-            <span class="eyebrow">Floating fragment field</span>
+            <span class="eyebrow">Gravity ocean</span>
             <h1>Thinking Ocean</h1>
             <p class="subtitle">
-              Fragments float here like unfinished thoughts. Pick one, generate a new one, or mutate the selected fragment and let the ocean grow.
+              Fragments drift here like unfinished thoughts. Similar thoughts gather near each other. Pick one, generate a new one, or mutate the selected fragment and let the ocean grow.
             </p>
           </div>
 
           <div class="hero-points">
             <div class="hero-point">
               <strong>Float</strong>
-              <span>Fragments feel like pieces drifting across a thought surface.</span>
+              <span>Fragments drift like pieces on a calm surface.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Gravity</strong>
+              <span>Similar fragment types gather into loose clusters.</span>
             </div>
             <div class="hero-point">
               <strong>Memory</strong>
               <span>Generated and mutated fragments stay saved on this device.</span>
-            </div>
-            <div class="hero-point">
-              <strong>Mutate</strong>
-              <span>A selected fragment can become a new fragment and return to the ocean.</span>
             </div>
           </div>
         </div>
@@ -541,7 +604,7 @@ select:focus{
         <section class="panel">
           <h2 class="panel-title">Ocean controls</h2>
           <p class="panel-note">
-            Filter the fragments, shuffle the surface, generate new fragments, mutate the selected one, or clear saved memory.
+            Filter the fragments, switch drift style, shuffle the surface, generate new fragments, mutate the selected one, or clear saved memory.
           </p>
 
           <div class="controls">
@@ -556,6 +619,7 @@ select:focus{
             </select>
 
             <select id="sort-mode" aria-label="Sort mode">
+              <option value="gravity">Gravity clusters</option>
               <option value="mixed">Mixed drift</option>
               <option value="surface">Surface first</option>
               <option value="deep">Deep first</option>
@@ -588,6 +652,16 @@ select:focus{
         <div class="wave one"></div>
         <div class="wave two"></div>
         <div class="wave three"></div>
+
+        <div class="gravity-hint">
+          <div class="gravity-ring idea"></div>
+          <div class="gravity-ring problem"></div>
+          <div class="gravity-ring confusion"></div>
+          <div class="gravity-ring criticism"></div>
+          <div class="gravity-ring failure"></div>
+          <div class="gravity-ring emotion"></div>
+        </div>
+
         <div class="ocean-grid" id="ocean-grid"></div>
       </div>
     </section>
@@ -628,7 +702,7 @@ select:focus{
   "use strict";
 
   var router = window.REFRAME_ROUTER;
-  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v3";
+  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v4";
 
   var oceanGridEl = document.getElementById("ocean-grid");
   var filterTypeEl = document.getElementById("filter-type");
@@ -742,28 +816,115 @@ select:focus{
   };
 
   var DEPTHS = ["surface", "middle", "deep"];
-  var POSITION_SETS = [
+
+  var GRAVITY_ZONES = {
+    idea: {
+      mobile: [
+        { left:"6%", top:"8%" },
+        { left:"36%", top:"7%" },
+        { left:"14%", top:"26%" },
+        { left:"42%", top:"23%" },
+        { left:"24%", top:"15%" }
+      ],
+      desktop: [
+        { left:"5%", top:"7%" },
+        { left:"24%", top:"8%" },
+        { left:"12%", top:"24%" },
+        { left:"30%", top:"22%" },
+        { left:"18%", top:"15%" }
+      ]
+    },
+    problem: {
+      mobile: [
+        { left:"56%", top:"8%" },
+        { left:"54%", top:"28%" },
+        { left:"58%", top:"48%" },
+        { left:"52%", top:"18%" },
+        { left:"60%", top:"38%" }
+      ],
+      desktop: [
+        { left:"60%", top:"8%" },
+        { left:"72%", top:"14%" },
+        { left:"64%", top:"30%" },
+        { left:"80%", top:"26%" },
+        { left:"70%", top:"40%" }
+      ]
+    },
+    confusion: {
+      mobile: [
+        { left:"28%", top:"42%" },
+        { left:"24%", top:"58%" },
+        { left:"30%", top:"72%" },
+        { left:"18%", top:"50%" },
+        { left:"34%", top:"62%" }
+      ],
+      desktop: [
+        { left:"34%", top:"44%" },
+        { left:"48%", top:"48%" },
+        { left:"40%", top:"62%" },
+        { left:"26%", top:"58%" },
+        { left:"54%", top:"64%" }
+      ]
+    },
+    criticism: {
+      mobile: [
+        { left:"6%", top:"76%" },
+        { left:"10%", top:"62%" },
+        { left:"4%", top:"88%" },
+        { left:"14%", top:"84%" }
+      ],
+      desktop: [
+        { left:"6%", top:"66%" },
+        { left:"20%", top:"74%" },
+        { left:"8%", top:"82%" },
+        { left:"18%", top:"88%" }
+      ]
+    },    failure: {
+      mobile: [
+        { left:"54%", top:"74%" },
+        { left:"58%", top:"90%" },
+        { left:"50%", top:"60%" },
+        { left:"60%", top:"82%" }
+      ],
+      desktop: [
+        { left:"74%", top:"64%" },
+        { left:"66%", top:"78%" },
+        { left:"82%", top:"82%" },
+        { left:"60%", top:"70%" }
+      ]
+    },
+    emotion: {
+      mobile: [
+        { left:"54%", top:"58%" },
+        { left:"48%", top:"42%" },
+        { left:"60%", top:"66%" },
+        { left:"44%", top:"50%" }
+      ],
+      desktop: [
+        { left:"54%", top:"46%" },
+        { left:"68%", top:"50%" },
+        { left:"58%", top:"58%" },
+        { left:"46%", top:"54%" }
+      ]
+    }
+  };
+
+  var MIXED_POSITION_SETS = [
     [
-      { left:"5%", top:"7%" }, { left:"37%", top:"8%" }, { left:"65%", top:"11%" },
-      { left:"10%", top:"31%" }, { left:"48%", top:"28%" }, { left:"71%", top:"37%" },
-      { left:"22%", top:"55%" }, { left:"56%", top:"61%" }, { left:"6%", top:"74%" },
-      { left:"38%", top:"76%" }, { left:"67%", top:"70%" }, { left:"30%", top:"44%" }
+      { left:"6%", top:"8%" }, { left:"36%", top:"7%" }, { left:"66%", top:"10%" },
+      { left:"10%", top:"32%" }, { left:"45%", top:"28%" }, { left:"71%", top:"38%" },
+      { left:"22%", top:"57%" }, { left:"57%", top:"63%" }, { left:"7%", top:"78%" },
+      { left:"38%", top:"80%" }, { left:"68%", top:"74%" }, { left:"30%", top:"46%" }
     ],
     [
-      { left:"8%", top:"10%" }, { left:"43%", top:"6%" }, { left:"69%", top:"15%" },
-      { left:"4%", top:"36%" }, { left:"34%", top:"29%" }, { left:"63%", top:"41%" },
-      { left:"18%", top:"60%" }, { left:"52%", top:"66%" }, { left:"74%", top:"71%" },
-      { left:"12%", top:"78%" }, { left:"44%", top:"49%" }, { left:"29%", top:"20%" }
-    ],
-    [
-      { left:"6%", top:"16%" }, { left:"34%", top:"5%" }, { left:"66%", top:"12%" },
-      { left:"14%", top:"40%" }, { left:"47%", top:"26%" }, { left:"72%", top:"46%" },
-      { left:"23%", top:"63%" }, { left:"55%", top:"71%" }, { left:"4%", top:"74%" },
-      { left:"70%", top:"78%" }, { left:"35%", top:"54%" }, { left:"44%", top:"84%" }
+      { left:"10%", top:"11%" }, { left:"43%", top:"6%" }, { left:"70%", top:"16%" },
+      { left:"5%", top:"38%" }, { left:"35%", top:"30%" }, { left:"65%", top:"42%" },
+      { left:"18%", top:"62%" }, { left:"53%", top:"68%" }, { left:"75%", top:"72%" },
+      { left:"12%", top:"80%" }, { left:"46%", top:"52%" }, { left:"28%", top:"21%" }
     ]
   ];
 
-  var activePositions = POSITION_SETS[0];
+  var mixedActiveSet = MIXED_POSITION_SETS[0];
   var idCounter = 100;
 
   function setStatus(message) {
@@ -772,6 +933,10 @@ select:focus{
 
   function updateMemoryCount() {
     memoryCountEl.textContent = "Saved generated fragments: " + GENERATED_FRAGMENTS.length;
+  }
+
+  function isMobileLayout() {
+    return window.innerWidth <= 720;
   }
 
   function pickRandom(array) {
@@ -857,21 +1022,72 @@ select:focus{
       items.sort(function (a, b) {
         return depthValue(b.depth) - depthValue(a.depth);
       });
-    } else {
+    } else if (sortMode === "mixed") {
       items = shuffle(items);
+    } else {
+      items = items.slice();
     }
 
     return items;
   }
 
-  function createFragmentCard(item, index) {
+  function buildGravityPositions(items) {
+    var deviceKey = isMobileLayout() ? "mobile" : "desktop";
+    var counters = {
+      criticism:0,
+      emotion:0,
+      problem:0,
+      confusion:0,
+      failure:0,
+      idea:0
+    };
+    var positions = {};
+
+    items.forEach(function (item) {
+      var zone = GRAVITY_ZONES[item.type] ? GRAVITY_ZONES[item.type][deviceKey] : GRAVITY_ZONES.idea[deviceKey];
+      var index = counters[item.type] || 0;
+      var base = zone[index % zone.length];
+      counters[item.type] = index + 1;
+
+      var driftX = ((index % 3) - 1) * (isMobileLayout() ? 2 : 3);
+      var driftY = (((index + 1) % 3) - 1) * (isMobileLayout() ? 2 : 3);
+
+      positions[item.id] = {
+        left: clampPercent(parseFloat(base.left) + driftX),
+        top: clampPercent(parseFloat(base.top) + driftY)
+      };
+    });
+
+    return positions;
+  }
+
+  function buildMixedPositions(items) {
+    var positions = {};
+    items.forEach(function (item, index) {
+      var base = mixedActiveSet[index % mixedActiveSet.length];
+      positions[item.id] = {
+        left: clampPercent(parseFloat(base.left)),
+        top: clampPercent(parseFloat(base.top))
+      };
+    });
+    return positions;
+  }
+
+  function clampPercent(value) {
+    if (value < 2) return 2;
+    if (value > 78) return 78;
+    return value;
+  }
+
+  function createFragmentCard(item, pos, index) {
     var card = document.createElement("button");
     card.type = "button";
-    card.className = "fragment" + (item.id === selectedFragmentId ? " selected" : "");
+    card.className = "fragment" +
+      (item.id === selectedFragmentId ? " selected" : "") +
+      (item.generated ? " generated" : "");
 
-    var pos = activePositions[index % activePositions.length];
-    card.style.left = pos.left;
-    card.style.top = pos.top;
+    card.style.left = pos.left + "%";
+    card.style.top = pos.top + "%";
     card.style.animationDelay = ((index % 7) * 0.35) + "s";
 
     var tag = document.createElement("span");
@@ -898,6 +1114,9 @@ select:focus{
 
   function renderOcean() {
     var items = getVisibleFragments();
+    var mode = sortModeEl.value;
+    var positions;
+
     oceanGridEl.innerHTML = "";
 
     if (!items.length) {
@@ -906,14 +1125,22 @@ select:focus{
       empty.textContent = "No fragments match this filter.";
       oceanGridEl.appendChild(empty);
       updateMemoryCount();
+      mutateButton.disabled = true;
       return;
     }
 
+    if (mode === "gravity") {
+      positions = buildGravityPositions(items);
+    } else {
+      positions = buildMixedPositions(items);
+    }
+
     items.forEach(function (item, index) {
-      oceanGridEl.appendChild(createFragmentCard(item, index));
+      oceanGridEl.appendChild(createFragmentCard(item, positions[item.id], index));
     });
 
     updateMemoryCount();
+    mutateButton.disabled = !selectedFragmentId;
     setStatus(items.length + " fragments drifting in the ocean.");
   }
 
@@ -992,9 +1219,9 @@ select:focus{
   }
 
   function shuffleOcean() {
-    activePositions = pickRandom(POSITION_SETS);
+    mixedActiveSet = pickRandom(MIXED_POSITION_SETS);
     renderOcean();
-    setStatus("Ocean shuffled.");
+    setStatus(sortModeEl.value === "gravity" ? "Gravity ocean refreshed." : "Ocean shuffled.");
   }
 
   function generateRandomFragment() {
@@ -1022,7 +1249,6 @@ select:focus{
     }
 
     saveGeneratedFragments();
-    activePositions = pickRandom(POSITION_SETS);
     selectedFragmentId = fragment.id;
     renderOcean();
     selectFragment(fragment);
@@ -1062,14 +1288,11 @@ select:focus{
     }
 
     saveGeneratedFragments();
-    activePositions = pickRandom(POSITION_SETS);
     selectedFragmentId = newFragment.id;
     renderOcean();
     selectFragment(newFragment);
     setStatus("Selected fragment mutated into a new fragment and returned to the ocean.");
-  }
-
-  function clearMemory() {
+  }  function clearMemory() {
     GENERATED_FRAGMENTS = [];
     saveGeneratedFragments();
     selectedFragmentId = null;
@@ -1080,14 +1303,25 @@ select:focus{
     setStatus("Saved ocean memory cleared.");
   }
 
-  filterTypeEl.addEventListener("change", renderOcean);
-  sortModeEl.addEventListener("change", renderOcean);
+  filterTypeEl.addEventListener("change", function () {
+    renderOcean();
+  });
+
+  sortModeEl.addEventListener("change", function () {
+    renderOcean();
+  });
+
   shuffleButton.addEventListener("click", shuffleOcean);
   generateButton.addEventListener("click", generateRandomFragment);
   mutateButton.addEventListener("click", mutateSelectedFragment);
   clearMemoryButton.addEventListener("click", clearMemory);
 
+  window.addEventListener("resize", function () {
+    renderOcean();
+  });
+
   loadGeneratedFragments();
+  mutateButton.disabled = true;
   renderOcean();
 })();
 </script>
