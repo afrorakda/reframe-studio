@@ -6,338 +6,855 @@
 <title>Thinking Ocean</title>
 
 <style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --green:#22c55e;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:1100px;
+}
 
-body{
-background:#030712;
-color:white;
-font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
-margin:0;
-padding:20px;
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+textarea,
+select{
+  font:inherit;
+}
+
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
 }
 
 .container{
-max-width:900px;
-margin:auto;
+  max-width:var(--max);
+  margin:0 auto;
 }
 
-textarea{
-width:100%;
-height:120px;
-background:#0b1220;
-border:1px solid #1f2937;
-border-radius:12px;
-color:white;
-padding:14px;
-font-size:16px;
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  color:#8fb0ff;
+  font-size:0.95rem;
 }
 
-button{
-margin-top:10px;
-margin-right:8px;
-padding:12px 16px;
-border-radius:10px;
-border:none;
-cursor:pointer;
+.hero{
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(124,92,255,0.14), transparent 22%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.09), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
 }
 
-.primary{
-background:#7c3aed;
-color:white;
+.hero-inner{
+  padding:24px 20px 20px;
+  display:grid;
+  gap:18px;
 }
 
-.card{
-margin-top:20px;
-padding:16px;
-background:#0b1220;
-border-radius:14px;
-border:1px solid #1f2937;
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
 }
 
-.tag{
-display:inline-block;
-padding:4px 10px;
-border-radius:999px;
-background:#111827;
-margin-right:6px;
-font-size:12px;
+h1{
+  margin:0;
+  font-size:clamp(2.2rem, 7vw, 4rem);
+  line-height:0.98;
+  letter-spacing:-0.05em;
 }
 
-.meta{
-margin-top:10px;
-font-size:14px;
-color:#9ca3af;
+.subtitle{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
 }
 
-.open{
-margin-top:10px;
-display:inline-block;
-padding:10px 14px;
-background:#14b8a6;
-border-radius:10px;
-color:white;
-text-decoration:none;
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.15fr 0.85fr;
+  gap:18px;
+  align-items:start;
 }
 
-.remove{
-background:#1f2937;
-color:white;
+.hero-points{
+  display:grid;
+  gap:10px;
 }
 
+.hero-point{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
+
+.hero-point strong{
+  display:block;
+  margin-bottom:4px;
+  font-size:0.96rem;
+}
+
+.hero-point span{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,0.03);
+  padding:16px;
+}
+
+.panel-title{
+  margin:0 0 6px;
+  font-size:1rem;
+  font-weight:700;
+}
+
+.panel-note{
+  margin:0 0 14px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:180px 180px 1fr;
+  gap:10px;
+}
+
+select{
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#0e1420;
+  color:var(--text);
+  padding:12px 14px;
+  outline:none;
+}
+
+select:focus{
+  border-color:rgba(124,92,255,0.75);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.button{
+  appearance:none;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:12px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+}
+
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.primary{
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.cyan{
+  background:linear-gradient(180deg, #22d0f0, #0faaca);
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.small{
+  padding:10px 12px;
+  font-size:0.9rem;
+}
+
+.status{
+  min-height:22px;
+  color:var(--muted);
+  font-size:0.92rem;
+  margin-top:10px;
+}
+
+.section{
+  margin-top:22px;
+  display:grid;
+  gap:14px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.section-head h2{
+  margin:0;
+  font-size:1.3rem;
+  letter-spacing:-0.03em;
+}
+
+.section-head p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:0.94rem;
+}
+
+.ocean{
+  position:relative;
+  min-height:520px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(34,199,232,0.10), transparent 20%),
+    radial-gradient(circle at 80% 15%, rgba(124,92,255,0.12), transparent 22%),
+    radial-gradient(circle at 30% 80%, rgba(34,197,94,0.08), transparent 18%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
+
+.ocean-surface{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255,255,255,0.06), transparent 24%),
+    linear-gradient(180deg, rgba(34,199,232,0.03), transparent 30%, rgba(124,92,255,0.04) 100%);
+}
+
+.wave{
+  position:absolute;
+  left:-5%;
+  width:110%;
+  height:120px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.05);
+  opacity:0.35;
+}
+
+.wave.one{ top:60px; }
+.wave.two{ top:210px; }
+.wave.three{ top:360px; }
+
+.ocean-grid{
+  position:relative;
+  min-height:520px;
+}
+
+.fragment{
+  position:absolute;
+  width:220px;
+  padding:14px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:rgba(13,19,31,0.82);
+  backdrop-filter:blur(8px);
+  box-shadow:0 10px 28px rgba(0,0,0,0.24);
+  cursor:pointer;
+  transition:transform 0.18s ease,border-color 0.18s ease,background 0.18s ease;
+}
+
+.fragment:hover{
+  transform:translateY(-4px) scale(1.01);
+  border-color:rgba(34,199,232,0.45);
+  background:rgba(18,24,38,0.92);
+}
+
+.fragment-tag{
+  display:inline-block;
+  margin-bottom:8px;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+
+.fragment-tag.criticism{
+  background:rgba(124,92,255,0.14);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+}
+
+.fragment-tag.emotion{
+  background:rgba(255,153,120,0.13);
+  border:1px solid rgba(255,153,120,0.22);
+  color:#ffc8af;
+}
+
+.fragment-tag.problem{
+  background:rgba(34,199,232,0.12);
+  border:1px solid rgba(34,199,232,0.22);
+  color:#9befff;
+}
+
+.fragment-tag.confusion{
+  background:rgba(255,219,92,0.12);
+  border:1px solid rgba(255,219,92,0.24);
+  color:#ffe89f;
+}
+
+.fragment-tag.failure{
+  background:rgba(255,110,110,0.12);
+  border:1px solid rgba(255,110,110,0.22);
+  color:#ffb1b1;
+}
+
+.fragment-tag.idea{
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.24);
+  color:#bff7cf;
+}
+
+.fragment h3{
+  margin:0 0 8px;
+  font-size:0.98rem;
+  line-height:1.35;
+}
+
+.fragment p{
+  margin:0 0 12px;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+.fragment-meta{
+  color:var(--muted);
+  font-size:0.8rem;
+}
+
+.preview{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.preview-box{
+  padding:16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
+
+.preview-box h3{
+  margin:0 0 8px;
+  font-size:1rem;
+}
+
+.preview-box p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+  white-space:pre-wrap;
+}
+
+.links{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.empty{
+  padding:18px;
+  border-radius:16px;
+  border:1px dashed var(--line);
+  color:var(--muted);
+  text-align:center;
+}
+
+.footer{
+  margin-top:24px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:980px){
+  .hero-grid,
+  .preview,
+  .controls{
+    grid-template-columns:1fr;
+  }
+}
+
+@media (max-width:720px){
+  .hero-inner{
+    padding:16px;
+  }
+
+  .ocean{
+    min-height:auto;
+  }
+
+  .ocean-grid{
+    min-height:auto;
+    padding:14px;
+    display:grid;
+    gap:12px;
+  }
+
+  .fragment{
+    position:relative;
+    width:100%;
+    left:auto !important;
+    top:auto !important;
+  }
+
+  .wave{
+    display:none;
+  }
+}
 </style>
-
 </head>
-
 <body>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-<div class="container">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">Fragment field</span>
+            <h1>Thinking Ocean</h1>
+            <p class="subtitle">
+              Fragments float here like unfinished thoughts. Pick one, and let the router turn it into a trail.
+            </p>
+          </div>
 
-<a href="./index.html">← Back to REFRAME Studio</a>
+          <div class="hero-points">
+            <div class="hero-point">
+              <strong>See fragments</strong>
+              <span>Thoughts appear as floating pieces, not strict tasks.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Tap to mutate</strong>
+              <span>Each fragment can open a trail and become movement.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Quiet surface</strong>
+              <span>Calm outside. Mutation inside.</span>
+            </div>
+          </div>
+        </div>
 
-<h1>Thinking Ocean</h1>
+        <section class="panel">
+          <h2 class="panel-title">Ocean controls</h2>
+          <p class="panel-note">
+            Filter the fragments or drop a new one into the system.
+          </p>
 
-<p>Drop fragments into your private thinking ocean.</p>
+          <div class="controls">
+            <select id="filter-type" aria-label="Filter type">
+              <option value="all">All fragments</option>
+              <option value="criticism">Criticism</option>
+              <option value="emotion">Emotion</option>
+              <option value="problem">Problem</option>
+              <option value="confusion">Confusion</option>
+              <option value="failure">Failure</option>
+              <option value="idea">Idea</option>
+            </select>
 
-<textarea id="input" placeholder="Example:
-People say my ideas are too abstract
-I feel stuck and cannot decide what to build next"></textarea>
+            <select id="sort-mode" aria-label="Sort mode">
+              <option value="mixed">Mixed drift</option>
+              <option value="surface">Surface first</option>
+              <option value="deep">Deep first</option>
+            </select>
 
-<br>
+            <div class="actions">
+              <button class="button" id="shuffle-button" type="button">Shuffle ocean</button>
+              <a class="button primary" href="./fragment-drop.html">Drop new fragment</a>
+              <a class="button cyan" href="./mutation-trail.html">Open trail</a>
+            </div>
+          </div>
 
-<button class="primary" onclick="addFragment()">Drop fragment</button>
-<button onclick="example()">Try example</button>
-<button onclick="clearInput()">Clear input</button>
-<button onclick="clearOcean()">Clear ocean</button>
+          <div class="status" id="status"></div>
+        </section>
+      </div>
+    </section>
 
-<h2 style="margin-top:40px">My Ocean</h2>
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Ocean Surface</h2>
+          <p>Tap any fragment to send it into Mutation Trail.</p>
+        </div>
+      </div>
 
-<div id="ocean"></div>
+      <div class="ocean">
+        <div class="ocean-surface"></div>
+        <div class="wave one"></div>
+        <div class="wave two"></div>
+        <div class="wave three"></div>
+        <div class="ocean-grid" id="ocean-grid"></div>
+      </div>
+    </section>
 
-<p style="margin-top:40px;color:#6b7280">
-No login. No tracking. Runs entirely in your browser.
-</p>
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Selected Fragment</h2>
+          <p>Preview what the router will do next.</p>
+        </div>
+      </div>
 
-</div>
+      <div class="preview">
+        <div class="preview-box">
+          <h3>Fragment</h3>
+          <p id="selected-fragment">Tap a fragment in the ocean.</p>
+        </div>
 
-<script src="./fragment.js"></script>
-<script src="./router.js"></script>
+        <div class="preview-box">
+          <h3>First Mutation</h3>
+          <p id="selected-mutation">The router preview will appear here.</p>
+        </div>
+      </div>
 
+      <div class="links" id="selected-links"></div>
+    </section>
+
+    <div class="footer">
+      No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
+
+<script src="mutation-map.js"></script>
+<script src="router.js"></script>
 <script>
-
-/* =====================
-STORAGE
-===================== */
-
-const STORAGE="reframe-ocean"
-
-
-function loadOcean(){
-return JSON.parse(localStorage.getItem(STORAGE)||"[]")
-}
-
-function saveOcean(data){
-localStorage.setItem(STORAGE,JSON.stringify(data))
-}
-
-
-/* =====================
-DRIFT ENGINE
-===================== */
-
-function driftFragments(list){
-
-return list.map(f=>{
-
-let score=f.score||0
-let history=f.history?f.history.length:0
-let drift=0
-
-// gravity
-if(score>=6)drift++
-
-// friction
-if(history<=1)drift--
-
-// noise
-if(Math.random()<0.25){
-drift+=Math.random()<0.5?1:-1
-}
-
-let depth=f.depth||"surface"
-
-if(drift>0){
-if(depth==="surface")depth="middle"
-else if(depth==="middle")depth="deep"
-}
-
-if(drift<0){
-if(depth==="deep")depth="middle"
-else if(depth==="middle")depth="surface"
-}
-
-f.depth=depth
-
-return f
-})
-
-}
-
-
-/* =====================
-UTIL
-===================== */
-
-function score(text){
-return Math.min(Math.ceil(text.length/30)+1,7)
-}
-
-function depthFromScore(s){
-if(s>=6)return"deep"
-if(s>=4)return"middle"
-return"surface"
-}
-
-
-/* =====================
-ADD
-===================== */
-
-function addFragment(){
-
-let input=document.getElementById("input")
-let text=input.value.trim()
-
-if(!text)return alert("Enter something")
-
-let type=detectSourceType?detectSourceType(text):"idea"
-
-let fragment={
-id:Date.now(),
-text,
-sourceType:type,
-history:["Drop",type],
-score:score(text),
-depth:depthFromScore(score(text))
-}
-
-let ocean=loadOcean()
-
-ocean.unshift(fragment)
-
-saveOcean(ocean)
-
-input.value=""
-
-render()
-
-}
-
-
-/* =====================
-REMOVE
-===================== */
-
-function removeFragment(id){
-
-let ocean=loadOcean()
-
-ocean=ocean.filter(f=>f.id!=id)
-
-saveOcean(ocean)
-
-render()
-
-}
-
-
-/* =====================
-RENDER
-===================== */
-
-function render(){
-
-let ocean=loadOcean()
-
-ocean=driftFragments(ocean)
-
-saveOcean(ocean)
-
-let el=document.getElementById("ocean")
-
-if(!ocean.length){
-
-el.innerHTML="<p style='color:#6b7280'>Your fragments will appear here.</p>"
-return
-}
-
-let html=""
-
-ocean.forEach(f=>{
-
-html+=`
-
-<div class="card">
-
-<div>
-
-<span class="tag">${f.sourceType}</span>
-<span class="tag">${f.depth}</span>
-
-</div>
-
-<h3>${f.text}</h3>
-
-<div class="meta">
-Mutation potential ${f.score}
-</div>
-
-<div class="meta">
-History: ${f.history.join(" → ")}
-</div>
-
-<a class="open" href="./thought-galaxy-router.html?fragment=${encodeURIComponent(f.text)}">
-Open galaxy
-</a>
-
-<button class="remove" onclick="removeFragment(${f.id})">
-Remove
-</button>
-
-</div>
-
-`
-
-})
-
-el.innerHTML=html
-
-}
-
-
-/* =====================
-HELPERS
-===================== */
-
-function example(){
-document.getElementById("input").value="People say my ideas are too abstract"
-}
-
-function clearInput(){
-document.getElementById("input").value=""
-}
-
-function clearOcean(){
-localStorage.removeItem(STORAGE)
-render()
-}
-
-
-/* =====================
-INIT
-===================== */
-
-render()
-
+(function () {
+  "use strict";
+
+  var router = window.REFRAME_ROUTER;
+
+  var oceanGridEl = document.getElementById("ocean-grid");
+  var filterTypeEl = document.getElementById("filter-type");
+  var sortModeEl = document.getElementById("sort-mode");
+  var shuffleButton = document.getElementById("shuffle-button");
+  var statusEl = document.getElementById("status");
+  var selectedFragmentEl = document.getElementById("selected-fragment");
+  var selectedMutationEl = document.getElementById("selected-mutation");
+  var selectedLinksEl = document.getElementById("selected-links");
+
+  var FRAGMENTS = [
+    {
+      id: "frag-1",
+      type: "criticism",
+      text: "People say my ideas are too abstract.",
+      depth: "surface"
+    },
+    {
+      id: "frag-2",
+      type: "emotion",
+      text: "I feel heavy every time I try to publish a thought.",
+      depth: "middle"
+    },
+    {
+      id: "frag-3",
+      type: "problem",
+      text: "I have too many directions and no clear priority.",
+      depth: "surface"
+    },
+    {
+      id: "frag-4",
+      type: "confusion",
+      text: "I know something is here, but I cannot see the real question yet.",
+      depth: "deep"
+    },
+    {
+      id: "frag-5",
+      type: "failure",
+      text: "I kept making things and still could not get traction.",
+      depth: "middle"
+    },
+    {
+      id: "frag-6",
+      type: "idea",
+      text: "Criticism might be fuel, not damage.",
+      depth: "surface"
+    },
+    {
+      id: "frag-7",
+      type: "idea",
+      text: "What if confusion is not a bug but a doorway?",
+      depth: "deep"
+    },
+    {
+      id: "frag-8",
+      type: "problem",
+      text: "I can see the value, but I cannot choose the first move.",
+      depth: "middle"
+    }
+  ];
+
+  var POSITION_SETS = [
+    [
+      { left: "4%", top: "8%" },
+      { left: "34%", top: "6%" },
+      { left: "67%", top: "10%" },
+      { left: "12%", top: "34%" },
+      { left: "46%", top: "30%" },
+      { left: "73%", top: "38%" },
+      { left: "22%", top: "63%" },
+      { left: "58%", top: "68%" }
+    ],
+    [
+      { left: "10%", top: "12%" },
+      { left: "42%", top: "8%" },
+      { left: "71%", top: "16%" },
+      { left: "3%", top: "42%" },
+      { left: "35%", top: "36%" },
+      { left: "66%", top: "44%" },
+      { left: "18%", top: "70%" },
+      { left: "54%", top: "66%" }
+    ],
+    [
+      { left: "7%", top: "18%" },
+      { left: "38%", top: "4%" },
+      { left: "69%", top: "12%" },
+      { left: "15%", top: "45%" },
+      { left: "49%", top: "28%" },
+      { left: "74%", top: "48%" },
+      { left: "24%", top: "72%" },
+      { left: "57%", top: "70%" }
+    ]
+  ];
+
+  var activePositions = POSITION_SETS[0];
+
+  function setStatus(message) {
+    statusEl.textContent = message || "";
+  }
+
+  function pickRandom(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  function shuffle(array) {
+    var arr = array.slice();
+    for (var i = arr.length - 1; i > 0; i -= 1) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+    return arr;
+  }
+
+  function getVisibleFragments() {
+    var type = filterTypeEl.value;
+    var sortMode = sortModeEl.value;
+
+    var items = FRAGMENTS.filter(function (item) {
+      return type === "all" || item.type === type;
+    });
+
+    if (sortMode === "surface") {
+      items.sort(function (a, b) {
+        return depthValue(a.depth) - depthValue(b.depth);
+      });
+    } else if (sortMode === "deep") {
+      items.sort(function (a, b) {
+        return depthValue(b.depth) - depthValue(a.depth);
+      });
+    } else {
+      items = shuffle(items);
+    }
+
+    return items;
+  }
+
+  function depthValue(depth) {
+    if (depth === "surface") return 1;
+    if (depth === "middle") return 2;
+    return 3;
+  }
+
+  function createFragmentCard(item, index) {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "fragment";
+
+    var pos = activePositions[index % activePositions.length];
+    card.style.left = pos.left;
+    card.style.top = pos.top;
+
+    var tag = document.createElement("span");
+    tag.className = "fragment-tag " + item.type;
+    tag.textContent = item.type.toUpperCase();
+
+    var title = document.createElement("h3");
+    title.textContent = item.text;
+
+    var meta = document.createElement("p");
+    meta.className = "fragment-meta";
+    meta.textContent = "Depth: " + item.depth;
+
+    card.appendChild(tag);
+    card.appendChild(title);
+    card.appendChild(meta);
+
+    card.addEventListener("click", function () {
+      selectFragment(item);
+    });
+
+    return card;
+  }
+
+  function renderOcean() {
+    var items = getVisibleFragments();
+    oceanGridEl.innerHTML = "";
+
+    if (!items.length) {
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No fragments match this filter.";
+      oceanGridEl.appendChild(empty);
+      return;
+    }
+
+    items.forEach(function (item, index) {
+      oceanGridEl.appendChild(createFragmentCard(item, index));
+    });
+
+    setStatus(items.length + " fragments drifting in the ocean.");
+  }
+
+  function makeLink(label, href, className) {
+    var link = document.createElement("a");
+    link.href = href;
+    link.className = "button" + (className ? " " + className : "");
+    link.textContent = label;
+    return link;
+  }
+
+  function selectFragment(item) {
+    var trailData = router.buildTrail(item.text, {
+      sourceType: item.type,
+      mode: "stable"
+    });
+
+    selectedFragmentEl.textContent =
+      "Type: " + item.type +
+      "\nDepth: " + item.depth +
+      "\n\n" + item.text;
+
+    if (trailData.firstTool) {
+      selectedMutationEl.textContent =
+        trailData.firstTool.title +
+        "\n\n" +
+        (trailData.firstTool.note || "First mutation.");
+    } else {
+      selectedMutationEl.textContent = "No first mutation found yet.";
+    }
+
+    selectedLinksEl.innerHTML = "";
+
+    selectedLinksEl.appendChild(
+      makeLink(
+        "Open trail",
+        "./mutation-trail.html?" + router.buildQueryString({
+          fragment: item.text,
+          type: item.type,
+          mode: "stable"
+        }),
+        "primary"
+      )
+    );
+
+    if (trailData.firstTool) {
+      selectedLinksEl.appendChild(
+        makeLink(
+          "Open first mutation",
+          trailData.firstTool.file + "?" + router.buildQueryString({
+            fragment: item.text,
+            type: item.type,
+            mode: "stable"
+          }),
+          "cyan"
+        )
+      );
+    }
+
+    selectedLinksEl.appendChild(
+      makeLink(
+        "Open drop",
+        "./fragment-drop.html?" + router.buildQueryString({
+          fragment: item.text,
+          type: item.type
+        }),
+        ""
+      )
+    );
+
+    setStatus("Fragment selected. Router preview ready.");
+  }
+
+  function shuffleOcean() {
+    activePositions = pickRandom(POSITION_SETS);
+    renderOcean();
+    setStatus("Ocean shuffled.");
+  }
+
+  filterTypeEl.addEventListener("change", renderOcean);
+  sortModeEl.addEventListener("change", renderOcean);
+  shuffleButton.addEventListener("click", shuffleOcean);
+
+  renderOcean();
+})();
 </script>
-
 </body>
 </html>
