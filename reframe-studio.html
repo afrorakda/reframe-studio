@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REFRAME Studio</title>
 
+  <script src="mutation-map.js"></script>
   <script src="router.js"></script>
 
   <style>
@@ -217,6 +218,62 @@
       font-size: 0.92rem;
     }
 
+    .weather-wrap {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .weather-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .weather-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .weather-note {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .weather-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .weather-button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #101725;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .weather-button:hover {
+      transform: translateY(-1px);
+      border-color: #4b5872;
+    }
+
+    .weather-button.active {
+      background: linear-gradient(180deg, #8a68ff, var(--purple-2));
+      border-color: transparent;
+      color: white;
+      font-weight: 700;
+    }
+
     textarea {
       width: 100%;
       min-height: 136px;
@@ -238,7 +295,7 @@
 
     .controls {
       display: grid;
-      grid-template-columns: 180px 180px 1fr;
+      grid-template-columns: 220px 1fr;
       gap: 10px;
     }
 
@@ -445,6 +502,7 @@
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.03);
       transition: transform 0.16s ease, border-color 0.18s ease, background 0.18s ease;
+      text-align: left;
     }
 
     .next-card:hover {
@@ -470,6 +528,11 @@
 
     .next-card p {
       margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .mini-note {
       color: var(--muted);
       font-size: 0.9rem;
     }
@@ -541,7 +604,7 @@
             <div class="hero-points">
               <div class="hero-point">
                 <strong>Intent</strong>
-                <span>Start from your current friction and jump into the best first mutation.</span>
+                <span>Start from friction and jump into the best first mutation.</span>
               </div>
               <div class="hero-point">
                 <strong>Structure</strong>
@@ -549,7 +612,7 @@
               </div>
               <div class="hero-point">
                 <strong>Serendipity</strong>
-                <span>Use randomness and controlled chaos to escape familiar thought paths.</span>
+                <span>Use stable, drift, and chaos to move thinking in different ways.</span>
               </div>
             </div>
           </div>
@@ -557,12 +620,24 @@
           <section class="composer">
             <div class="composer-head">
               <div>
-                <h3 class="composer-title">Start with your current friction</h3>
+                <h3 class="composer-title">Drop a thought fragment</h3>
                 <p class="composer-subtitle">
                   EN: criticism, emotion, problem, confusion, failure, idea
                   <br />
                   JP: 批判、感情、問題、混乱、失敗、アイデア
                 </p>
+              </div>
+            </div>
+
+            <div class="weather-wrap">
+              <div class="weather-head">
+                <div class="weather-title">Thinking Weather</div>
+                <div class="weather-note" id="weather-note">Stable = clear next steps</div>
+              </div>
+              <div class="weather-buttons">
+                <button class="weather-button active" type="button" data-mode="stable">Stable</button>
+                <button class="weather-button" type="button" data-mode="drift">Drift</button>
+                <button class="weather-button" type="button" data-mode="chaos">Chaos</button>
               </div>
             </div>
 
@@ -583,17 +658,10 @@ JP: 変異させたい思考摩擦を書いてください..."
                 <option value="idea">Idea</option>
               </select>
 
-              <select id="mode" aria-label="Thinking mode">
-                <option value="stable">Stable</option>
-                <option value="drift">Drift</option>
-                <option value="chaos">Chaos</option>
-              </select>
-
               <div class="actions">
                 <button class="button" id="try-example" type="button">Try example</button>
-                <button class="button primary" id="start-best-tool" type="button">Start with Best Tool</button>
-                <button class="button cyan" id="chaos-button" type="button">CHAOS</button>
-                <button class="button" id="surprise-button" type="button">Surprise Me</button>
+                <button class="button primary" id="find-first-mutation" type="button">Find first mutation</button>
+                <button class="button cyan" id="surprise-button" type="button">Surprise me</button>
               </div>
             </div>
 
@@ -609,23 +677,17 @@ JP: 変異させたい思考摩擦を書いてください..."
             <p>Start from friction and jump into the best first mutation.</p>
           </div>
           <div class="card-body">
-            <a class="entry" href="criticism-to-lesson.html">
-              <span class="entry-tag">BEST TOOL</span>
-              <h4 class="entry-title">Criticism → Lesson</h4>
-              <p class="entry-desc">Turn negative feedback into usable signal.</p>
-            </a>
+            <div class="entry">
+              <span class="entry-tag">ENTRY</span>
+              <h4 class="entry-title">Fragment → First mutation</h4>
+              <p class="entry-desc">The system reads your friction and suggests where thought should touch first.</p>
+            </div>
 
-            <a class="entry" href="confusion-to-question.html">
-              <span class="entry-tag">UNTANGLE</span>
-              <h4 class="entry-title">Confusion → Question</h4>
-              <p class="entry-desc">Turn vague fog into a sharper question.</p>
-            </a>
-
-            <a class="entry" href="idea-to-metaphor.html">
-              <span class="entry-tag">SHIFT</span>
-              <h4 class="entry-title">Idea → Metaphor</h4>
-              <p class="entry-desc">Translate a raw idea into a more vivid lens.</p>
-            </a>
+            <div class="entry">
+              <span class="entry-tag">FLOW</span>
+              <h4 class="entry-title">Tool → Tool → Tool</h4>
+              <p class="entry-desc">The thought should continue, not stop.</p>
+            </div>
           </div>
         </article>
 
@@ -660,54 +722,54 @@ JP: 変異させたい思考摩擦を書いてください..."
             </div>
 
             <div class="actions">
-              <a class="button small" href="thought-map.html">Open Thought Map</a>
+              <a class="button small" href="./thought-map.html">Open Thought Map</a>
+              <a class="button small" href="./index.html">Back to index</a>
             </div>
           </div>
         </article>
 
         <article class="card">
           <div class="card-head">
-            <h3>Serendipity</h3>
-            <p>Use randomness and controlled chaos to escape familiar thought paths.</p>
+            <h3>Weather</h3>
+            <p>Change the way the next mutation is chosen.</p>
           </div>
           <div class="card-body">
-            <button class="entry" id="random-tool-card" type="button" style="text-align:left;">
-              <span class="entry-tag">SURPRISE</span>
-              <h4 class="entry-title">Surprise Me</h4>
-              <p class="entry-desc">Jump to a random thought mutation tool.</p>
-            </button>
-
-            <button class="entry" id="chaos-card" type="button" style="text-align:left;">
-              <span class="entry-tag">CHAOS</span>
-              <h4 class="entry-title">Chaos Prompt + Tool</h4>
-              <p class="entry-desc">Inject a strange angle, then mutate it immediately.</p>
-            </button>
-
-            <a class="entry" href="reframe-again.html">
-              <span class="entry-tag">RANDOM ANGLE</span>
-              <h4 class="entry-title">Reframe Again</h4>
-              <p class="entry-desc">Force a different perspective without overthinking.</p>
-            </a>
+            <div class="path">
+              <strong>Stable</strong>
+              <span>Safer, clearer, closer next tools.</span>
+            </div>
+            <div class="path">
+              <strong>Drift</strong>
+              <span>A small sideways move. Slightly unexpected.</span>
+            </div>
+            <div class="path">
+              <strong>Chaos</strong>
+              <span>Meaningful turbulence. Farther jumps appear.</span>
+            </div>
           </div>
         </article>
       </section>
 
       <section class="section card hidden" id="launch-panel">
         <div class="card-head">
-          <h3>Launch preview</h3>
-          <p>The thought should continue, not stop.</p>
+          <h3>Mutation preview</h3>
+          <p>Pick a first contact zone, then continue the thought.</p>
         </div>
         <div class="card-body launch-panel">
           <div class="result-box" id="launch-result"></div>
 
-          <div class="actions">
-            <button class="button small" id="copy-launch-text" type="button">Copy result</button>
-            <button class="button small" id="copy-share-link" type="button">Copy page link</button>
+          <div>
+            <h3 style="margin:0 0 10px; font-size:1rem;">First mutation</h3>
+            <div class="next-grid" id="entry-grid"></div>
           </div>
 
           <div>
             <h3 style="margin:0 0 10px; font-size:1rem;">Next mutation</h3>
             <div class="next-grid" id="next-grid"></div>
+          </div>
+
+          <div class="mini-note">
+            Tap any card to open that tool.
           </div>
         </div>
       </section>
@@ -719,234 +781,206 @@ JP: 変異させたい思考摩擦を書いてください..."
   </main>
 
   <script>
-    const router = window.REFRAME_ROUTER;
+    (function () {
+      "use strict";
 
-    const inputEl = document.getElementById("input");
-    const inputTypeEl = document.getElementById("input-type");
-    const modeEl = document.getElementById("mode");
-    const tryExampleBtn = document.getElementById("try-example");
-    const startBestToolBtn = document.getElementById("start-best-tool");
-    const chaosButton = document.getElementById("chaos-button");
-    const surpriseButton = document.getElementById("surprise-button");
-    const randomToolCard = document.getElementById("random-tool-card");
-    const chaosCard = document.getElementById("chaos-card");
-    const statusEl = document.getElementById("status");
-    const launchPanel = document.getElementById("launch-panel");
-    const launchResultEl = document.getElementById("launch-result");
-    const nextGridEl = document.getElementById("next-grid");
-    const copyLaunchTextBtn = document.getElementById("copy-launch-text");
-    const copyShareLinkBtn = document.getElementById("copy-share-link");
+      var router = window.REFRAME_ROUTER;
 
-    const EXAMPLES = {
-      criticism: [
-        "People say my posts are too abstract and hard to understand.",
-        "『言ってることは面白いけど、結局何が言いたいのかわからない』と言われた。"
-      ],
-      emotion: [
-        "I feel frustrated because I have ideas but nothing feels sharp enough to post.",
-        "発信したいのに、出す前に全部弱く見えて止まる。"
-      ],
-      problem: [
-        "I have too many content ideas and no clear priority.",
-        "やることは多いのに、何から手をつけるべきか決まらない。"
-      ],
-      confusion: [
-        "I know something is interesting here, but I can’t explain the core question yet.",
-        "考えはあるのに、論点が自分でもまだ掴めていない。"
-      ],
-      failure: [
-        "I posted consistently for a month and nothing really landed.",
-        "頑張って発信したのに、まったく反応が伸びなかった。"
-      ],
-      idea: [
-        "I want to talk about how criticism can become a creative asset.",
-        "批判を創造の燃料に変える話をしたい。"
-      ]
-    };
+      var inputEl = document.getElementById("input");
+      var inputTypeEl = document.getElementById("input-type");
+      var tryExampleBtn = document.getElementById("try-example");
+      var findFirstMutationBtn = document.getElementById("find-first-mutation");
+      var surpriseButton = document.getElementById("surprise-button");
+      var statusEl = document.getElementById("status");
+      var launchPanel = document.getElementById("launch-panel");
+      var launchResultEl = document.getElementById("launch-result");
+      var entryGridEl = document.getElementById("entry-grid");
+      var nextGridEl = document.getElementById("next-grid");
+      var weatherButtons = Array.prototype.slice.call(document.querySelectorAll(".weather-button"));
+      var weatherNoteEl = document.getElementById("weather-note");
 
-    const RANDOM_TOOLS = [
-      "criticism-to-lesson",
-      "idea-to-metaphor",
-      "idea-to-opposite",
-      "confusion-to-question",
-      "failure-to-lesson",
-      "lesson-to-angle",
-      "lesson-to-hook",
-      "lesson-to-thread",
-      "emotion-to-action",
-      "problem-to-action"
-    ];
+      var EXAMPLES = {
+        criticism: [
+          "People say my posts are too abstract and hard to understand.",
+          "『言ってることは面白いけど、結局何が言いたいのかわからない』と言われた。"
+        ],
+        emotion: [
+          "I feel frustrated because I have ideas but nothing feels sharp enough to post.",
+          "発信したいのに、出す前に全部弱く見えて止まる。"
+        ],
+        problem: [
+          "I have too many content ideas and no clear priority.",
+          "やることは多いのに、何から手をつけるべきか決まらない。"
+        ],
+        confusion: [
+          "I know something is interesting here, but I can’t explain the core question yet.",
+          "考えはあるのに、論点が自分でもまだ掴めていない。"
+        ],
+        failure: [
+          "I posted consistently for a month and nothing really landed.",
+          "頑張って発信したのに、まったく反応が伸びなかった。"
+        ],
+        idea: [
+          "I want to talk about how criticism can become a creative asset.",
+          "批判を創造の燃料に変える話をしたい。"
+        ]
+      };
 
-    function setStatus(message) {
-      statusEl.textContent = message || "";
-    }
+      var WEATHER_NOTES = {
+        stable: "Stable = clear next steps",
+        drift: "Drift = a slight sideways move",
+        chaos: "Chaos = meaningful turbulence"
+      };
 
-    function pickRandom(array) {
-      return array[Math.floor(Math.random() * array.length)];
-    }
+      function setStatus(message) {
+        statusEl.textContent = message || "";
+      }
 
-    function pickExampleForType(type) {
-      const list = EXAMPLES[type] || EXAMPLES.criticism;
-      return pickRandom(list);
-    }
+      function pickRandom(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
 
-    function updatePageURL() {
-      router.updateCurrentPageURL({
-        input: router.normalizeText(inputEl.value),
-        type: inputTypeEl.value,
-        mode: modeEl.value
+      function pickExampleForType(type) {
+        var list = EXAMPLES[type] || EXAMPLES.idea;
+        return pickRandom(list);
+      }
+
+      function getCurrentMode() {
+        return router.getMode();
+      }
+
+      function setWeatherMode(mode) {
+        router.setMode(mode);
+
+        weatherButtons.forEach(function (button) {
+          button.classList.toggle("active", button.getAttribute("data-mode") === mode);
+        });
+
+        weatherNoteEl.textContent = WEATHER_NOTES[mode] || WEATHER_NOTES.stable;
+        setStatus("Thinking Weather: " + mode);
+      }
+
+      function createCard(tool, labelText) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "next-card";
+
+        var label = document.createElement("span");
+        label.className = "next-label";
+        label.textContent = labelText;
+
+        var title = document.createElement("h4");
+        title.textContent = tool.title || tool.id;
+
+        var note = document.createElement("p");
+        note.textContent = tool.note || "Next mutation tool.";
+
+        button.appendChild(label);
+        button.appendChild(title);
+        button.appendChild(note);
+
+        button.addEventListener("click", function () {
+          router.goToTool(tool.id);
+        });
+
+        return button;
+      }
+
+      function renderCards(target, tools, labelText) {
+        target.innerHTML = "";
+
+        if (!tools || !tools.length) {
+          var empty = document.createElement("div");
+          empty.className = "next-card";
+          empty.innerHTML = "<span class=\"next-label\">NONE</span><h4>No tool found</h4><p>Try a different input type or mode.</p>";
+          target.appendChild(empty);
+          return;
+        }
+
+        tools.forEach(function (tool) {
+          target.appendChild(createCard(tool, labelText));
+        });
+      }
+
+      function getFragmentText() {
+        return String(inputEl.value || "").trim();
+      }
+
+      function buildPreview() {
+        var input = getFragmentText();
+        var selectedType = inputTypeEl.value;
+        var activeMode = getCurrentMode();
+
+        if (!input) {
+          setStatus("Write your thought fragment first.");
+          inputEl.focus();
+          return;
+        }
+
+        var fragment = {
+          raw: input,
+          sourceType: selectedType
+        };
+
+        var entryTools = router.getEntryTools(fragment);
+        var nextTools = [];
+
+        if (entryTools.length > 0) {
+          nextTools = router.getNextToolsByZone(entryTools[0].id, activeMode);
+        }
+
+        launchPanel.classList.remove("hidden");
+        launchResultEl.textContent =
+          "Source type: " + selectedType +
+          "\nWeather: " + activeMode +
+          "\n\n" + input;
+
+        renderCards(entryGridEl, entryTools, "FIRST");
+        renderCards(nextGridEl, nextTools, "NEXT");
+
+        setStatus("First mutation found.");
+      }
+
+      function runSurprise() {
+        var types = ["criticism", "emotion", "problem", "confusion", "failure", "idea"];
+        var randomType = pickRandom(types);
+
+        inputTypeEl.value = randomType;
+        inputEl.value = pickExampleForType(randomType);
+
+        var modes = ["stable", "drift", "chaos"];
+        setWeatherMode(pickRandom(modes));
+        buildPreview();
+      }
+
+      weatherButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          setWeatherMode(button.getAttribute("data-mode"));
+        });
       });
-    }
 
-    function initFromURL() {
-      const params = router.getParams();
-
-      if (params.input) {
-        inputEl.value = params.input;
-      }
-
-      if (params.type && inputTypeEl.querySelector(`option[value="${params.type}"]`)) {
-        inputTypeEl.value = params.type;
-      }
-
-      modeEl.value = router.getMode(params.mode || "stable");
-    }
-
-    function launchBestTool() {
-      const input = router.normalizeText(inputEl.value);
-      const type = inputTypeEl.value;
-      const mode = modeEl.value;
-
-      if (!input) {
-        setStatus("Write your current friction first.");
+      tryExampleBtn.addEventListener("click", function () {
+        inputEl.value = pickExampleForType(inputTypeEl.value);
+        setStatus("Example inserted.");
         inputEl.focus();
-        return;
-      }
-
-      updatePageURL();
-
-      const toolKey = router.pickBestToolByType(type);
-      router.goTo(toolKey, input, {
-        from: "reframe-studio",
-        type,
-        mode
-      });
-    }
-
-    function launchRandomTool() {
-      const input = router.normalizeText(inputEl.value);
-      const type = inputTypeEl.value;
-      const mode = modeEl.value;
-
-      updatePageURL();
-
-      const toolKey = pickRandom(RANDOM_TOOLS);
-      router.goTo(toolKey, input, {
-        from: "surprise-me",
-        type,
-        mode
-      });
-    }
-
-    function runChaosMode() {
-      const baseText = router.normalizeText(inputEl.value) || pickExampleForType(inputTypeEl.value);
-      const prompt = router.pickDriftPrompt();
-      const driftText = router.createDriftText(baseText, prompt);
-
-      launchPanel.classList.remove("hidden");
-      launchResultEl.textContent = driftText;
-
-      router.renderNextMutations(nextGridEl, {
-        text: driftText,
-        outputType: "lesson",
-        currentTool: "reframe-studio",
-        mode: "chaos"
       });
 
-      setStatus("Chaos injected. Let the thought drift a little.");
-      updatePageURL();
-    }
+      findFirstMutationBtn.addEventListener("click", buildPreview);
 
-    function showLaunchPreview() {
-      const input = router.normalizeText(inputEl.value);
-      const type = inputTypeEl.value;
-      const mode = modeEl.value;
+      surpriseButton.addEventListener("click", runSurprise);
 
-      if (!input) {
-        setStatus("Write your current friction first.");
-        inputEl.focus();
-        return;
-      }
-
-      launchPanel.classList.remove("hidden");
-      launchResultEl.textContent = `Input type: ${type}\nMode: ${mode}\n\n${input}`;
-
-      router.renderNextMutations(nextGridEl, {
-        text: input,
-        outputType: type,
-        currentTool: "reframe-studio",
-        mode
+      inputTypeEl.addEventListener("change", function () {
+        setStatus("Input type changed.");
       });
 
-      setStatus("Launch preview generated. The thought can continue from here.");
-      updatePageURL();
-    }
+      inputEl.addEventListener("keydown", function (event) {
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          buildPreview();
+        }
+      });
 
-    async function copyText(text, successMessage) {
-      try {
-        await navigator.clipboard.writeText(text);
-        setStatus(successMessage);
-      } catch (error) {
-        setStatus("Copy failed. Please copy manually.");
-        console.error(error);
-      }
-    }
-
-    tryExampleBtn.addEventListener("click", () => {
-      inputEl.value = pickExampleForType(inputTypeEl.value);
-      setStatus("Example inserted.");
-      updatePageURL();
-      inputEl.focus();
-    });
-
-    inputEl.addEventListener("input", updatePageURL);
-
-    inputTypeEl.addEventListener("change", () => {
-      updatePageURL();
-      setStatus("Input type changed.");
-    });
-
-    modeEl.addEventListener("change", () => {
-      updatePageURL();
-      setStatus("Thinking mode changed.");
-    });
-
-    startBestToolBtn.addEventListener("click", launchBestTool);
-    surpriseButton.addEventListener("click", launchRandomTool);
-    randomToolCard.addEventListener("click", launchRandomTool);
-    chaosButton.addEventListener("click", runChaosMode);
-    chaosCard.addEventListener("click", runChaosMode);
-
-    inputEl.addEventListener("keydown", (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        showLaunchPreview();
-      }
-    });
-
-    copyLaunchTextBtn.addEventListener("click", () => {
-      const text = launchResultEl.textContent.trim();
-      if (!text) {
-        setStatus("No launch preview to copy yet.");
-        return;
-      }
-      copyText(text, "Launch preview copied.");
-    });
-
-    copyShareLinkBtn.addEventListener("click", () => {
-      copyText(window.location.href, "Page link copied.");
-    });
-
-    initFromURL();
+      setWeatherMode("stable");
+    })();
   </script>
 </body>
 </html>
