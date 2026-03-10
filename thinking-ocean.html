@@ -750,20 +750,22 @@ select:focus{
   "use strict";
 
   function depthOffset(depth) {
-    if (depth === "surface") {
-      return -12;
-    }
 
-    if (depth === "middle") {
-      return 0;
-    }
-
-    if (depth === "deep") {
-      return 14;
-    }
-
-    return 0;
+  if (depth === "surface") {
+    return -18;
   }
+
+  if (depth === "middle") {
+    return 6;
+  }
+
+  if (depth === "deep") {
+    return 30;
+  }
+
+  return 0;
+
+}
 
   function clampPercent(value, min, max) {
     if (value < min) return min;
