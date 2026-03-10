@@ -214,6 +214,13 @@ select:focus{
   font-weight:700;
 }
 
+.button.danger{
+  background:linear-gradient(180deg, #ff7b7b, #d44d4d);
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
 .button.small{
   padding:10px 12px;
   font-size:0.9rem;
@@ -252,9 +259,14 @@ select:focus{
   font-size:0.94rem;
 }
 
+.memory-note{
+  color:var(--muted);
+  font-size:0.9rem;
+}
+
 .ocean{
   position:relative;
-  min-height:520px;
+  min-height:560px;
   border:1px solid var(--line);
   border-radius:24px;
   overflow:hidden;
@@ -286,12 +298,12 @@ select:focus{
 }
 
 .wave.one{ top:60px; }
-.wave.two{ top:210px; }
-.wave.three{ top:360px; }
+.wave.two{ top:230px; }
+.wave.three{ top:400px; }
 
 .ocean-grid{
   position:relative;
-  min-height:520px;
+  min-height:560px;
 }
 
 .fragment{
@@ -305,6 +317,7 @@ select:focus{
   box-shadow:0 10px 28px rgba(0,0,0,0.24);
   cursor:pointer;
   transition:transform 0.18s ease,border-color 0.18s ease,background 0.18s ease;
+  text-align:left;
 }
 
 .fragment:hover{
@@ -468,10 +481,10 @@ select:focus{
       <div class="hero-inner">
         <div class="hero-grid">
           <div>
-            <span class="eyebrow">Fragment field</span>
+            <span class="eyebrow">Fragment field + memory</span>
             <h1>Thinking Ocean</h1>
             <p class="subtitle">
-              Fragments float here like unfinished thoughts. Pick one, or generate a new one, and let the router turn it into a trail.
+              Fragments float here like unfinished thoughts. Pick one, or generate a new one, and let the router turn it into a trail. Generated fragments stay in the ocean.
             </p>
           </div>
 
@@ -481,12 +494,12 @@ select:focus{
               <span>Thoughts appear as floating pieces, not strict tasks.</span>
             </div>
             <div class="hero-point">
-              <strong>Tap to mutate</strong>
-              <span>Each fragment can open a trail and become movement.</span>
-            </div>
-            <div class="hero-point">
               <strong>Generate more</strong>
               <span>The ocean can keep creating new thought fragments.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Memory</strong>
+              <span>Generated fragments stay saved on this device.</span>
             </div>
           </div>
         </div>
@@ -494,7 +507,7 @@ select:focus{
         <section class="panel">
           <h2 class="panel-title">Ocean controls</h2>
           <p class="panel-note">
-            Filter the fragments, shuffle the surface, or generate a new fragment.
+            Filter the fragments, shuffle the surface, generate new fragments, or clear saved memory.
           </p>
 
           <div class="controls">
@@ -517,6 +530,7 @@ select:focus{
             <div class="actions">
               <button class="button" id="shuffle-button" type="button">Shuffle ocean</button>
               <button class="button primary" id="generate-button" type="button">Generate fragment</button>
+              <button class="button danger" id="clear-memory-button" type="button">Clear memory</button>
               <a class="button cyan" href="./fragment-drop.html">Drop manually</a>
             </div>
           </div>
@@ -532,6 +546,7 @@ select:focus{
           <h2>Ocean Surface</h2>
           <p>Tap any fragment to send it into Mutation Trail.</p>
         </div>
+        <div class="memory-note" id="memory-count">Saved generated fragments: 0</div>
       </div>
 
       <div class="ocean">
@@ -579,16 +594,19 @@ select:focus{
   "use strict";
 
   var router = window.REFRAME_ROUTER;
+  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v1";
 
   var oceanGridEl = document.getElementById("ocean-grid");
   var filterTypeEl = document.getElementById("filter-type");
   var sortModeEl = document.getElementById("sort-mode");
   var shuffleButton = document.getElementById("shuffle-button");
   var generateButton = document.getElementById("generate-button");
+  var clearMemoryButton = document.getElementById("clear-memory-button");
   var statusEl = document.getElementById("status");
   var selectedFragmentEl = document.getElementById("selected-fragment");
   var selectedMutationEl = document.getElementById("selected-mutation");
   var selectedLinksEl = document.getElementById("selected-links");
+  var memoryCountEl = document.getElementById("memory-count");
 
   var BASE_FRAGMENTS = [
     {
@@ -742,6 +760,10 @@ select:focus{
     statusEl.textContent = message || "";
   }
 
+  function updateMemoryCount() {
+    memoryCountEl.textContent = "Saved generated fragments: " + GENERATED_FRAGMENTS.length;
+  }
+
   function pickRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
   }
@@ -755,6 +777,41 @@ select:focus{
       arr[j] = temp;
     }
     return arr;
+  }
+
+  function saveGeneratedFragments() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(GENERATED_FRAGMENTS));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function loadGeneratedFragments() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+
+      GENERATED_FRAGMENTS = parsed.filter(function (item) {
+        return item && item.id && item.type && item.text && item.depth;
+      });
+
+      var maxId = 100;
+      GENERATED_FRAGMENTS.forEach(function (item) {
+        var parts = String(item.id).split("-");
+        var last = Number(parts[parts.length - 1]);
+        if (!isNaN(last) && last > maxId) {
+          maxId = last;
+        }
+      });
+      idCounter = maxId + 1;
+    } catch (error) {
+      console.error(error);
+      GENERATED_FRAGMENTS = [];
+    }
   }
 
   function getAllFragments() {
@@ -808,7 +865,7 @@ select:focus{
 
     var meta = document.createElement("p");
     meta.className = "fragment-meta";
-    meta.textContent = "Depth: " + item.depth + (item.generated ? " · generated" : "");
+    meta.textContent = "Depth: " + item.depth + (item.generated ? " · saved" : "");
 
     card.appendChild(tag);
     card.appendChild(title);
@@ -830,6 +887,7 @@ select:focus{
       empty.className = "empty";
       empty.textContent = "No fragments match this filter.";
       oceanGridEl.appendChild(empty);
+      updateMemoryCount();
       return;
     }
 
@@ -837,6 +895,7 @@ select:focus{
       oceanGridEl.appendChild(createFragmentCard(item, index));
     });
 
+    updateMemoryCount();
     setStatus(items.length + " fragments drifting in the ocean.");
   }
 
@@ -857,7 +916,7 @@ select:focus{
     selectedFragmentEl.textContent =
       "Type: " + item.type +
       "\nDepth: " + item.depth +
-      (item.generated ? "\nOrigin: generated" : "\nOrigin: base ocean") +
+      (item.generated ? "\nOrigin: saved ocean memory" : "\nOrigin: base ocean") +
       "\n\n" + item.text;
 
     if (trailData.firstTool) {
@@ -937,21 +996,34 @@ select:focus{
     idCounter += 1;
     GENERATED_FRAGMENTS.unshift(fragment);
 
-    if (GENERATED_FRAGMENTS.length > 12) {
-      GENERATED_FRAGMENTS = GENERATED_FRAGMENTS.slice(0, 12);
+    if (GENERATED_FRAGMENTS.length > 20) {
+      GENERATED_FRAGMENTS = GENERATED_FRAGMENTS.slice(0, 20);
     }
 
+    saveGeneratedFragments();
     activePositions = pickRandom(POSITION_SETS);
     renderOcean();
     selectFragment(fragment);
-    setStatus("New fragment generated and dropped into the ocean.");
+    setStatus("New fragment generated and saved in the ocean.");
+  }
+
+  function clearMemory() {
+    GENERATED_FRAGMENTS = [];
+    saveGeneratedFragments();
+    renderOcean();
+    selectedFragmentEl.textContent = "Tap a fragment in the ocean.";
+    selectedMutationEl.textContent = "The router preview will appear here.";
+    selectedLinksEl.innerHTML = "";
+    setStatus("Saved ocean memory cleared.");
   }
 
   filterTypeEl.addEventListener("change", renderOcean);
   sortModeEl.addEventListener("change", renderOcean);
   shuffleButton.addEventListener("click", shuffleOcean);
   generateButton.addEventListener("click", generateRandomFragment);
+  clearMemoryButton.addEventListener("click", clearMemory);
 
+  loadGeneratedFragments();
   renderOcean();
 })();
 </script>
