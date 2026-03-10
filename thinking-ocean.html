@@ -471,7 +471,7 @@ select:focus{
             <span class="eyebrow">Fragment field</span>
             <h1>Thinking Ocean</h1>
             <p class="subtitle">
-              Fragments float here like unfinished thoughts. Pick one, and let the router turn it into a trail.
+              Fragments float here like unfinished thoughts. Pick one, or generate a new one, and let the router turn it into a trail.
             </p>
           </div>
 
@@ -485,8 +485,8 @@ select:focus{
               <span>Each fragment can open a trail and become movement.</span>
             </div>
             <div class="hero-point">
-              <strong>Quiet surface</strong>
-              <span>Calm outside. Mutation inside.</span>
+              <strong>Generate more</strong>
+              <span>The ocean can keep creating new thought fragments.</span>
             </div>
           </div>
         </div>
@@ -494,7 +494,7 @@ select:focus{
         <section class="panel">
           <h2 class="panel-title">Ocean controls</h2>
           <p class="panel-note">
-            Filter the fragments or drop a new one into the system.
+            Filter the fragments, shuffle the surface, or generate a new fragment.
           </p>
 
           <div class="controls">
@@ -516,8 +516,8 @@ select:focus{
 
             <div class="actions">
               <button class="button" id="shuffle-button" type="button">Shuffle ocean</button>
-              <a class="button primary" href="./fragment-drop.html">Drop new fragment</a>
-              <a class="button cyan" href="./mutation-trail.html">Open trail</a>
+              <button class="button primary" id="generate-button" type="button">Generate fragment</button>
+              <a class="button cyan" href="./fragment-drop.html">Drop manually</a>
             </div>
           </div>
 
@@ -584,12 +584,13 @@ select:focus{
   var filterTypeEl = document.getElementById("filter-type");
   var sortModeEl = document.getElementById("sort-mode");
   var shuffleButton = document.getElementById("shuffle-button");
+  var generateButton = document.getElementById("generate-button");
   var statusEl = document.getElementById("status");
   var selectedFragmentEl = document.getElementById("selected-fragment");
   var selectedMutationEl = document.getElementById("selected-mutation");
   var selectedLinksEl = document.getElementById("selected-links");
 
-  var FRAGMENTS = [
+  var BASE_FRAGMENTS = [
     {
       id: "frag-1",
       type: "criticism",
@@ -640,6 +641,55 @@ select:focus{
     }
   ];
 
+  var GENERATED_FRAGMENTS = [];
+
+  var RANDOM_LIBRARY = {
+    criticism: [
+      "People say this feels unfinished.",
+      "They say the idea sounds sharp but still hard to hold.",
+      "People say my thinking drifts before it lands.",
+      "They say the post has energy but no center.",
+      "People say I am seeing something real, but not saying it clearly."
+    ],
+    emotion: [
+      "I feel tired every time I try to shape this thought.",
+      "I feel too close to the idea to see it properly.",
+      "I feel resistance right before I publish.",
+      "I feel like the thought is alive, but I am not ready for it.",
+      "I feel the idea pulling me, but I still hesitate."
+    ],
+    problem: [
+      "I keep circling the same problem without movement.",
+      "I can see several paths, but not the first one.",
+      "I know what matters, but I still cannot begin.",
+      "The problem keeps growing every time I look at it.",
+      "I need a path, not more noise."
+    ],
+    confusion: [
+      "Something feels important here, but I cannot name it yet.",
+      "I feel like I am missing the real question.",
+      "The thought keeps shifting before I can catch it.",
+      "I know there is a pattern here, but I cannot see its shape.",
+      "The center of this idea still feels foggy."
+    ],
+    failure: [
+      "I tried again and still got no traction.",
+      "I made progress, but it did not turn into movement.",
+      "I thought this would work, but it collapsed too early.",
+      "The attempt taught me something, but I do not know what yet.",
+      "I pushed the idea out, but it did not resonate."
+    ],
+    idea: [
+      "What if hesitation is a hidden design signal?",
+      "Maybe the unclear part is the real doorway.",
+      "What if the friction is trying to teach a pattern?",
+      "Maybe the thing that feels weak is actually the seed.",
+      "What if the next angle is hiding inside the failure?"
+    ]
+  };
+
+  var DEPTHS = ["surface", "middle", "deep"];
+
   var POSITION_SETS = [
     [
       { left: "4%", top: "8%" },
@@ -649,7 +699,11 @@ select:focus{
       { left: "46%", top: "30%" },
       { left: "73%", top: "38%" },
       { left: "22%", top: "63%" },
-      { left: "58%", top: "68%" }
+      { left: "58%", top: "68%" },
+      { left: "6%", top: "74%" },
+      { left: "70%", top: "72%" },
+      { left: "38%", top: "54%" },
+      { left: "30%", top: "80%" }
     ],
     [
       { left: "10%", top: "12%" },
@@ -659,7 +713,11 @@ select:focus{
       { left: "35%", top: "36%" },
       { left: "66%", top: "44%" },
       { left: "18%", top: "70%" },
-      { left: "54%", top: "66%" }
+      { left: "54%", top: "66%" },
+      { left: "77%", top: "72%" },
+      { left: "8%", top: "78%" },
+      { left: "48%", top: "54%" },
+      { left: "28%", top: "22%" }
     ],
     [
       { left: "7%", top: "18%" },
@@ -669,11 +727,16 @@ select:focus{
       { left: "49%", top: "28%" },
       { left: "74%", top: "48%" },
       { left: "24%", top: "72%" },
-      { left: "57%", top: "70%" }
+      { left: "57%", top: "70%" },
+      { left: "4%", top: "64%" },
+      { left: "69%", top: "78%" },
+      { left: "34%", top: "58%" },
+      { left: "44%", top: "82%" }
     ]
   ];
 
   var activePositions = POSITION_SETS[0];
+  var idCounter = 100;
 
   function setStatus(message) {
     statusEl.textContent = message || "";
@@ -694,11 +757,21 @@ select:focus{
     return arr;
   }
 
+  function getAllFragments() {
+    return BASE_FRAGMENTS.concat(GENERATED_FRAGMENTS);
+  }
+
+  function depthValue(depth) {
+    if (depth === "surface") return 1;
+    if (depth === "middle") return 2;
+    return 3;
+  }
+
   function getVisibleFragments() {
     var type = filterTypeEl.value;
     var sortMode = sortModeEl.value;
 
-    var items = FRAGMENTS.filter(function (item) {
+    var items = getAllFragments().filter(function (item) {
       return type === "all" || item.type === type;
     });
 
@@ -715,12 +788,6 @@ select:focus{
     }
 
     return items;
-  }
-
-  function depthValue(depth) {
-    if (depth === "surface") return 1;
-    if (depth === "middle") return 2;
-    return 3;
   }
 
   function createFragmentCard(item, index) {
@@ -741,7 +808,7 @@ select:focus{
 
     var meta = document.createElement("p");
     meta.className = "fragment-meta";
-    meta.textContent = "Depth: " + item.depth;
+    meta.textContent = "Depth: " + item.depth + (item.generated ? " · generated" : "");
 
     card.appendChild(tag);
     card.appendChild(title);
@@ -790,6 +857,7 @@ select:focus{
     selectedFragmentEl.textContent =
       "Type: " + item.type +
       "\nDepth: " + item.depth +
+      (item.generated ? "\nOrigin: generated" : "\nOrigin: base ocean") +
       "\n\n" + item.text;
 
     if (trailData.firstTool) {
@@ -849,9 +917,40 @@ select:focus{
     setStatus("Ocean shuffled.");
   }
 
+  function generateRandomFragment() {
+    var allowedTypes = filterTypeEl.value === "all"
+      ? ["criticism", "emotion", "problem", "confusion", "failure", "idea"]
+      : [filterTypeEl.value];
+
+    var type = pickRandom(allowedTypes);
+    var text = pickRandom(RANDOM_LIBRARY[type]);
+    var depth = pickRandom(DEPTHS);
+
+    var fragment = {
+      id: "frag-" + idCounter,
+      type: type,
+      text: text,
+      depth: depth,
+      generated: true
+    };
+
+    idCounter += 1;
+    GENERATED_FRAGMENTS.unshift(fragment);
+
+    if (GENERATED_FRAGMENTS.length > 12) {
+      GENERATED_FRAGMENTS = GENERATED_FRAGMENTS.slice(0, 12);
+    }
+
+    activePositions = pickRandom(POSITION_SETS);
+    renderOcean();
+    selectFragment(fragment);
+    setStatus("New fragment generated and dropped into the ocean.");
+  }
+
   filterTypeEl.addEventListener("change", renderOcean);
   sortModeEl.addEventListener("change", renderOcean);
   shuffleButton.addEventListener("click", shuffleOcean);
+  generateButton.addEventListener("click", generateRandomFragment);
 
   renderOcean();
 })();
