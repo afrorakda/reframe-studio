@@ -369,7 +369,7 @@ select{
         <section class="panel">
           <h2 class="panel-title">Start a trail</h2>
           <p class="panel-note">
-            Drop one fragment. Pick its type. We will show the first mutation and the next openings.
+            Drop one fragment. Pick its type. The router builds the first trail.
           </p>
 
           <textarea id="fragment-input" placeholder="Example: People say my ideas are too abstract."></textarea>
@@ -387,7 +387,7 @@ select{
             <div class="actions">
               <button class="button" id="try-example" type="button">Try example</button>
               <button class="button primary" id="build-trail" type="button">Build trail</button>
-              <button class="button cyan" id="surprise-trail" type="button">Surprise me</button>
+              <button class="button cyan" id="open-drop" type="button">Back to drop</button>
             </div>
           </div>
 
@@ -396,7 +396,6 @@ select{
 
         <section class="result hidden" id="result">
           <div class="summary-box" id="trail-summary"></div>
-
           <div class="trail" id="trail-view"></div>
 
           <div>
@@ -428,7 +427,7 @@ select{
   var typeEl = document.getElementById("fragment-type");
   var tryExampleBtn = document.getElementById("try-example");
   var buildTrailBtn = document.getElementById("build-trail");
-  var surpriseTrailBtn = document.getElementById("surprise-trail");
+  var openDropBtn = document.getElementById("open-drop");
   var statusEl = document.getElementById("status");
   var resultEl = document.getElementById("result");
   var trailSummaryEl = document.getElementById("trail-summary");
@@ -470,7 +469,7 @@ select{
     return array[Math.floor(Math.random() * array.length)];
   }
 
-  function getFragmentText() {
+  function getText() {
     return String(inputEl.value || "").trim();
   }
 
@@ -499,10 +498,14 @@ select{
     return node;
   }
 
-  function createNextCard(tool) {
+  function createNextCard(tool, fragmentText, type) {
     var link = document.createElement("a");
     link.className = "next-card";
-    link.href = tool.file + "?fragment=" + encodeURIComponent(getFragmentText()) + "&type=" + encodeURIComponent(typeEl.value);
+    link.href = tool.file + "?" + router.buildQueryString({
+      fragment: fragmentText,
+      type: type,
+      mode: "stable"
+    });
 
     var tag = document.createElement("span");
     tag.className = "next-tag";
@@ -521,8 +524,39 @@ select{
     return link;
   }
 
+  function renderTrail(trailData) {
+    resultEl.classList.remove("hidden");
+    clearChildren(trailViewEl);
+    clearChildren(nextGridEl);
+
+    trailSummaryEl.textContent =
+      "Fragment type: " + trailData.sourceType +
+      "\nMode: " + trailData.mode +
+      "\nTrail length: " + trailData.trail.length + " stages" +
+      "\n\n" + trailData.fragment.raw;
+
+    trailData.trail.forEach(function (item) {
+      var labelClass = item.kind === "fragment" ? "fragment" : (item.kind === "mutation" ? "mutation" : "next");
+      var labelText = item.kind === "fragment" ? "FRAGMENT" : (item.kind === "mutation" ? "MUTATION" : "NEXT");
+      trailViewEl.appendChild(createNode(labelText, labelClass, item.title, item.note));
+    });
+
+    trailData.nextTools.forEach(function (tool) {
+      nextGridEl.appendChild(createNextCard(tool, trailData.fragment.raw, trailData.sourceType));
+    });
+
+    if (!trailData.nextTools.length) {
+      var empty = document.createElement("div");
+      empty.className = "next-card";
+      empty.innerHTML = "<span class=\"next-tag\">NONE</span><h4>No next opening yet</h4><p>Try another fragment type or slightly change the fragment.</p>";
+      nextGridEl.appendChild(empty);
+    }
+
+    setStatus("Mutation trail built.");
+  }
+
   function buildTrail() {
-    var text = getFragmentText();
+    var text = getText();
     var type = typeEl.value;
 
     if (!text) {
@@ -531,75 +565,12 @@ select{
       return;
     }
 
-    var fragment = {
-      raw: text,
-      sourceType: type
-    };
-
-    var entryTools = router.getEntryTools(fragment);
-    var firstTool = entryTools[0] || null;
-    var nextTools = firstTool ? router.getNextToolsByZone(firstTool.id, "stable") : [];
-
-    resultEl.classList.remove("hidden");
-    clearChildren(trailViewEl);
-    clearChildren(nextGridEl);
-
-    trailSummaryEl.textContent =
-      "Fragment type: " + type +
-      "\nTrail length: " + (firstTool ? "3 stages" : "1 stage") +
-      "\n\n" + text;
-
-    trailViewEl.appendChild(
-      createNode(
-        "FRAGMENT",
-        "fragment",
-        text,
-        "This is the thought fragment you dropped into the system."
-      )
-    );
-
-    if (firstTool) {
-      trailViewEl.appendChild(
-        createNode(
-          "MUTATION",
-          "mutation",
-          firstTool.title,
-          firstTool.note || "First contact zone for this fragment."
-        )
-      );
-
-      trailViewEl.appendChild(
-        createNode(
-          "NEXT",
-          "next",
-          nextTools.length ? (nextTools[0].title || nextTools[0].id) : "Next opening",
-          nextTools.length
-            ? (nextTools[0].note || "The trail can continue from here.")
-            : "The trail can keep moving from here."
-        )
-      );
-    }
-
-    if (!nextTools.length && firstTool) {
-      nextTools = [firstTool];
-    }
-
-    nextTools.forEach(function (tool) {
-      nextGridEl.appendChild(createNextCard(tool));
+    var trailData = router.buildTrail(text, {
+      sourceType: type,
+      mode: "stable"
     });
 
-    if (!firstTool) {
-      trailViewEl.appendChild(
-        createNode(
-          "MUTATION",
-          "mutation",
-          "No route found yet",
-          "Try another fragment type or slightly change the text."
-        )
-      );
-    }
-
-    setStatus("Mutation trail built.");
+    renderTrail(trailData);
   }
 
   function tryExample() {
@@ -609,23 +580,48 @@ select{
     inputEl.focus();
   }
 
-  function surpriseTrail() {
-    var allTypes = ["criticism", "emotion", "problem", "confusion", "failure", "idea"];
-    var type = pickRandom(allTypes);
-    typeEl.value = type;
-    inputEl.value = pickRandom(EXAMPLES[type]);
-    buildTrail();
+  function openDrop() {
+    var text = getText();
+    var type = typeEl.value;
+
+    window.location.href =
+      "./fragment-drop.html?" +
+      router.buildQueryString({
+        fragment: text,
+        type: type
+      });
+  }
+
+  function initFromParams() {
+    var params = router.getParams();
+
+    if (params.fragment) {
+      inputEl.value = params.fragment;
+    }
+
+    if (params.type && typeEl.querySelector('option[value="' + params.type + '"]')) {
+      typeEl.value = params.type;
+    }
+
+    if (params.fragment) {
+      var trailData = router.getTrailFromParams();
+      if (trailData) {
+        renderTrail(trailData);
+      }
+    }
   }
 
   tryExampleBtn.addEventListener("click", tryExample);
   buildTrailBtn.addEventListener("click", buildTrail);
-  surpriseTrailBtn.addEventListener("click", surpriseTrail);
+  openDropBtn.addEventListener("click", openDrop);
 
   inputEl.addEventListener("keydown", function (event) {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       buildTrail();
     }
   });
+
+  initFromParams();
 })();
 </script>
 </body>
