@@ -18,6 +18,8 @@
   --purple-2:#6b4ef2;
   --cyan:#22c7e8;
   --green:#22c55e;
+  --danger-1:#ff7b7b;
+  --danger-2:#d44d4d;
   --shadow:0 12px 40px rgba(0,0,0,0.28);
   --max:1100px;
 }
@@ -192,7 +194,7 @@ select:focus{
   border-radius:12px;
   padding:12px 16px;
   cursor:pointer;
-  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
 }
 
 .button:hover{
@@ -214,13 +216,6 @@ select:focus{
   font-weight:700;
 }
 
-.button.danger{
-  background:linear-gradient(180deg, #ff7b7b, #d44d4d);
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
 .button.green{
   background:linear-gradient(180deg, #33d17a, #1ea85e);
   border-color:transparent;
@@ -228,9 +223,17 @@ select:focus{
   font-weight:700;
 }
 
-.button.small{
-  padding:10px 12px;
-  font-size:0.9rem;
+.button.danger{
+  background:linear-gradient(180deg, var(--danger-1), var(--danger-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button:disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .status{
@@ -273,7 +276,7 @@ select:focus{
 
 .ocean{
   position:relative;
-  min-height:560px;
+  min-height:820px;
   border:1px solid var(--line);
   border-radius:24px;
   overflow:hidden;
@@ -285,13 +288,14 @@ select:focus{
   box-shadow:var(--shadow);
 }
 
-.ocean-surface{
+.ocean::before{
+  content:"";
   position:absolute;
   inset:0;
-  pointer-events:none;
   background:
     radial-gradient(circle at 50% -10%, rgba(255,255,255,0.06), transparent 24%),
     linear-gradient(180deg, rgba(34,199,232,0.03), transparent 30%, rgba(124,92,255,0.04) 100%);
+  pointer-events:none;
 }
 
 .wave{
@@ -302,35 +306,41 @@ select:focus{
   border-radius:50%;
   border:1px solid rgba(255,255,255,0.05);
   opacity:0.35;
+  pointer-events:none;
 }
 
-.wave.one{ top:60px; }
-.wave.two{ top:230px; }
-.wave.three{ top:400px; }
+.wave.one{ top:70px; }
+.wave.two{ top:300px; }
+.wave.three{ top:560px; }
 
 .ocean-grid{
   position:relative;
-  min-height:560px;
+  min-height:820px;
 }
 
 .fragment{
   position:absolute;
-  width:220px;
+  width:230px;
   padding:14px;
   border-radius:18px;
   border:1px solid var(--line);
-  background:rgba(13,19,31,0.82);
+  background:rgba(13,19,31,0.86);
   backdrop-filter:blur(8px);
   box-shadow:0 10px 28px rgba(0,0,0,0.24);
   cursor:pointer;
-  transition:transform 0.18s ease,border-color 0.18s ease,background 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
   text-align:left;
+  animation:floaty 6s ease-in-out infinite;
 }
 
 .fragment:hover{
   transform:translateY(-4px) scale(1.01);
   border-color:rgba(34,199,232,0.45);
-  background:rgba(18,24,38,0.92);
+  background:rgba(18,24,38,0.94);
 }
 
 .fragment.selected{
@@ -388,6 +398,7 @@ select:focus{
   margin:0 0 8px;
   font-size:0.98rem;
   line-height:1.35;
+  color:#1f8fff;
 }
 
 .fragment p{
@@ -447,6 +458,12 @@ select:focus{
   font-size:0.88rem;
 }
 
+@keyframes floaty{
+  0%{ transform:translateY(0px); }
+  50%{ transform:translateY(-6px); }
+  100%{ transform:translateY(0px); }
+}
+
 @media (max-width:980px){
   .hero-grid,
   .preview,
@@ -461,25 +478,30 @@ select:focus{
   }
 
   .ocean{
-    min-height:auto;
+    min-height:980px;
   }
 
   .ocean-grid{
-    min-height:auto;
-    padding:14px;
-    display:grid;
-    gap:12px;
+    min-height:980px;
   }
 
   .fragment{
-    position:relative;
-    width:100%;
-    left:auto !important;
-    top:auto !important;
+    width:42vw;
+    min-width:150px;
+    max-width:210px;
+    padding:12px;
   }
 
-  .wave{
-    display:none;
+  .fragment h3{
+    font-size:0.92rem;
+  }
+
+  .fragment p{
+    font-size:0.82rem;
+  }
+
+  .fragment-meta{
+    font-size:0.76rem;
   }
 }
 </style>
@@ -493,7 +515,7 @@ select:focus{
       <div class="hero-inner">
         <div class="hero-grid">
           <div>
-            <span class="eyebrow">Fragment field + memory + mutation</span>
+            <span class="eyebrow">Floating fragment field</span>
             <h1>Thinking Ocean</h1>
             <p class="subtitle">
               Fragments float here like unfinished thoughts. Pick one, generate a new one, or mutate the selected fragment and let the ocean grow.
@@ -502,8 +524,8 @@ select:focus{
 
           <div class="hero-points">
             <div class="hero-point">
-              <strong>See fragments</strong>
-              <span>Thoughts appear as floating pieces, not strict tasks.</span>
+              <strong>Float</strong>
+              <span>Fragments feel like pieces drifting across a thought surface.</span>
             </div>
             <div class="hero-point">
               <strong>Memory</strong>
@@ -511,7 +533,7 @@ select:focus{
             </div>
             <div class="hero-point">
               <strong>Mutate</strong>
-              <span>A selected fragment can produce a new fragment and return to the ocean.</span>
+              <span>A selected fragment can become a new fragment and return to the ocean.</span>
             </div>
           </div>
         </div>
@@ -563,7 +585,6 @@ select:focus{
       </div>
 
       <div class="ocean">
-        <div class="ocean-surface"></div>
         <div class="wave one"></div>
         <div class="wave two"></div>
         <div class="wave three"></div>
@@ -607,7 +628,7 @@ select:focus{
   "use strict";
 
   var router = window.REFRAME_ROUTER;
-  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v2";
+  var STORAGE_KEY = "reframe_thinking_ocean_generated_fragments_v3";
 
   var oceanGridEl = document.getElementById("ocean-grid");
   var filterTypeEl = document.getElementById("filter-type");
@@ -623,54 +644,14 @@ select:focus{
   var memoryCountEl = document.getElementById("memory-count");
 
   var BASE_FRAGMENTS = [
-    {
-      id: "frag-1",
-      type: "criticism",
-      text: "People say my ideas are too abstract.",
-      depth: "surface"
-    },
-    {
-      id: "frag-2",
-      type: "emotion",
-      text: "I feel heavy every time I try to publish a thought.",
-      depth: "middle"
-    },
-    {
-      id: "frag-3",
-      type: "problem",
-      text: "I have too many directions and no clear priority.",
-      depth: "surface"
-    },
-    {
-      id: "frag-4",
-      type: "confusion",
-      text: "I know something is here, but I cannot see the real question yet.",
-      depth: "deep"
-    },
-    {
-      id: "frag-5",
-      type: "failure",
-      text: "I kept making things and still could not get traction.",
-      depth: "middle"
-    },
-    {
-      id: "frag-6",
-      type: "idea",
-      text: "Criticism might be fuel, not damage.",
-      depth: "surface"
-    },
-    {
-      id: "frag-7",
-      type: "idea",
-      text: "What if confusion is not a bug but a doorway?",
-      depth: "deep"
-    },
-    {
-      id: "frag-8",
-      type: "problem",
-      text: "I can see the value, but I cannot choose the first move.",
-      depth: "middle"
-    }
+    { id:"frag-1", type:"criticism", text:"People say my ideas are too abstract.", depth:"surface" },
+    { id:"frag-2", type:"emotion", text:"I feel heavy every time I try to publish a thought.", depth:"middle" },
+    { id:"frag-3", type:"problem", text:"I have too many directions and no clear priority.", depth:"surface" },
+    { id:"frag-4", type:"confusion", text:"I know something is here, but I cannot see the real question yet.", depth:"deep" },
+    { id:"frag-5", type:"failure", text:"I kept making things and still could not get traction.", depth:"middle" },
+    { id:"frag-6", type:"idea", text:"Criticism might be fuel, not damage.", depth:"surface" },
+    { id:"frag-7", type:"idea", text:"What if confusion is not a bug but a doorway?", depth:"deep" },
+    { id:"frag-8", type:"problem", text:"I can see the value, but I cannot choose the first move.", depth:"middle" }
   ];
 
   var GENERATED_FRAGMENTS = [];
@@ -723,87 +704,62 @@ select:focus{
 
   var MUTATION_LIBRARY = {
     criticism: [
-      { text: "Maybe the criticism is pointing to the core tension.", type: "idea" },
-      { text: "What part of the idea feels abstract to them?", type: "confusion" },
-      { text: "Maybe abstraction is the value, but the entry point is missing.", type: "idea" },
-      { text: "This criticism might be a clue about framing, not quality.", type: "problem" }
+      { text:"Maybe the criticism is pointing to the core tension.", type:"idea" },
+      { text:"What part of the idea feels abstract to them?", type:"confusion" },
+      { text:"Maybe abstraction is the value, but the entry point is missing.", type:"idea" },
+      { text:"This criticism might be a clue about framing, not quality.", type:"problem" }
     ],
     emotion: [
-      { text: "What action would make this feeling lighter today?", type: "problem" },
-      { text: "Maybe the heaviness means the thought matters.", type: "idea" },
-      { text: "What is the real fear hiding inside this feeling?", type: "confusion" },
-      { text: "This emotion might be pressure without structure.", type: "problem" }
+      { text:"What action would make this feeling lighter today?", type:"problem" },
+      { text:"Maybe the heaviness means the thought matters.", type:"idea" },
+      { text:"What is the real fear hiding inside this feeling?", type:"confusion" },
+      { text:"This emotion might be pressure without structure.", type:"problem" }
     ],
     problem: [
-      { text: "What is the smallest useful move inside this problem?", type: "idea" },
-      { text: "Which constraint is actually blocking the first step?", type: "confusion" },
-      { text: "Maybe this is not one problem but three smaller ones.", type: "idea" },
-      { text: "What option appears if the current path is removed?", type: "idea" }
+      { text:"What is the smallest useful move inside this problem?", type:"idea" },
+      { text:"Which constraint is actually blocking the first step?", type:"confusion" },
+      { text:"Maybe this is not one problem but three smaller ones.", type:"idea" },
+      { text:"What option appears if the current path is removed?", type:"idea" }
     ],
     confusion: [
-      { text: "What question would make this confusion useful?", type: "idea" },
-      { text: "Maybe the real question appears after one more mutation.", type: "idea" },
-      { text: "What shape does this thought take if it becomes a map?", type: "problem" },
-      { text: "This confusion may be the doorway, not the obstacle.", type: "idea" }
+      { text:"What question would make this confusion useful?", type:"idea" },
+      { text:"Maybe the real question appears after one more mutation.", type:"idea" },
+      { text:"What shape does this thought take if it becomes a map?", type:"problem" },
+      { text:"This confusion may be the doorway, not the obstacle.", type:"idea" }
     ],
     failure: [
-      { text: "What did this failure reveal that success would have hidden?", type: "idea" },
-      { text: "Maybe the failed attempt was actually an unfinished draft.", type: "idea" },
-      { text: "What pattern keeps repeating in this failure?", type: "confusion" },
-      { text: "This failure might be feedback, not an ending.", type: "idea" }
+      { text:"What did this failure reveal that success would have hidden?", type:"idea" },
+      { text:"Maybe the failed attempt was actually an unfinished draft.", type:"idea" },
+      { text:"What pattern keeps repeating in this failure?", type:"confusion" },
+      { text:"This failure might be feedback, not an ending.", type:"idea" }
     ],
     idea: [
-      { text: "What is the opposite of this idea?", type: "confusion" },
-      { text: "What if this idea is only the first layer?", type: "confusion" },
-      { text: "Maybe this idea wants a stronger entry point.", type: "problem" },
-      { text: "What question would unlock this idea further?", type: "confusion" }
+      { text:"What is the opposite of this idea?", type:"confusion" },
+      { text:"What if this idea is only the first layer?", type:"confusion" },
+      { text:"Maybe this idea wants a stronger entry point.", type:"problem" },
+      { text:"What question would unlock this idea further?", type:"confusion" }
     ]
   };
 
   var DEPTHS = ["surface", "middle", "deep"];
-
   var POSITION_SETS = [
     [
-      { left: "4%", top: "8%" },
-      { left: "34%", top: "6%" },
-      { left: "67%", top: "10%" },
-      { left: "12%", top: "34%" },
-      { left: "46%", top: "30%" },
-      { left: "73%", top: "38%" },
-      { left: "22%", top: "63%" },
-      { left: "58%", top: "68%" },
-      { left: "6%", top: "74%" },
-      { left: "70%", top: "72%" },
-      { left: "38%", top: "54%" },
-      { left: "30%", top: "80%" }
+      { left:"5%", top:"7%" }, { left:"37%", top:"8%" }, { left:"65%", top:"11%" },
+      { left:"10%", top:"31%" }, { left:"48%", top:"28%" }, { left:"71%", top:"37%" },
+      { left:"22%", top:"55%" }, { left:"56%", top:"61%" }, { left:"6%", top:"74%" },
+      { left:"38%", top:"76%" }, { left:"67%", top:"70%" }, { left:"30%", top:"44%" }
     ],
     [
-      { left: "10%", top: "12%" },
-      { left: "42%", top: "8%" },
-      { left: "71%", top: "16%" },
-      { left: "3%", top: "42%" },
-      { left: "35%", top: "36%" },
-      { left: "66%", top: "44%" },
-      { left: "18%", top: "70%" },
-      { left: "54%", top: "66%" },
-      { left: "77%", top: "72%" },
-      { left: "8%", top: "78%" },
-      { left: "48%", top: "54%" },
-      { left: "28%", top: "22%" }
+      { left:"8%", top:"10%" }, { left:"43%", top:"6%" }, { left:"69%", top:"15%" },
+      { left:"4%", top:"36%" }, { left:"34%", top:"29%" }, { left:"63%", top:"41%" },
+      { left:"18%", top:"60%" }, { left:"52%", top:"66%" }, { left:"74%", top:"71%" },
+      { left:"12%", top:"78%" }, { left:"44%", top:"49%" }, { left:"29%", top:"20%" }
     ],
     [
-      { left: "7%", top: "18%" },
-      { left: "38%", top: "4%" },
-      { left: "69%", top: "12%" },
-      { left: "15%", top: "45%" },
-      { left: "49%", top: "28%" },
-      { left: "74%", top: "48%" },
-      { left: "24%", top: "72%" },
-      { left: "57%", top: "70%" },
-      { left: "4%", top: "64%" },
-      { left: "69%", top: "78%" },
-      { left: "34%", top: "58%" },
-      { left: "44%", top: "82%" }
+      { left:"6%", top:"16%" }, { left:"34%", top:"5%" }, { left:"66%", top:"12%" },
+      { left:"14%", top:"40%" }, { left:"47%", top:"26%" }, { left:"72%", top:"46%" },
+      { left:"23%", top:"63%" }, { left:"55%", top:"71%" }, { left:"4%", top:"74%" },
+      { left:"70%", top:"78%" }, { left:"35%", top:"54%" }, { left:"44%", top:"84%" }
     ]
   ];
 
@@ -845,7 +801,6 @@ select:focus{
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
-
       var parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return;
 
@@ -917,6 +872,7 @@ select:focus{
     var pos = activePositions[index % activePositions.length];
     card.style.left = pos.left;
     card.style.top = pos.top;
+    card.style.animationDelay = ((index % 7) * 0.35) + "s";
 
     var tag = document.createElement("span");
     tag.className = "fragment-tag " + item.type;
