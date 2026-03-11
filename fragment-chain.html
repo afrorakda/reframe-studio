@@ -1,189 +1,699 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fragment Chain — REFRAME Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragment Chain by REFRAME Studio</title>
+  <style>
+    :root {
+      --bg-1: #061018;
+      --bg-2: #0a1724;
+      --bg-3: #0d1f30;
+      --panel: rgba(10, 23, 36, 0.72);
+      --text: #eef6ff;
+      --muted: #9eb4ca;
+      --line: rgba(120, 170, 255, 0.16);
+      --glow-blue: rgba(66, 153, 255, 0.28);
+      --glow-cyan: rgba(58, 224, 255, 0.18);
+      --accent-strong: #9ec5ff;
+      --button-primary-from: #4a7dff;
+      --button-primary-to: #7d5cff;
+      --button-secondary-from: rgba(127, 178, 255, 0.12);
+      --button-secondary-to: rgba(127, 178, 255, 0.06);
+      --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.36);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.28);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --max-width: 860px;
+    }
 
-<style>
+    * {
+      box-sizing: border-box;
+    }
 
-body{
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-background:#0f172a;
-color:#e2e8f0;
-margin:0;
-padding:20px;
-max-width:720px;
-margin:auto;
-}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(58, 224, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(125, 92, 255, 0.14), transparent 30%),
+        radial-gradient(circle at 50% 120%, rgba(66, 153, 255, 0.12), transparent 42%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
 
-a{
-color:#93c5fd;
-text-decoration:none;
-}
+    a {
+      color: var(--accent-strong);
+      text-decoration: none;
+    }
 
-h1{
-margin-top:10px;
-}
+    a:hover {
+      text-decoration: underline;
+    }
 
-textarea{
-width:100%;
-min-height:120px;
-padding:12px;
-border-radius:10px;
-border:1px solid #334155;
-background:#020617;
-color:#e2e8f0;
-font-size:16px;
-}
+    .page {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 18px 14px 40px;
+    }
 
-button{
-margin-top:10px;
-margin-right:8px;
-padding:10px 14px;
-border-radius:10px;
-border:none;
-background:#3b82f6;
-color:white;
-font-weight:600;
-cursor:pointer;
-}
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
 
-button.secondary{
-background:#1e293b;
-}
+    .hero {
+      margin-bottom: 18px;
+    }
 
-button:hover{
-opacity:0.9;
-}
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(127, 178, 255, 0.08);
+      border: 1px solid rgba(127, 178, 255, 0.16);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
 
-.card{
-margin-top:18px;
-padding:14px;
-border-radius:10px;
-background:#020617;
-border:1px solid #334155;
-}
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(32px, 6vw, 48px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      text-wrap: balance;
+    }
 
-.mutation{
-margin-top:10px;
-padding:10px;
-border-radius:8px;
-background:#020617;
-border:1px solid #334155;
-}
+    .subtitle {
+      margin: 0;
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
 
-</style>
+    .byline {
+      display: block;
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 18px;
+    }
+
+    .panel + .panel {
+      margin-top: 14px;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: auto auto 65% -10%;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: -20% -10% auto auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--glow-blue), transparent 70%);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .label-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    textarea {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 170px;
+      resize: vertical;
+      border: 1px solid rgba(127, 178, 255, 0.14);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        rgba(7, 18, 29, 0.84);
+      color: var(--text);
+      padding: 16px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.65;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    textarea::placeholder {
+      color: rgba(158, 180, 202, 0.7);
+    }
+
+    textarea:focus {
+      border-color: rgba(127, 178, 255, 0.38);
+      box-shadow:
+        0 0 0 4px rgba(66, 153, 255, 0.12),
+        0 0 30px rgba(66, 153, 255, 0.12);
+      background: rgba(8, 20, 32, 0.94);
+    }
+
+    .button-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      color: var(--text);
+      transition: transform 0.06s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
+      box-shadow:
+        0 12px 28px rgba(74, 125, 255, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, var(--button-secondary-from), var(--button-secondary-to));
+      border: 1px solid rgba(127, 178, 255, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .hint {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(127, 178, 255, 0.1);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(127, 178, 255, 0.1);
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 4px 2px 2px;
+    }
+
+    .chain-wrap {
+      position: relative;
+      padding: 8px 0 4px;
+    }
+
+    .chain-line {
+      position: absolute;
+      left: 19px;
+      top: 16px;
+      bottom: 16px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(127, 178, 255, 0.32), rgba(127, 178, 255, 0.06));
+      border-radius: 999px;
+    }
+
+    .chain-step {
+      position: relative;
+      padding-left: 54px;
+      margin-bottom: 16px;
+    }
+
+    .chain-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-dot {
+      position: absolute;
+      left: 8px;
+      top: 16px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
+      box-shadow:
+        0 0 0 6px rgba(66, 153, 255, 0.08),
+        0 0 20px rgba(66, 153, 255, 0.18);
+      z-index: 1;
+    }
+
+    .step-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        rgba(8, 21, 34, 0.72);
+      border: 1px solid rgba(127, 178, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .step-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .step-kind {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .step-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(127, 178, 255, 0.08);
+      border: 1px solid rgba(127, 178, 255, 0.12);
+      color: var(--accent-strong);
+      font-size: 13px;
+      line-height: 1.2;
+      backdrop-filter: blur(8px);
+    }
+
+    .chip.accent {
+      background: linear-gradient(135deg, rgba(74, 125, 255, 0.18), rgba(125, 92, 255, 0.16));
+      color: var(--text);
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .footer strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 16px 12px 34px;
+      }
+
+      .panel {
+        padding: 16px;
+        border-radius: 24px;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .step-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <main class="page">
+    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
 
-<a href="./index.html">← Back to REFRAME Studio</a>
+    <section class="hero">
+      <div class="eyebrow">Creation Loop</div>
+      <h1>Fragment Chain <span class="byline">by REFRAME Studio</span></h1>
+      <p class="subtitle">
+        Start with one fragment and let it mutate step by step.
+        Each step should create the next thought.
+      </p>
+    </section>
 
-<h1>Fragment Chain</h1>
+    <section class="panel">
+      <div class="label-row">
+        <div class="label">Start a chain</div>
+        <div class="helper" id="charCount">0 characters</div>
+      </div>
 
-<p>
-Watch how one fragment mutates step by step.
-</p>
+      <textarea
+        id="fragmentInput"
+        placeholder="People say my ideas are too abstract."
+        aria-label="Fragment input"
+      ></textarea>
 
-<textarea id="fragmentInput"
-placeholder="People say my ideas are too abstract."></textarea>
+      <div class="button-row">
+        <button class="btn-primary" id="startBtn" type="button">Start Chain</button>
+        <button class="btn-secondary" id="exampleBtn" type="button">Try example</button>
+        <button class="btn-secondary" id="nextBtn" type="button">Next Mutation</button>
+        <button class="btn-secondary" id="clearBtn" type="button">Clear</button>
+      </div>
 
-<br>
+      <div class="hint">
+        Fragment → Mutation → New Fragment → Mutation
+      </div>
+    </section>
 
-<button onclick="startChain()">Start Chain</button>
-<button class="secondary" onclick="tryExample()">Try example</button>
-<button class="secondary" onclick="addMutation()">Next Mutation</button>
-<button class="secondary" onclick="clearChain()">Clear</button>
+    <section class="panel">
+      <div class="label-row">
+        <div class="label">Chain</div>
+        <div class="helper">Thought continuation</div>
+      </div>
 
-<div id="chainArea"></div>
+      <div id="chainArea" class="empty-state">
+        Start a chain to see one fragment evolve into the next.
+      </div>
+    </section>
 
-<script src="./mutation-map.js"></script>
+    <footer class="footer">
+      <strong>No login.</strong>
+      <strong>No tracking.</strong>
+      <strong>No personal data.</strong>
+      Runs entirely in your browser.
+    </footer>
+  </main>
 
-<script>
+  <script src="./mutation-map.js"></script>
+  <script>
+    const inputEl = document.getElementById("fragmentInput");
+    const startBtn = document.getElementById("startBtn");
+    const exampleBtn = document.getElementById("exampleBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const charCountEl = document.getElementById("charCount");
+    const chainArea = document.getElementById("chainArea");
 
-let chain = []
+    let chain = [];
 
-function tryExample(){
+    const exampleText = "People say my ideas are too abstract.";
 
-const example = "People say my ideas are too abstract."
+    const mutationPrompts = {
+      Criticism: [
+        "What are they actually reacting to?",
+        "What lesson is hidden inside this criticism?",
+        "Can this criticism become a creative angle?",
+        "What post idea is hiding here?"
+      ],
+      Emotion: [
+        "What is this feeling trying to protect?",
+        "What small action would reduce the pressure?",
+        "What truth is hidden inside this emotion?",
+        "What fragment appears underneath the feeling?"
+      ],
+      Problem: [
+        "What is the real blockage here?",
+        "Which assumption is making this heavier?",
+        "What option appears if the current frame is removed?",
+        "What small move would count as progress?"
+      ],
+      Confusion: [
+        "What exactly is unclear?",
+        "What question would make this simpler?",
+        "What is missing here?",
+        "What is the smallest clear version of this thought?"
+      ],
+      Failure: [
+        "What did this failure reveal?",
+        "What should be kept, removed, or reversed?",
+        "What smaller retry is possible now?",
+        "What lesson would success have hidden?"
+      ],
+      Idea: [
+        "What is the strongest angle inside this idea?",
+        "Could this become a tool?",
+        "What new fragment would this idea generate?",
+        "What expression form fits this idea best?"
+      ]
+    };
 
-document.getElementById("fragmentInput").value = example
+    function updateCharCount() {
+      const count = inputEl.value.length;
+      charCountEl.textContent = count + " character" + (count === 1 ? "" : "s");
+    }
 
-}
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
 
-function startChain(){
+    function canBuildRoute() {
+      return typeof window.buildFragmentRoute === "function";
+    }
 
-const text = document.getElementById("fragmentInput").value.trim()
+    function randomFrom(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
 
-if(!text) return
+    function tryExample() {
+      inputEl.value = exampleText;
+      updateCharCount();
+    }
 
-chain = []
+    function startChain() {
+      const text = inputEl.value.trim();
+      if (!text) {
+        chainArea.innerHTML = `
+          <div class="empty-state">
+            Drop one short fragment first. Even a rough line is enough.
+          </div>
+        `;
+        return;
+      }
 
-const route = buildFragmentRoute(text)
+      let route = null;
+      if (canBuildRoute()) {
+        route = window.buildFragmentRoute(text);
+      }
 
-chain.push({
-type:route.detectedType.label,
-text:text
-})
+      chain = [];
 
-renderChain()
+      if (route) {
+        chain.push({
+          title: "Dropped Fragment",
+          kind: route.detectedType.label,
+          text: text,
+          chips: ["Start", route.detectedType.label]
+        });
 
-}
+        const firstPrompt = route.nextMutations && route.nextMutations.length
+          ? route.nextMutations[0]
+          : "What new thought appears here?";
 
-function addMutation(){
+        chain.push({
+          title: "First Mutation",
+          kind: "Mutation",
+          text: firstPrompt,
+          chips: ["Mutation", route.detectedType.label]
+        });
+      } else {
+        chain.push({
+          title: "Dropped Fragment",
+          kind: "Start",
+          text: text,
+          chips: ["Start"]
+        });
+      }
 
-if(chain.length===0) return
+      renderChain();
+    }
 
-const last = chain[chain.length-1]
+    function addMutation() {
+      if (chain.length === 0) {
+        return;
+      }
 
-const options = [
-"Reframe the idea",
-"Turn criticism into lesson",
-"Find a stronger angle",
-"Ask a deeper question"
-]
+      const first = chain[0];
+      const type = first && first.kind ? first.kind : "Problem";
+      const prompts = mutationPrompts[type] || mutationPrompts.Problem;
+      const nextText = randomFrom(prompts);
 
-const next = options[Math.floor(Math.random()*options.length)]
+      chain.push({
+        title: "Next Mutation",
+        kind: "Mutation",
+        text: nextText,
+        chips: ["Continue", type]
+      });
 
-chain.push({
-type:"Mutation",
-text:next
-})
+      renderChain();
+    }
 
-renderChain()
+    function clearChain() {
+      chain = [];
+      inputEl.value = "";
+      updateCharCount();
+      chainArea.innerHTML = `
+        <div class="empty-state">
+          Start a chain to see one fragment evolve into the next.
+        </div>
+      `;
+      inputEl.focus();
+    }
 
-}
+    function renderChain() {
+      if (!chain.length) {
+        chainArea.innerHTML = `
+          <div class="empty-state">
+            Start a chain to see one fragment evolve into the next.
+          </div>
+        `;
+        return;
+      }
 
-function clearChain(){
+      chainArea.innerHTML = `
+        <div class="chain-wrap">
+          <div class="chain-line"></div>
+          ${chain.map((step, index) => `
+            <div class="chain-step">
+              <div class="step-dot"></div>
+              <div class="step-card">
+                <div class="step-top">
+                  <div class="step-title">${escapeHtml(step.title)}</div>
+                  <div class="step-kind">Step ${index + 1}</div>
+                </div>
+                <p class="step-desc">${escapeHtml(step.text)}</p>
+                <div class="chip-row">
+                  ${step.chips.map((chip, chipIndex) => `
+                    <div class="chip ${chipIndex === 0 ? "accent" : ""}">${escapeHtml(chip)}</div>
+                  `).join("")}
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
 
-chain=[]
+    inputEl.addEventListener("input", updateCharCount);
+    startBtn.addEventListener("click", startChain);
+    exampleBtn.addEventListener("click", tryExample);
+    nextBtn.addEventListener("click", addMutation);
+    clearBtn.addEventListener("click", clearChain);
 
-document.getElementById("chainArea").innerHTML=""
+    inputEl.addEventListener("keydown", function(event) {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        startChain();
+      }
+    });
 
-}
-
-function renderChain(){
-
-const area = document.getElementById("chainArea")
-
-area.innerHTML=""
-
-chain.forEach((step,i)=>{
-
-const div=document.createElement("div")
-
-div.className="mutation"
-
-div.innerHTML="<strong>"+step.type+"</strong><br>"+step.text
-
-area.appendChild(div)
-
-})
-
-}
-
-</script>
-
+    updateCharCount();
+  </script>
 </body>
 </html>
