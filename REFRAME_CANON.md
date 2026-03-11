@@ -1,18 +1,18 @@
 # REFRAME Studio Canon
 
-This document defines the core rules, philosophy, and design system of REFRAME Studio.
+This document defines the **core rules, philosophy, and design system** of REFRAME Studio.
 
-All tools, pages, and future development must follow this canon.
+All tools, pages, and future development **must follow this canon**.
 
-If there is a conflict between files, this document has priority.
+If there is a conflict between files, **this document has priority**.
 
 ---
 
 # 1. Core Concept
 
-REFRAME Studio is not an AI tool.
+REFRAME Studio is **not an AI tool**.
 
-It is a Browser-native Thinking Playground.
+It is a **Browser-native Thinking Playground**.
 
 Typical AI:
 
@@ -32,7 +32,7 @@ Goal:
 
 Chaos → Creation
 
-The system encourages thought movement, not answers.
+The system encourages **thought movement**, not answers.
 
 ---
 
@@ -44,7 +44,7 @@ Core rule:
 
 Tools are not applications.
 
-They are thinking utilities.
+They are **thinking utilities**.
 
 Each tool performs a simple transformation.
 
@@ -60,9 +60,9 @@ Emotion → Action
 
 Tools must remain:
 
-- extremely simple  
-- fast  
-- frictionless  
+- extremely simple
+- fast
+- frictionless
 
 ---
 
@@ -116,15 +116,15 @@ If input is English
 
 Never mix languages.
 
-UI language remains English.
+UI language remains **English**.
 
 ---
 
 # 5. UI Canon (Design Rules)
 
-REFRAME Studio must maintain a consistent visual atmosphere.
+REFRAME Studio must maintain a **consistent visual atmosphere**.
 
-The UI should feel like a thinking space, not a SaaS dashboard.
+The UI should feel like a **thinking space**, not a SaaS dashboard.
 
 ### Background
 
@@ -188,9 +188,34 @@ Footer
 
 ---
 
+### Input Example Standard
+
+All REFRAME Studio input tools must include:
+
+- a soft example placeholder inside the main textarea
+- a **Try example** button near the main action button
+- example text that matches the purpose of the tool
+- placeholder text shown as faint guidance, not prefilled content
+
+Purpose:
+
+- reduce blank-page friction
+- make the tool instantly understandable
+- allow one-tap testing
+- keep the experience lightweight and inviting
+
+Typical input button order:
+
+Primary action  
+Try example  
+Clear  
+Copy result (only when needed)
+
+---
+
 ### Spacing
 
-REFRAME UI must feel calm and breathable.
+REFRAME UI must feel **calm and breathable**.
 
 Rules:
 
@@ -216,7 +241,7 @@ Tiny buttons
 
 # 6. Thinking System Architecture
 
-REFRAME Studio functions as a Thinking OS.
+REFRAME Studio functions as a **Thinking OS**.
 
 Core flow:
 
@@ -243,7 +268,7 @@ These tools move thoughts through the system.
 
 # 7. Mutation Principle
 
-Every tool must encourage continued thinking.
+Every tool must encourage **continued thinking**.
 
 A tool should never terminate thought.
 
@@ -254,7 +279,7 @@ New angle
 New question  
 New action  
 
-Tools should suggest next mutations.
+Tools should suggest **next mutations**.
 
 ---
 
