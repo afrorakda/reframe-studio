@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enter Deeper — REFRAME Studio</title>
+
+<style>
+:root{
+  --bg:#050812;
+  --bg-2:#08101d;
+  --panel:#101726;
+  --panel-2:#151f31;
+  --line:#263149;
+  --text:#f5f7fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --shadow:0 12px 40px rgba(0,0,0,0.35);
+  --max:980px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  line-height:1.6;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.08), transparent 24%),
+    radial-gradient(circle at 50% 120%, rgba(124,92,255,0.14), transparent 32%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
+}
+
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
+
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
+}
+
+.hero{
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(124,92,255,0.18), transparent 26%),
+    radial-gradient(circle at 16% 10%, rgba(34,199,232,0.10), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, transparent 0%, transparent 40%, rgba(0,0,0,0.18) 100%);
+}
+
+.hero-inner{
+  position:relative;
+  z-index:1;
+  padding:26px 20px 20px;
+  display:grid;
+  gap:18px;
+}
+
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.24);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
+
+.hero h1{
+  margin:0;
+  font-size:clamp(2.5rem, 10vw, 4.9rem);
+  line-height:0.95;
+  letter-spacing:-0.06em;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  font-size:1.02rem;
+  max-width:700px;
+}
+
+.whisper{
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.03);
+  color:#cfd7e8;
+  font-size:0.95rem;
+}
+
+.section{
+  margin-top:22px;
+  display:grid;
+  gap:14px;
+}
+
+.section-head h2{
+  margin:0;
+  font-size:1.4rem;
+  letter-spacing:-0.03em;
+}
+
+.section-head p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:0.95rem;
+}
+
+.depth-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:16px;
+}
+
+.depth-card{
+  position:relative;
+  min-height:250px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
+
+.depth-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:0.9;
+}
+
+.depth-card.surface::before{
+  background:radial-gradient(circle at 50% 0%, rgba(34,199,232,0.12), transparent 38%);
+}
+
+.depth-card.shallow::before{
+  background:radial-gradient(circle at 50% 10%, rgba(124,92,255,0.16), transparent 42%);
+}
+
+.depth-card.deep::before{
+  background:radial-gradient(circle at 50% 20%, rgba(34,199,232,0.08), transparent 42%);
+}
+
+.depth-card.abyss::before{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(124,92,255,0.16), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(0,0,0,0.22), transparent 44%);
+}
+
+.depth-top{
+  position:relative;
+  z-index:1;
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
+
+.depth-label{
+  display:inline-block;
+  margin-bottom:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:0.78rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+}
+
+.surface .depth-label{
+  background:rgba(34,199,232,0.12);
+  border:1px solid rgba(34,199,232,0.24);
+  color:#9befff;
+}
+
+.shallow .depth-label{
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.24);
+  color:#cfbeff;
+}
+
+.deep .depth-label{
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.24);
+  color:#bff7cf;
+}
+
+.abyss .depth-label{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#f5f7fb;
+}
+
+.depth-top h3{
+  margin:0 0 6px;
+  font-size:1.34rem;
+  letter-spacing:-0.03em;
+}
+
+.depth-top p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.94rem;
+}
+
+.depth-body{
+  position:relative;
+  z-index:1;
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
+
+.depth-note{
+  margin:0;
+  color:#d6dceb;
+  font-size:0.96rem;
+}
+
+.button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border-radius:14px;
+  padding:13px 18px;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+}
+
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.surface{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.shallow{
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.deep{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.abyss{
+  background:linear-gradient(180deg, #1b2437, #0d1322);
+  border-color:#33405f;
+  color:white;
+  font-weight:700;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:780px){
+  .depth-grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero-inner{
+    padding:18px 16px 16px;
+  }
+
+  .hero h1{
+    font-size:3.5rem;
+  }
+}
+</style>
+</head>
+
+<body>
+<main class="page">
+  <div class="container">
+
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">Under the surface</span>
+        <h1>Enter deeper.</h1>
+        <p>
+          The surface tool is simple. Under it, thought changes shape. Choose how far down you want to go.
+        </p>
+        <div class="whisper">
+          Not every thought returns unchanged.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Depth Levels</h2>
+        <p>Each layer goes a little further.</p>
+      </div>
+
+      <div class="depth-grid">
+        <article class="depth-card surface">
+          <div class="depth-top">
+            <span class="depth-label">SURFACE</span>
+            <h3>Fragment</h3>
+            <p>Drop one unfinished thought.</p>
+          </div>
+          <div class="depth-body">
+            <p class="depth-note">
+              This is the first real step below the surface.
+            </p>
+            <a class="button surface" href="./fragment-drop.html">Open Fragment Drop</a>
+          </div>
+        </article>
+
+        <article class="depth-card shallow">
+          <div class="depth-top">
+            <span class="depth-label">SHALLOW</span>
+            <h3>Router</h3>
+            <p>See where the thought wants to go.</p>
+          </div>
+          <div class="depth-body">
+            <p class="depth-note">
+              The system reads friction and suggests the first mutation path.
+            </p>
+            <a class="button shallow" href="./fragment-router.html">Open Fragment Router</a>
+          </div>
+        </article>
+
+        <article class="depth-card deep">
+          <div class="depth-top">
+            <span class="depth-label">DEEP</span>
+            <h3>Chain</h3>
+            <p>Keep the thought moving.</p>
+          </div>
+          <div class="depth-body">
+            <p class="depth-note">
+              One result is not the end. Continue mutation step by step.
+            </p>
+            <a class="button deep" href="./fragment-chain.html">Open Fragment Chain</a>
+          </div>
+        </article>
+
+        <article class="depth-card abyss">
+          <div class="depth-top">
+            <span class="depth-label">ABYSS</span>
+            <h3>Ocean</h3>
+            <p>Enter the drifting space.</p>
+          </div>
+          <div class="depth-body">
+            <p class="depth-note">
+              Fragments float, return, and open new movement again.
+            </p>
+            <a class="button abyss" href="./thinking-ocean.html">Open Thinking Ocean</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+
+  </div>
+</main>
+</body>
+</html>
