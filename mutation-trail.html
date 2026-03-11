@@ -1,935 +1,855 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutation Trail</title>
-
-<style>
-:root{
-  --bg:#0b0f18;
-  --bg-2:#090d15;
-  --panel:#121826;
-  --panel-2:#171e2f;
-  --line:#293246;
-  --text:#f6f8fb;
-  --muted:#98a3b8;
-  --purple:#7c5cff;
-  --purple-2:#6b4ef2;
-  --cyan:#22c7e8;
-  --green:#22c55e;
-  --shadow:0 12px 40px rgba(0,0,0,0.28);
-  --max:980px;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:
-    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
-    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  line-height:1.6;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-button,
-textarea,
-select{
-  font:inherit;
-}
-
-.page{
-  min-height:100vh;
-  padding:20px 16px 56px;
-}
-
-.container{
-  max-width:var(--max);
-  margin:0 auto;
-}
-
-.back{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:18px;
-  color:#8fb0ff;
-  font-size:0.95rem;
-}
-
-.hero{
-  border:1px solid var(--line);
-  border-radius:24px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 80% 0%, rgba(124,92,255,0.14), transparent 22%),
-    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.09), transparent 24%),
-    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-}
-
-.hero-inner{
-  padding:24px 20px 20px;
-  display:grid;
-  gap:18px;
-}
-
-.eyebrow{
-  display:inline-block;
-  width:max-content;
-  padding:6px 10px;
-  border-radius:999px;
-  background:rgba(124,92,255,0.12);
-  border:1px solid rgba(124,92,255,0.22);
-  color:#cfbeff;
-  font-size:0.82rem;
-}
-
-h1{
-  margin:0;
-  font-size:clamp(2.2rem, 7vw, 4rem);
-  line-height:0.98;
-  letter-spacing:-0.05em;
-}
-
-.subtitle{
-  margin:0;
-  color:var(--muted);
-  font-size:1rem;
-}
-
-.panel{
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:rgba(255,255,255,0.03);
-  padding:16px;
-}
-
-.panel-title{
-  margin:0 0 6px;
-  font-size:1rem;
-  font-weight:700;
-}
-
-.panel-note{
-  margin:0 0 14px;
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-textarea{
-  width:100%;
-  min-height:120px;
-  resize:vertical;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:#0e1420;
-  color:var(--text);
-  padding:16px;
-  outline:none;
-}
-
-textarea:focus,
-select:focus{
-  border-color:rgba(124,92,255,0.75);
-  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
-}
-
-.controls{
-  display:grid;
-  grid-template-columns:180px 1fr;
-  gap:10px;
-  margin-top:12px;
-}
-
-select{
-  border-radius:12px;
-  border:1px solid var(--line);
-  background:#0e1420;
-  color:var(--text);
-  padding:12px 14px;
-  outline:none;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.button{
-  appearance:none;
-  border:1px solid var(--line);
-  background:var(--panel-2);
-  color:var(--text);
-  border-radius:12px;
-  padding:12px 16px;
-  cursor:pointer;
-  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
-}
-
-.button:hover{
-  transform:translateY(-1px);
-  border-color:#4b5872;
-}
-
-.button.primary{
-  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.cyan{
-  background:linear-gradient(180deg, #22d0f0, #0faaca);
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.green{
-  background:linear-gradient(180deg, #33d17a, #1ea85e);
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.small{
-  padding:10px 12px;
-  font-size:0.9rem;
-}
-
-.status{
-  min-height:22px;
-  color:var(--muted);
-  font-size:0.92rem;
-  margin-top:10px;
-}
-
-.result{
-  margin-top:18px;
-  display:grid;
-  gap:14px;
-}
-
-.hidden{
-  display:none !important;
-}
-
-.summary-box{
-  padding:18px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  white-space:pre-wrap;
-}
-
-.metrics{
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0, 1fr));
-  gap:12px;
-}
-
-.metric{
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.metric strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.82rem;
-  color:var(--muted);
-  letter-spacing:0.02em;
-  text-transform:uppercase;
-}
-
-.metric span{
-  font-size:1.05rem;
-  font-weight:700;
-}
-
-.trail-map{
-  padding:18px;
-  border-radius:18px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.trail-map-title{
-  margin:0 0 12px;
-  font-size:1rem;
-  font-weight:700;
-}
-
-.trail-line{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:10px;
-}
-
-.trail-chip{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:42px;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:#101725;
-  font-size:0.92rem;
-}
-
-.trail-chip.fragment{
-  border-color:rgba(124,92,255,0.25);
-  background:rgba(124,92,255,0.12);
-  color:#cfbeff;
-}
-
-.trail-chip.mutation{
-  border-color:rgba(34,199,232,0.24);
-  background:rgba(34,199,232,0.12);
-  color:#9befff;
-}
-
-.trail-chip.next{
-  border-color:rgba(34,197,94,0.24);
-  background:rgba(34,197,94,0.12);
-  color:#bff7cf;
-}
-
-.arrow{
-  color:var(--muted);
-  font-size:1rem;
-  padding:0 2px;
-}
-
-.trail{
-  display:grid;
-  gap:12px;
-}
-
-.node{
-  position:relative;
-  padding:16px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.node:not(:last-child)::after{
-  content:"↓";
-  position:absolute;
-  left:50%;
-  bottom:-28px;
-  transform:translateX(-50%);
-  color:#8de8f7;
-  font-weight:700;
-  font-size:1.1rem;
-}
-
-.node-label{
-  display:inline-block;
-  margin-bottom:8px;
-  padding:5px 9px;
-  border-radius:999px;
-  font-size:0.78rem;
-  font-weight:700;
-  letter-spacing:0.02em;
-}
-
-.node-label.fragment{
-  background:rgba(124,92,255,0.14);
-  border:1px solid rgba(124,92,255,0.22);
-  color:#cfbeff;
-}
-
-.node-label.mutation{
-  background:rgba(34,199,232,0.12);
-  border:1px solid rgba(34,199,232,0.22);
-  color:#9befff;
-}
-
-.node-label.next{
-  background:rgba(120,220,160,0.12);
-  border:1px solid rgba(120,220,160,0.24);
-  color:#bff7cf;
-}
-
-.node h3{
-  margin:0 0 6px;
-  font-size:1.05rem;
-  line-height:1.25;
-}
-
-.node p{
-  margin:0;
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.next-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.next-card{
-  display:block;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  transition:transform 0.16s ease,border-color 0.18s ease,background 0.18s ease;
-}
-
-.next-card:hover{
-  transform:translateY(-2px);
-  border-color:rgba(34,199,232,0.46);
-  background:rgba(255,255,255,0.045);
-}
-
-.next-tag{
-  display:inline-block;
-  margin-bottom:8px;
-  color:#8de8f7;
-  font-size:0.8rem;
-  font-weight:700;
-}
-
-.next-card h4{
-  margin:0 0 6px;
-  font-size:0.98rem;
-}
-
-.next-card p{
-  margin:0;
-  color:var(--muted);
-  font-size:0.9rem;
-}
-
-.mutate-box{
-  padding:16px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.mutate-box h3{
-  margin:0 0 8px;
-  font-size:1rem;
-}
-
-.mutate-box p{
-  margin:0 0 12px;
-  color:var(--muted);
-  font-size:0.92rem;
-  white-space:pre-wrap;
-}
-
-.footer{
-  margin-top:24px;
-  text-align:center;
-  color:var(--muted);
-  font-size:0.88rem;
-}
-
-@media (max-width:900px){
-  .metrics{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .controls,
-  .next-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-@media (max-width:720px){
-  .hero-inner{
-    padding:16px;
-  }
-
-  .panel{
-    padding:14px;
-  }
-
-  textarea{
-    min-height:110px;
-  }
-
-  .metrics{
-    grid-template-columns:1fr;
-  }
-
-  .trail-line{
-    align-items:flex-start;
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutation Trail — REFRAME Studio</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --bg-2: #eef4ff;
+      --card: rgba(255, 255, 255, 0.88);
+      --text: #122033;
+      --muted: #607089;
+      --line: rgba(18, 32, 51, 0.10);
+      --line-strong: rgba(18, 32, 51, 0.16);
+      --accent: #1d6ef2;
+      --accent-soft: rgba(29, 110, 242, 0.10);
+      --shadow: 0 20px 50px rgba(17, 24, 39, 0.08);
+      --radius: 24px;
+      --radius-sm: 16px;
+      --max: 920px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(29, 110, 242, 0.10), transparent 32%),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 14px 40px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .hero {
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(29, 110, 242, 0.14);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 6vw, 46px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card + .card {
+      margin-top: 14px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40% auto auto -10%;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(29, 110, 242, 0.07), transparent 68%);
+      pointer-events: none;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 144px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--text);
+      padding: 16px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.6;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    textarea:focus {
+      border-color: rgba(29, 110, 242, 0.45);
+      box-shadow: 0 0 0 4px rgba(29, 110, 242, 0.10);
+      background: #fff;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.06s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(18, 32, 51, 0.16);
+    }
+
+    .btn-secondary {
+      background: rgba(18, 32, 51, 0.06);
+      color: var(--text);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    .hint {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(18, 32, 51, 0.04);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .warning {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 191, 0, 0.10);
+      border: 1px solid rgba(255, 191, 0, 0.18);
+      color: #7a5a00;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 4px 2px 2px;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .quote {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .summary-card {
+      background: rgba(18, 32, 51, 0.04);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .summary-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .summary-value {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .trail-wrap {
+      position: relative;
+      margin-top: 8px;
+      padding: 8px 0 4px;
+    }
+
+    .trail-line {
+      position: absolute;
+      left: 19px;
+      top: 16px;
+      bottom: 16px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(29, 110, 242, 0.28), rgba(29, 110, 242, 0.08));
+      border-radius: 999px;
+    }
+
+    .trail-step {
+      position: relative;
+      padding-left: 54px;
+      margin-bottom: 16px;
+    }
+
+    .trail-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-dot {
+      position: absolute;
+      left: 8px;
+      top: 16px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid rgba(29, 110, 242, 0.42);
+      box-shadow: 0 0 0 6px rgba(29, 110, 242, 0.08);
+      z-index: 1;
+    }
+
+    .step-card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .step-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .step-kind {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .step-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .step-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(18, 32, 51, 0.06);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .chip.accent {
+      background: rgba(29, 110, 242, 0.08);
+      color: #144ca6;
+      border: 1px solid rgba(29, 110, 242, 0.12);
+    }
+
+    .grid-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tool-item,
+    .next-item {
+      display: block;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.76);
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.06s ease;
+    }
+
+    .tool-item:hover {
+      border-color: rgba(29, 110, 242, 0.24);
+      background: #fff;
+      text-decoration: none;
+    }
+
+    .tool-item:active {
+      transform: translateY(1px);
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .item-side {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .item-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .button-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .step-top,
+      .item-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-<main class="page">
-  <div class="container">
-    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+  <main class="page">
+    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
 
     <section class="hero">
-      <div class="hero-inner">
-        <span class="eyebrow">Fragment → Mutation → Next mutation → Expression</span>
-        <h1>Mutation Trail</h1>
-        <p class="subtitle">
-          See one thought become a visible path. The goal is not one answer. The goal is continued movement.
-        </p>
+      <div class="eyebrow">Mutation Trail</div>
+      <h1>Mutation Trail</h1>
+      <p class="subtitle">
+        Drop one fragment and watch how it changes shape across the thinking system.
+        This is not a final answer. It is a visible trail of thought mutation.
+      </p>
+    </section>
 
-        <section class="panel">
-          <h2 class="panel-title">Start a trail</h2>
-          <p class="panel-note">
-            Drop one fragment. Pick its type. The router builds the path and shows the next mutations.
-          </p>
+    <section class="card">
+      <div class="label-row">
+        <div class="label">Trace a fragment</div>
+        <div class="tiny" id="charCount">0 characters</div>
+      </div>
 
-          <textarea id="fragment-input" placeholder="Example: People say my ideas are too abstract."></textarea>
+      <textarea
+        id="fragmentInput"
+        placeholder="People say my ideas are too abstract.&#10;&#10;Content creation feels exhausting.&#10;&#10;I don't know which direction this project should take."
+        aria-label="Fragment input"
+      ></textarea>
 
-          <div class="controls">
-            <select id="fragment-type" aria-label="Fragment type">
-              <option value="criticism">Criticism</option>
-              <option value="emotion">Emotion</option>
-              <option value="problem">Problem</option>
-              <option value="confusion">Confusion</option>
-              <option value="failure">Failure</option>
-              <option value="idea">Idea</option>
-            </select>
+      <div class="button-row">
+        <button class="btn-primary" id="traceBtn">Trace mutation</button>
+        <button class="btn-secondary" id="exampleBtn">Try example</button>
+        <button class="btn-ghost" id="clearBtn">Clear</button>
+      </div>
 
-            <div class="actions">
-              <button class="button" id="try-example" type="button">Try example</button>
-              <button class="button primary" id="build-trail" type="button">Build trail</button>
-              <button class="button cyan" id="open-drop" type="button">Back to drop</button>
-              <button class="button green" id="mutate-trail" type="button">Mutate trail</button>
-            </div>
-          </div>
+      <div class="hint">
+        Fragment → Friction field → Mutation field → Expression field → Next thought
+      </div>
 
-          <div class="status" id="status"></div>
-        </section>
+      <div id="mapWarning" class="warning" style="display:none;">
+        mutation-map.js was not found. Put this file in the same folder as mutation-trail.html.
+      </div>
+    </section>
 
-        <section class="result hidden" id="result">
-          <div class="summary-box" id="trail-summary"></div>
+    <section class="card">
+      <div class="label-row">
+        <div class="label">Trail output</div>
+        <div class="tiny">Thought movement</div>
+      </div>
 
-          <div class="metrics">
-            <div class="metric">
-              <strong>Fragment type</strong>
-              <span id="metric-type">-</span>
-            </div>
-            <div class="metric">
-              <strong>Trail stages</strong>
-              <span id="metric-stages">-</span>
-            </div>
-            <div class="metric">
-              <strong>First mutation</strong>
-              <span id="metric-first">-</span>
-            </div>
-            <div class="metric">
-              <strong>Next openings</strong>
-              <span id="metric-next">-</span>
-            </div>
-          </div>
-
-          <div class="trail-map">
-            <h2 class="trail-map-title">Trail map</h2>
-            <div class="trail-line" id="trail-map-line"></div>
-          </div>
-
-          <div class="trail" id="trail-view"></div>
-
-          <div class="mutate-box hidden" id="mutate-box">
-            <h3>Mutated fragment</h3>
-            <p id="mutate-result"></p>
-            <div class="actions">
-              <a class="button green" id="send-to-ocean" href="./thinking-ocean.html">Send to ocean</a>
-              <button class="button primary" id="rebuild-from-mutation" type="button">Build new trail</button>
-            </div>
-          </div>
-
-          <div>
-            <h2 class="panel-title">Next openings</h2>
-            <p class="panel-note">
-              Tap a next mutation to continue the trail in a new tool.
-            </p>
-            <div class="next-grid" id="next-grid"></div>
-          </div>
-        </section>
+      <div id="resultArea" class="empty-state">
+        Trace one fragment to see how it moves through friction, mutation, and expression.
       </div>
     </section>
 
     <div class="footer">
-      No login / No tracking / No personal data collected / Runs entirely in your browser
+      No login. No tracking. No personal data. Runs entirely in your browser.
     </div>
-  </div>
-</main>
+  </main>
 
-<script src="mutation-map.js"></script>
-<script src="router.js"></script>
-<script>
-(function () {
-  "use strict";
+  <script src="./mutation-map.js"></script>
+  <script>
+    const inputEl = document.getElementById("fragmentInput");
+    const traceBtn = document.getElementById("traceBtn");
+    const exampleBtn = document.getElementById("exampleBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const charCountEl = document.getElementById("charCount");
+    const resultArea = document.getElementById("resultArea");
+    const mapWarningEl = document.getElementById("mapWarning");
 
-  var router = window.REFRAME_ROUTER;
-
-  var inputEl = document.getElementById("fragment-input");
-  var typeEl = document.getElementById("fragment-type");
-  var tryExampleBtn = document.getElementById("try-example");
-  var buildTrailBtn = document.getElementById("build-trail");
-  var openDropBtn = document.getElementById("open-drop");
-  var mutateTrailBtn = document.getElementById("mutate-trail");
-  var statusEl = document.getElementById("status");
-  var resultEl = document.getElementById("result");
-  var trailSummaryEl = document.getElementById("trail-summary");
-  var trailViewEl = document.getElementById("trail-view");
-  var nextGridEl = document.getElementById("next-grid");
-  var trailMapLineEl = document.getElementById("trail-map-line");
-  var metricTypeEl = document.getElementById("metric-type");
-  var metricStagesEl = document.getElementById("metric-stages");
-  var metricFirstEl = document.getElementById("metric-first");
-  var metricNextEl = document.getElementById("metric-next");
-  var mutateBoxEl = document.getElementById("mutate-box");
-  var mutateResultEl = document.getElementById("mutate-result");
-  var sendToOceanEl = document.getElementById("send-to-ocean");
-  var rebuildFromMutationBtn = document.getElementById("rebuild-from-mutation");
-
-  var EXAMPLES = {
-    criticism: [
+    const examples = [
       "People say my ideas are too abstract.",
-      "They say my posts sound interesting but still feel unclear."
-    ],
-    emotion: [
-      "I feel tired because every idea starts to feel weak before I share it.",
-      "I feel heavy every time I try to turn thoughts into posts."
-    ],
-    problem: [
-      "I have too many directions and no clear priority.",
-      "I know there is value here, but I do not know which move matters first."
-    ],
-    confusion: [
-      "I know there is something here, but I cannot see the real question yet.",
-      "The thought feels alive, but the shape is still foggy."
-    ],
-    failure: [
-      "I tried to post consistently and nothing really landed.",
-      "I kept making things and still could not get traction."
-    ],
-    idea: [
-      "Criticism might be fuel, not damage.",
-      "What if confusion is the doorway to a stronger structure?"
-    ]
-  };
+      "Content creation feels exhausting lately.",
+      "I don't know which direction this project should take.",
+      "This idea might not work.",
+      "I keep getting reactions but can't turn them into content."
+    ];
 
-  var MUTATION_LIBRARY = {
-    criticism: [
-      { text: "Maybe abstraction is the value, but the entry point is missing.", type: "idea" },
-      { text: "What part of the idea feels abstract to them?", type: "confusion" },
-      { text: "This criticism may be a clue about framing, not quality.", type: "problem" }
-    ],
-    emotion: [
-      { text: "What action would make this feeling lighter today?", type: "problem" },
-      { text: "Maybe the heaviness means the thought matters.", type: "idea" },
-      { text: "What fear is hiding inside this feeling?", type: "confusion" }
-    ],
-    problem: [
-      { text: "What is the smallest useful move inside this problem?", type: "idea" },
-      { text: "Which constraint is actually blocking the first step?", type: "confusion" },
-      { text: "Maybe this is not one problem but three smaller ones.", type: "idea" }
-    ],
-    confusion: [
-      { text: "What question would make this confusion useful?", type: "idea" },
-      { text: "Maybe the real question appears after one more mutation.", type: "idea" },
-      { text: "This confusion may be the doorway, not the obstacle.", type: "idea" }
-    ],
-    failure: [
-      { text: "What did this failure reveal that success would have hidden?", type: "idea" },
-      { text: "This failure might be feedback, not an ending.", type: "idea" },
-      { text: "What pattern keeps repeating in this failure?", type: "confusion" }
-    ],
-    idea: [
-      { text: "What is the opposite of this idea?", type: "confusion" },
-      { text: "What if this idea is only the first layer?", type: "confusion" },
-      { text: "Maybe this idea wants a stronger entry point.", type: "problem" }
-    ]
-  };
-
-  var currentTrailData = null;
-  var currentMutatedFragment = null;
-
-  function setStatus(message) {
-    statusEl.textContent = message || "";
-  }
-
-  function pickRandom(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-
-  function getText() {
-    return String(inputEl.value || "").trim();
-  }
-
-  function clearChildren(node) {
-    node.innerHTML = "";
-  }
-
-  function createNode(labelText, labelClass, title, note) {
-    var node = document.createElement("div");
-    node.className = "node";
-
-    var label = document.createElement("span");
-    label.className = "node-label " + labelClass;
-    label.textContent = labelText;
-
-    var heading = document.createElement("h3");
-    heading.textContent = title;
-
-    var text = document.createElement("p");
-    text.textContent = note;
-
-    node.appendChild(label);
-    node.appendChild(heading);
-    node.appendChild(text);
-
-    return node;
-  }
-
-  function createChip(text, chipClass) {
-    var chip = document.createElement("span");
-    chip.className = "trail-chip " + chipClass;
-    chip.textContent = text;
-    return chip;
-  }
-
-  function addArrow() {
-    var arrow = document.createElement("span");
-    arrow.className = "arrow";
-    arrow.textContent = "→";
-    trailMapLineEl.appendChild(arrow);
-  }
-
-  function createNextCard(tool, fragmentText, type) {
-    var link = document.createElement("a");
-    link.className = "next-card";
-    link.href = tool.file + "?" + router.buildQueryString({
-      fragment: fragmentText,
-      type: type,
-      mode: "stable"
-    });
-
-    var tag = document.createElement("span");
-    tag.className = "next-tag";
-    tag.textContent = "NEXT";
-
-    var title = document.createElement("h4");
-    title.textContent = tool.title || tool.id;
-
-    var note = document.createElement("p");
-    note.textContent = tool.note || "Next mutation tool.";
-
-    link.appendChild(tag);
-    link.appendChild(title);
-    link.appendChild(note);
-
-    return link;
-  }
-
-  function renderTrail(trailData) {
-    currentTrailData = trailData;
-    currentMutatedFragment = null;
-    mutateBoxEl.classList.add("hidden");
-
-    resultEl.classList.remove("hidden");
-    clearChildren(trailViewEl);
-    clearChildren(nextGridEl);
-    clearChildren(trailMapLineEl);
-
-    trailSummaryEl.textContent =
-      "Fragment type: " + trailData.sourceType +
-      "\nMode: " + trailData.mode +
-      "\nTrail length: " + trailData.trail.length + " stages" +
-      "\n\n" + trailData.fragment.raw;
-
-    metricTypeEl.textContent = trailData.sourceType;
-    metricStagesEl.textContent = String(trailData.trail.length);
-    metricFirstEl.textContent = trailData.firstTool ? trailData.firstTool.title : "None";
-    metricNextEl.textContent = String(trailData.nextTools.length);
-
-    trailMapLineEl.appendChild(createChip("Fragment", "fragment"));
-
-    if (trailData.firstTool) {
-      addArrow();
-      trailMapLineEl.appendChild(createChip(trailData.firstTool.title, "mutation"));
+    function updateCharCount() {
+      const count = inputEl.value.length;
+      charCountEl.textContent = count + " character" + (count === 1 ? "" : "s");
     }
 
-    if (trailData.nextTools.length) {
-      addArrow();
-      trailMapLineEl.appendChild(createChip(trailData.nextTools[0].title, "next"));
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
     }
 
-    addArrow();
-    trailMapLineEl.appendChild(createChip("Expression", "next"));
-
-    trailData.trail.forEach(function (item) {
-      var labelClass = item.kind === "fragment" ? "fragment" : (item.kind === "mutation" ? "mutation" : "next");
-      var labelText = item.kind === "fragment" ? "FRAGMENT" : (item.kind === "mutation" ? "MUTATION" : "NEXT");
-      trailViewEl.appendChild(createNode(labelText, labelClass, item.title, item.note));
-    });
-
-    trailViewEl.appendChild(
-      createNode(
-        "EXPRESSION",
-        "next",
-        "Expression opening",
-        "The trail can become a post, a thread, a structure, or a new fragment."
-      )
-    );
-
-    trailData.nextTools.forEach(function (tool) {
-      nextGridEl.appendChild(createNextCard(tool, trailData.fragment.raw, trailData.sourceType));
-    });
-
-    if (!trailData.nextTools.length) {
-      var empty = document.createElement("div");
-      empty.className = "next-card";
-      empty.innerHTML = "<span class=\"next-tag\">NONE</span><h4>No next opening yet</h4><p>Try another fragment type or slightly change the fragment.</p>";
-      nextGridEl.appendChild(empty);
+    function escapeAttribute(value) {
+      return String(value).replaceAll('"', "&quot;");
     }
 
-    setStatus("Mutation trail built.");
-  }
-
-  function buildTrail() {
-    var text = getText();
-    var type = typeEl.value;
-
-    if (!text) {
-      setStatus("Write a fragment first.");
-      inputEl.focus();
-      return;
+    function canTrace() {
+      return typeof window.buildFragmentRoute === "function";
     }
 
-    var trailData = router.buildTrail(text, {
-      sourceType: type,
-      mode: "stable"
-    });
-
-    renderTrail(trailData);
-  }
-
-  function tryExample() {
-    var type = typeEl.value;
-    inputEl.value = pickRandom(EXAMPLES[type] || EXAMPLES.idea);
-    setStatus("Example inserted.");
-    inputEl.focus();
-  }
-
-  function openDrop() {
-    var text = getText();
-    var type = typeEl.value;
-
-    window.location.href =
-      "./fragment-drop.html?" +
-      router.buildQueryString({
-        fragment: text,
-        type: type
-      });
-  }
-
-  function mutateTrail() {
-    var text = getText();
-    var type = typeEl.value;
-
-    if (!text) {
-      setStatus("Write or load a fragment first.");
-      inputEl.focus();
-      return;
+    function getFirstMutation(route) {
+      return Array.isArray(route.mutationPaths) && route.mutationPaths.length
+        ? route.mutationPaths[0]
+        : null;
     }
 
-    var options = MUTATION_LIBRARY[type] || MUTATION_LIBRARY.idea;
-    var mutation = pickRandom(options);
-
-    currentMutatedFragment = {
-      text: mutation.text,
-      type: mutation.type
-    };
-
-    mutateBoxEl.classList.remove("hidden");
-    mutateResultEl.textContent =
-      "Type: " + mutation.type +
-      "\n\n" + mutation.text;
-
-    sendToOceanEl.href =
-      "./thinking-ocean.html?" +
-      router.buildQueryString({
-        fragment: mutation.text,
-        type: mutation.type
-      });
-
-    setStatus("Trail mutated into a new fragment.");
-  }
-
-  function rebuildFromMutation() {
-    if (!currentMutatedFragment) {
-      setStatus("Mutate the trail first.");
-      return;
+    function getFirstExpression(route) {
+      return Array.isArray(route.expressionPaths) && route.expressionPaths.length
+        ? route.expressionPaths[0]
+        : null;
     }
 
-    inputEl.value = currentMutatedFragment.text;
-    if (typeEl.querySelector('option[value="' + currentMutatedFragment.type + '"]')) {
-      typeEl.value = currentMutatedFragment.type;
+    function buildTrail(route) {
+      const firstMutation = getFirstMutation(route);
+      const firstExpression = getFirstExpression(route);
+      const firstTool = Array.isArray(route.recommendedTools) && route.recommendedTools.length
+        ? route.recommendedTools[0]
+        : null;
+      const firstNext = Array.isArray(route.nextMutations) && route.nextMutations.length
+        ? route.nextMutations[0]
+        : null;
+
+      const detectedTypeLabel = route.detectedType && route.detectedType.label ? route.detectedType.label : "Unknown";
+      const confidence = route.detectedType && typeof route.detectedType.confidence === "number"
+        ? Math.round(route.detectedType.confidence * 100) + "%"
+        : "—";
+
+      return [
+        {
+          title: "Dropped Fragment",
+          kind: "Input",
+          description: route.fragment,
+          chips: ["Thought fragment", "Incomplete thought", "Signal of energy"]
+        },
+        {
+          title: detectedTypeLabel,
+          kind: route.fields.from.label,
+          description: route.detectedType.why || "",
+          chips: [
+            "Detected type",
+            "Confidence " + confidence,
+            route.fields.from.label
+          ]
+        },
+        {
+          title: firstMutation ? firstMutation.label : "Mutation",
+          kind: route.fields.through.label,
+          description: firstMutation ? firstMutation.description : "A mutation changes the shape of the thought.",
+          chips: [
+            detectedTypeLabel + " → " + (firstMutation ? firstMutation.label : "Mutation"),
+            route.fields.through.label
+          ]
+        },
+        {
+          title: firstExpression ? firstExpression.label : "Expression",
+          kind: route.fields.to.label,
+          description: firstExpression
+            ? "This is the first visible form the mutated thought can take."
+            : "A mutation becomes visible through an expression form.",
+          chips: [
+            firstExpression ? firstExpression.label : "Expression",
+            route.fields.to.label
+          ]
+        },
+        {
+          title: firstTool ? firstTool.name : "Next Tool",
+          kind: "Recommended tool",
+          description: firstTool ? firstTool.description : "Use a tool to continue the mutation.",
+          chips: [
+            firstTool ? firstTool.file : "tool",
+            "Continue mutation"
+          ],
+          file: firstTool ? firstTool.file : ""
+        },
+        {
+          title: "Next Thought",
+          kind: "Continuation",
+          description: firstNext || "A trail is complete only when it leads to another thought.",
+          chips: [
+            "Creation Loop",
+            "Thought continues"
+          ]
+        }
+      ];
     }
-    buildTrail();
-    setStatus("New trail built from the mutated fragment.");
-  }
 
-  function initFromParams() {
-    var params = router.getParams();
+    function renderTrail(route) {
+      const trail = buildTrail(route);
+      const mutationCount = Array.isArray(route.mutationPaths) ? route.mutationPaths.length : 0;
+      const expressionCount = Array.isArray(route.expressionPaths) ? route.expressionPaths.length : 0;
+      const toolCount = Array.isArray(route.recommendedTools) ? route.recommendedTools.length : 0;
+      const nextCount = Array.isArray(route.nextMutations) ? route.nextMutations.length : 0;
+      const confidencePct = route.detectedType && typeof route.detectedType.confidence === "number"
+        ? Math.round(route.detectedType.confidence * 100) + "%"
+        : "—";
 
-    if (params.fragment) {
-      inputEl.value = params.fragment;
+      resultArea.innerHTML = `
+        <div class="section" style="margin-top:0;padding-top:0;border-top:0;">
+          <h3 class="section-title">Fragment</h3>
+          <p class="quote">“${escapeHtml(route.fragment)}”</p>
+
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="summary-label">Detected type</div>
+              <div class="summary-value">${escapeHtml(route.detectedType.label)}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Confidence</div>
+              <div class="summary-value">${escapeHtml(confidencePct)}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Mutation paths</div>
+              <div class="summary-value">${escapeHtml(String(mutationCount))}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Next tools</div>
+              <div class="summary-value">${escapeHtml(String(toolCount))}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Trail</h3>
+          <div class="trail-wrap">
+            <div class="trail-line"></div>
+            ${trail.map((step) => `
+              <div class="trail-step">
+                <div class="step-dot"></div>
+                <div class="step-card">
+                  <div class="step-top">
+                    <div class="step-title">${escapeHtml(step.title)}</div>
+                    <div class="step-kind">${escapeHtml(step.kind)}</div>
+                  </div>
+                  <p class="step-desc">${escapeHtml(step.description)}</p>
+                  <div class="step-chip-row">
+                    ${step.chips.map((chip, index) => `
+                      <div class="chip ${index === 0 ? "accent" : ""}">${escapeHtml(chip)}</div>
+                    `).join("")}
+                  </div>
+                  ${step.file ? `
+                    <div class="step-chip-row" style="margin-top:12px;">
+                      <a class="chip accent" href="./${escapeAttribute(step.file)}">${escapeHtml(step.file)}</a>
+                    </div>
+                  ` : ""}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">All mutation paths</h3>
+          <div class="grid-list">
+            ${route.mutationPaths.map((path) => `
+              <div class="next-item">
+                <div class="item-top">
+                  <div class="item-title">${escapeHtml(route.detectedType.label)} → ${escapeHtml(path.label)}</div>
+                  <div class="item-side">Mutation</div>
+                </div>
+                <p class="item-desc">${escapeHtml(path.description || "")}</p>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Expression forms</h3>
+          <div class="step-chip-row">
+            ${route.expressionPaths.map((path) => `
+              <div class="chip">${escapeHtml(path.label)}</div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Recommended tools</h3>
+          <div class="grid-list">
+            ${route.recommendedTools.map((tool) => `
+              <a class="tool-item" href="./${escapeAttribute(tool.file)}">
+                <div class="item-top">
+                  <div class="item-title">${escapeHtml(tool.name)}</div>
+                  <div class="item-side">${escapeHtml(tool.file)}</div>
+                </div>
+                <p class="item-desc">${escapeHtml(tool.description || "")}</p>
+              </a>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Next mutations</h3>
+          <div class="grid-list">
+            ${route.nextMutations.map((item) => `
+              <div class="next-item">
+                <p class="item-desc">${escapeHtml(item)}</p>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Trail reading</h3>
+          <p class="item-desc">
+            This trail shows how the fragment moved from friction into mutation, then into visible expression, and finally into the next thought.
+            Thinking does not end here. The last step should become the next fragment.
+          </p>
+        </div>
+      `;
     }
 
-    if (params.type && typeEl.querySelector('option[value="' + params.type + '"]')) {
-      typeEl.value = params.type;
+    function renderMissingMap() {
+      mapWarningEl.style.display = "block";
+      resultArea.innerHTML = `
+        <div class="empty-state">
+          mutation-map.js is missing, so the trail cannot be built yet.
+        </div>
+      `;
     }
 
-    if (params.fragment) {
-      var trailData = router.getTrailFromParams();
-      if (trailData) {
-        renderTrail(trailData);
+    function renderEmptyPrompt() {
+      resultArea.innerHTML = `
+        <div class="empty-state">
+          Drop one short fragment first. Even a rough line is enough.
+        </div>
+      `;
+    }
+
+    function handleTrace() {
+      const value = inputEl.value.trim();
+
+      if (!value) {
+        renderEmptyPrompt();
+        return;
       }
+
+      if (!canTrace()) {
+        renderMissingMap();
+        return;
+      }
+
+      const route = window.buildFragmentRoute(value);
+
+      if (!route) {
+        resultArea.innerHTML = `
+          <div class="empty-state">
+            The trail could not be built for this fragment.
+          </div>
+        `;
+        return;
+      }
+
+      mapWarningEl.style.display = "none";
+      renderTrail(route);
     }
-  }
 
-  tryExampleBtn.addEventListener("click", tryExample);
-  buildTrailBtn.addEventListener("click", buildTrail);
-  openDropBtn.addEventListener("click", openDrop);
-  mutateTrailBtn.addEventListener("click", mutateTrail);
-  rebuildFromMutationBtn.addEventListener("click", rebuildFromMutation);
-
-  inputEl.addEventListener("keydown", function (event) {
-    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-      buildTrail();
+    function handleExample() {
+      const pick = examples[Math.floor(Math.random() * examples.length)];
+      inputEl.value = pick;
+      updateCharCount();
+      handleTrace();
     }
-  });
 
-  initFromParams();
-})();
-</script>
+    function handleClear() {
+      inputEl.value = "";
+      updateCharCount();
+      resultArea.innerHTML = `
+        <div class="empty-state">
+          Trace one fragment to see how it moves through friction, mutation, and expression.
+        </div>
+      `;
+      inputEl.focus();
+    }
+
+    inputEl.addEventListener("input", updateCharCount);
+    traceBtn.addEventListener("click", handleTrace);
+    exampleBtn.addEventListener("click", handleExample);
+    clearBtn.addEventListener("click", handleClear);
+
+    inputEl.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        handleTrace();
+      }
+    });
+
+    updateCharCount();
+
+    if (!canTrace()) {
+      mapWarningEl.style.display = "block";
+    }
+  </script>
 </body>
 </html>
