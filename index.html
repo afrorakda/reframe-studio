@@ -10,20 +10,15 @@
   --bg:#0b0f18;
   --bg-2:#090d15;
   --panel:#121826;
-  --panel-2:#171e2f;
   --line:#293246;
   --text:#f6f8fb;
   --muted:#98a3b8;
   --purple:#7c5cff;
   --purple-2:#6b4ef2;
-  --cyan:#22c7e8;
-  --cyan-2:#0faaca;
-  --green:#22c55e;
-  --green-2:#1ea85e;
   --pink:#ff7ac8;
   --pink-2:#e056ad;
   --shadow:0 12px 40px rgba(0,0,0,0.28);
-  --max:1120px;
+  --max:860px;
 }
 
 *{
@@ -49,7 +44,7 @@ a{
 
 .page{
   min-height:100vh;
-  padding:20px 16px 56px;
+  padding:20px 16px 40px;
 }
 
 .container{
@@ -111,25 +106,25 @@ a{
 
 .hero{
   border:1px solid var(--line);
-  border-radius:24px;
+  border-radius:28px;
   overflow:hidden;
   background:
-    radial-gradient(circle at 80% 0%, rgba(124,92,255,0.14), transparent 22%),
-    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.09), transparent 24%),
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
     linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
   box-shadow:var(--shadow);
 }
 
 .hero-inner{
-  padding:28px 22px 22px;
+  padding:26px 20px 20px;
   display:grid;
   gap:22px;
 }
 
 .eyebrow{
   display:inline-block;
-  margin-bottom:12px;
-  padding:6px 10px;
+  width:max-content;
+  padding:7px 11px;
   border-radius:999px;
   background:rgba(124,92,255,0.12);
   border:1px solid rgba(124,92,255,0.22);
@@ -137,179 +132,61 @@ a{
   font-size:0.82rem;
 }
 
-.hero-grid{
-  display:grid;
-  grid-template-columns:1.1fr 0.9fr;
-  gap:18px;
-  align-items:start;
-}
-
 .hero-copy h2{
-  margin:0 0 10px;
-  font-size:clamp(2.3rem, 6vw, 4.8rem);
-  line-height:0.97;
-  letter-spacing:-0.055em;
+  margin:0 0 14px;
+  font-size:clamp(2.8rem, 12vw, 5.4rem);
+  line-height:0.92;
+  letter-spacing:-0.06em;
+  max-width:620px;
 }
 
 .hero-copy p{
   margin:0;
   color:var(--muted);
-  max-width:760px;
-  font-size:1rem;
+  font-size:1.04rem;
+  max-width:560px;
 }
 
-.hero-points{
+.cta-box{
   display:grid;
-  gap:10px;
-}
-
-.hero-point{
-  padding:14px;
-  border-radius:14px;
+  gap:14px;
+  padding:18px;
+  border-radius:20px;
   border:1px solid var(--line);
   background:rgba(255,255,255,0.03);
 }
 
-.hero-point strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.96rem;
-}
-
-.hero-point span{
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.section{
-  margin-top:22px;
-  display:grid;
-  gap:14px;
-}
-
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:end;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.section-head h2{
+.cta-title{
   margin:0;
-  font-size:1.45rem;
-  letter-spacing:-0.03em;
-}
-
-.section-head p{
-  margin:4px 0 0;
-  color:var(--muted);
-  font-size:0.94rem;
-}
-
-.grid{
-  display:grid;
-  gap:16px;
-}
-
-.grid-4{
-  grid-template-columns:repeat(4, minmax(0, 1fr));
-}
-
-.grid-3{
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-}
-
-.card{
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-
-.card-head{
-  padding:18px 18px 14px;
-  border-bottom:1px solid var(--line);
-}
-
-.card-head h3{
-  margin:0 0 6px;
   font-size:1.02rem;
   letter-spacing:-0.02em;
 }
 
-.card-head p{
+.cta-note{
   margin:0;
   color:var(--muted);
-  font-size:0.92rem;
+  font-size:0.94rem;
 }
 
-.card-body{
-  padding:18px;
-  display:grid;
-  gap:12px;
-}
-
-.start-card{
+.button-row{
   display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  min-height:236px;
-}
-
-.start-card p{
-  margin:0;
-  color:var(--muted);
-}
-
-.tag{
-  display:inline-block;
-  width:max-content;
-  padding:6px 10px;
-  border-radius:999px;
-  font-size:0.78rem;
-  font-weight:700;
-  letter-spacing:0.02em;
-}
-
-.tag.primary{
-  border:1px solid rgba(124,92,255,0.22);
-  background:rgba(124,92,255,0.12);
-  color:#cfbeff;
-}
-
-.tag.cyan{
-  border:1px solid rgba(34,199,232,0.22);
-  background:rgba(34,199,232,0.12);
-  color:#9befff;
-}
-
-.tag.green{
-  border:1px solid rgba(34,197,94,0.22);
-  background:rgba(34,197,94,0.12);
-  color:#bff7cf;
-}
-
-.tag.pink{
-  border:1px solid rgba(255,122,200,0.24);
-  background:rgba(255,122,200,0.12);
-  color:#ffc7e8;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
 }
 
 .button{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:max-content;
-  margin-top:4px;
   border:1px solid var(--line);
-  background:var(--panel-2);
+  background:var(--panel);
   color:var(--text);
-  border-radius:12px;
-  padding:12px 16px;
+  border-radius:14px;
+  padding:14px 18px;
   cursor:pointer;
   transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+  font-size:1rem;
 }
 
 .button:hover{
@@ -318,158 +195,61 @@ a{
 }
 
 .button.primary{
-  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.cyan{
-  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.green{
-  background:linear-gradient(180deg, #33d17a, var(--green-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.pink{
   background:linear-gradient(180deg, var(--pink), var(--pink-2));
   border-color:transparent;
   color:white;
   font-weight:700;
+  min-width:164px;
 }
 
-.tool-grid{
-  display:grid;
-  gap:12px;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-}
-
-.tool{
-  display:block;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  transition:transform 0.16s ease,border-color 0.18s ease,background 0.18s ease;
-}
-
-.tool:hover{
-  transform:translateY(-2px);
-  border-color:rgba(124,92,255,0.4);
-  background:rgba(255,255,255,0.045);
-}
-
-.tool strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.96rem;
-  font-weight:700;
-}
-
-.tool span{
+.deep-link{
   color:var(--muted);
-  font-size:0.9rem;
-}
-
-.logic-grid{
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0, 1fr));
-  gap:12px;
-}
-
-.logic-box{
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.logic-box strong{
-  display:block;
-  margin-bottom:4px;
   font-size:0.94rem;
 }
 
-.logic-box span{
+.deep-link:hover{
+  color:var(--text);
+}
+
+.whisper{
+  margin-top:18px;
+  padding-top:18px;
+  border-top:1px solid rgba(255,255,255,0.06);
   color:var(--muted);
-  font-size:0.9rem;
+  font-size:0.92rem;
 }
 
-.path-card{
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-  padding:18px;
-}
-
-.path-row{
-  display:grid;
-  grid-template-columns:repeat(5, minmax(0, 1fr));
-  gap:12px;
-}
-
-.path-step{
-  padding:14px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  text-align:center;
-}
-
-.path-step strong{
-  display:block;
-  margin-bottom:4px;
-  font-size:0.95rem;
-}
-
-.path-step span{
-  color:var(--muted);
-  font-size:0.9rem;
+.whisper a{
+  color:#b9c7ff;
 }
 
 .footer{
-  margin-top:26px;
+  margin-top:24px;
   text-align:center;
   color:var(--muted);
   font-size:0.88rem;
 }
 
-@media (max-width:980px){
-  .hero-grid,
-  .grid-4,
-  .grid-3,
-  .logic-grid,
-  .path-row{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
 @media (max-width:720px){
-  .hero-inner,
-  .card-head,
-  .card-body,
-  .path-card{
-    padding:16px;
+  .hero-inner{
+    padding:18px 16px 16px;
   }
 
   .hero-copy h2{
-    font-size:2.6rem;
+    font-size:3.6rem;
   }
 
-  .grid-4,
-  .grid-3,
-  .tool-grid,
-  .logic-grid,
-  .path-row{
-    grid-template-columns:1fr;
+  .cta-box{
+    padding:16px;
+  }
+
+  .button-row{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .button.primary{
+    width:100%;
   }
 }
 </style>
@@ -492,300 +272,35 @@ a{
 
     <section class="hero">
       <div class="hero-inner">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <div class="eyebrow">Easy entrance first</div>
-            <h2>Turn reactions into ideas.</h2>
-            <p>
-              Start with something simple and fun. Turn a bad reply into a usable angle. Then go deeper into fragments, mutation paths, and the thinking ocean.
-            </p>
-          </div>
-
-          <div class="hero-points">
-            <div class="hero-point">
-              <strong>Easy first step</strong>
-              <span>You do not need to understand the whole system to begin.</span>
-            </div>
-            <div class="hero-point">
-              <strong>1 tool = 1 mutation</strong>
-              <span>Each tool changes the thought a little and opens the next move.</span>
-            </div>
-            <div class="hero-point">
-              <strong>From tool to ocean</strong>
-              <span>What starts as a small tool becomes a path into deeper thought drift.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Start Here</h2>
-          <p>Fast, clear doors into REFRAME Studio.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-4">
-        <article class="card">
-          <div class="card-head">
-            <h3>クソリプ → ネタ</h3>
-            <p>Turn annoying replies into content angles.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag pink">MAIN HOOK</span>
-            <p>
-              Start here. Take a negative reply, reaction, or annoying comment and turn it into something useful.
-            </p>
-            <a class="button pink" href="./hate-to-content.html">Open tool</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h3>Reaction → Topic</h3>
-            <p>Turn reactions into clearer themes.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag cyan">EASY ENTRY</span>
-            <p>
-              Good when people react, but you still do not know what topic to build from it.
-            </p>
-            <a class="button cyan" href="./reaction-to-topic.html">Open tool</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h3>Criticism → Idea</h3>
-            <p>Turn friction into possibility.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag green">USEFUL</span>
-            <p>
-              Take pushback, doubt, or a sharp comment and find the idea hidden inside it.
-            </p>
-            <a class="button green" href="./criticism-to-idea.html">Open tool</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h3>Idea → Thread</h3>
-            <p>Turn one thought into a post path.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag primary">CREATE</span>
-            <p>
-              When a rough thought has energy but still needs structure, turn it into a thread shape.
-            </p>
-            <a class="button primary" href="./idea-to-thread.html">Open tool</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Go Deeper</h2>
-          <p>These are the core doors into the thinking system.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-4">
-        <article class="card">
-          <div class="card-head">
-            <h3>Fragment Drop</h3>
-            <p>Start from one unfinished thought.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag primary">CORE ENTRY</span>
-            <p>
-              Drop a thought fragment and let the router choose the first mutation.
-            </p>
-            <a class="button primary" href="./fragment-drop.html">Open drop</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h3>Fragment Router</h3>
-            <p>See the best first path.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag cyan">ROUTE</span>
-            <p>
-              The system reads the fragment type and suggests the next mutation direction.
-            </p>
-            <a class="button cyan" href="./fragment-router.html">Open router</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h3>Fragment Chain</h3>
-            <p>Keep the thought moving.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag green">CHAIN</span>
-            <p>
-              Continue step by step so the thought does not stop after one result.
-            </p>
-            <a class="button green" href="./fragment-chain.html">Open chain</a>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card-head">
-            <h3>Thinking Ocean</h3>
-            <p>Enter the drifting thought space.</p>
-          </div>
-          <div class="card-body start-card">
-            <span class="tag primary">OCEAN</span>
-            <p>
-              Watch fragments float, choose one, and move back into mutation again.
-            </p>
-            <a class="button" href="./thinking-ocean.html">Open ocean</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>The Journey</h2>
-          <p>How a simple tool turns into a thinking playground.</p>
-        </div>
-      </div>
-
-      <div class="path-card">
-        <div class="path-row">
-          <div class="path-step">
-            <strong>1. Hook</strong>
-            <span>クソリプ → ネタ</span>
-          </div>
-          <div class="path-step">
-            <strong>2. Use</strong>
-            <span>This is fun</span>
-          </div>
-          <div class="path-step">
-            <strong>3. Drift</strong>
-            <span>What else can this do?</span>
-          </div>
-          <div class="path-step">
-            <strong>4. Explore</strong>
-            <span>Fragment / Router / Chain</span>
-          </div>
-          <div class="path-step">
-            <strong>5. Ocean</strong>
-            <span>Thought drift begins</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Useful First Mutations</h2>
-          <p>Simple tools for real friction.</p>
-        </div>
-      </div>
-
-      <div class="tool-grid">
-        <a class="tool" href="./emotion-to-action.html">
-          <strong>Emotion → Action</strong>
-          <span>Translate emotional weight into movement.</span>
-        </a>
-
-        <a class="tool" href="./problem-to-options.html">
-          <strong>Problem → Options</strong>
-          <span>Open alternatives when thought feels trapped.</span>
-        </a>
-
-        <a class="tool" href="./problem-to-root-cause.html">
-          <strong>Problem → Root Causes</strong>
-          <span>Break a surface problem into deeper causes.</span>
-        </a>
-
-        <a class="tool" href="./problem-to-constraints.html">
-          <strong>Problem → Constraints</strong>
-          <span>Reveal limits, pressure, and reality.</span>
-        </a>
-
-        <a class="tool" href="./constraint-to-action.html">
-          <strong>Constraint → Action</strong>
-          <span>Turn limits into realistic next movement.</span>
-        </a>
-
-        <a class="tool" href="./failure-to-lesson.html">
-          <strong>Failure → Lesson</strong>
-          <span>Turn a failed attempt into signal.</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>Explore More</h2>
-          <p>Other useful doors into the ecosystem.</p>
-        </div>
-      </div>
-
-      <div class="tool-grid">
-        <a class="tool" href="./stuck-to-tool.html">
-          <strong>Stuck → Best Tool</strong>
-          <span>Fast entry when you do not know where to begin.</span>
-        </a>
-
-        <a class="tool" href="./capture-fragment.html">
-          <strong>Capture Fragment</strong>
-          <span>Drop a thought quickly and save it for later movement.</span>
-        </a>
-
-        <a class="tool" href="./mutation-trail.html">
-          <strong>Mutation Trail</strong>
-          <span>See one fragment become a visible path.</span>
-        </a>
-
-        <a class="tool" href="./thought-map-v2.html">
-          <strong>Thought Map</strong>
-          <span>See the landscape behind the tools.</span>
-        </a>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <h2>REFRAME Logic</h2>
-          <p>The simple core behind the system.</p>
-        </div>
-      </div>
-
-      <div class="logic-grid">
-        <div class="logic-box">
-          <strong>Fragment</strong>
-          <span>The user starts with unfinished thought.</span>
+        <div class="hero-copy">
+          <div class="eyebrow">Looks simple first</div>
+          <h2>Turn bad replies into ideas.</h2>
+          <p>
+            Start with one annoying reply. Turn it into something usable. That is the first step.
+          </p>
         </div>
 
-        <div class="logic-box">
-          <strong>Router</strong>
-          <span>The system chooses a meaningful first mutation.</span>
+        <div class="cta-box">
+          <h3 class="cta-title">Bad Reply → Content Idea</h3>
+          <p class="cta-note">
+            A simple tool on the surface. Start there.
+          </p>
+
+          <div class="button-row">
+            <a class="button primary" href="./hate-to-content.html">Start</a>
+            <a class="deep-link" href="./fragment-drop.html">Already curious? Enter deeper.</a>
+          </div>
         </div>
 
-        <div class="logic-box">
-          <strong>Chain</strong>
-          <span>The thought keeps moving instead of stopping once.</span>
-        </div>
-
-        <div class="logic-box">
-          <strong>Ocean</strong>
-          <span>Fragments drift, return, and open new movement again.</span>
+        <div class="whisper">
+          Beneath the surface:
+          <a href="./fragment-drop.html">Fragment</a>
+          /
+          <a href="./fragment-router.html">Router</a>
+          /
+          <a href="./fragment-chain.html">Chain</a>
+          /
+          <a href="./thinking-ocean.html">Ocean</a>
         </div>
       </div>
     </section>
