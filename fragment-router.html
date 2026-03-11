@@ -1,814 +1,1205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fragment Router by REFRAME Studio</title>
-  <style>
-    :root {
-      --bg-1: #061018;
-      --bg-2: #0a1724;
-      --bg-3: #0d1f30;
-      --panel: rgba(10, 23, 36, 0.72);
-      --text: #eef6ff;
-      --muted: #9eb4ca;
-      --line: rgba(120, 170, 255, 0.16);
-      --glow-blue: rgba(66, 153, 255, 0.28);
-      --glow-cyan: rgba(58, 224, 255, 0.18);
-      --accent-strong: #9ec5ff;
-      --button-primary-from: #4a7dff;
-      --button-primary-to: #7d5cff;
-      --button-secondary-from: rgba(127, 178, 255, 0.12);
-      --button-secondary-to: rgba(127, 178, 255, 0.06);
-      --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.36);
-      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.28);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --max-width: 860px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragment Router — REFRAME Studio</title>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --amber:#f5b942;
+  --amber-2:#d79a1d;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:1040px;
+}
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(58, 224, 255, 0.12), transparent 28%),
-        radial-gradient(circle at 80% 10%, rgba(125, 92, 255, 0.14), transparent 30%),
-        radial-gradient(circle at 50% 120%, rgba(66, 153, 255, 0.12), transparent 42%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    a {
-      color: var(--accent-strong);
-      text-decoration: none;
-    }
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
 
-    a:hover {
-      text-decoration: underline;
-    }
+a{
+  color:inherit;
+  text-decoration:none;
+}
 
-    .page {
-      width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 18px 14px 40px;
-    }
+button,
+textarea{
+  font:inherit;
+}
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
+}
 
-    .hero {
-      margin-bottom: 18px;
-    }
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.16);
-      color: var(--accent-strong);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
+}
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(32px, 6vw, 48px);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      color: var(--text);
-      text-wrap: balance;
-    }
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
 
-    .subtitle {
-      margin: 0;
-      max-width: 700px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.75;
-    }
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
+}
 
-    .byline {
-      display: block;
-    }
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
 
-    .panel {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-xl);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 18px;
-    }
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
 
-    .panel + .panel {
-      margin-top: 14px;
-    }
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
 
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: auto auto 65% -10%;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
-      pointer-events: none;
-      opacity: 0.8;
-    }
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .panel::after {
-      content: "";
-      position: absolute;
-      inset: -20% -10% auto auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--glow-blue), transparent 70%);
-      pointer-events: none;
-      opacity: 0.7;
-    }
+.panel-head{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
 
-    .label-row {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+.panel-head h2{
+  margin:0 0 6px;
+  font-size:1.04rem;
+  letter-spacing:-0.02em;
+}
 
-    .label {
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+.panel-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .helper {
-      color: var(--muted);
-      font-size: 12px;
-    }
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
 
-    textarea {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      min-height: 170px;
-      resize: vertical;
-      border: 1px solid rgba(127, 178, 255, 0.14);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(7, 18, 29, 0.84);
-      color: var(--text);
-      padding: 16px;
-      font: inherit;
-      font-size: 16px;
-      line-height: 1.65;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    }
+.input-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    textarea::placeholder {
-      color: rgba(158, 180, 202, 0.7);
-    }
+.label-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    textarea:focus {
-      border-color: rgba(127, 178, 255, 0.38);
-      box-shadow:
-        0 0 0 4px rgba(66, 153, 255, 0.12),
-        0 0 30px rgba(66, 153, 255, 0.12);
-      background: rgba(8, 20, 32, 0.94);
-    }
+.label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .button-row {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
+.count{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 16px;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      color: var(--text);
-      transition: transform 0.06s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
-    }
+textarea{
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+}
 
-    button:active {
-      transform: translateY(1px);
-    }
+textarea::placeholder{
+  color:#8290aa;
+}
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
-      box-shadow:
-        0 12px 28px rgba(74, 125, 255, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    }
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
 
-    .btn-secondary {
-      background: linear-gradient(180deg, var(--button-secondary-from), var(--button-secondary-to));
-      border: 1px solid rgba(127, 178, 255, 0.14);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
+.weather-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    .hint,
-    .warning {
-      position: relative;
-      z-index: 1;
-      margin-top: 14px;
-      padding: 13px 14px;
-      border-radius: 18px;
-      font-size: 14px;
-      line-height: 1.65;
-    }
+.weather-label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .hint {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(127, 178, 255, 0.1);
-      color: var(--muted);
-    }
+.weather-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .warning {
-      background: rgba(255, 193, 7, 0.08);
-      border: 1px solid rgba(255, 193, 7, 0.18);
-      color: #ffd977;
-    }
+.weather-button{
+  appearance:none;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:999px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,box-shadow 0.18s ease;
+}
 
-    .section {
-      position: relative;
-      z-index: 1;
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(127, 178, 255, 0.1);
-    }
+.weather-button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
 
-    .section-title {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+.weather-button.active{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+  background:rgba(124,92,255,0.14);
+}
 
-    .empty-state {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.75;
-      padding: 4px 2px 2px;
-    }
+.weather-button.calm.active{
+  border-color:rgba(34,199,232,0.7);
+  box-shadow:0 0 0 4px rgba(34,199,232,0.10);
+  background:rgba(34,199,232,0.12);
+}
 
-    .type-pill,
-    .flow-pill,
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      color: var(--accent-strong);
-      font-size: 13px;
-      line-height: 1.2;
-      backdrop-filter: blur(8px);
-    }
+.weather-button.drift.active{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+  background:rgba(124,92,255,0.14);
+}
 
-    .type-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-      box-shadow: 0 0 12px currentColor;
-    }
+.weather-button.storm.active{
+  border-color:rgba(245,185,66,0.7);
+  box-shadow:0 0 0 4px rgba(245,185,66,0.12);
+  background:rgba(245,185,66,0.14);
+}
 
-    .flow-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
+.weather-note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .flow-arrow {
-      color: var(--muted);
-      font-size: 14px;
-    }
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .result-card,
-    .path-item,
-    .tool-item,
-    .next-item,
-    .score-card {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(8, 21, 34, 0.72);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-      box-shadow: var(--shadow-lg);
-    }
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
+}
 
-    .result-text,
-    .item-desc {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
 
-    .meta-grid,
-    .score-grid {
-      display: grid;
-      gap: 10px;
-    }
+.button.primary{
+  min-width:180px;
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .meta-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .score-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+.button.route{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .meta-label,
-    .score-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+.button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
 
-    .meta-value,
-    .score-value {
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.5;
-    }
+.summary-strip{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#d8dfec;
+  font-size:1rem;
+}
 
-    .score-value {
-      font-size: 22px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
+.grid{
+  display:grid;
+  gap:14px;
+}
 
-    .score-bar {
-      width: 100%;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      overflow: hidden;
-      margin-top: 8px;
-    }
+.grid-2{
+  grid-template-columns:1fr 1fr;
+}
 
-    .score-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
-    }
+.card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
 
-    .grid-list,
-    .tool-list,
-    .next-list {
-      display: grid;
-      gap: 10px;
-    }
+.card h3{
+  margin:0 0 10px;
+  font-size:1rem;
+  letter-spacing:-0.02em;
+}
 
-    .item-top,
-    .tool-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
+.card p{
+  margin:0;
+  color:#d8dfec;
+  white-space:pre-wrap;
+}
 
-    .item-title,
-    .tool-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
+.badge-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
-    .item-side,
-    .tool-file {
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#d7def0;
+  font-size:0.94rem;
+}
 
-    .tool-item {
-      display: block;
-      text-decoration: none;
-      transition: transform 0.06s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
+.badge.calm{
+  border-color:rgba(34,199,232,0.28);
+  background:rgba(34,199,232,0.10);
+  color:#9befff;
+}
 
-    .tool-item:hover {
-      border-color: rgba(127, 178, 255, 0.24);
-      text-decoration: none;
-      box-shadow:
-        var(--shadow-lg),
-        0 0 24px rgba(66, 153, 255, 0.08);
-    }
+.badge.drift{
+  border-color:rgba(124,92,255,0.28);
+  background:rgba(124,92,255,0.10);
+  color:#cfbeff;
+}
 
-    .tool-item:active {
-      transform: translateY(1px);
-    }
+.badge.storm{
+  border-color:rgba(245,185,66,0.30);
+  background:rgba(245,185,66,0.10);
+  color:#ffd88b;
+}
 
-    .footer {
-      margin-top: 18px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
+.flow{
+  display:grid;
+  gap:10px;
+}
 
-    .footer strong {
-      color: var(--text);
-      font-weight: 700;
-    }
+.flow-step{
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#e2e8f7;
+}
 
-    @media (max-width: 700px) {
-      .meta-grid,
-      .score-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+.flow-arrow{
+  color:var(--muted);
+  text-align:center;
+  font-size:1.1rem;
+}
 
-    @media (max-width: 640px) {
-      .page {
-        padding: 16px 12px 34px;
-      }
+.tools{
+  display:grid;
+  gap:12px;
+}
 
-      .panel {
-        padding: 16px;
-        border-radius: 24px;
-      }
+.tool{
+  display:block;
+  padding:16px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  transition:transform 0.16s ease,border-color 0.18s ease,background 0.18s ease;
+}
 
-      .button-row {
-        flex-direction: column;
-      }
+.tool:hover{
+  transform:translateY(-2px);
+  border-color:rgba(124,92,255,0.4);
+  background:rgba(255,255,255,0.045);
+}
 
-      button {
-        width: 100%;
-      }
+.tool strong{
+  display:block;
+  margin-bottom:6px;
+  font-size:1rem;
+}
 
-      .item-top,
-      .tool-top {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+.tool span{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door{
+  padding-top:8px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door a{
+  color:#b9c7ff;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:760px){
+  .hero-inner,
+  .panel-head,
+  .panel-body{
+    padding:16px;
+  }
+
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
+
+  .actions,
+  .weather-row{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .button,
+  .button.primary,
+  .button.secondary,
+  .button.route,
+  .weather-button{
+    width:100%;
+  }
+
+  .grid-2{
+    grid-template-columns:1fr;
+  }
+
+  textarea{
+    min-height:190px;
+  }
+}
+</style>
 </head>
 <body>
-  <main class="page">
-    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
     <section class="hero">
-      <div class="eyebrow">Thinking OS Layer</div>
-      <h1>Fragment Router <span class="byline">by REFRAME Studio</span></h1>
-      <p class="subtitle">
-        Route one fragment through the thinking system. The router detects friction type,
-        maps mutation paths, and shows the best next tools for movement.
-      </p>
-    </section>
-
-    <section class="panel">
-      <div class="label-row">
-        <div class="label">Route a fragment</div>
-        <div class="helper" id="charCount">0 characters</div>
-      </div>
-
-      <textarea
-        id="fragmentInput"
-        placeholder="People say my ideas are too abstract.&#10;&#10;Content creation feels exhausting.&#10;&#10;I don't know which direction this project should take."
-        aria-label="Fragment input"
-      ></textarea>
-
-      <div class="button-row">
-        <button class="btn-primary" id="routeBtn" type="button">Route fragment</button>
-        <button class="btn-secondary" id="exampleBtn" type="button">Try example</button>
-        <button class="btn-secondary" id="clearBtn" type="button">Clear</button>
-      </div>
-
-      <div class="hint">
-        Fragment → Type → Mutation paths → Recommended tools → Next thought
-      </div>
-
-      <div id="mapWarning" class="warning" style="display:none;">
-        mutation-map.js was not found. Put this file in the same folder as fragment-router.html.
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="label-row">
-        <div class="label">Result</div>
-        <div class="helper">Router output</div>
-      </div>
-
-      <div id="resultArea" class="empty-state">
-        Route a fragment to see detected type, confidence, mutation flow, recommended tools, and next mutations.
-      </div>
-    </section>
-
-    <footer class="footer">
-      <strong>No login.</strong>
-      <strong>No tracking.</strong>
-      <strong>No personal data.</strong>
-      Runs entirely in your browser.
-    </footer>
-  </main>
-
-  <script src="./mutation-map.js"></script>
-  <script>
-    const inputEl = document.getElementById("fragmentInput");
-    const routeBtn = document.getElementById("routeBtn");
-    const exampleBtn = document.getElementById("exampleBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const charCountEl = document.getElementById("charCount");
-    const resultArea = document.getElementById("resultArea");
-    const mapWarningEl = document.getElementById("mapWarning");
-
-    const examples = [
-      "People say my ideas are too abstract.",
-      "Content creation feels exhausting lately.",
-      "I don't know which direction this project should take.",
-      "This idea might not work.",
-      "I keep getting reactions but can't turn them into content."
-    ];
-
-    function updateCharCount() {
-      const count = inputEl.value.length;
-      charCountEl.textContent = count + " character" + (count === 1 ? "" : "s");
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function escapeAttribute(value) {
-      return String(value).replaceAll('"', "&quot;");
-    }
-
-    function canRoute() {
-      return typeof window.buildFragmentRoute === "function";
-    }
-
-    function percentFromScore(value, max) {
-      if (!max || max <= 0) return 0;
-      return Math.max(4, Math.round((value / max) * 100));
-    }
-
-    function renderRoute(route) {
-      const confidencePct = Math.round((route.detectedType.confidence || 0) * 100);
-      const scores = Object.entries(route.detectedType.scores || {});
-      const maxScore = Math.max(...scores.map((entry) => entry[1]), 1);
-
-      resultArea.innerHTML = `
-        <div class="flow-wrap">
-          <div class="flow-pill">Fragment</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-pill">Router</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-pill">${escapeHtml(route.detectedType.label)}</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-pill">Mutation</div>
-          <div class="flow-arrow">→</div>
-          <div class="flow-pill">Next tool</div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Thinking OS layer</span>
+          <h1>Fragment Router</h1>
+          <p>
+            Route one fragment through the thinking system. Now the weather changes the mutation path, the recommended tools, and the direction of the next thought.
+          </p>
         </div>
 
-        <div class="section">
-          <h2 class="section-title">Detected type</h2>
-          <div class="type-pill">
-            <span class="type-dot"></span>
-            ${escapeHtml(route.detectedType.label)}
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Route a fragment</h2>
+            <p>Fragment → type → weather → mutation path → recommended tools → next thought.</p>
           </div>
-        </div>
 
-        <div class="section">
-          <h2 class="section-title">Fragment</h2>
-          <div class="result-card">
-            <p class="result-text">“${escapeHtml(route.fragment)}”</p>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2 class="section-title">Why</h2>
-          <div class="result-card">
-            <p class="result-text">${escapeHtml(route.detectedType.why || "")}</p>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2 class="section-title">System fields</h2>
-          <div class="meta-grid">
-            <div class="result-card">
-              <div class="meta-label">Confidence</div>
-              <div class="meta-value">${confidencePct}%</div>
-            </div>
-            <div class="result-card">
-              <div class="meta-label">Friction field</div>
-              <div class="meta-value">${escapeHtml(route.fields.from.label)}</div>
-            </div>
-            <div class="result-card">
-              <div class="meta-label">Mutation field</div>
-              <div class="meta-value">${escapeHtml(route.fields.through.label)}</div>
-            </div>
-            <div class="result-card">
-              <div class="meta-label">Expression field</div>
-              <div class="meta-value">${escapeHtml(route.fields.to.label)}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2 class="section-title">Mutation paths</h2>
-          <div class="grid-list">
-            ${route.mutationPaths.map((path) => `
-              <div class="path-item">
-                <div class="item-top">
-                  <div class="item-title">${escapeHtml(route.detectedType.label)} → ${escapeHtml(path.label)}</div>
-                  <div class="item-side">Mutation</div>
-                </div>
-                <p class="item-desc">${escapeHtml(path.description || "")}</p>
+          <div class="panel-body">
+            <div class="input-wrap">
+              <div class="label-row">
+                <div class="label">Route a fragment</div>
+                <div class="count" id="char-count">0 characters</div>
               </div>
-            `).join("")}
-          </div>
-        </div>
 
-        <div class="section">
-          <h2 class="section-title">Expression paths</h2>
-          <div class="flow-wrap">
-            ${route.expressionPaths.map((path) => `
-              <div class="chip">${escapeHtml(path.label)}</div>
-            `).join("")}
-          </div>
-        </div>
+              <textarea id="input" placeholder="People say my ideas are too abstract.
 
-        <div class="section">
-          <h2 class="section-title">Recommended tools</h2>
-          <div class="tool-list">
-            ${route.recommendedTools.map((tool) => `
-              <a class="tool-item" href="./${escapeAttribute(tool.file)}">
-                <div class="tool-top">
-                  <div class="tool-name">${escapeHtml(tool.name)}</div>
-                  <div class="tool-file">${escapeHtml(tool.file)}</div>
-                </div>
-                <p class="item-desc">${escapeHtml(tool.description || "")}</p>
-              </a>
-            `).join("")}
-          </div>
-        </div>
+Content creation feels exhausting.
 
-        <div class="section">
-          <h2 class="section-title">Next mutations</h2>
-          <div class="next-list">
-            ${route.nextMutations.map((item) => `
-              <div class="next-item">
-                <p class="item-desc">${escapeHtml(item)}</p>
+I don't know which direction this project should take."></textarea>
+            </div>
+
+            <div class="weather-wrap">
+              <div class="weather-label">Thought Weather</div>
+
+              <div class="weather-row">
+                <button class="weather-button calm" id="weather-calm" type="button" data-weather="calm">Calm</button>
+                <button class="weather-button drift" id="weather-drift" type="button" data-weather="drift">Drift</button>
+                <button class="weather-button storm" id="weather-storm" type="button" data-weather="storm">Storm</button>
               </div>
-            `).join("")}
-          </div>
-        </div>
 
-        <div class="section">
-          <h2 class="section-title">Detection scores</h2>
-          <div class="score-grid">
-            ${scores.map(([name, value]) => `
-              <div class="score-card">
-                <div class="score-label">${escapeHtml(name)}</div>
-                <div class="score-value">${escapeHtml(value)}</div>
-                <div class="score-bar">
-                  <div class="score-fill" style="width:${percentFromScore(value, maxScore)}%"></div>
+              <div class="weather-note" id="weather-note">
+                Calm = clearer, more stable route.
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="button primary" id="route-btn" type="button">Route fragment</button>
+              <button class="button secondary" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <a class="button route" id="next-link" href="./fragment-chain.html" aria-disabled="true">Open chain</a>
+            </div>
+
+            <div class="summary-strip" id="summary-strip">
+              Route a fragment to see detected type, confidence, mutation flow, recommended tools, and next mutations.
+            </div>
+
+            <div class="grid grid-2">
+              <div class="card">
+                <h3>Detected friction</h3>
+                <p id="detected-type">The fragment type will appear here.</p>
+              </div>
+
+              <div class="card">
+                <h3>Weather effect</h3>
+                <p id="weather-effect">The selected weather will shape the route.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Confidence</h3>
+              <div class="badge-row">
+                <div class="badge" id="confidence-badge">Confidence will appear here.</div>
+                <div class="badge" id="weather-badge">Weather will appear here.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Mutation flow</h3>
+              <div class="flow" id="mutation-flow">
+                <div class="flow-step">The mutation flow will appear here.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Recommended tools</h3>
+              <div class="tools" id="recommended-tools">
+                <div class="tool">
+                  <strong>Waiting for a fragment</strong>
+                  <span>Recommended tools will appear after routing.</span>
                 </div>
               </div>
-            `).join("")}
+            </div>
+
+            <div class="card">
+              <h3>Next thought openings</h3>
+              <p id="next-openings">The next openings will appear here.</p>
+            </div>
+
+            <div class="note" id="status">Start with one unfinished thought.</div>
+
+            <div class="hidden-door">
+              Already curious?
+              <a href="./enter-deeper.html">Enter deeper.</a>
+            </div>
           </div>
-        </div>
-      `;
+        </section>
+      </div>
+    </section>
+
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var inputEl = document.getElementById("input");
+  var countEl = document.getElementById("char-count");
+  var weatherNoteEl = document.getElementById("weather-note");
+  var summaryStripEl = document.getElementById("summary-strip");
+  var detectedTypeEl = document.getElementById("detected-type");
+  var weatherEffectEl = document.getElementById("weather-effect");
+  var confidenceBadgeEl = document.getElementById("confidence-badge");
+  var weatherBadgeEl = document.getElementById("weather-badge");
+  var mutationFlowEl = document.getElementById("mutation-flow");
+  var recommendedToolsEl = document.getElementById("recommended-tools");
+  var nextOpeningsEl = document.getElementById("next-openings");
+  var statusEl = document.getElementById("status");
+  var nextLinkEl = document.getElementById("next-link");
+
+  var routeBtn = document.getElementById("route-btn");
+  var exampleBtn = document.getElementById("example-btn");
+  var clearBtn = document.getElementById("clear-btn");
+
+  var weatherButtons = Array.prototype.slice.call(document.querySelectorAll(".weather-button"));
+
+  var EXAMPLE = "People say my ideas are too abstract.";
+  var WEATHER_STORAGE_KEY = "reframe_thought_weather_v1";
+  var selectedWeather = "calm";
+
+  var TYPE_LABELS = {
+    criticism: "Criticism",
+    emotion: "Emotion",
+    problem: "Problem",
+    confusion: "Confusion",
+    failure: "Failure",
+    idea: "Idea"
+  };
+
+  var WEATHER_INFO = {
+    calm: {
+      label: "Calm",
+      note: "Calm = clearer, more stable route.",
+      effect: "The router will prefer the clearest first mutation for this fragment.",
+      badgeClass: "calm"
+    },
+    drift: {
+      label: "Drift",
+      note: "Drift = slightly unexpected route.",
+      effect: "The router will allow a slightly stranger path for this fragment.",
+      badgeClass: "drift"
+    },
+    storm: {
+      label: "Storm",
+      note: "Storm = sharper, more unstable route.",
+      effect: "The router will prefer sharper, more unexpected mutations for this fragment.",
+      badgeClass: "storm"
+    }
+  };
+
+  var ROUTE_MAP = {
+    criticism: {
+      calm: {
+        flow: ["Criticism", "Lesson", "Angle", "Thread"],
+        tools: [
+          { title: "Criticism → Lesson", href: "./criticism-to-lesson.html", note: "Turn the sharp comment into a useful lesson." },
+          { title: "Hate → Content", href: "./hate-to-content.html", note: "Turn negative replies into usable content ideas." },
+          { title: "Problem → Options", href: "./problem-to-options.html", note: "Open several directions instead of collapsing into one reaction." }
+        ],
+        openings: [
+          "What lesson is hidden inside this criticism?",
+          "What angle becomes clearer if the criticism is signal, not damage?",
+          "How could this become a stronger thread instead of a wound?"
+        ]
+      },
+      drift: {
+        flow: ["Criticism", "Question", "Angle", "Hook"],
+        tools: [
+          { title: "Criticism → Question", href: "./criticism-to-question.html", note: "Turn the attack into a sharper question." },
+          { title: "Thought Map", href: "./thought-map.html", note: "See where this reaction fits in the larger thinking graph." },
+          { title: "Fragment Chain", href: "./fragment-chain.html", note: "Let the criticism mutate step by step." }
+        ],
+        openings: [
+          "What question would make this criticism useful?",
+          "Where is the hidden curiosity inside the pushback?",
+          "What hook appears if the criticism is only the surface?"
+        ]
+      },
+      storm: {
+        flow: ["Criticism", "Opposite", "Metaphor", "Angle"],
+        tools: [
+          { title: "Idea → Opposite", href: "./idea-to-opposite.html", note: "Jump to the reverse of the obvious interpretation." },
+          { title: "Idea → Metaphor", href: "./idea-to-metaphor.html", note: "Force the thought into a new symbolic shape." },
+          { title: "Thinking Ocean", href: "./thinking-ocean.html", note: "Throw the fragment back into drifting space." }
+        ],
+        openings: [
+          "What is the opposite of what this criticism claims?",
+          "What metaphor turns the attack into a new object?",
+          "What angle only appears after the thought breaks shape?"
+        ]
+      }
+    },
+
+    emotion: {
+      calm: {
+        flow: ["Emotion", "Action", "Constraint", "Move"],
+        tools: [
+          { title: "Emotion → Action", href: "./emotion-to-action.html", note: "Turn the feeling into a small useful action." },
+          { title: "Constraint → Action", href: "./constraint-to-action.html", note: "Use your real limit to shape movement." },
+          { title: "Next Step Finder", href: "./next-step-finder.html", note: "Make the next move visible now." }
+        ],
+        openings: [
+          "What is the smallest action this feeling can support?",
+          "What limit needs to be respected first?",
+          "What move becomes possible if the feeling is signal, not blockage?"
+        ]
+      },
+      drift: {
+        flow: ["Emotion", "Question", "Structure", "Action"],
+        tools: [
+          { title: "Emotion → Action", href: "./emotion-to-action.html", note: "Start with movement, then deepen it." },
+          { title: "Thought → Structure", href: "./thought-to-structure.html", note: "Give the emotion a shape it can live inside." },
+          { title: "Fragment Chain", href: "./fragment-chain.html", note: "Keep the emotional signal moving." }
+        ],
+        openings: [
+          "What question is the feeling really trying to ask?",
+          "What structure would make the emotion easier to carry?",
+          "How does the feeling change once it gets shape?"
+        ]
+      },
+      storm: {
+        flow: ["Emotion", "Opposite", "Hook", "Thread"],
+        tools: [
+          { title: "Idea → Opposite", href: "./idea-to-opposite.html", note: "Use reversal to crack the emotional frame." },
+          { title: "Hook Generator", href: "./hook-generator.html", note: "Turn raw feeling into a strong opening." },
+          { title: "Idea → Thread", href: "./idea-to-thread.html", note: "Stretch the signal into a post path." }
+        ],
+        openings: [
+          "What is the opposite emotion hiding beneath this one?",
+          "What hook appears if this feeling speaks first?",
+          "How could this emotional charge become a thread instead of a spiral?"
+        ]
+      }
+    },
+
+    problem: {
+      calm: {
+        flow: ["Problem", "Root Cause", "Constraint", "Action"],
+        tools: [
+          { title: "Problem → Root Cause", href: "./problem-to-root-cause.html", note: "Go under the visible problem." },
+          { title: "Problem → Options", href: "./problem-to-options.html", note: "Open multiple directions before deciding." },
+          { title: "Constraint → Action", href: "./constraint-to-action.html", note: "Turn reality into movement." }
+        ],
+        openings: [
+          "What is the real cause under the visible problem?",
+          "Which constraint is shaping the situation?",
+          "What small action still fits reality?"
+        ]
+      },
+      drift: {
+        flow: ["Problem", "Options", "Question", "Action"],
+        tools: [
+          { title: "Problem → Options", href: "./problem-to-options.html", note: "Expand the space before choosing." },
+          { title: "Confusion → Question", href: "./confusion-to-question-builder.html", note: "Turn uncertainty into a better question." },
+          { title: "Fragment Chain", href: "./fragment-chain.html", note: "Let the problem keep mutating." }
+        ],
+        openings: [
+          "What options appear if the current frame is too narrow?",
+          "What question would make the problem less heavy?",
+          "Where does movement return if choice expands first?"
+        ]
+      },
+      storm: {
+        flow: ["Problem", "Opposite", "Metaphor", "Action"],
+        tools: [
+          { title: "Idea → Opposite", href: "./idea-to-opposite.html", note: "Break the problem by reversing it." },
+          { title: "Idea → Metaphor", href: "./idea-to-metaphor.html", note: "See the problem as a different object." },
+          { title: "Thinking Ocean", href: "./thinking-ocean.html", note: "Throw the problem into the larger drift field." }
+        ],
+        openings: [
+          "What if the problem is actually the doorway?",
+          "What metaphor makes the problem easier to move?",
+          "What action becomes visible after the frame breaks?"
+        ]
+      }
+    },
+
+    confusion: {
+      calm: {
+        flow: ["Confusion", "Question", "Structure", "Action"],
+        tools: [
+          { title: "Confusion → Question", href: "./confusion-to-question-builder.html", note: "Turn fog into a better question." },
+          { title: "Thought → Structure", href: "./thought-to-structure.html", note: "Give shape to the unclear thought." },
+          { title: "Next Step Finder", href: "./next-step-finder.html", note: "Choose the first visible move." }
+        ],
+        openings: [
+          "What is the real question under this confusion?",
+          "What structure would reduce the fog?",
+          "What action can happen before clarity is perfect?"
+        ]
+      },
+      drift: {
+        flow: ["Confusion", "Angle", "Question", "Hook"],
+        tools: [
+          { title: "Thought → Structure", href: "./thought-to-structure.html", note: "Pull one usable shape out of the fog." },
+          { title: "Idea → Post Angles", href: "./idea-to-post-angles.html", note: "Generate strange but useful entry points." },
+          { title: "Hook Generator", href: "./hook-generator.html", note: "Turn uncertainty into an opening." }
+        ],
+        openings: [
+          "What angle appears if confusion is treated as material?",
+          "What hook is hiding inside the not-knowing?",
+          "What question gets stronger after one more drift?"
+        ]
+      },
+      storm: {
+        flow: ["Confusion", "Metaphor", "Opposite", "Question"],
+        tools: [
+          { title: "Idea → Metaphor", href: "./idea-to-metaphor.html", note: "Translate the fog into image." },
+          { title: "Idea → Opposite", href: "./idea-to-opposite.html", note: "Break the confusion by reversal." },
+          { title: "Thinking Ocean", href: "./thinking-ocean.html", note: "Let the confusion drift with other fragments." }
+        ],
+        openings: [
+          "What metaphor gives this confusion a body?",
+          "What if the opposite of your assumption is closer to the truth?",
+          "What new question appears after the frame collapses?"
+        ]
+      }
+    },
+
+    failure: {
+      calm: {
+        flow: ["Failure", "Lesson", "Constraint", "Action"],
+        tools: [
+          { title: "Failure → Lesson", href: "./failure-to-lesson.html", note: "Extract signal from what failed." },
+          { title: "Constraint → Action", href: "./constraint-to-action.html", note: "Use the revealed limit to shape the next move." },
+          { title: "Problem → Root Cause", href: "./problem-to-root-cause.html", note: "Go below the failed surface." }
+        ],
+        openings: [
+          "What lesson only failure could reveal?",
+          "What limit became visible because this broke?",
+          "What action becomes safer after seeing the failure clearly?"
+        ]
+      },
+      drift: {
+        flow: ["Failure", "Question", "Option", "Action"],
+        tools: [
+          { title: "Failure → Lesson", href: "./failure-to-lesson.html", note: "Start with signal, then branch." },
+          { title: "Problem → Options", href: "./problem-to-options.html", note: "Open alternative routes after the miss." },
+          { title: "Fragment Chain", href: "./fragment-chain.html", note: "Keep the failed fragment alive." }
+        ],
+        openings: [
+          "What question did the failure force into the open?",
+          "What option exists because the first attempt broke?",
+          "How does movement return when failure is not the end?"
+        ]
+      },
+      storm: {
+        flow: ["Failure", "Opposite", "Angle", "Thread"],
+        tools: [
+          { title: "Idea → Opposite", href: "./idea-to-opposite.html", note: "Reverse the meaning of the failure." },
+          { title: "Idea → Thread", href: "./idea-to-thread.html", note: "Turn the collapse into narrative movement." },
+          { title: "Thinking Ocean", href: "./thinking-ocean.html", note: "Throw the failure back into the larger field." }
+        ],
+        openings: [
+          "What if the failure is actually proof of movement?",
+          "What angle appears if the collapse becomes material?",
+          "Could this become a thread people recognize in themselves?"
+        ]
+      }
+    },
+
+    idea: {
+      calm: {
+        flow: ["Idea", "Angle", "Hook", "Thread"],
+        tools: [
+          { title: "Idea → Post Angles", href: "./idea-to-post-angles.html", note: "Open different ways into the idea." },
+          { title: "Hook Generator", href: "./hook-generator.html", note: "Turn the idea into an entry line." },
+          { title: "Idea → Thread", href: "./idea-to-thread.html", note: "Stretch the seed into a structure." }
+        ],
+        openings: [
+          "Which angle makes the idea easier to enter?",
+          "What hook gives the idea instant traction?",
+          "What thread path appears once the idea gets shape?"
+        ]
+      },
+      drift: {
+        flow: ["Idea", "Question", "Angle", "Thread"],
+        tools: [
+          { title: "Idea → Tool Spec", href: "./idea-to-tool-spec.html", note: "Mutate the idea into a tool." },
+          { title: "Idea → Example", href: "./idea-to-example.html", note: "See what the idea becomes in use." },
+          { title: "Fragment Chain", href: "./fragment-chain.html", note: "Keep the idea moving without fixing it too early." }
+        ],
+        openings: [
+          "What question makes the idea stronger?",
+          "What example makes the idea real?",
+          "How does the thread change if the idea drifts first?"
+        ]
+      },
+      storm: {
+        flow: ["Idea", "Opposite", "Metaphor", "Hook"],
+        tools: [
+          { title: "Idea → Opposite", href: "./idea-to-opposite.html", note: "Break the idea by reversal." },
+          { title: "Idea → Metaphor", href: "./idea-to-metaphor.html", note: "Transform the idea into image." },
+          { title: "Thought Galaxy", href: "./thought-galaxy.html", note: "Let the idea branch into stranger routes." }
+        ],
+        openings: [
+          "What is the opposite version of this idea?",
+          "What metaphor makes the idea feel alive?",
+          "What hook only appears after the idea mutates hard?"
+        ]
+      }
+    }
+  };
+
+  function updateCount() {
+    countEl.textContent = inputEl.value.length + " characters";
+  }
+
+  function detectType(text) {
+    var lower = String(text || "").toLowerCase();
+
+    if (!lower.trim()) return "";
+
+    if (
+      lower.indexOf("people say") !== -1 ||
+      lower.indexOf("they say") !== -1 ||
+      lower.indexOf("criticism") !== -1 ||
+      lower.indexOf("comment") !== -1 ||
+      lower.indexOf("reply") !== -1
+    ) {
+      return "criticism";
     }
 
-    function handleRoute() {
-      const value = inputEl.value.trim();
-
-      if (!value) {
-        resultArea.innerHTML = `
-          <div class="empty-state">
-            Drop one short fragment first. Even a rough line is enough.
-          </div>
-        `;
-        return;
-      }
-
-      if (!canRoute()) {
-        mapWarningEl.style.display = "block";
-        resultArea.innerHTML = `
-          <div class="empty-state">
-            mutation-map.js is missing, so the router cannot build paths yet.
-          </div>
-        `;
-        return;
-      }
-
-      const route = window.buildFragmentRoute(value);
-
-      if (!route) {
-        resultArea.innerHTML = `
-          <div class="empty-state">
-            The router could not build a path for this fragment.
-          </div>
-        `;
-        return;
-      }
-
-      mapWarningEl.style.display = "none";
-      renderRoute(route);
+    if (
+      lower.indexOf("feel") !== -1 ||
+      lower.indexOf("heavy") !== -1 ||
+      lower.indexOf("anxious") !== -1 ||
+      lower.indexOf("frustrated") !== -1 ||
+      lower.indexOf("tired") !== -1 ||
+      lower.indexOf("exhaust") !== -1
+    ) {
+      return "emotion";
     }
 
-    function handleExample() {
-      const pick = examples[Math.floor(Math.random() * examples.length)];
-      inputEl.value = pick;
-      updateCharCount();
-      handleRoute();
+    if (
+      lower.indexOf("problem") !== -1 ||
+      lower.indexOf("can't") !== -1 ||
+      lower.indexOf("cannot") !== -1 ||
+      lower.indexOf("stuck") !== -1 ||
+      lower.indexOf("blocked") !== -1
+    ) {
+      return "problem";
     }
 
-    function handleClear() {
-      inputEl.value = "";
-      updateCharCount();
-      resultArea.innerHTML = `
-        <div class="empty-state">
-          Route a fragment to see detected type, confidence, mutation flow, recommended tools, and next mutations.
-        </div>
-      `;
-      inputEl.focus();
+    if (
+      lower.indexOf("don't know") !== -1 ||
+      lower.indexOf("do not know") !== -1 ||
+      lower.indexOf("confused") !== -1 ||
+      lower.indexOf("not sure") !== -1 ||
+      lower.indexOf("which direction") !== -1
+    ) {
+      return "confusion";
     }
 
-    inputEl.addEventListener("input", updateCharCount);
-    routeBtn.addEventListener("click", handleRoute);
-    exampleBtn.addEventListener("click", handleExample);
-    clearBtn.addEventListener("click", handleClear);
+    if (
+      lower.indexOf("failed") !== -1 ||
+      lower.indexOf("failure") !== -1 ||
+      lower.indexOf("didn't work") !== -1 ||
+      lower.indexOf("did not work") !== -1 ||
+      lower.indexOf("collapsed") !== -1
+    ) {
+      return "failure";
+    }
 
-    inputEl.addEventListener("keydown", function(event) {
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        handleRoute();
-      }
+    return "idea";
+  }
+
+  function detectConfidence(text, type) {
+    if (!text.trim()) return "No fragment yet";
+
+    var lower = text.toLowerCase();
+    var score = 1;
+
+    if (type === "criticism" && (lower.indexOf("people say") !== -1 || lower.indexOf("they say") !== -1)) score += 2;
+    if (type === "emotion" && lower.indexOf("feel") !== -1) score += 2;
+    if (type === "problem" && (lower.indexOf("can't") !== -1 || lower.indexOf("cannot") !== -1 || lower.indexOf("problem") !== -1)) score += 2;
+    if (type === "confusion" && (lower.indexOf("don't know") !== -1 || lower.indexOf("confused") !== -1 || lower.indexOf("which direction") !== -1)) score += 2;
+    if (type === "failure" && (lower.indexOf("failed") !== -1 || lower.indexOf("didn't work") !== -1 || lower.indexOf("did not work") !== -1)) score += 2;
+    if (type === "idea" && lower.length > 20) score += 1;
+
+    if (score >= 3) return "High confidence";
+    if (score === 2) return "Medium confidence";
+    return "Low confidence";
+  }
+
+  function loadWeather() {
+    var params = new URLSearchParams(window.location.search);
+    var mode = params.get("mode");
+    var saved = "";
+
+    try {
+      saved = localStorage.getItem(WEATHER_STORAGE_KEY) || "";
+    } catch (error) {}
+
+    if (mode === "stable") selectedWeather = "calm";
+    else if (mode === "drift") selectedWeather = "drift";
+    else if (mode === "chaos") selectedWeather = "storm";
+    else if (saved === "calm" || saved === "drift" || saved === "storm") selectedWeather = saved;
+  }
+
+  function loadText() {
+    var params = new URLSearchParams(window.location.search);
+    var text = params.get("text");
+    if (text) {
+      inputEl.value = text;
+    }
+  }
+
+  function renderWeatherUI() {
+    weatherButtons.forEach(function (button) {
+      var weather = button.getAttribute("data-weather");
+      button.classList.toggle("active", weather === selectedWeather);
     });
 
-    updateCharCount();
+    weatherNoteEl.textContent = WEATHER_INFO[selectedWeather].note;
+    weatherBadgeEl.textContent = WEATHER_INFO[selectedWeather].label;
+    weatherBadgeEl.className = "badge " + WEATHER_INFO[selectedWeather].badgeClass;
 
-    if (!canRoute()) {
-      mapWarningEl.style.display = "block";
+    try {
+      localStorage.setItem(WEATHER_STORAGE_KEY, selectedWeather);
+    } catch (error) {}
+  }
+
+  function renderTools(tools) {
+    recommendedToolsEl.innerHTML = "";
+    tools.forEach(function (tool) {
+      var link = document.createElement("a");
+      link.className = "tool";
+      link.href = tool.href;
+
+      var strong = document.createElement("strong");
+      strong.textContent = tool.title;
+
+      var span = document.createElement("span");
+      span.textContent = tool.note;
+
+      link.appendChild(strong);
+      link.appendChild(span);
+      recommendedToolsEl.appendChild(link);
+    });
+  }
+
+  function renderFlow(flow) {
+    mutationFlowEl.innerHTML = "";
+
+    flow.forEach(function (step, index) {
+      var stepEl = document.createElement("div");
+      stepEl.className = "flow-step";
+      stepEl.textContent = step;
+      mutationFlowEl.appendChild(stepEl);
+
+      if (index < flow.length - 1) {
+        var arrowEl = document.createElement("div");
+        arrowEl.className = "flow-arrow";
+        arrowEl.textContent = "↓";
+        mutationFlowEl.appendChild(arrowEl);
+      }
+    });
+  }
+
+  function updateNextLink(text, weather) {
+    if (!text.trim()) {
+      nextLinkEl.href = "./fragment-chain.html";
+      nextLinkEl.setAttribute("aria-disabled", "true");
+      nextLinkEl.style.opacity = "0.5";
+      return;
     }
-  </script>
+
+    var params = new URLSearchParams();
+    params.set("fragment", text);
+    params.set("weather", weather);
+    nextLinkEl.href = "./fragment-chain.html?" + params.toString();
+    nextLinkEl.setAttribute("aria-disabled", "false");
+    nextLinkEl.style.opacity = "1";
+  }
+
+  function routeFragment() {
+    var text = inputEl.value.trim();
+
+    if (!text) {
+      detectedTypeEl.textContent = "Add one fragment first.";
+      weatherEffectEl.textContent = WEATHER_INFO[selectedWeather].effect;
+      confidenceBadgeEl.textContent = "No fragment yet";
+      summaryStripEl.textContent = "Route a fragment to see detected type, confidence, mutation flow, recommended tools, and next mutations.";
+      mutationFlowEl.innerHTML = '<div class="flow-step">The mutation flow will appear here.</div>';
+      recommendedToolsEl.innerHTML = '<div class="tool"><strong>Waiting for a fragment</strong><span>Recommended tools will appear after routing.</span></div>';
+      nextOpeningsEl.textContent = "The next openings will appear here.";
+      statusEl.textContent = "Please enter a fragment.";
+      updateNextLink("", selectedWeather);
+      return;
+    }
+
+    var type = detectType(text);
+    var confidence = detectConfidence(text, type);
+    var route = ROUTE_MAP[type][selectedWeather];
+
+    detectedTypeEl.textContent =
+      TYPE_LABELS[type] +
+      "\n\nThis fragment currently reads most strongly as " +
+      TYPE_LABELS[type].toLowerCase() +
+      " friction.";
+
+    weatherEffectEl.textContent =
+      WEATHER_INFO[selectedWeather].label +
+      "\n\n" +
+      WEATHER_INFO[selectedWeather].effect;
+
+    confidenceBadgeEl.textContent = confidence;
+
+    summaryStripEl.textContent =
+      TYPE_LABELS[type] +
+      " detected → " +
+      WEATHER_INFO[selectedWeather].label +
+      " selected → " +
+      route.flow.join(" → ");
+
+    renderFlow(route.flow);
+    renderTools(route.tools);
+    nextOpeningsEl.textContent = route.openings.join("\n\n");
+    statusEl.textContent = "Fragment routed through " + WEATHER_INFO[selectedWeather].label + " weather.";
+    updateNextLink(text, selectedWeather);
+  }
+
+  function tryExample() {
+    inputEl.value = EXAMPLE;
+    updateCount();
+    routeFragment();
+    statusEl.textContent = "Example loaded.";
+  }
+
+  function clearAll() {
+    inputEl.value = "";
+    updateCount();
+    detectedTypeEl.textContent = "The fragment type will appear here.";
+    weatherEffectEl.textContent = "The selected weather will shape the route.";
+    confidenceBadgeEl.textContent = "Confidence will appear here.";
+    summaryStripEl.textContent = "Route a fragment to see detected type, confidence, mutation flow, recommended tools, and next mutations.";
+    mutationFlowEl.innerHTML = '<div class="flow-step">The mutation flow will appear here.</div>';
+    recommendedToolsEl.innerHTML = '<div class="tool"><strong>Waiting for a fragment</strong><span>Recommended tools will appear after routing.</span></div>';
+    nextOpeningsEl.textContent = "The next openings will appear here.";
+    statusEl.textContent = "Cleared.";
+    updateNextLink("", selectedWeather);
+  }
+
+  weatherButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      selectedWeather = button.getAttribute("data-weather");
+      renderWeatherUI();
+      routeFragment();
+      statusEl.textContent = "Thought Weather changed to " + WEATHER_INFO[selectedWeather].label + ".";
+    });
+  });
+
+  routeBtn.addEventListener("click", routeFragment);
+  exampleBtn.addEventListener("click", tryExample);
+  clearBtn.addEventListener("click", clearAll);
+
+  nextLinkEl.addEventListener("click", function (event) {
+    if (nextLinkEl.getAttribute("aria-disabled") === "true") {
+      event.preventDefault();
+      statusEl.textContent = "Route a fragment first.";
+    }
+  });
+
+  inputEl.addEventListener("input", function () {
+    updateCount();
+    updateNextLink(inputEl.value.trim(), selectedWeather);
+  });
+
+  loadWeather();
+  loadText();
+  updateCount();
+  renderWeatherUI();
+  updateNextLink(inputEl.value.trim(), selectedWeather);
+
+  if (inputEl.value.trim()) {
+    routeFragment();
+  }
+})();
+</script>
 </body>
 </html>
