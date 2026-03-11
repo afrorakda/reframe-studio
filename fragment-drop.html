@@ -1,710 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fragment Drop by REFRAME Studio</title>
-  <style>
-    :root {
-      --bg-1: #061018;
-      --bg-2: #0a1724;
-      --bg-3: #0d1f30;
-      --panel: rgba(10, 23, 36, 0.72);
-      --panel-strong: rgba(12, 28, 44, 0.88);
-      --text: #eef6ff;
-      --muted: #9eb4ca;
-      --line: rgba(120, 170, 255, 0.16);
-      --line-strong: rgba(120, 170, 255, 0.3);
-      --glow-blue: rgba(66, 153, 255, 0.28);
-      --glow-cyan: rgba(58, 224, 255, 0.18);
-      --accent: #7fb2ff;
-      --accent-strong: #9ec5ff;
-      --button-primary-from: #4a7dff;
-      --button-primary-to: #7d5cff;
-      --button-secondary-from: rgba(127, 178, 255, 0.12);
-      --button-secondary-to: rgba(127, 178, 255, 0.06);
-      --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.36);
-      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.28);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --max-width: 860px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragment Drop — REFRAME Studio</title>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:980px;
+}
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(58, 224, 255, 0.12), transparent 28%),
-        radial-gradient(circle at 80% 10%, rgba(125, 92, 255, 0.14), transparent 30%),
-        radial-gradient(circle at 50% 120%, rgba(66, 153, 255, 0.12), transparent 42%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    a {
-      color: var(--accent-strong);
-      text-decoration: none;
-    }
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
 
-    a:hover {
-      text-decoration: underline;
-    }
+a{
+  color:inherit;
+  text-decoration:none;
+}
 
-    .page {
-      width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 18px 14px 40px;
-    }
+button,
+textarea{
+  font:inherit;
+}
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
+}
 
-    .hero {
-      margin-bottom: 18px;
-    }
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.16);
-      color: var(--accent-strong);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
+}
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(32px, 6vw, 48px);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      color: var(--text);
-      text-wrap: balance;
-    }
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
 
-    .subtitle {
-      margin: 0;
-      max-width: 700px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.75;
-    }
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
+}
 
-    .panel {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-xl);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 18px;
-    }
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
 
-    .panel + .panel {
-      margin-top: 14px;
-    }
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
 
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: auto auto 65% -10%;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
-      pointer-events: none;
-      opacity: 0.8;
-    }
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
 
-    .panel::after {
-      content: "";
-      position: absolute;
-      inset: -20% -10% auto auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--glow-blue), transparent 70%);
-      pointer-events: none;
-      opacity: 0.7;
-    }
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .label-row {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+.panel-head{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
 
-    .label {
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+.panel-head h2{
+  margin:0 0 6px;
+  font-size:1.04rem;
+  letter-spacing:-0.02em;
+}
 
-    .helper {
-      color: var(--muted);
-      font-size: 12px;
-    }
+.panel-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    textarea {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      min-height: 170px;
-      resize: vertical;
-      border: 1px solid rgba(127, 178, 255, 0.14);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(7, 18, 29, 0.84);
-      color: var(--text);
-      padding: 16px;
-      font: inherit;
-      font-size: 16px;
-      line-height: 1.65;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    }
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
 
-    textarea::placeholder {
-      color: rgba(158, 180, 202, 0.7);
-    }
+.input-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    textarea:focus {
-      border-color: rgba(127, 178, 255, 0.38);
-      box-shadow:
-        0 0 0 4px rgba(66, 153, 255, 0.12),
-        0 0 30px rgba(66, 153, 255, 0.12);
-      background: rgba(8, 20, 32, 0.94);
-    }
+.label-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .button-row {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
+.label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 16px;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      color: var(--text);
-      transition: transform 0.06s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
-    }
+.count{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    button:active {
-      transform: translateY(1px);
-    }
+textarea{
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+}
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
-      box-shadow:
-        0 12px 28px rgba(74, 125, 255, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    }
+textarea::placeholder{
+  color:#8290aa;
+}
 
-    .btn-secondary {
-      background: linear-gradient(180deg, var(--button-secondary-from), var(--button-secondary-to));
-      border: 1px solid rgba(127, 178, 255, 0.14);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
 
-    .hint {
-      position: relative;
-      z-index: 1;
-      margin-top: 14px;
-      padding: 13px 14px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(127, 178, 255, 0.1);
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.65;
-    }
+.weather-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    .warning {
-      position: relative;
-      z-index: 1;
-      margin-top: 14px;
-      padding: 13px 14px;
-      border-radius: 18px;
-      background: rgba(255, 193, 7, 0.08);
-      border: 1px solid rgba(255, 193, 7, 0.18);
-      color: #ffd977;
-      font-size: 14px;
-      line-height: 1.6;
-    }
+.weather-label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .section {
-      position: relative;
-      z-index: 1;
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(127, 178, 255, 0.1);
-    }
+.weather-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .section-title {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+.weather-button{
+  appearance:none;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:999px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,box-shadow 0.18s ease;
+}
 
-    .empty-state {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.75;
-      padding: 4px 2px 2px;
-    }
+.weather-button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
 
-    .type-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      color: var(--accent-strong);
-      font-size: 13px;
-      line-height: 1.2;
-      backdrop-filter: blur(8px);
-    }
+.weather-button.active{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+  background:rgba(124,92,255,0.14);
+}
 
-    .type-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: currentColor;
-      box-shadow: 0 0 12px currentColor;
-    }
+.weather-note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .result-card {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(8, 21, 34, 0.72);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-      box-shadow: var(--shadow-lg);
-    }
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .result-card + .result-card {
-      margin-top: 10px;
-    }
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
+}
 
-    .result-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin: 0 0 6px;
-    }
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
 
-    .result-text {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
+.button.primary{
+  min-width:180px;
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      color: var(--accent-strong);
-      font-size: 13px;
-      line-height: 1.2;
-      backdrop-filter: blur(8px);
-    }
+.button.route{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .tool-list,
-    .next-list {
-      display: grid;
-      gap: 10px;
-    }
+.button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
 
-    .tool-item,
-    .next-item {
-      display: block;
-      padding: 14px;
-      border-radius: var(--radius-lg);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(8, 21, 34, 0.72);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      box-shadow: var(--shadow-lg);
-    }
+.preview-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
 
-    .tool-item {
-      text-decoration: none;
-      transition: transform 0.06s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
+.preview-card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
 
-    .tool-item:hover {
-      border-color: rgba(127, 178, 255, 0.24);
-      text-decoration: none;
-      box-shadow:
-        var(--shadow-lg),
-        0 0 24px rgba(66, 153, 255, 0.08);
-    }
+.preview-title{
+  margin:0 0 12px;
+  font-size:1rem;
+  letter-spacing:-0.02em;
+}
 
-    .tool-item:active {
-      transform: translateY(1px);
-    }
+.preview-body{
+  color:#d8dfec;
+  font-size:1rem;
+  white-space:pre-wrap;
+  min-height:120px;
+}
 
-    .tool-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .tool-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
+.hidden-door{
+  padding-top:8px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .tool-file {
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+.hidden-door a{
+  color:#b9c7ff;
+}
 
-    .tool-desc,
-    .next-desc {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin: 0;
-    }
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
 
-    .footer {
-      margin-top: 18px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
+@media (max-width:720px){
+  .hero-inner,
+  .panel-head,
+  .panel-body{
+    padding:16px;
+  }
 
-    .footer strong {
-      color: var(--text);
-      font-weight: 700;
-    }
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
 
-    @media (max-width: 640px) {
-      .page {
-        padding: 16px 12px 34px;
-      }
+  .actions,
+  .weather-row{
+    flex-direction:column;
+    align-items:stretch;
+  }
 
-      .panel {
-        padding: 16px;
-        border-radius: 24px;
-      }
+  .button,
+  .button.primary,
+  .button.secondary,
+  .button.route,
+  .weather-button{
+    width:100%;
+  }
 
-      .button-row {
-        flex-direction: column;
-      }
+  .preview-grid{
+    grid-template-columns:1fr;
+  }
 
-      button {
-        width: 100%;
-      }
-
-      .tool-top {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+  textarea{
+    min-height:190px;
+  }
+}
+</style>
 </head>
 <body>
-  <main class="page">
-    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
     <section class="hero">
-      <div class="eyebrow">Fragment Engine Entry</div>
-      <h1>Fragment Drop by REFRAME Studio</h1>
-      <p class="subtitle">
-        Drop one incomplete thought into the system. The fragment is read as thinking friction,
-        then opened into mutation paths and next tool directions.
-      </p>
-    </section>
-
-    <section class="panel">
-      <div class="label-row">
-        <div class="label">Drop a fragment</div>
-        <div class="helper" id="charCount">0 characters</div>
-      </div>
-
-      <textarea
-        id="fragmentInput"
-        placeholder="People say my ideas are too abstract.&#10;&#10;Content creation feels exhausting.&#10;&#10;This idea might not work."
-        aria-label="Fragment input"
-      ></textarea>
-
-      <div class="button-row">
-        <button class="btn-primary" id="dropBtn" type="button">Drop fragment</button>
-        <button class="btn-secondary" id="exampleBtn" type="button">Try example</button>
-        <button class="btn-secondary" id="clearBtn" type="button">Clear</button>
-      </div>
-
-      <div class="hint">
-        One fragment. One detected friction type. One visible next movement.
-      </div>
-
-      <div id="mapWarning" class="warning" style="display:none;">
-        mutation-map.js was not found. Put this file in the same folder as fragment-drop.html.
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="label-row">
-        <div class="label">Result</div>
-        <div class="helper">Fragment reading</div>
-      </div>
-
-      <div id="resultArea" class="empty-state">
-        Drop a fragment to see its type, why it matters, mutation paths, recommended tools, and next mutations.
-      </div>
-    </section>
-
-    <footer class="footer">
-      <strong>No login.</strong>
-      <strong>No tracking.</strong>
-      <strong>No personal data.</strong>
-      Runs entirely in your browser.
-    </footer>
-  </main>
-
-  <script src="./mutation-map.js"></script>
-  <script>
-    const inputEl = document.getElementById("fragmentInput");
-    const dropBtn = document.getElementById("dropBtn");
-    const exampleBtn = document.getElementById("exampleBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const charCountEl = document.getElementById("charCount");
-    const resultArea = document.getElementById("resultArea");
-    const mapWarningEl = document.getElementById("mapWarning");
-
-    const examples = [
-      "People say my ideas are too abstract.",
-      "Content creation feels exhausting lately.",
-      "I don't know which direction this project should take.",
-      "This idea might not work.",
-      "I keep getting reactions but can't turn them into content."
-    ];
-
-    function updateCharCount() {
-      const count = inputEl.value.length;
-      charCountEl.textContent = count + " character" + (count === 1 ? "" : "s");
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function escapeAttribute(value) {
-      return String(value).replaceAll('"', "&quot;");
-    }
-
-    function canReadMap() {
-      return typeof window.buildFragmentRoute === "function";
-    }
-
-    function renderResult(route) {
-      resultArea.innerHTML = `
-        <div class="type-pill">
-          <span class="type-dot"></span>
-          Fragment type: ${escapeHtml(route.detectedType.label)}
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Fragment engine entry</span>
+          <h1>Fragment Drop</h1>
+          <p>
+            Drop one incomplete thought into the system. Now the weather changes how the next mutation will be chosen.
+          </p>
         </div>
 
-        <div class="section">
-          <h2 class="section-title">Fragment</h2>
-          <div class="result-card">
-            <p class="result-text">“${escapeHtml(route.fragment)}”</p>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Drop one thought fragment</h2>
+            <p>One fragment. One weather. One visible next movement.</p>
           </div>
-        </div>
 
-        <div class="section">
-          <h2 class="section-title">Why</h2>
-          <div class="result-card">
-            <p class="result-text">${escapeHtml(route.detectedType.why || "")}</p>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2 class="section-title">Mutation paths</h2>
-          <div class="chips">
-            ${route.mutationPaths.map((path) => `
-              <div class="chip">${escapeHtml(route.detectedType.label)} → ${escapeHtml(path.label)}</div>
-            `).join("")}
-          </div>
-        </div>
-
-        <div class="section">
-          <h2 class="section-title">Recommended tools</h2>
-          <div class="tool-list">
-            ${route.recommendedTools.map((tool) => `
-              <a class="tool-item" href="./${escapeAttribute(tool.file)}">
-                <div class="tool-top">
-                  <div class="tool-name">${escapeHtml(tool.name)}</div>
-                  <div class="tool-file">${escapeHtml(tool.file)}</div>
-                </div>
-                <p class="tool-desc">${escapeHtml(tool.description || "")}</p>
-              </a>
-            `).join("")}
-          </div>
-        </div>
-
-        <div class="section">
-          <h2 class="section-title">Next mutations</h2>
-          <div class="next-list">
-            ${route.nextMutations.map((item) => `
-              <div class="next-item">
-                <p class="next-desc">${escapeHtml(item)}</p>
+          <div class="panel-body">
+            <div class="input-wrap">
+              <div class="label-row">
+                <div class="label">Drop a fragment</div>
+                <div class="count" id="char-count">0 characters</div>
               </div>
-            `).join("")}
+
+              <textarea id="input" placeholder="People say my ideas are too abstract.
+
+Content creation feels exhausting.
+
+This idea might not work."></textarea>
+            </div>
+
+            <div class="weather-wrap">
+              <div class="weather-label">Thought Weather</div>
+
+              <div class="weather-row">
+                <button class="weather-button active" id="weather-calm" type="button" data-weather="calm">Calm</button>
+                <button class="weather-button" id="weather-drift" type="button" data-weather="drift">Drift</button>
+                <button class="weather-button" id="weather-storm" type="button" data-weather="storm">Storm</button>
+              </div>
+
+              <div class="weather-note" id="weather-note">
+                Calm = clearer, more stable first mutation.
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="button primary" id="drop-btn" type="button">Drop fragment</button>
+              <button class="button secondary" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <a class="button route" id="route-link" href="./fragment-router.html" aria-disabled="true">Open router</a>
+            </div>
+
+            <div class="preview-grid">
+              <div class="preview-card">
+                <h3 class="preview-title">Detected friction</h3>
+                <div class="preview-body" id="friction-preview">The fragment type will appear here.</div>
+              </div>
+
+              <div class="preview-card">
+                <h3 class="preview-title">Weather effect</h3>
+                <div class="preview-body" id="weather-preview">The selected weather will shape the next mutation.</div>
+              </div>
+            </div>
+
+            <div class="note" id="status">Start with one unfinished thought.</div>
+
+            <div class="hidden-door">
+              Already curious?
+              <a href="./enter-deeper.html">Enter deeper.</a>
+            </div>
           </div>
-        </div>
-      `;
+        </section>
+      </div>
+    </section>
+
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var inputEl = document.getElementById("input");
+  var countEl = document.getElementById("char-count");
+  var statusEl = document.getElementById("status");
+  var frictionPreviewEl = document.getElementById("friction-preview");
+  var weatherPreviewEl = document.getElementById("weather-preview");
+  var weatherNoteEl = document.getElementById("weather-note");
+  var routeLinkEl = document.getElementById("route-link");
+
+  var dropBtn = document.getElementById("drop-btn");
+  var exampleBtn = document.getElementById("example-btn");
+  var clearBtn = document.getElementById("clear-btn");
+
+  var weatherButtons = Array.prototype.slice.call(document.querySelectorAll(".weather-button"));
+
+  var EXAMPLE = "People say my ideas are too abstract.";
+  var STORAGE_KEY = "reframe_thought_weather_v1";
+  var selectedWeather = "calm";
+
+  function updateCount() {
+    countEl.textContent = inputEl.value.length + " characters";
+  }
+
+  function getWeatherMode(weather) {
+    if (weather === "storm") return "chaos";
+    if (weather === "drift") return "drift";
+    return "stable";
+  }
+
+  function detectType(text) {
+    var lower = String(text || "").toLowerCase();
+
+    if (!lower.trim()) return "";
+
+    if (
+      lower.indexOf("people say") !== -1 ||
+      lower.indexOf("they say") !== -1 ||
+      lower.indexOf("criticism") !== -1 ||
+      lower.indexOf("comment") !== -1
+    ) {
+      return "criticism";
     }
 
-    function handleDrop() {
-      const value = inputEl.value.trim();
-
-      if (!value) {
-        resultArea.innerHTML = `
-          <div class="empty-state">
-            Drop one short fragment first. Even a rough line is enough.
-          </div>
-        `;
-        return;
-      }
-
-      if (!canReadMap()) {
-        mapWarningEl.style.display = "block";
-        resultArea.innerHTML = `
-          <div class="empty-state">
-            mutation-map.js is missing, so this fragment cannot be routed yet.
-          </div>
-        `;
-        return;
-      }
-
-      const route = window.buildFragmentRoute(value);
-
-      if (!route) {
-        resultArea.innerHTML = `
-          <div class="empty-state">
-            The fragment could not be read. Try a shorter thought.
-          </div>
-        `;
-        return;
-      }
-
-      mapWarningEl.style.display = "none";
-      renderResult(route);
+    if (
+      lower.indexOf("feel") !== -1 ||
+      lower.indexOf("heavy") !== -1 ||
+      lower.indexOf("anxious") !== -1 ||
+      lower.indexOf("frustrated") !== -1 ||
+      lower.indexOf("tired") !== -1
+    ) {
+      return "emotion";
     }
 
-    function handleExample() {
-      const pick = examples[Math.floor(Math.random() * examples.length)];
-      inputEl.value = pick;
-      updateCharCount();
-      handleDrop();
+    if (
+      lower.indexOf("problem") !== -1 ||
+      lower.indexOf("can't") !== -1 ||
+      lower.indexOf("cannot") !== -1 ||
+      lower.indexOf("stuck") !== -1
+    ) {
+      return "problem";
     }
 
-    function handleClear() {
-      inputEl.value = "";
-      updateCharCount();
-      resultArea.innerHTML = `
-        <div class="empty-state">
-          Drop a fragment to see its type, why it matters, mutation paths, recommended tools, and next mutations.
-        </div>
-      `;
-      inputEl.focus();
+    if (
+      lower.indexOf("don't know") !== -1 ||
+      lower.indexOf("do not know") !== -1 ||
+      lower.indexOf("confused") !== -1 ||
+      lower.indexOf("not sure") !== -1
+    ) {
+      return "confusion";
     }
 
-    inputEl.addEventListener("input", updateCharCount);
-    dropBtn.addEventListener("click", handleDrop);
-    exampleBtn.addEventListener("click", handleExample);
-    clearBtn.addEventListener("click", handleClear);
+    if (
+      lower.indexOf("failed") !== -1 ||
+      lower.indexOf("failure") !== -1 ||
+      lower.indexOf("didn't work") !== -1 ||
+      lower.indexOf("did not work") !== -1
+    ) {
+      return "failure";
+    }
 
-    inputEl.addEventListener("keydown", function(event) {
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        handleDrop();
-      }
+    return "idea";
+  }
+
+  function getFrictionText(type) {
+    if (!type) return "The fragment type will appear here.";
+
+    if (type === "criticism") return "Criticism\n\nThis sounds like outside reaction or pressure from other people.";
+    if (type === "emotion") return "Emotion\n\nThis sounds like felt pressure, energy, or internal emotional friction.";
+    if (type === "problem") return "Problem\n\nThis sounds like a practical obstacle or blocked movement.";
+    if (type === "confusion") return "Confusion\n\nThis sounds like unclear direction, fog, or an unfinished question.";
+    if (type === "failure") return "Failure\n\nThis sounds like something that collapsed, missed, or did not work.";
+    return "Idea\n\nThis sounds like a seed, angle, or unfinished possibility.";
+  }
+
+  function getWeatherText(weather, type) {
+    var typeName = type ? type : "fragment";
+
+    if (weather === "calm") {
+      return "Calm\n\nThe router will prefer the clearest first mutation for this " + typeName + ".";
+    }
+
+    if (weather === "drift") {
+      return "Drift\n\nThe router will allow a slightly stranger path for this " + typeName + ".";
+    }
+
+    return "Storm\n\nThe router will prefer sharper, more unexpected mutations for this " + typeName + ".";
+  }
+
+  function getWeatherNote(weather) {
+    if (weather === "calm") return "Calm = clearer, more stable first mutation.";
+    if (weather === "drift") return "Drift = slightly unexpected first mutation.";
+    return "Storm = more unstable, surprising first mutation.";
+  }
+
+  function updateRouteLink() {
+    var text = inputEl.value.trim();
+
+    if (!text) {
+      routeLinkEl.setAttribute("href", "./fragment-router.html");
+      routeLinkEl.setAttribute("aria-disabled", "true");
+      routeLinkEl.style.opacity = "0.5";
+      return;
+    }
+
+    var params = new URLSearchParams();
+    params.set("text", text);
+    params.set("mode", getWeatherMode(selectedWeather));
+
+    routeLinkEl.setAttribute("href", "./fragment-router.html?" + params.toString());
+    routeLinkEl.setAttribute("aria-disabled", "false");
+    routeLinkEl.style.opacity = "1";
+  }
+
+  function renderWeather() {
+    weatherButtons.forEach(function (button) {
+      var weather = button.getAttribute("data-weather");
+      button.classList.toggle("active", weather === selectedWeather);
     });
 
-    updateCharCount();
+    weatherNoteEl.textContent = getWeatherNote(selectedWeather);
 
-    if (!canReadMap()) {
-      mapWarningEl.style.display = "block";
+    var type = detectType(inputEl.value);
+    weatherPreviewEl.textContent = getWeatherText(selectedWeather, type);
+
+    try {
+      localStorage.setItem(STORAGE_KEY, selectedWeather);
+    } catch (error) {
+      console.error(error);
     }
-  </script>
+
+    updateRouteLink();
+  }
+
+  function renderFragmentPreview() {
+    var text = inputEl.value.trim();
+    var type = detectType(text);
+
+    frictionPreviewEl.textContent = getFrictionText(type);
+    weatherPreviewEl.textContent = getWeatherText(selectedWeather, type);
+    updateRouteLink();
+  }
+
+  function dropFragment() {
+    var text = inputEl.value.trim();
+
+    if (!text) {
+      frictionPreviewEl.textContent = "Add one fragment first.";
+      weatherPreviewEl.textContent = getWeatherText(selectedWeather, "");
+      statusEl.textContent = "Please enter a fragment.";
+      updateRouteLink();
+      return;
+    }
+
+    renderFragmentPreview();
+    statusEl.textContent = "Fragment dropped. Open router to continue.";
+  }
+
+  function tryExample() {
+    inputEl.value = EXAMPLE;
+    updateCount();
+    renderFragmentPreview();
+    statusEl.textContent = "Example loaded.";
+  }
+
+  function clearAll() {
+    inputEl.value = "";
+    updateCount();
+    frictionPreviewEl.textContent = "The fragment type will appear here.";
+    weatherPreviewEl.textContent = "The selected weather will shape the next mutation.";
+    statusEl.textContent = "Cleared.";
+    updateRouteLink();
+  }
+
+  function loadWeather() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === "calm" || saved === "drift" || saved === "storm") {
+        selectedWeather = saved;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  weatherButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      selectedWeather = button.getAttribute("data-weather");
+      renderWeather();
+      statusEl.textContent = "Thought Weather changed to " + button.textContent + ".";
+    });
+  });
+
+  inputEl.addEventListener("input", function () {
+    updateCount();
+    renderFragmentPreview();
+  });
+
+  dropBtn.addEventListener("click", dropFragment);
+  exampleBtn.addEventListener("click", tryExample);
+  clearBtn.addEventListener("click", clearAll);
+
+  routeLinkEl.addEventListener("click", function (event) {
+    if (routeLinkEl.getAttribute("aria-disabled") === "true") {
+      event.preventDefault();
+      statusEl.textContent = "Drop a fragment first.";
+    }
+  });
+
+  loadWeather();
+  updateCount();
+  renderWeather();
+  renderFragmentPreview();
+})();
+</script>
 </body>
 </html>
