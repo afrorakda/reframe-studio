@@ -1,447 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Problem → Options | REFRAME Studio</title>
-  <meta name="description" content="Turn a vague problem or situation into 3 practical options to move forward." />
-  <style>
-    :root{
-      --bg:#f7f7f5;
-      --card:#ffffff;
-      --text:#1f2328;
-      --muted:#666;
-      --line:#e6e6e1;
-      --accent:#111;
-      --accent-2:#f0f0ec;
-      --shadow:0 8px 24px rgba(0,0,0,0.06);
-      --radius:16px;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif}
-    body{line-height:1.5}
-    .wrap{
-      max-width:720px;
-      margin:0 auto;
-      padding:20px 16px 40px;
-    }
-    .back{
-      display:inline-block;
-      margin-bottom:18px;
-      color:var(--text);
-      text-decoration:none;
-      font-size:14px;
-    }
-    .back:active{opacity:.7}
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px;
-    }
-    h1{
-      margin:0 0 8px;
-      font-size:28px;
-      line-height:1.15;
-      letter-spacing:-0.02em;
-    }
-    .desc{
-      margin:0 0 18px;
-      color:var(--muted);
-      font-size:14px;
-    }
-    label{
-      display:block;
-      margin:0 0 8px;
-      font-size:14px;
-      font-weight:600;
-    }
-    textarea{
-      width:100%;
-      min-height:132px;
-      resize:vertical;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-      font:inherit;
-      color:var(--text);
-      background:#fff;
-      outline:none;
-    }
-    textarea:focus{
-      border-color:#bbb;
-      box-shadow:0 0 0 3px rgba(0,0,0,0.04);
-    }
-    .actions{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      flex-wrap:wrap;
-    }
-    button{
-      appearance:none;
-      border:none;
-      border-radius:14px;
-      padding:14px 16px;
-      font:inherit;
-      font-weight:700;
-      cursor:pointer;
-      min-height:48px;
-    }
-    .primary{
-      background:var(--accent);
-      color:#fff;
-      flex:1 1 220px;
-    }
-    .secondary{
-      background:var(--accent-2);
-      color:var(--text);
-      flex:0 0 auto;
-    }
-    .secondary[disabled]{
-      opacity:.5;
-      cursor:default;
-    }
-    .hint{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-      min-height:18px;
-    }
-    .result{
-      margin-top:18px;
-      padding:16px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#fcfcfa;
-    }
-    .result.hidden{display:none}
-    .result-title{
-      margin:0 0 12px;
-      font-size:15px;
-      font-weight:700;
-    }
-    .option{
-      padding:12px 0;
-      border-top:1px solid var(--line);
-    }
-    .option:first-of-type{border-top:none;padding-top:0}
-    .option h3{
-      margin:0 0 4px;
-      font-size:15px;
-    }
-    .option p{
-      margin:0;
-      color:#333;
-      font-size:14px;
-    }
-    .empty{
-      color:var(--muted);
-      font-size:14px;
-    }
-    footer{
-      margin-top:40px;
-      font-size:12px;
-      color:#666;
-      line-height:1.6;
-    }
-    @media (max-width:480px){
-      h1{font-size:24px}
-      .card{padding:16px}
-      .actions{flex-direction:column}
-      .primary,.secondary{width:100%}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problem → Options — REFRAME Studio</title>
+
+<style>
+:root{
+--bg:#0b0f18;
+--panel:#121826;
+--line:#293246;
+--text:#f6f8fb;
+--muted:#9aa7bd;
+--cyan:#22c7e8;
+--green:#22c55e;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Inter,system-ui;
+background:linear-gradient(180deg,#0b0f18,#090d15);
+color:var(--text);
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.back{
+display:inline-block;
+margin-bottom:18px;
+color:#b7c8ff;
+text-decoration:none;
+}
+
+.card{
+background:var(--panel);
+border:1px solid var(--line);
+border-radius:20px;
+padding:24px;
+}
+
+h1{
+margin:0 0 10px;
+font-size:44px;
+}
+
+p{
+color:var(--muted);
+}
+
+textarea{
+width:100%;
+min-height:180px;
+margin-top:16px;
+padding:16px;
+border-radius:12px;
+border:1px solid var(--line);
+background:#0b1322;
+color:white;
+font-size:16px;
+}
+
+.buttons{
+margin-top:18px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+button{
+padding:14px 18px;
+border-radius:12px;
+border:1px solid var(--line);
+background:#172033;
+color:white;
+cursor:pointer;
+}
+
+button.primary{
+background:linear-gradient(180deg,#33d17a,#22c55e);
+border:none;
+font-weight:600;
+}
+
+button.example{
+background:linear-gradient(180deg,#22d0f0,#0faaca);
+border:none;
+}
+
+.result{
+margin-top:20px;
+padding:18px;
+border-radius:14px;
+border:1px solid var(--line);
+background:#0d1424;
+white-space:pre-wrap;
+}
+
+footer{
+margin-top:30px;
+text-align:center;
+color:var(--muted);
+font-size:13px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <a class="back" href="./">← Back to REFRAME Studio</a>
 
-    <main class="card">
-      <h1 id="title">Problem → Options</h1>
-      <p class="desc" id="desc">Turn a vague problem or situation into 3 practical options to move forward.</p>
+<div class="container">
 
-      <label for="problemInput" id="inputLabel">Your problem or situation</label>
-      <textarea id="problemInput" placeholder="Example: I need to choose between staying in my current job or trying something new, but I feel stuck."></textarea>
+<a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-      <div class="actions">
-        <button class="primary" id="generateBtn">Generate 3 options</button>
-        <button class="secondary" id="voiceBtn" type="button">Voice Input</button>
-      </div>
+<div class="card">
 
-      <div class="hint" id="hint">Private and local. Nothing leaves your browser.</div>
+<h1>Problem → Options</h1>
 
-      <section class="result hidden" id="result" aria-live="polite">
-        <div class="result-title" id="resultTitle">3 possible paths</div>
-        <div id="resultContent"></div>
-      </section>
-    </main>
+<p>
+Turn one problem into multiple possible directions.
+Don't search for the perfect answer. Generate options.
+</p>
 
-    <footer>
-      <p><strong>Built by REFRAME Studio</strong></p>
-      <p>
-        Turn one unclear problem into three practical options you can act on next.<br>
-        #Reframed
-      </p>
-      <p>
-        Open-source style tools. Simple. Private. Fast.
-      </p>
-      <p>
-        No login. No tracking. No personal data collected.<br>
-        Runs entirely in your browser.
-      </p>
-    </footer>
-  </div>
+<textarea id="input" placeholder="Example: I want to start a project but I don't know what to build."></textarea>
 
-  <script>
-    (function () {
-      const input = document.getElementById('problemInput');
-      const generateBtn = document.getElementById('generateBtn');
-      const voiceBtn = document.getElementById('voiceBtn');
-      const hint = document.getElementById('hint');
-      const result = document.getElementById('result');
-      const resultTitle = document.getElementById('resultTitle');
-      const resultContent = document.getElementById('resultContent');
+<div class="buttons">
 
-      const title = document.getElementById('title');
-      const desc = document.getElementById('desc');
-      const inputLabel = document.getElementById('inputLabel');
+<button class="primary" onclick="generate()">Generate options</button>
 
-      function detectLanguage(text) {
-        const jaPattern = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
-        return jaPattern.test(text) ? 'ja' : 'en';
-      }
+<button class="example" onclick="example()">Try example</button>
 
-      function uiText(lang) {
-        if (lang === 'ja') {
-          return {
-            title: 'Problem → Options',
-            desc: 'あいまいな悩みや状況を、次に進むための3つの選択肢に変えます。',
-            inputLabel: '悩み・問題・状況',
-            placeholder: '例：今の仕事を続けるか、新しいことに挑戦するか迷っています。でも何から考えればいいかわかりません。',
-            generate: '3つの選択肢を出す',
-            voice: '音声入力',
-            noVoice: 'このブラウザでは音声入力は使えません。',
-            listening: '聞き取り中… もう一度押すと停止します。',
-            idleHint: 'ローカルで動作します。入力内容は外部に送信されません。',
-            resultTitle: '考えられる3つの進み方',
-            empty: 'まず悩みや状況を入力してください。'
-          };
-        }
-        return {
-          title: 'Problem → Options',
-          desc: 'Turn a vague problem or situation into 3 practical options to move forward.',
-          inputLabel: 'Your problem or situation',
-          placeholder: 'Example: I need to choose between staying in my current job or trying something new, but I feel stuck.',
-          generate: 'Generate 3 options',
-          voice: 'Voice Input',
-          noVoice: 'Voice input is not supported in this browser.',
-          listening: 'Listening… tap again to stop.',
-          idleHint: 'Private and local. Nothing leaves your browser.',
-          resultTitle: '3 possible paths',
-          empty: 'Please enter a problem or situation first.'
-        };
-      }
+<button onclick="clearAll()">Clear</button>
 
-      function applyUI(lang) {
-        const t = uiText(lang);
-        title.textContent = t.title;
-        desc.textContent = t.desc;
-        inputLabel.textContent = t.inputLabel;
-        input.placeholder = t.placeholder;
-        generateBtn.textContent = t.generate;
-        voiceBtn.textContent = t.voice;
-        resultTitle.textContent = t.resultTitle;
-        if (!isListening) hint.textContent = t.idleHint;
-      }
+<button onclick="copy()">Copy result</button>
 
-      function normalizeText(text) {
-        return text
-          .replace(/\s+/g, ' ')
-          .replace(/[　]+/g, ' ')
-          .trim();
-      }
+</div>
 
-      function cleanTopic(text, lang) {
-        let topic = normalizeText(text);
-        topic = topic.replace(/^[\-\•\*\d\.\)\s]+/, '');
-        if (lang === 'ja') {
-          topic = topic.replace(/^(私は|僕は|わたしは|今|最近)\s*/g, '');
-          topic = topic.replace(/(です|ます|と思います|かもしれません)+$/g, '');
-        } else {
-          topic = topic.replace(/^(i am|i'm|i feel|i need to|i have to|i want to)\s+/i, '');
-          topic = topic.replace(/[.?!]+$/g, '');
-        }
-        return topic.slice(0, 120);
-      }
+<div class="result" id="result">
+Options will appear here.
+</div>
 
-      function firstMeaningfulChunk(text, lang) {
-        const pieces = text
-          .split(lang === 'ja' ? /[。！？\n]/ : /[.!?\n]/)
-          .map(s => s.trim())
-          .filter(Boolean);
-        return cleanTopic(pieces[0] || text, lang);
-      }
+</div>
 
-      function makeOptions(text) {
-        const lang = detectLanguage(text);
-        const topic = firstMeaningfulChunk(text, lang);
+<footer>
+REFRAME Studio — No login / No tracking / Runs entirely in your browser
+</footer>
 
-        if (lang === 'ja') {
-          return [
-            {
-              title: '選択肢1：問題を小さく切る',
-              body: '「' + topic + '」を一番小さい論点に分けて、今日決めることを1つだけ決める。'
-            },
-            {
-              title: '選択肢2：低リスクで試す',
-              body: '本格的に決める前に、1回だけ小さく試す。短時間・低コストで確かめる。'
-            },
-            {
-              title: '選択肢3：条件を変える',
-              body: '自分だけで抱えず、期限・期待値・協力者のどれかを見直して進み方を変える。'
-            }
-          ];
-        }
+</div>
 
-        return [
-          {
-            title: 'Option 1: Narrow the problem',
-            body: 'Break “‘' + topic + '” into smaller parts and decide the one thing that needs a decision today.'
-          },
-          {
-            title: 'Option 2: Run a low-risk test',
-            body: 'Before making a big choice, try one small experiment with limited time, cost, or commitment.'
-          },
-          {
-            title: 'Option 3: Change the conditions',
-            body: 'Instead of forcing a decision, adjust the timeline, expectations, or support around the situation.'
-          }
-        ];
-      }
+<script>
 
-      function renderOptions(options, lang) {
-        resultContent.innerHTML = '';
-        options.forEach(function (opt) {
-          const item = document.createElement('div');
-          item.className = 'option';
+function example(){
+document.getElementById("input").value =
+"I want to start a project but I don't know what to build.";
+generate();
+}
 
-          const h3 = document.createElement('h3');
-          h3.textContent = opt.title;
+function clearAll(){
+document.getElementById("input").value="";
+document.getElementById("result").textContent="Options will appear here.";
+}
 
-          const p = document.createElement('p');
-          p.textContent = opt.body;
+function copy(){
+const text=document.getElementById("result").textContent;
+navigator.clipboard.writeText(text);
+}
 
-          item.appendChild(h3);
-          item.appendChild(p);
-          resultContent.appendChild(item);
-        });
+function generate(){
 
-        result.classList.remove('hidden');
-        resultTitle.textContent = uiText(lang).resultTitle;
-      }
+const text=document.getElementById("input").value.trim();
 
-      function renderEmpty(lang) {
-        resultContent.innerHTML = '<p class="empty">' + uiText(lang).empty + '</p>';
-        result.classList.remove('hidden');
-        resultTitle.textContent = uiText(lang).resultTitle;
-      }
+if(!text){
+document.getElementById("result").textContent="Please enter a problem.";
+return;
+}
 
-      function generate() {
-        const text = normalizeText(input.value);
-        const lang = detectLanguage(text);
-        applyUI(lang);
+const options=[
+"Break the problem into smaller questions you can test.",
+"Create a very small experiment instead of a full solution.",
+"Ask who already solved a similar problem.",
+"Try the opposite approach from what you first imagined.",
+"Ignore the problem temporarily and explore adjacent ideas."
+];
 
-        if (!text) {
-          renderEmpty(lang);
-          return;
-        }
+document.getElementById("result").textContent =
+options.map((o,i)=>`${i+1}. ${o}`).join("\n\n");
 
-        const options = makeOptions(text);
-        renderOptions(options, lang);
-      }
+}
 
-      let recognition = null;
-      let isListening = false;
+</script>
 
-      function setupVoice() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-          voiceBtn.disabled = true;
-          return;
-        }
-
-        recognition = new SpeechRecognition();
-        recognition.lang = 'ja-JP';
-        recognition.interimResults = false;
-        recognition.continuous = false;
-        recognition.maxAlternatives = 1;
-
-        recognition.onstart = function () {
-          isListening = true;
-          const lang = detectLanguage(input.value);
-          hint.textContent = uiText(lang).listening;
-        };
-
-        recognition.onend = function () {
-          isListening = false;
-          const lang = detectLanguage(input.value);
-          hint.textContent = uiText(lang).idleHint;
-        };
-
-        recognition.onerror = function () {
-          isListening = false;
-          const lang = detectLanguage(input.value);
-          hint.textContent = uiText(lang).idleHint;
-        };
-
-        recognition.onresult = function (event) {
-          const transcript = Array.from(event.results)
-            .map(result => result[0].transcript)
-            .join(' ')
-            .trim();
-
-          if (transcript) {
-            input.value = input.value ? (input.value + ' ' + transcript) : transcript;
-            const lang = detectLanguage(input.value);
-            applyUI(lang);
-          }
-        };
-
-        voiceBtn.addEventListener('click', function () {
-          if (!recognition) return;
-          const lang = detectLanguage(input.value);
-
-          try {
-            recognition.lang = lang === 'ja' ? 'ja-JP' : 'en-US';
-            if (isListening) {
-              recognition.stop();
-            } else {
-              recognition.start();
-            }
-          } catch (e) {
-            hint.textContent = uiText(lang).idleHint;
-          }
-        });
-      }
-
-      input.addEventListener('input', function () {
-        const lang = detectLanguage(input.value);
-        applyUI(lang);
-      });
-
-      generateBtn.addEventListener('click', generate);
-
-      input.addEventListener('keydown', function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-          generate();
-        }
-      });
-
-      applyUI('en');
-      setupVoice();
-    })();
-  </script>
 </body>
 </html>
