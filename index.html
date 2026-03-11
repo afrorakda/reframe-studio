@@ -17,9 +17,13 @@
   --purple:#7c5cff;
   --purple-2:#6b4ef2;
   --cyan:#22c7e8;
+  --cyan-2:#0faaca;
   --green:#22c55e;
+  --green-2:#1ea85e;
+  --pink:#ff7ac8;
+  --pink-2:#e056ad;
   --shadow:0 12px 40px rgba(0,0,0,0.28);
-  --max:1100px;
+  --max:1120px;
 }
 
 *{
@@ -135,14 +139,14 @@ a{
 
 .hero-grid{
   display:grid;
-  grid-template-columns:1.15fr 0.85fr;
+  grid-template-columns:1.1fr 0.9fr;
   gap:18px;
   align-items:start;
 }
 
 .hero-copy h2{
   margin:0 0 10px;
-  font-size:clamp(2.3rem, 6vw, 4.7rem);
+  font-size:clamp(2.3rem, 6vw, 4.8rem);
   line-height:0.97;
   letter-spacing:-0.055em;
 }
@@ -251,7 +255,7 @@ a{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  min-height:230px;
+  min-height:236px;
 }
 
 .start-card p{
@@ -287,6 +291,12 @@ a{
   color:#bff7cf;
 }
 
+.tag.pink{
+  border:1px solid rgba(255,122,200,0.24);
+  background:rgba(255,122,200,0.12);
+  color:#ffc7e8;
+}
+
 .button{
   display:inline-flex;
   align-items:center;
@@ -315,7 +325,21 @@ a{
 }
 
 .button.cyan{
-  background:linear-gradient(180deg, #22d0f0, #0faaca);
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.green{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.pink{
+  background:linear-gradient(180deg, var(--pink), var(--pink-2));
   border-color:transparent;
   color:white;
   font-weight:700;
@@ -378,6 +402,39 @@ a{
   font-size:0.9rem;
 }
 
+.path-card{
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+
+.path-row{
+  display:grid;
+  grid-template-columns:repeat(5, minmax(0, 1fr));
+  gap:12px;
+}
+
+.path-step{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  text-align:center;
+}
+
+.path-step strong{
+  display:block;
+  margin-bottom:4px;
+  font-size:0.95rem;
+}
+
+.path-step span{
+  color:var(--muted);
+  font-size:0.9rem;
+}
+
 .footer{
   margin-top:26px;
   text-align:center;
@@ -389,7 +446,8 @@ a{
   .hero-grid,
   .grid-4,
   .grid-3,
-  .logic-grid{
+  .logic-grid,
+  .path-row{
     grid-template-columns:1fr 1fr;
   }
 }
@@ -397,7 +455,8 @@ a{
 @media (max-width:720px){
   .hero-inner,
   .card-head,
-  .card-body{
+  .card-body,
+  .path-card{
     padding:16px;
   }
 
@@ -408,7 +467,8 @@ a{
   .grid-4,
   .grid-3,
   .tool-grid,
-  .logic-grid{
+  .logic-grid,
+  .path-row{
     grid-template-columns:1fr;
   }
 }
@@ -427,34 +487,32 @@ a{
           <p>Browser-native Thinking Playground</p>
         </div>
       </div>
-      <div class="badge">Simple / Private / Fast</div>
+      <div class="badge">No login / No tracking / In browser</div>
     </header>
 
     <section class="hero">
       <div class="hero-inner">
         <div class="hero-grid">
           <div class="hero-copy">
-            <div class="eyebrow">Thought → Mutation → Next</div>
-            <h2>Chaos → Creation</h2>
+            <div class="eyebrow">Easy entrance first</div>
+            <h2>Turn reactions into ideas.</h2>
             <p>
-              REFRAME Studio is not an answer machine.
-              It is a quiet place for thought drift, mutation, and unexpected angles.
-              Start with a fragment. Let the system move the thought forward.
+              Start with something simple and fun. Turn a bad reply into a usable angle. Then go deeper into fragments, mutation paths, and the thinking ocean.
             </p>
           </div>
 
           <div class="hero-points">
             <div class="hero-point">
-              <strong>Fragment first</strong>
-              <span>You do not need a perfect question. A fragment is enough.</span>
+              <strong>Easy first step</strong>
+              <span>You do not need to understand the whole system to begin.</span>
             </div>
             <div class="hero-point">
               <strong>1 tool = 1 mutation</strong>
               <span>Each tool changes the thought a little and opens the next move.</span>
             </div>
             <div class="hero-point">
-              <strong>Runs in your browser</strong>
-              <span>No login. No tracking. No personal data collected.</span>
+              <strong>From tool to ocean</strong>
+              <span>What starts as a small tool becomes a path into deeper thought drift.</span>
             </div>
           </div>
         </div>
@@ -465,7 +523,74 @@ a{
       <div class="section-head">
         <div>
           <h2>Start Here</h2>
-          <p>The best first doors into REFRAME Studio.</p>
+          <p>Fast, clear doors into REFRAME Studio.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-4">
+        <article class="card">
+          <div class="card-head">
+            <h3>クソリプ → ネタ</h3>
+            <p>Turn annoying replies into content angles.</p>
+          </div>
+          <div class="card-body start-card">
+            <span class="tag pink">MAIN HOOK</span>
+            <p>
+              Start here. Take a negative reply, reaction, or annoying comment and turn it into something useful.
+            </p>
+            <a class="button pink" href="./hate-to-content.html">Open tool</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Reaction → Topic</h3>
+            <p>Turn reactions into clearer themes.</p>
+          </div>
+          <div class="card-body start-card">
+            <span class="tag cyan">EASY ENTRY</span>
+            <p>
+              Good when people react, but you still do not know what topic to build from it.
+            </p>
+            <a class="button cyan" href="./reaction-to-topic.html">Open tool</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Criticism → Idea</h3>
+            <p>Turn friction into possibility.</p>
+          </div>
+          <div class="card-body start-card">
+            <span class="tag green">USEFUL</span>
+            <p>
+              Take pushback, doubt, or a sharp comment and find the idea hidden inside it.
+            </p>
+            <a class="button green" href="./criticism-to-idea.html">Open tool</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Idea → Thread</h3>
+            <p>Turn one thought into a post path.</p>
+          </div>
+          <div class="card-body start-card">
+            <span class="tag primary">CREATE</span>
+            <p>
+              When a rough thought has energy but still needs structure, turn it into a thread shape.
+            </p>
+            <a class="button primary" href="./idea-to-thread.html">Open tool</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Go Deeper</h2>
+          <p>These are the core doors into the thinking system.</p>
         </div>
       </div>
 
@@ -476,7 +601,7 @@ a{
             <p>Start from one unfinished thought.</p>
           </div>
           <div class="card-body start-card">
-            <span class="tag primary">BEST ENTRY</span>
+            <span class="tag primary">CORE ENTRY</span>
             <p>
               Drop a thought fragment and let the router choose the first mutation.
             </p>
@@ -486,43 +611,43 @@ a{
 
         <article class="card">
           <div class="card-head">
-            <h3>REFRAME Studio</h3>
-            <p>Main playground with mode switching.</p>
+            <h3>Fragment Router</h3>
+            <p>See the best first path.</p>
           </div>
           <div class="card-body start-card">
-            <span class="tag cyan">PLAYGROUND</span>
+            <span class="tag cyan">ROUTE</span>
             <p>
-              Use Stable, Drift, and Chaos to change how the next mutation is chosen.
+              The system reads the fragment type and suggests the next mutation direction.
             </p>
-            <a class="button cyan" href="./reframe-studio.html">Open studio</a>
+            <a class="button cyan" href="./fragment-router.html">Open router</a>
           </div>
         </article>
 
         <article class="card">
           <div class="card-head">
-            <h3>Mutation Trail</h3>
-            <p>See a thought become a path.</p>
+            <h3>Fragment Chain</h3>
+            <p>Keep the thought moving.</p>
           </div>
           <div class="card-body start-card">
-            <span class="tag green">FLOW</span>
+            <span class="tag green">CHAIN</span>
             <p>
-              Watch one fragment turn into mutation, next opening, and continued movement.
+              Continue step by step so the thought does not stop after one result.
             </p>
-            <a class="button primary" href="./mutation-trail.html">Open trail</a>
+            <a class="button green" href="./fragment-chain.html">Open chain</a>
           </div>
         </article>
 
         <article class="card">
           <div class="card-head">
-            <h3>Thought Map</h3>
-            <p>See the landscape behind the tools.</p>
+            <h3>Thinking Ocean</h3>
+            <p>Enter the drifting thought space.</p>
           </div>
           <div class="card-body start-card">
-            <span class="tag primary">MAP</span>
+            <span class="tag primary">OCEAN</span>
             <p>
-              Explore the thinking graph instead of choosing blindly.
+              Watch fragments float, choose one, and move back into mutation again.
             </p>
-            <a class="button" href="./thought-map.html">Open map</a>
+            <a class="button" href="./thinking-ocean.html">Open ocean</a>
           </div>
         </article>
       </div>
@@ -531,48 +656,32 @@ a{
     <section class="section">
       <div class="section-head">
         <div>
-          <h2>Thinking Flow</h2>
-          <p>The core movement inside REFRAME.</p>
+          <h2>The Journey</h2>
+          <p>How a simple tool turns into a thinking playground.</p>
         </div>
       </div>
 
-      <div class="grid grid-3">
-        <div class="card">
-          <div class="card-head">
-            <h3>1. Drop</h3>
-            <p>Start with friction.</p>
+      <div class="path-card">
+        <div class="path-row">
+          <div class="path-step">
+            <strong>1. Hook</strong>
+            <span>クソリプ → ネタ</span>
           </div>
-          <div class="card-body">
-            <div class="tool">
-              <strong>Thought Fragment</strong>
-              <span>Confusion, criticism, emotion, failure, problem, or idea.</span>
-            </div>
+          <div class="path-step">
+            <strong>2. Use</strong>
+            <span>This is fun</span>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h3>2. Mutate</h3>
-            <p>Let one tool change the thought.</p>
+          <div class="path-step">
+            <strong>3. Drift</strong>
+            <span>What else can this do?</span>
           </div>
-          <div class="card-body">
-            <div class="tool">
-              <strong>First Mutation</strong>
-              <span>The router picks the best first contact zone.</span>
-            </div>
+          <div class="path-step">
+            <strong>4. Explore</strong>
+            <span>Fragment / Router / Chain</span>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-head">
-            <h3>3. Continue</h3>
-            <p>The thought should not stop.</p>
-          </div>
-          <div class="card-body">
-            <div class="tool">
-              <strong>Next Opening</strong>
-              <span>The result leads to the next move, not a dead end.</span>
-            </div>
+          <div class="path-step">
+            <strong>5. Ocean</strong>
+            <span>Thought drift begins</span>
           </div>
         </div>
       </div>
@@ -581,12 +690,22 @@ a{
     <section class="section">
       <div class="section-head">
         <div>
-          <h2>Core Flow Tools</h2>
-          <p>Useful first mutations for real friction.</p>
+          <h2>Useful First Mutations</h2>
+          <p>Simple tools for real friction.</p>
         </div>
       </div>
 
       <div class="tool-grid">
+        <a class="tool" href="./emotion-to-action.html">
+          <strong>Emotion → Action</strong>
+          <span>Translate emotional weight into movement.</span>
+        </a>
+
+        <a class="tool" href="./problem-to-options.html">
+          <strong>Problem → Options</strong>
+          <span>Open alternatives when thought feels trapped.</span>
+        </a>
+
         <a class="tool" href="./problem-to-root-cause.html">
           <strong>Problem → Root Causes</strong>
           <span>Break a surface problem into deeper causes.</span>
@@ -602,19 +721,9 @@ a{
           <span>Turn limits into realistic next movement.</span>
         </a>
 
-        <a class="tool" href="./problem-to-options.html">
-          <strong>Problem → Options</strong>
-          <span>Open alternatives when thought feels trapped.</span>
-        </a>
-
-        <a class="tool" href="./emotion-to-action.html">
-          <strong>Emotion → Action</strong>
-          <span>Translate emotional weight into motion.</span>
-        </a>
-
-        <a class="tool" href="./next-step-finder.html">
-          <strong>Next Step Finder</strong>
-          <span>Make the next move visible.</span>
+        <a class="tool" href="./failure-to-lesson.html">
+          <strong>Failure → Lesson</strong>
+          <span>Turn a failed attempt into signal.</span>
         </a>
       </div>
     </section>
@@ -622,8 +731,8 @@ a{
     <section class="section">
       <div class="section-head">
         <div>
-          <h2>Explore</h2>
-          <p>Other doors into the ecosystem.</p>
+          <h2>Explore More</h2>
+          <p>Other useful doors into the ecosystem.</p>
         </div>
       </div>
 
@@ -633,19 +742,19 @@ a{
           <span>Fast entry when you do not know where to begin.</span>
         </a>
 
-        <a class="tool" href="./thinking-ocean.html">
-          <strong>Thinking Ocean</strong>
-          <span>See fragments and thought movement.</span>
+        <a class="tool" href="./capture-fragment.html">
+          <strong>Capture Fragment</strong>
+          <span>Drop a thought quickly and save it for later movement.</span>
         </a>
 
-        <a class="tool" href="./thought-galaxy.html">
-          <strong>Thought Galaxy</strong>
-          <span>See one thought expand into many possible routes.</span>
+        <a class="tool" href="./mutation-trail.html">
+          <strong>Mutation Trail</strong>
+          <span>See one fragment become a visible path.</span>
         </a>
 
-        <a class="tool" href="./idea-to-tool-spec.html">
-          <strong>Idea → Tool Spec</strong>
-          <span>Turn a rough idea into tool structure.</span>
+        <a class="tool" href="./thought-map-v2.html">
+          <strong>Thought Map</strong>
+          <span>See the landscape behind the tools.</span>
         </a>
       </div>
     </section>
@@ -670,13 +779,13 @@ a{
         </div>
 
         <div class="logic-box">
-          <strong>Trail</strong>
-          <span>The thought becomes a visible path.</span>
+          <strong>Chain</strong>
+          <span>The thought keeps moving instead of stopping once.</span>
         </div>
 
         <div class="logic-box">
-          <strong>Next Opening</strong>
-          <span>The path keeps moving instead of stopping.</span>
+          <strong>Ocean</strong>
+          <span>Fragments drift, return, and open new movement again.</span>
         </div>
       </div>
     </section>
