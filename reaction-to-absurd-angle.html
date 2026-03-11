@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reaction → Absurd Angle</title>
+
+<style>
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+margin:0;
+padding:24px;
+background:#0f1117;
+color:#e6edf3;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:12px;
+background:#161b22;
+border:1px solid #333;
+border-radius:8px;
+color:white;
+}
+
+button{
+margin-top:12px;
+margin-right:8px;
+padding:10px 16px;
+background:#238636;
+border:none;
+border-radius:8px;
+color:white;
+cursor:pointer;
+}
+
+.result{
+margin-top:20px;
+white-space:pre-wrap;
+background:#161b22;
+padding:16px;
+border-radius:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="./index.html">← Back</a>
+
+<h1>Reaction → Absurd Angle</h1>
+
+<p>Turn reactions into absurd interpretations.</p>
+
+<textarea id="input" placeholder="Example: People reacted strangely to my post"></textarea>
+
+<br>
+
+<button onclick="generate()">Generate</button>
+<button onclick="example()">Try example</button>
+<button onclick="clearAll()">Clear</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<script>
+
+function example(){
+document.getElementById("input").value =
+"People reacted to my post in ways I didn't expect.";
+}
+
+function clearAll(){
+document.getElementById("input").value="";
+document.getElementById("result").textContent="";
+}
+
+function generate(){
+
+const ideas = [
+
+"Maybe people reacted because they secretly agree but are afraid to admit it.",
+
+"Maybe your audience believes you are a time traveler warning them.",
+
+"Maybe the reaction means they think you discovered a forbidden truth.",
+
+"Maybe people reacted because the idea sounds like a conspiracy theory.",
+
+"Maybe the reaction means they misunderstood in a hilarious way.",
+
+"Maybe they think your idea belongs in a science fiction movie.",
+
+"Maybe the reaction reveals people imagine a completely different story.",
+
+"Maybe your post accidentally created a new internet myth."
+
+];
+
+let output = "Absurd Angles\n\n";
+
+ideas.forEach(i=>{
+output += "• " + i + "\n";
+});
+
+output += "\nNext Mutations\n";
+output += "Hook\nThread\nDebate\nMetaphor";
+
+document.getElementById("result").textContent = output;
+
+}
+
+</script>
+
+</body>
+</html>
