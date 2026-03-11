@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REFRAME UI Template</title>
+  <style>
+    :root {
+      --bg-1: #061018;
+      --bg-2: #0a1724;
+      --bg-3: #0d1f30;
+      --panel: rgba(10, 23, 36, 0.72);
+      --panel-strong: rgba(12, 28, 44, 0.88);
+      --panel-soft: rgba(255, 255, 255, 0.04);
+      --text: #eef6ff;
+      --muted: #9eb4ca;
+      --line: rgba(120, 170, 255, 0.16);
+      --line-strong: rgba(120, 170, 255, 0.3);
+      --glow-blue: rgba(66, 153, 255, 0.28);
+      --glow-cyan: rgba(58, 224, 255, 0.18);
+      --accent: #7fb2ff;
+      --accent-strong: #9ec5ff;
+      --button-primary-from: #4a7dff;
+      --button-primary-to: #7d5cff;
+      --button-secondary-from: rgba(127, 178, 255, 0.12);
+      --button-secondary-to: rgba(127, 178, 255, 0.06);
+      --success-from: #28d7a1;
+      --success-to: #24b6d3;
+      --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.36);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.28);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --max-width: 860px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(58, 224, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(125, 92, 255, 0.14), transparent 30%),
+        radial-gradient(circle at 50% 120%, rgba(66, 153, 255, 0.12), transparent 42%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a {
+      color: var(--accent-strong);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 18px 14px 40px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .hero {
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(127, 178, 255, 0.08);
+      border: 1px solid rgba(127, 178, 255, 0.16);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(32px, 6vw, 48px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 18px;
+    }
+
+    .panel + .panel {
+      margin-top: 14px;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: auto auto 65% -10%;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: -20% -10% auto auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--glow-blue), transparent 70%);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .label-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    textarea,
+    input[type="text"] {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      border: 1px solid rgba(127, 178, 255, 0.14);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        rgba(7, 18, 29, 0.84);
+      color: var(--text);
+      padding: 16px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.65;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+    }
+
+    textarea::placeholder,
+    input[type="text"]::placeholder {
+      color: rgba(158, 180, 202, 0.7);
+    }
+
+    textarea:focus,
+    input[type="text"]:focus {
+      border-color: rgba(127, 178, 255, 0.38);
+      box-shadow:
+        0 0 0 4px rgba(66, 153, 255, 0.12),
+        0 0 30px rgba(66, 153, 255, 0.12);
+      background: rgba(8, 20, 32, 0.94);
+    }
+
+    .button-row {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      color: var(--text);
+      transition: transform 0.06s ease, opacity 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
+      box-shadow:
+        0 12px 28px rgba(74, 125, 255, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, var(--button-secondary-from), var(--button-secondary-to));
+      border: 1px solid rgba(127, 178, 255, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--success-from), var(--success-to));
+      box-shadow:
+        0 12px 28px rgba(36, 182, 211, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    .hint {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(127, 178, 255, 0.1);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(127, 178, 255, 0.1);
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .result-card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        rgba(8, 21, 34, 0.72);
+      border: 1px solid rgba(127, 178, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .result-card + .result-card {
+      margin-top: 10px;
+    }
+
+    .result-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+
+    .result-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(127, 178, 255, 0.08);
+      border: 1px solid rgba(127, 178, 255, 0.12);
+      color: var(--accent-strong);
+      font-size: 13px;
+      line-height: 1.2;
+      backdrop-filter: blur(8px);
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+      padding: 4px 2px 2px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .footer strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .divider {
+      height: 1px;
+      margin: 18px 0;
+      background: linear-gradient(90deg, transparent, rgba(127, 178, 255, 0.18), transparent);
+      border: 0;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 16px 12px 34px;
+      }
+
+      .panel {
+        padding: 16px;
+        border-radius: 24px;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="eyebrow">REFRAME UI Template</div>
+      <h1>Tool Name by REFRAME Studio</h1>
+      <p class="subtitle">
+        Use this file as the base UI for future REFRAME Studio tools.
+        Keep the layout, tone, spacing, and atmosphere. Replace only the tool-specific content.
+      </p>
+    </section>
+
+    <section class="panel">
+      <div class="label-row">
+        <div class="label">Input</div>
+        <div class="helper">Template field</div>
+      </div>
+
+      <textarea placeholder="Write your input here."></textarea>
+
+      <div class="button-row">
+        <button class="btn-primary" type="button">Generate</button>
+        <button class="btn-secondary" type="button">Try example</button>
+        <button class="btn-secondary" type="button">Clear</button>
+        <button class="btn-accent" type="button">Copy result</button>
+      </div>
+
+      <div class="hint">
+        Replace this hint with one short sentence that explains what the tool does.
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="label-row">
+        <div class="label">Result</div>
+        <div class="helper">Template output</div>
+      </div>
+
+      <div class="empty-state">
+        Result appears here.
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">Optional output cards</h2>
+
+        <div class="result-card">
+          <h3 class="result-title">Result title</h3>
+          <p class="result-text">
+            Use result cards for grouped output sections. Keep them short, readable, and spacious.
+          </p>
+        </div>
+
+        <div class="result-card">
+          <h3 class="result-title">Next mutations</h3>
+          <div class="chips">
+            <div class="chip">Next idea</div>
+            <div class="chip">Next angle</div>
+            <div class="chip">Next question</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <footer class="footer">
+      <strong>No login.</strong>
+      <strong>No tracking.</strong>
+      <strong>No personal data.</strong>
+      Runs entirely in your browser.
+    </footer>
+  </main>
+</body>
+</html>
