@@ -3,40 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fragment Chain by REFRAME Studio</title>
+<title>Fragment Chain — REFRAME Studio</title>
 
 <style>
+
 body{
-background:#08121c;
-color:#eaf3ff;
-font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:#0f172a;
+color:#e2e8f0;
 margin:0;
 padding:20px;
-}
-
-.container{
-max-width:760px;
+max-width:720px;
 margin:auto;
 }
 
-h1{
-font-size:34px;
-margin-bottom:4px;
+a{
+color:#93c5fd;
+text-decoration:none;
 }
 
-.subtitle{
-color:#9db4c9;
-margin-bottom:20px;
+h1{
+margin-top:10px;
 }
 
 textarea{
 width:100%;
-height:120px;
-border-radius:12px;
-border:1px solid #2c4158;
-background:#0d1b29;
-color:white;
+min-height:120px;
 padding:12px;
+border-radius:10px;
+border:1px solid #334155;
+background:#020617;
+color:#e2e8f0;
 font-size:16px;
 }
 
@@ -44,7 +41,7 @@ button{
 margin-top:10px;
 margin-right:8px;
 padding:10px 14px;
-border-radius:20px;
+border-radius:10px;
 border:none;
 background:#3b82f6;
 color:white;
@@ -53,43 +50,27 @@ cursor:pointer;
 }
 
 button.secondary{
-background:#233447;
+background:#1e293b;
 }
 
-.result{
-margin-top:25px;
+button:hover{
+opacity:0.9;
 }
 
-.chain{
-border-left:2px solid #3b82f6;
-padding-left:14px;
-margin-top:14px;
-}
-
-.step{
-margin-bottom:16px;
-}
-
-.label{
-font-size:12px;
-color:#8aa4bc;
-text-transform:uppercase;
-letter-spacing:.08em;
-margin-bottom:4px;
-}
-
-.box{
-background:#0f1e2d;
-border:1px solid #2b4158;
-padding:10px;
+.card{
+margin-top:18px;
+padding:14px;
 border-radius:10px;
+background:#020617;
+border:1px solid #334155;
 }
 
-.footer{
-margin-top:40px;
-font-size:12px;
-color:#7f95aa;
-text-align:center;
+.mutation{
+margin-top:10px;
+padding:10px;
+border-radius:8px;
+background:#020617;
+border:1px solid #334155;
 }
 
 </style>
@@ -97,97 +78,108 @@ text-align:center;
 
 <body>
 
-<div class="container">
-
-<a href="./index.html" style="color:#9db4c9">← Back to REFRAME Studio</a>
+<a href="./index.html">← Back to REFRAME Studio</a>
 
 <h1>Fragment Chain</h1>
-<div class="subtitle">
-Create a chain of thoughts. One fragment mutates into the next.
-</div>
 
-<textarea id="fragmentInput" placeholder="People say my ideas are too abstract."></textarea>
+<p>
+Watch how one fragment mutates step by step.
+</p>
+
+<textarea id="fragmentInput"
+placeholder="People say my ideas are too abstract."></textarea>
 
 <br>
 
 <button onclick="startChain()">Start Chain</button>
+<button class="secondary" onclick="tryExample()">Try example</button>
 <button class="secondary" onclick="addMutation()">Next Mutation</button>
 <button class="secondary" onclick="clearChain()">Clear</button>
 
-<div class="result" id="resultArea"></div>
+<div id="chainArea"></div>
 
-<div class="footer">
-No login. No tracking. No personal data. Runs entirely in your browser.
-</div>
-
-</div>
+<script src="./mutation-map.js"></script>
 
 <script>
 
-let chain = [];
+let chain = []
+
+function tryExample(){
+
+const example = "People say my ideas are too abstract."
+
+document.getElementById("fragmentInput").value = example
+
+}
 
 function startChain(){
 
-const text=document.getElementById("fragmentInput").value.trim();
+const text = document.getElementById("fragmentInput").value.trim()
 
-if(!text)return;
+if(!text) return
 
-chain=[text];
+chain = []
 
-render();
+const route = buildFragmentRoute(text)
+
+chain.push({
+type:route.detectedType.label,
+text:text
+})
+
+renderChain()
 
 }
 
 function addMutation(){
 
-if(chain.length===0)return;
+if(chain.length===0) return
 
-const last=chain[chain.length-1];
+const last = chain[chain.length-1]
 
-const mutations=[
-"What question hides inside this?",
-"What angle makes this interesting?",
-"What lesson appears here?",
-"What if the opposite were true?",
-"What action could start movement?",
-"What idea is hidden here?"
-];
+const options = [
+"Reframe the idea",
+"Turn criticism into lesson",
+"Find a stronger angle",
+"Ask a deeper question"
+]
 
-const m=mutations[Math.floor(Math.random()*mutations.length)];
+const next = options[Math.floor(Math.random()*options.length)]
 
-const next=last+" → "+m;
+chain.push({
+type:"Mutation",
+text:next
+})
 
-chain.push(next);
-
-render();
+renderChain()
 
 }
 
 function clearChain(){
 
-chain=[];
-document.getElementById("resultArea").innerHTML="";
+chain=[]
+
+document.getElementById("chainArea").innerHTML=""
 
 }
 
-function render(){
+function renderChain(){
 
-let html="<div class='chain'>";
+const area = document.getElementById("chainArea")
 
-chain.forEach((item,i)=>{
+area.innerHTML=""
 
-html+=`
-<div class="step">
-<div class="label">Step ${i+1}</div>
-<div class="box">${item}</div>
-</div>
-`;
+chain.forEach((step,i)=>{
 
-});
+const div=document.createElement("div")
 
-html+="</div>";
+div.className="mutation"
 
-document.getElementById("resultArea").innerHTML=html;
+div.innerHTML="<strong>"+step.type+"</strong><br>"+step.text
+
+area.appendChild(div)
+
+})
 
 }
 
