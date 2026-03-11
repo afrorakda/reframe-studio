@@ -1,640 +1,535 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Problem → Root Causes</title>
-  <meta name="description" content="Turn a problem into possible root causes." />
-  <style>
-    :root{
-      --bg: #f6f7fb;
-      --card: rgba(255,255,255,0.88);
-      --text: #1f2937;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --primary: #111827;
-      --primary-2: #374151;
-      --accent: #eef2ff;
-      --shadow: 0 10px 30px rgba(17,24,39,0.08);
-      --radius: 20px;
-      --radius-sm: 14px;
-      --max: 760px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problem → Root Cause — REFRAME Studio</title>
 
-    * { box-sizing: border-box; }
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:980px;
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at top left, #eef2ff 0%, transparent 30%),
-        radial-gradient(circle at bottom right, #fdf2f8 0%, transparent 28%),
-        var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    body {
-      padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
-    }
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
 
-    .wrap {
-      max-width: var(--max);
-      margin: 0 auto;
-    }
+a{
+  color:inherit;
+  text-decoration:none;
+}
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
+button,
+textarea{
+  font:inherit;
+}
 
-    .back {
-      appearance: none;
-      border: 0;
-      background: transparent;
-      color: var(--primary-2);
-      font-size: 14px;
-      font-weight: 600;
-      padding: 8px 0;
-      cursor: pointer;
-    }
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
+}
 
-    .card {
-      background: var(--card);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-    }
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
 
-    h1 {
-      font-size: clamp(28px, 6vw, 36px);
-      line-height: 1.08;
-      margin: 0 0 8px 0;
-      letter-spacing: -0.02em;
-    }
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
+}
 
-    .desc {
-      margin: 0 0 18px 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
-    }
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
 
-    .label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: var(--primary-2);
-    }
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
+}
 
-    textarea {
-      width: 100%;
-      min-height: 150px;
-      resize: vertical;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      background: #fff;
-      color: var(--text);
-      font: inherit;
-      font-size: 16px;
-      line-height: 1.5;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
-    }
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
 
-    textarea:focus {
-      border-color: #c7d2fe;
-      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
-    }
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
 
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
 
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font: inherit;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.06s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      min-height: 48px;
-    }
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    button:active {
-      transform: translateY(1px);
-    }
+.panel-head{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
 
-    .primary {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(17,24,39,0.18);
-      flex: 1 1 220px;
-    }
+.panel-head h2{
+  margin:0 0 6px;
+  font-size:1.04rem;
+  letter-spacing:-0.02em;
+}
 
-    .primary:hover {
-      background: #0b1220;
-    }
+.panel-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .secondary {
-      background: #fff;
-      color: var(--primary);
-      border: 1px solid var(--line);
-      flex: 1 1 160px;
-    }
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
 
-    .secondary:hover {
-      background: #fafafa;
-    }
+.input-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    .resultCard {
-      margin-top: 16px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
-      overflow: hidden;
-    }
+.label-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .resultHead {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(17,24,39,0.02);
-    }
+.label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .resultHead h2 {
-      margin: 0;
-      font-size: 14px;
-      color: var(--primary-2);
-      letter-spacing: 0.01em;
-    }
+.count{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .copyBtn {
-      padding: 10px 12px;
-      min-height: auto;
-      border-radius: 12px;
-      background: #fff;
-      border: 1px solid var(--line);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--primary);
-    }
+textarea{
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+}
 
-    .result {
-      margin: 0;
-      padding: 18px 16px 20px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      font-size: 16px;
-      line-height: 1.7;
-      min-height: 160px;
-    }
+textarea::placeholder{
+  color:#8290aa;
+}
 
-    .hint {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
-    }
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
 
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 18px 8px 4px;
-    }
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    @media (max-width: 480px) {
-      .card {
-        padding: 16px;
-        border-radius: 18px;
-      }
-      .result {
-        font-size: 15px;
-      }
-      button {
-        width: 100%;
-      }
-      .resultHead {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-      .copyBtn {
-        width: 100%;
-      }
-    }
-  </style>
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
+}
+
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.primary{
+  min-width:190px;
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.copied{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.result-card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
+
+.result-title{
+  margin:0 0 12px;
+  font-size:1rem;
+  letter-spacing:-0.02em;
+}
+
+.result-body{
+  color:#d8dfec;
+  font-size:1rem;
+  white-space:pre-wrap;
+  min-height:160px;
+}
+
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door{
+  padding-top:8px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door a{
+  color:#b9c7ff;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:720px){
+  .hero-inner,
+  .panel-head,
+  .panel-body{
+    padding:16px;
+  }
+
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
+
+  .actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .button,
+  .button.primary,
+  .button.secondary{
+    width:100%;
+  }
+
+  textarea{
+    min-height:190px;
+  }
+}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <button class="back" id="backBtn" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</button>
-    </div>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-    <main class="card">
-      <h1>Problem → Root Causes</h1>
-      <p class="desc">Turn a problem into possible root causes.</p>
-
-      <label class="label" for="problemInput">Describe the problem</label>
-      <textarea
-        id="problemInput"
-        placeholder="My posts get views but no engagement.
-投稿は見られるのに反応がない。"
-        spellcheck="false"
-        autocapitalize="sentences"
-      ></textarea>
-
-      <div class="row">
-        <button class="primary" id="analyzeBtn">Find root causes</button>
-        <button class="secondary" id="exampleBtn">Try example</button>
-      </div>
-
-      <section class="resultCard" aria-live="polite" aria-label="Result area">
-        <div class="resultHead">
-          <h2>Result</h2>
-          <button class="copyBtn" id="copyBtn">Copy result</button>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Surface tool</span>
+          <h1>Problem → Root Cause</h1>
+          <p>
+            Go below the surface problem. Turn one visible issue into deeper possible causes you can actually examine.
+          </p>
         </div>
-        <pre class="result" id="result">Possible root causes:
-- Unclear message
-- Wrong audience
-- Weak distribution
-- Low emotional relevance</pre>
-      </section>
 
-      <div class="hint">The tool returns exactly 4 possible causes and keeps them short.</div>
-    </main>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Find what may be underneath</h2>
+            <p>Describe the problem. Get a few possible root causes to think with.</p>
+          </div>
 
-    <footer>REFRAME Studio · Problem → Root Causes</footer>
+          <div class="panel-body">
+            <div class="input-wrap">
+              <div class="label-row">
+                <div class="label">What problem are you facing?</div>
+                <div class="count" id="char-count">0 characters</div>
+              </div>
+
+              <textarea id="input" placeholder="Example: I keep starting projects but never finishing them."></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="button primary" id="generate-btn" type="button">Find root causes</button>
+              <button class="button secondary" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <button class="button" id="copy-btn" type="button">Copy result</button>
+            </div>
+
+            <div class="result-card">
+              <h3 class="result-title">Possible root causes</h3>
+              <div class="result-body" id="result">Possible root causes will appear here.</div>
+            </div>
+
+            <div class="note" id="status">Start with one visible problem.</div>
+
+            <div class="hidden-door">
+              Already curious?
+              <a href="./enter-deeper.html">Enter deeper.</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
   </div>
+</main>
 
-  <script>
-    (function () {
-      const inputEl = document.getElementById('problemInput');
-      const resultEl = document.getElementById('result');
-      const analyzeBtn = document.getElementById('analyzeBtn');
-      const exampleBtn = document.getElementById('exampleBtn');
-      const copyBtn = document.getElementById('copyBtn');
-      const backBtn = document.getElementById('backBtn');
+<script>
+(function () {
+  "use strict";
 
-      const JA_RE = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/;
+  var inputEl = document.getElementById("input");
+  var resultEl = document.getElementById("result");
+  var statusEl = document.getElementById("status");
+  var countEl = document.getElementById("char-count");
 
-      const JA = {
-        heading: '原因の可能性:',
-        empty: '原因の可能性:\n- 問題の定義が曖昧\n- 前提のズレ\n- 優先順位が不明確\n- 流れを止める制約がある',
-        example: '投稿は見られるのに反応がない。',
-        copied: 'コピーしました',
-        copy: 'Copy result'
-      };
+  var generateBtn = document.getElementById("generate-btn");
+  var exampleBtn = document.getElementById("example-btn");
+  var clearBtn = document.getElementById("clear-btn");
+  var copyBtn = document.getElementById("copy-btn");
 
-      const EN = {
-        heading: 'Possible root causes:',
-        empty: 'Possible root causes:\n- Unclear problem definition\n- Misaligned assumptions\n- Unclear priorities\n- A bottleneck in the flow',
-        example: 'My posts get views but no engagement.',
-        copied: 'Copied',
-        copy: 'Copy result'
-      };
+  var EXAMPLE = "I keep starting projects but never finishing them.";
 
-      const CATEGORIES = {
-        writing: {
-          en: [
-            'Unclear message',
-            'Weak hook',
-            'Wrong audience',
-            'Low emotional relevance',
-            'Unclear structure',
-            'Low trust signals',
-            'Weak call to engage',
-            'Message buried too late'
-          ],
-          ja: [
-            'メッセージが曖昧',
-            '最初の引きが弱い',
-            '対象がずれている',
-            '感情的な引っかかりが弱い',
-            '構成が伝わりにくい',
-            '信頼の根拠が弱い',
-            '反応したくなる導線が弱い',
-            '要点が後ろに埋もれている'
-          ]
-        },
-        progress: {
-          en: [
-            'Unclear process',
-            'No repeatable template',
-            'Too many decisions',
-            'Unclear priorities',
-            'Work is over-fragmented',
-            'No visible next step',
-            'Hidden dependencies',
-            'Feedback loop is too slow'
-          ],
-          ja: [
-            '進め方が曖昧',
-            '再現できる型がない',
-            '判断が多すぎる',
-            '優先順位が不明確',
-            '作業が細切れすぎる',
-            '次の一手が見えていない',
-            '依存関係が隠れている',
-            'フィードバックが遅い'
-          ]
-        },
-        trust: {
-          en: [
-            'Low trust',
-            'Weak proof',
-            'Message feels generic',
-            'Offer lacks specificity',
-            'Audience risk feels high',
-            'Value is not concrete enough'
-          ],
-          ja: [
-            '信頼が不足している',
-            '根拠の見せ方が弱い',
-            '内容が一般論に見える',
-            '提案の具体性が低い',
-            '受け手の不安が大きい',
-            '価値が具体的に伝わらない'
-          ]
-        },
-        timing: {
-          en: [
-            'Poor timing',
-            'Low relevance to the moment',
-            'Distribution is weak',
-            'Channel mismatch',
-            'Content is easy to skip',
-            'Audience attention is elsewhere'
-          ],
-          ja: [
-            'タイミングが悪い',
-            '今の関心とずれている',
-            '拡散導線が弱い',
-            'チャネルが合っていない',
-            '流し見されやすい',
-            '受け手の注意が別に向いている'
-          ]
-        },
-        general: {
-          en: [
-            'Problem framing is unclear',
-            'Audience fit is weak',
-            'Structure is fragile',
-            'Distribution is weak',
-            'Relevance is low',
-            'Trust is low',
-            'Priorities are unclear',
-            'The bottleneck is hidden'
-          ],
-          ja: [
-            '問題設定が曖昧',
-            '対象とのズレがある',
-            '構造が弱い',
-            '拡散導線が弱い',
-            '関連性が低い',
-            '信頼が不足している',
-            '優先順位が不明確',
-            '制約が見えていない'
-          ]
-        }
-      };
+  function updateCount() {
+    countEl.textContent = inputEl.value.length + " characters";
+  }
 
-      function detectLang(text) {
-        return JA_RE.test(text) ? 'ja' : 'en';
-      }
+  function cleanText(text) {
+    return String(text || "").trim();
+  }
 
-      function normalize(text) {
-        return (text || '').trim().toLowerCase();
-      }
+  function resetCopyButton() {
+    copyBtn.textContent = "Copy result";
+    copyBtn.classList.remove("copied");
+  }
 
-      function hasAny(text, words) {
-        return words.some(w => text.includes(w));
-      }
+  function showCopiedState() {
+    copyBtn.textContent = "Copied!";
+    copyBtn.classList.add("copied");
+    setTimeout(function () {
+      resetCopyButton();
+    }, 1200);
+  }
 
-      function scoreIntent(rawText, lang) {
-        const text = normalize(rawText);
-        const jaWords = {
-          writing: ['投稿', 'ポスト', '発信', '書く', '文章', 'note', 'sns', 'エンゲージ', '反応', 'いいね', '閲覧', 'ビュー', '再生', 'クリック', '読ま', 'フォロワー', '拡散'],
-          progress: ['進ま', '遅い', '止ま', '継続', '続か', '一貫', '習慣', '先延ばし', '作業', '仕事', '進捗', '詰ま', '迷', '優先順位', '判断', 'テンプレ'],
-          trust: ['信頼', '怪しい', '信用', '売れない', '買われない', '申込', '問い合わせ', '成約', '刺さら', '響か'],
-          timing: ['タイミング', '時期', '見られない', '届かない', '拡散', '流入', '配信', '露出', 'アルゴリズム', 'チャネル']
-        };
-        const enWords = {
-          writing: ['post', 'posts', 'engagement', 'views', 'likes', 'comments', 'content', 'writing', 'write', 'copy', 'newsletter', 'audience', 'followers', 'reach', 'clicks', 'impressions'],
-          progress: ['slow progress', 'stuck', 'blocked', 'inconsistent', 'consistency', 'can’t finish', 'cannot finish', 'finish', 'progress', 'workflow', 'process', 'template', 'priorit', 'too many decisions', 'procrastin'],
-          trust: ['trust', 'sales', 'buy', 'conversion', 'conversions', 'signups', 'signup', 'leads', 'credibility', 'proof', 'authority'],
-          timing: ['timing', 'distribution', 'reach', 'not seen', 'visibility', 'algorithm', 'channel', 'relevance', 'too late', 'too early']
-        };
+  function buildResult(text) {
+    var lower = text.toLowerCase();
+    var lines = [];
 
-        const dict = lang === 'ja' ? jaWords : enWords;
+    if (lower.indexOf("start") !== -1 && lower.indexOf("finish") !== -1) {
+      lines.push("1. You may be excited by starting, but resistant when structure is required.");
+      lines.push("");
+      lines.push("2. The projects may be too large, so the finish line feels emotionally far away.");
+      lines.push("");
+      lines.push("3. You may be choosing projects for excitement, not for real commitment.");
+      lines.push("");
+      lines.push("4. The real problem may be unclear priority, not lack of effort.");
+      return lines.join("\n");
+    }
 
-        const scores = {
-          writing: 0,
-          progress: 0,
-          trust: 0,
-          timing: 0
-        };
+    if (lower.indexOf("procrast") !== -1 || lower.indexOf("delay") !== -1) {
+      lines.push("1. The task may feel too vague, so your brain avoids it.");
+      lines.push("");
+      lines.push("2. The emotional cost of starting may feel bigger than the task itself.");
+      lines.push("");
+      lines.push("3. You may be carrying hidden fear of doing it badly.");
+      lines.push("");
+      lines.push("4. The real issue may be energy management, not discipline.");
+      return lines.join("\n");
+    }
 
-        Object.keys(dict).forEach(key => {
-          dict[key].forEach(word => {
-            if (text.includes(word)) scores[key] += 1;
-          });
-        });
+    if (lower.indexOf("stuck") !== -1 || lower.indexOf("confused") !== -1) {
+      lines.push("1. The problem may actually contain several smaller problems mixed together.");
+      lines.push("");
+      lines.push("2. You may not yet know the real question underneath the confusion.");
+      lines.push("");
+      lines.push("3. Too many options may be making movement harder.");
+      lines.push("");
+      lines.push("4. The root cause may be lack of decision, not lack of ideas.");
+      return lines.join("\n");
+    }
 
-        // Extra heuristics
-        if (lang === 'en') {
-          if (/views|engagement|likes|comments|reach|impressions/.test(text)) scores.writing += 2;
-          if (/stuck|slow|inconsistent|blocked|procrastin|priorit/.test(text)) scores.progress += 2;
-        } else {
-          if (/閲覧|反応|いいね|コメント|再生|拡散/.test(rawText)) scores.writing += 2;
-          if (/進ま|遅い|止ま|継続|優先順位|判断/.test(rawText)) scores.progress += 2;
-        }
+    if (lower.indexOf("tired") !== -1 || lower.indexOf("burnout") !== -1 || lower.indexOf("exhaust") !== -1) {
+      lines.push("1. The visible problem may be hiding a deeper energy problem.");
+      lines.push("");
+      lines.push("2. You may be trying to maintain output without recovery.");
+      lines.push("");
+      lines.push("3. The system around your work may be too heavy, not your ability.");
+      lines.push("");
+      lines.push("4. The root cause may be sustained pressure without a clear reward loop.");
+      return lines.join("\n");
+    }
 
-        return scores;
-      }
+    lines.push("1. The visible problem may not be the real problem.");
+    lines.push("");
+    lines.push("2. A hidden fear or constraint may be shaping the situation.");
+    lines.push("");
+    lines.push("3. The issue may come from unclear structure, not lack of effort.");
+    lines.push("");
+    lines.push("4. The root cause may be one layer deeper than the first explanation.");
+    return lines.join("\n");
+  }
 
-      function uniquePick(arr, count) {
-        const seen = new Set();
-        const out = [];
-        for (const item of arr) {
-          const key = item.trim();
-          if (!seen.has(key)) {
-            seen.add(key);
-            out.push(item);
-          }
-          if (out.length === count) break;
-        }
-        return out;
-      }
+  function generate() {
+    var text = cleanText(inputEl.value);
 
-      function buildCauses(text, lang) {
-        const scores = scoreIntent(text, lang);
-        const isJA = lang === 'ja';
+    if (!text) {
+      resultEl.textContent = "Add one problem first.";
+      statusEl.textContent = "Please enter a problem.";
+      resetCopyButton();
+      return;
+    }
 
-        const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-        const topIntent = sorted[0][0];
-        const secondIntent = sorted[1][0];
-        const topScore = sorted[0][1];
+    resultEl.textContent = buildResult(text);
+    statusEl.textContent = "Possible root causes generated.";
+    resetCopyButton();
+  }
 
-        let pool = [];
+  function tryExample() {
+    inputEl.value = EXAMPLE;
+    updateCount();
+    generate();
+  }
 
-        if (topScore === 0) {
-          pool = [
-            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
-          ];
-        } else if (topIntent === 'writing') {
-          pool = [
-            ...(isJA ? CATEGORIES.writing.ja : CATEGORIES.writing.en),
-            ...(isJA ? CATEGORIES.timing.ja : CATEGORIES.timing.en),
-            ...(isJA ? CATEGORIES.trust.ja : CATEGORIES.trust.en)
-          ];
-        } else if (topIntent === 'progress') {
-          pool = [
-            ...(isJA ? CATEGORIES.progress.ja : CATEGORIES.progress.en),
-            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
-          ];
-        } else if (topIntent === 'trust') {
-          pool = [
-            ...(isJA ? CATEGORIES.trust.ja : CATEGORIES.trust.en),
-            ...(isJA ? CATEGORIES.writing.ja : CATEGORIES.writing.en),
-            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
-          ];
-        } else {
-          pool = [
-            ...(isJA ? CATEGORIES.timing.ja : CATEGORIES.timing.en),
-            ...(isJA ? CATEGORIES.writing.ja : CATEGORIES.writing.en),
-            ...(isJA ? CATEGORIES.general.ja : CATEGORIES.general.en)
-          ];
-        }
+  function clearAll() {
+    inputEl.value = "";
+    resultEl.textContent = "Possible root causes will appear here.";
+    statusEl.textContent = "Cleared.";
+    updateCount();
+    resetCopyButton();
+  }
 
-        // Blend in second intent when meaningful
-        if (scores[secondIntent] > 0 && secondIntent !== topIntent) {
-          pool = pool.concat(isJA ? CATEGORIES[secondIntent].ja : CATEGORIES[secondIntent].en);
-        }
+  function copyResult() {
+    var text = resultEl.textContent.trim();
 
-        // Additional bias rules
-        const raw = text || '';
-        const lower = normalize(raw);
+    if (!text || text === "Possible root causes will appear here." || text === "Add one problem first.") {
+      statusEl.textContent = "Nothing to copy yet.";
+      return;
+    }
 
-        if (lang === 'en' && hasAny(lower, ['post', 'engagement', 'views', 'likes', 'comments', 'write', 'content'])) {
-          pool = [
-            'Unclear message',
-            'Weak hook',
-            'Wrong audience',
-            'Low emotional relevance',
-            ...pool
-          ];
-        }
-
-        if (lang === 'ja' && /投稿|反応|閲覧|いいね|コメント|発信|文章|書く|拡散/.test(raw)) {
-          pool = [
-            'メッセージが曖昧',
-            '最初の引きが弱い',
-            '対象がずれている',
-            '感情的な引っかかりが弱い',
-            ...pool
-          ];
-        }
-
-        if (lang === 'en' && hasAny(lower, ['slow progress', 'stuck', 'blocked', 'inconsistent', 'process', 'workflow', 'template', 'priorit'])) {
-          pool = [
-            'Unclear process',
-            'No repeatable template',
-            'Too many decisions',
-            'Unclear priorities',
-            ...pool
-          ];
-        }
-
-        if (lang === 'ja' && /進ま|止ま|遅い|継続|一貫|優先順位|判断|テンプレ|作業/.test(raw)) {
-          pool = [
-            '進め方が曖昧',
-            '再現できる型がない',
-            '判断が多すぎる',
-            '優先順位が不明確',
-            ...pool
-          ];
-        }
-
-        const selected = uniquePick(pool, 4);
-
-        while (selected.length < 4) {
-          const fallback = isJA ? CATEGORIES.general.ja : CATEGORIES.general.en;
-          const next = fallback.find(x => !selected.includes(x));
-          if (!next) break;
-          selected.push(next);
-        }
-
-        const heading = isJA ? JA.heading : EN.heading;
-        return heading + '\n- ' + selected.join('\n- ');
-      }
-
-      function analyze() {
-        const text = inputEl.value.trim();
-        const lang = detectLang(text);
-        resultEl.textContent = text ? buildCauses(text, lang) : (lang === 'ja' ? JA.empty : EN.empty);
-      }
-
-      analyzeBtn.addEventListener('click', analyze);
-
-      inputEl.addEventListener('keydown', function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') analyze();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        statusEl.textContent = "Result copied.";
+        showCopiedState();
+      }).catch(function () {
+        statusEl.textContent = "Copy failed.";
       });
+    } else {
+      statusEl.textContent = "Copy not supported here.";
+    }
+  }
 
-      exampleBtn.addEventListener('click', function () {
-        const prefersJA = /^ja\b/i.test(navigator.language || '');
-        inputEl.value = prefersJA ? JA.example : EN.example;
-        analyze();
-        inputEl.focus();
-      });
+  inputEl.addEventListener("input", updateCount);
+  generateBtn.addEventListener("click", generate);
+  exampleBtn.addEventListener("click", tryExample);
+  clearBtn.addEventListener("click", clearAll);
+  copyBtn.addEventListener("click", copyResult);
 
-      copyBtn.addEventListener('click', async function () {
-        try {
-          await navigator.clipboard.writeText(resultEl.textContent);
-          const lang = detectLang(inputEl.value.trim() || resultEl.textContent);
-          copyBtn.textContent = lang === 'ja' ? JA.copied : EN.copied;
-          setTimeout(() => {
-            copyBtn.textContent = lang === 'ja' ? JA.copy : EN.copy;
-          }, 1400);
-        } catch (_) {
-          const selection = window.getSelection();
-          const range = document.createRange();
-          range.selectNodeContents(resultEl);
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      });
-
-      backBtn.addEventListener('click', function () {
-        if (window.history.length > 1) {
-          window.history.back();
-        } else {
-          window.location.href = '#';
-        }
-      });
-
-      // Initial state
-      resultEl.textContent = EN.empty;
-    })();
-  </script>
+  updateCount();
+})();
+</script>
 </body>
 </html>
