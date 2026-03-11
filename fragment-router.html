@@ -1,146 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fragment Router</title>
-<style>
-:root{
-  --bg:#0b0f18;
-  --panel:#151b2b;
-  --panel-2:#1b2236;
-  --line:#2a3246;
-  --text:#f6f8fb;
-  --muted:#9aa4b2;
-  --accent:#8a68ff;
-  --accent-2:#6b4ef2;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fragment Router</title>
+  <style>
+    :root{
+      --bg:#0b0f18;
+      --bg2:#090d15;
+      --panel:#151b2b;
+      --panel2:#1b2236;
+      --line:#2a3246;
+      --text:#f6f8fb;
+      --muted:#9aa4b2;
+      --accent:#8a68ff;
+      --accent2:#6b4ef2;
+      --cyan:#22c7e8;
+      --max:900px;
+    }
 
-*{
-  box-sizing:border-box;
-}
+    *{
+      box-sizing:border-box;
+    }
 
-html,body{
-  margin:0;
-  padding:0;
-  background:
-    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
-    linear-gradient(180deg, #090d15 0%, #0b0f18 100%);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  line-height:1.6;
-}
+    html,body{
+      margin:0;
+      padding:0;
+      background:
+        radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.6;
+    }
 
-a{
-  color:inherit;
-  text-decoration:none;
-}
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
 
-button{
-  font:inherit;
-}
+    .page{
+      min-height:100vh;
+      padding:20px 16px 48px;
+    }
 
-.page{
-  min-height:100vh;
-  padding:20px 16px 48px;
-}
+    .container{
+      max-width:var(--max);
+      margin:0 auto;
+    }
 
-.container{
-  max-width:900px;
-  margin:0 auto;
-}
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:18px;
+      color:#8fb0ff;
+      font-size:0.95rem;
+    }
 
-.back{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:18px;
-  color:#8fb0ff;
-  font-size:0.95rem;
-}
+    h1{
+      font-size:clamp(2rem, 6vw, 3.2rem);
+      margin:0 0 10px;
+      letter-spacing:-0.04em;
+    }
 
-h1{
-  font-size:clamp(2rem, 6vw, 3.2rem);
-  margin:0 0 10px;
-  letter-spacing:-0.04em;
-}
+    .subtitle{
+      color:var(--muted);
+      margin:0 0 24px;
+      font-size:1rem;
+    }
 
-.subtitle{
-  color:var(--muted);
-  margin:0 0 24px;
-  font-size:1rem;
-}
+    .fragment{
+      background:var(--panel);
+      padding:16px;
+      border-radius:18px;
+      margin-bottom:24px;
+      border:1px solid var(--line);
+      font-size:1rem;
+      white-space:pre-wrap;
+    }
 
-.fragment{
-  background:var(--panel);
-  padding:16px;
-  border-radius:18px;
-  margin-bottom:24px;
-  border:1px solid var(--line);
-  font-size:1rem;
-}
+    .tools{
+      display:grid;
+      gap:12px;
+    }
 
-.tools{
-  display:grid;
-  gap:12px;
-}
+    .tool{
+      background:var(--panel2);
+      padding:14px;
+      border-radius:14px;
+      cursor:pointer;
+      border:1px solid var(--line);
+      transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+    }
 
-.tool{
-  background:var(--panel-2);
-  padding:14px;
-  border-radius:14px;
-  cursor:pointer;
-  border:1px solid var(--line);
-  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
-}
+    .tool:hover{
+      background:#242c44;
+      border-color:#4b5872;
+      transform:translateY(-1px);
+    }
 
-.tool:hover{
-  background:#242c44;
-  border-color:#4b5872;
-  transform:translateY(-1px);
-}
+    .tool-title{
+      font-weight:700;
+      margin-bottom:4px;
+      font-size:1rem;
+    }
 
-.tool-title{
-  font-weight:700;
-  margin-bottom:4px;
-  font-size:1rem;
-}
+    .tool-note{
+      font-size:0.9rem;
+      color:var(--muted);
+    }
 
-.tool-note{
-  font-size:0.9rem;
-  color:var(--muted);
-}
+    .tool-file{
+      margin-top:6px;
+      font-size:0.8rem;
+      color:#8fb0ff;
+    }
 
-.status{
-  margin-top:18px;
-  color:var(--muted);
-  font-size:0.92rem;
-}
+    .status{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:0.92rem;
+    }
 
-.empty{
-  background:rgba(255,255,255,0.03);
-  border:1px dashed var(--line);
-  border-radius:14px;
-  padding:16px;
-  color:var(--muted);
-}
+    .empty{
+      background:rgba(255,255,255,0.03);
+      border:1px dashed var(--line);
+      border-radius:14px;
+      padding:16px;
+      color:var(--muted);
+    }
 
-.footer{
-  margin-top:28px;
-  text-align:center;
-  color:var(--muted);
-  font-size:0.88rem;
-}
-</style>
+    .footer{
+      margin-top:28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:0.88rem;
+    }
+  </style>
 </head>
 <body>
-<main class="page">
-  <div class="container">
+  <main class="page">
+    <div class="container">
+      <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+      <h1>Fragment Router</h1>
+      <p class="subtitle">Choose the next mutation for this fragment.</p>
 
-    <h1>Fragment Router</h1>
-    <p class="subtitle">Choose the next mutation for this fragment.</p>
+      <div id="fragmentBox" class="fragment">Loading...</div>
 
-    <div id="fragmentBox" class="fragment">Loading
+      <div id="tools" class="tools"></div>
+
+      <div id="status" class="status"></div>
+
+      <div class="footer">
+        No login / No tracking / No personal data collected / Runs entirely in your browser
+      </div>
+    </div>
+  </main>
+
+  <script src="./router.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      function getParams() {
+        var params = new URLSearchParams(window.location.search);
+        return {
+          text: params.get("text") || params.get("fragment") || "",
+          type: params.get("type") || "idea",
+          mode: params.get("mode") || "stable"
+        };
+      }
+
+      function setStatus(message) {
+        var el = document.getElementById("status");
+        el.textContent = message || "";
+      }
+
+      function renderFragment(fragment) {
+        var box = document.getElementById("fragmentBox");
+
+        if (!fragment.text) {
+          box.textContent = "No fragment provided.";
+          return;
+        }
+
+        box.textContent =
+          "Fragment type: " + fragment.type + "\n\n" +
+          fragment.text;
+      }
+
+      function fallbackTools(fragment) {
+        var type = String(fragment.type || "idea").toLowerCase();
+
+        if (type === "criticism") {
+          return [
+            {
+              title: "Criticism → Lesson",
+              note: "Turn the criticism into a useful lesson.",
+              file: "criticism-to-lesson.html"
+            },
+            {
+              title: "Criticism → Question",
+              note: "Turn the criticism into a sharper question.",
+              file: "criticism-to-question.html"
+            },
+            {
+              title: "Criticism → Ideas",
+              note: "Turn the criticism into angles, hooks, and thread ideas.",
+              file: "criticism-to-ideas.html"
+            }
+          ];
+        }
+
+        if (type === "emotion") {
+          return [
+            {
+              title: "Emotion → Action",
+              note: "Turn emotional weight into a next move.",
+              file: "emotion-to-action.html"
+            },
+            {
+              title: "Next Step Finder",
+              note: "Find the smallest next move from this state.",
+              file: "next-step-finder.html"
+            }
+          ];
+        }
+
+        if (type === "problem") {
+          return [
+            {
+              title: "Problem → Root Causes",
+              note: "Break the surface problem into deeper causes.",
+              file: "problem-to-root-cause.html"
+            },
+            {
+              title: "Problem → Constraints",
+              note: "Reveal limits, pressure, and reality.",
+              file: "problem-to-constraints.html"
+            },
+            {
+              title: "Problem → Options",
+              note: "Open possible paths forward.",
+              file: "problem-to-options.html"
+            }
+          ];
+        }
+
+        if (type === "confusion") {
+          return [
+            {
+              title: "Confusion → Question",
+              note: "Turn confusion into a clearer question.",
+              file: "confusion-to-question.html"
+            },
+            {
+              title: "Thought Map",
+              note: "See the landscape and find the next direction.",
+              file: "thought-map.html"
+            }
+          ];
+        }
+
+        if (type === "failure") {
+          return [
+            {
+              title: "Failure → Lesson",
+              note: "Turn failure into pattern and signal.",
+              file: "failure-to-lesson.html"
+            },
+            {
+              title: "Next Step Finder",
+              note: "Find the next small movement after failure.",
+              file: "next-step-finder.html"
+            }
+          ];
+        }
+
+        return [
+          {
+            title: "Idea Fermentation",
+            note: "Let the fragment evolve into something unexpected.",
+            file: "idea-fermentation.html"
+          },
+          {
+            title: "Idea → Metaphor",
+            note: "Turn the fragment into a metaphor.",
+            file: "idea-to-metaphor.html"
+          },
+          {
+            title: "Idea → Thread",
+            note: "Turn the fragment into a thread direction.",
+            file: "idea-to-thread.html"
+          }
+        ];
+      }
+
+      function getToolsFromRouter(fragment) {
+        if (!window.REFRAME_ROUTER) {
+          return fallbackTools(fragment);
+        }
+
+        try {
+          if (typeof window.REFRAME_ROUTER.buildTrail === "function") {
+            var trail = window.REFRAME_ROUTER.buildTrail(fragment.text, {
+              sourceType: fragment.type,
+              mode: fragment.mode || "stable"
+            });
+
+            if (trail && Array.isArray(trail.nextTools) && trail.nextTools.length) {
+              return trail.nextTools.map(function (tool) {
+                return {
+                  title: tool.title || "Untitled tool",
+                  note: tool.note || "Next mutation.",
+                  file: tool.file || "#"
+                };
+              });
+            }
+
+            if (trail && trail.firstTool) {
+              return [{
+                title: trail.firstTool.title || "Untitled tool",
+                note: trail.firstTool.note || "First mutation.",
+                file: trail.firstTool.file || "#"
+              }];
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        }
+
+        return fallbackTools(fragment);
+      }
+
+      function buildToolUrl(file, fragment) {
+        if (!file || file === "#") {
+          return "#";
+        }
+
+        var params = new URLSearchParams();
+        params.set("fragment", fragment.text);
+        params.set("type", fragment.type);
+        params.set("mode", fragment.mode || "stable");
+
+        return "./" + file + "?" + params.toString();
+      }
+
+      function renderTools(fragment) {
+        var toolsContainer = document.getElementById("tools");
+        toolsContainer.innerHTML = "";
+
+        var tools = getToolsFromRouter(fragment);
+
+        if (!tools.length) {
+          var empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "No mutation tools found.";
+          toolsContainer.appendChild(empty);
+          setStatus("No route found for this fragment.");
+          return;
+        }
+
+        tools.forEach(function (tool) {
+          var el = document.createElement("div");
+          el.className = "tool";
+
+          el.addEventListener("click", function () {
+            window.location.href = buildToolUrl(tool.file, fragment);
+          });
+
+          var title = document.createElement("div");
+          title.className = "tool-title";
+          title.textContent = tool.title;
+
+          var note = document.createElement("div");
+          note.className = "tool-note";
+          note.textContent = tool.note;
+
+          var file = document.createElement("div");
+          file.className = "tool-file";
+          file.textContent = tool.file;
+
+          el.appendChild(title);
+          el.appendChild(note);
+          el.appendChild(file);
+
+          toolsContainer.appendChild(el);
+        });
+
+        setStatus(tools.length + " mutation tool" + (tools.length > 1 ? "s" : "") + " found.");
+      }
+
+      var fragment = getParams();
+      renderFragment(fragment);
+      renderTools(fragment);
+    })();
+  </script>
+</body>
+</html>
