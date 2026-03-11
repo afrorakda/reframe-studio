@@ -31,8 +31,7 @@
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       min-height: 100%;
@@ -669,8 +668,11 @@
           title: firstTool ? firstTool.name : "Next Tool",
           kind: "Recommended tool",
           description: firstTool ? firstTool.description : "Use a tool to continue the mutation.",
-          chips: [firstTool ? firstTool.file : "tool", "Continue mutation"],
-          file: firstTool ? firstTool.file : ""
+          chips: [
+            firstTool ? firstTool.file : "tool",
+            "Continue mutation"
+          ],
+          link: firstTool ? firstTool.file : ""
         },
         {
           title: "Next Thought",
@@ -684,9 +686,7 @@
     function renderTrail(route) {
       const trail = buildTrail(route);
       const mutationCount = Array.isArray(route.mutationPaths) ? route.mutationPaths.length : 0;
-      const expressionCount = Array.isArray(route.expressionPaths) ? route.expressionPaths.length : 0;
       const toolCount = Array.isArray(route.recommendedTools) ? route.recommendedTools.length : 0;
-      const nextCount = Array.isArray(route.nextMutations) ? route.nextMutations.length : 0;
       const confidencePct = route.detectedType && typeof route.detectedType.confidence === "number"
         ? Math.round(route.detectedType.confidence * 100) + "%"
         : "—";
@@ -697,26 +697,26 @@
           <div class="result-card">
             <p class="quote">“${escapeHtml(route.fragment)}”</p>
           </div>
+        </div>
 
-          <div class="section">
-            <h2 class="section-title">Trail summary</h2>
-            <div class="summary-grid">
-              <div class="summary-card">
-                <div class="summary-label">Detected type</div>
-                <div class="summary-value">${escapeHtml(route.detectedType.label)}</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Confidence</div>
-                <div class="summary-value">${escapeHtml(confidencePct)}</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Mutation paths</div>
-                <div class="summary-value">${escapeHtml(String(mutationCount))}</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Next tools</div>
-                <div class="summary-value">${escapeHtml(String(toolCount))}</div>
-              </div>
+        <div class="section">
+          <h2 class="section-title">Trail summary</h2>
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="summary-label">Detected type</div>
+              <div class="summary-value">${escapeHtml(route.detectedType.label)}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Confidence</div>
+              <div class="summary-value">${escapeHtml(confidencePct)}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Mutation paths</div>
+              <div class="summary-value">${escapeHtml(String(mutationCount))}</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Next tools</div>
+              <div class="summary-value">${escapeHtml(String(toolCount))}</div>
             </div>
           </div>
         </div>
@@ -739,9 +739,9 @@
                       <div class="chip ${index === 0 ? "accent" : ""}">${escapeHtml(chip)}</div>
                     `).join("")}
                   </div>
-                  ${step.file ? `
+                  ${step.link ? `
                     <div class="chip-row" style="margin-top:12px;">
-                      <a class="chip accent" href="./${escapeAttribute(step.file)}">${escapeHtml(step.file)}</a>
+                      <a class="chip accent" href="./${escapeAttribute(step.link)}">Open tool</a>
                     </div>
                   ` : ""}
                 </div>
