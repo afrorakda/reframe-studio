@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragment Router</title>
+
+<style>
+
+body{
+margin:0;
+padding:0;
+font-family:system-ui;
+background:#0b0f18;
+color:white;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+h1{
+font-size:28px;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#9aa4b2;
+margin-bottom:30px;
+}
+
+.fragment{
+background:#151b2b;
+padding:16px;
+border-radius:12px;
+margin-bottom:30px;
+border:1px solid #2a3246;
+}
+
+.tools{
+display:grid;
+gap:12px;
+}
+
+.tool{
+background:#1b2236;
+padding:14px;
+border-radius:10px;
+cursor:pointer;
+border:1px solid #2a3246;
+}
+
+.tool:hover{
+background:#242c44;
+}
+
+.tool-title{
+font-weight:bold;
+margin-bottom:4px;
+}
+
+.tool-note{
+font-size:13px;
+color:#9aa4b2;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Fragment Router</h1>
+
+<p class="subtitle">
+Choose the next mutation for this fragment.
+</p>
+
+<div id="fragmentBox" class="fragment">
+Loading fragment...
+</div>
+
+<div id="tools" class="tools"></div>
+
+</div>
+
+<script>
+
+function getFragment(){
+
+var params=new URLSearchParams(window.location.search);
+
+return{
+text:params.get("text") || "",
+sourceType:params.get("type") || "idea"
+};
+
+}
+
+function renderFragment(fragment){
+
+var box=document.getElementById("fragmentBox");
+
+box.innerText=fragment.text || "No fragment.";
+
+}
+
+function renderTools(fragment){
+
+var toolsContainer=document.getElementById("tools");
+
+var tools=[];
+
+if(window.getNextTools){
+tools=window.getNextTools(fragment);
+}
+
+if(!tools.length){
+
+toolsContainer.innerHTML="No mutation tools found.";
+
+return;
+
+}
+
+tools.forEach(function(tool){
+
+var el=document.createElement("div");
+
+el.className="tool";
+
+el.onclick=function(){
+
+window.location.href="./"+tool.file;
+
+};
+
+el.innerHTML=
+'<div class="tool-title">'+tool.title+'</div>'+
+'<div class="tool-note">'+tool.note+'</div>';
+
+toolsContainer.appendChild(el);
+
+});
+
+}
+
+var fragment=getFragment();
+
+renderFragment(fragment);
+
+renderTools(fragment);
+
+</script>
+
+<script src="./router.js"></script>
+
+</body>
+</html>
