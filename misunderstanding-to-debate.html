@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Misunderstanding → Debate</title>
+
+<style>
+body{
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+margin:0;
+padding:24px;
+background:#0f1117;
+color:#e6edf3;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+a{
+color:#8ab4ff;
+text-decoration:none;
+}
+
+h1{
+font-size:46px;
+line-height:1.1;
+margin:28px 0 16px 0;
+word-break:break-word;
+}
+
+p{
+font-size:18px;
+line-height:1.5;
+color:#c9d1d9;
+margin:0 0 24px 0;
+}
+
+textarea{
+width:100%;
+height:140px;
+padding:16px;
+background:#161b22;
+border:1px solid #333;
+border-radius:16px;
+color:white;
+font-size:16px;
+line-height:1.5;
+box-sizing:border-box;
+}
+
+.buttons{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:16px;
+}
+
+button{
+padding:12px 18px;
+background:#238636;
+border:none;
+border-radius:14px;
+color:white;
+cursor:pointer;
+font-size:16px;
+}
+
+.result{
+margin-top:24px;
+white-space:pre-wrap;
+background:#161b22;
+padding:20px;
+border-radius:16px;
+line-height:1.65;
+font-size:16px;
+min-height:64px;
+box-sizing:border-box;
+}
+
+.footer{
+margin-top:40px;
+font-size:13px;
+line-height:1.7;
+color:#8b949e;
+}
+
+@media (max-width:640px){
+body{
+padding:20px;
+}
+h1{
+font-size:34px;
+line-height:1.12;
+}
+p{
+font-size:16px;
+}
+textarea{
+height:132px;
+font-size:16px;
+}
+button{
+font-size:15px;
+padding:11px 16px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="./index.html">← Back</a>
+
+<h1>Misunderstanding → Debate</h1>
+
+<p>Turn misunderstandings into useful discussion topics.</p>
+
+<textarea id="input" placeholder="Example: People misunderstood my post and thought I was criticizing them"></textarea>
+
+<div class="buttons">
+<button onclick="generate()">Generate</button>
+<button onclick="example()">Try example</button>
+<button onclick="clearAll()">Clear</button>
+<button onclick="copyResult()">Copy result</button>
+</div>
+
+<div id="result" class="result"></div>
+
+<div class="footer">
+No login<br>
+No tracking<br>
+No personal data<br>
+Runs entirely in your browser
+</div>
+
+</div>
+
+<script>
+
+function example(){
+document.getElementById("input").value =
+"People misunderstood my post and thought I was criticizing them.";
+}
+
+function clearAll(){
+document.getElementById("input").value="";
+document.getElementById("result").textContent="";
+}
+
+function copyResult(){
+const text=document.getElementById("result").textContent;
+if(!text)return;
+navigator.clipboard.writeText(text).then(()=>{
+alert("Copied!");
+});
+}
+
+function generate(){
+
+const debates=[
+
+"Why do people interpret the same message in different ways?",
+
+"Where does responsibility lie — the writer's clarity or the reader's assumptions?",
+
+"Is misunderstanding a failure of communication or a natural part of ideas spreading?",
+
+"Should creators correct misunderstandings or explore them?",
+
+"Do misunderstandings reveal the audience's deeper concerns?",
+
+"Can a wrong interpretation still produce useful insights?",
+
+"Is the gap between intention and reception actually where discussion begins?",
+
+"Why do controversial interpretations spread faster than accurate ones?",
+
+"Do misunderstandings reveal hidden tensions in a topic?",
+
+"Can misreading be a form of creative collaboration with the audience?"
+
+];
+
+let output="Debate Ideas\n\n";
+
+debates.forEach(d=>{
+output+="• "+d+"\n";
+});
+
+output+="\nNext Mutations\n";
+output+="Thread\nHook\nReframe\nStructure";
+
+document.getElementById("result").textContent=output;
+
+}
+
+</script>
+
+</body>
+</html>
