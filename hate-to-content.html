@@ -3,154 +3,502 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hate → Content</title>
+<title>Hate → Content — REFRAME Studio</title>
 
 <style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --pink:#ff7ac8;
+  --pink-2:#e056ad;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:980px;
+}
 
-body{
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-background:#f5f7fb;
-margin:0;
-padding:20px;
-color:#1a1a1a;
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+textarea{
+  font:inherit;
+}
+
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
 }
 
 .container{
-max-width:700px;
-margin:auto;
+  max-width:var(--max);
+  margin:0 auto;
 }
 
-.card{
-background:white;
-padding:24px;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
 }
 
-h1{
-margin-top:0;
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
+
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
+}
+
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
+
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
+
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel-head{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
+
+.panel-head h2{
+  margin:0 0 6px;
+  font-size:1.04rem;
+  letter-spacing:-0.02em;
+}
+
+.panel-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
+
+.input-wrap{
+  display:grid;
+  gap:10px;
+}
+
+.label-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
+
+.count{
+  color:var(--muted);
+  font-size:0.92rem;
 }
 
 textarea{
-width:100%;
-min-height:120px;
-padding:12px;
-border-radius:10px;
-border:1px solid #ddd;
-font-size:16px;
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
-.buttons{
-margin-top:12px;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+textarea::placeholder{
+  color:#8290aa;
 }
 
-button{
-border:none;
-border-radius:8px;
-padding:10px 14px;
-font-size:15px;
-cursor:pointer;
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
 }
 
-.generate{background:#2563eb;color:white}
-.example{background:#e5e7eb}
-.clear{background:#f3f4f6}
-.copy{background:#e5e7eb}
-
-.result{
-margin-top:20px;
-padding:14px;
-background:#fafafa;
-border-radius:10px;
-border:1px solid #eee;
-white-space:pre-wrap;
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
+}
+
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.primary{
+  min-width:160px;
+  background:linear-gradient(180deg, var(--pink), var(--pink-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.result-card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
+
+.result-title{
+  margin:0 0 12px;
+  font-size:1rem;
+  letter-spacing:-0.02em;
+}
+
+.result-body{
+  color:#d8dfec;
+  font-size:1rem;
+  white-space:pre-wrap;
+  min-height:120px;
+}
+
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door{
+  padding-top:8px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door a{
+  color:#b9c7ff;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:720px){
+  .hero-inner,
+  .panel-head,
+  .panel-body{
+    padding:16px;
+  }
+
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
+
+  .actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .button,
+  .button.primary,
+  .button.secondary{
+    width:100%;
+  }
+
+  textarea{
+    min-height:190px;
+  }
+}
 </style>
 </head>
-
 <body>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-<div class="container">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Surface tool</span>
+          <h1>Hate → Content</h1>
+          <p>
+            Turn a negative comment into usable content angles. Start simple. Then see what kind of deeper signal is hiding inside the friction.
+          </p>
+        </div>
 
-<div class="card">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Turn bad replies into ideas</h2>
+            <p>Drop one negative comment. Get fresh angles you can turn into content.</p>
+          </div>
 
-<h1>Hate → Content</h1>
+          <div class="panel-body">
+            <div class="input-wrap">
+              <div class="label-row">
+                <div class="label">Negative comment</div>
+                <div class="count" id="char-count">0 characters</div>
+              </div>
 
-<p>Turn negative comments into post ideas.</p>
+              <textarea id="input" placeholder="Your ideas are stupid and nobody cares."></textarea>
+            </div>
 
-<textarea id="input"
-placeholder="Paste a negative comment
+            <div class="actions">
+              <button class="button primary" id="generate-btn" type="button">Generate</button>
+              <button class="button secondary" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <button class="button" id="copy-btn" type="button">Copy result</button>
+            </div>
 
-Example:
-Your ideas are stupid and nobody cares."></textarea>
+            <div class="result-card">
+              <h3 class="result-title">Content ideas</h3>
+              <div class="result-body" id="result">Your content ideas will appear here.</div>
+            </div>
 
-<div class="buttons">
+            <div class="note" id="status">Start with one negative comment.</div>
 
-<button class="generate" onclick="generate()">Generate</button>
+            <div class="hidden-door">
+              Already curious?
+              <a href="./enter-deeper.html">Enter deeper.</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
 
-<button class="example" onclick="example()">Try example</button>
-
-<button class="clear" onclick="clearInput()">Clear</button>
-
-<button class="copy" onclick="copyResult()">Copy result</button>
-
-</div>
-
-<div id="result" class="result">
-Result will appear here.
-</div>
-
-</div>
-
-</div>
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
 
 <script>
+(function () {
+  "use strict";
 
-function example(){
+  var inputEl = document.getElementById("input");
+  var resultEl = document.getElementById("result");
+  var statusEl = document.getElementById("status");
+  var countEl = document.getElementById("char-count");
 
-document.getElementById("input").value="Your ideas are stupid and nobody cares."
+  var generateBtn = document.getElementById("generate-btn");
+  var exampleBtn = document.getElementById("example-btn");
+  var clearBtn = document.getElementById("clear-btn");
+  var copyBtn = document.getElementById("copy-btn");
 
-generate()
+  var EXAMPLE = "Your ideas are stupid and nobody cares.";
 
-}
+  function updateCount() {
+    countEl.textContent = inputEl.value.length + " characters";
+  }
 
-function clearInput(){
+  function cleanText(text) {
+    return String(text || "").trim();
+  }
 
-document.getElementById("input").value=""
-document.getElementById("result").innerText="Result will appear here."
+  function pickTemplates(text) {
+    var lower = text.toLowerCase();
 
-}
+    if (lower.indexOf("nobody cares") !== -1 || lower.indexOf("no one cares") !== -1) {
+      return [
+        "Why people say \"nobody cares\" online",
+        "What \"nobody cares\" really reveals about attention online",
+        "How to keep creating when people dismiss your work",
+        "Why hostile comments often hide audience insecurity"
+      ];
+    }
 
-function generate(){
+    if (lower.indexOf("stupid") !== -1 || lower.indexOf("dumb") !== -1) {
+      return [
+        "Why people call ideas stupid before they understand them",
+        "How simple insults can reveal weak criticism",
+        "What to do when people attack the creator instead of the idea",
+        "Why ridicule is often fear wearing a mask"
+      ];
+    }
 
-const text=document.getElementById("input").value.trim()
+    if (lower.indexOf("hate") !== -1 || lower.indexOf("terrible") !== -1 || lower.indexOf("awful") !== -1) {
+      return [
+        "What strong negative comments reveal about audience emotion",
+        "Why extreme reactions can be turned into useful content",
+        "How to reframe online hate into sharper ideas",
+        "Why emotional comments often contain hidden topic signals"
+      ];
+    }
 
-if(!text) return
+    return [
+      "Why criticism online becomes personal",
+      "The psychology behind internet trolling",
+      "What negative comments reveal about audience fears",
+      "How to turn bad replies into stronger content angles"
+    ];
+  }
 
-const output=`Content ideas
+  function buildResult(text) {
+    var ideas = pickTemplates(text);
+    var lines = [];
+    lines.push("1. " + ideas[0]);
+    lines.push("");
+    lines.push("2. " + ideas[1]);
+    lines.push("");
+    lines.push("3. " + ideas[2]);
+    lines.push("");
+    lines.push("4. " + ideas[3]);
+    return lines.join("\n");
+  }
 
-1. Why criticism online becomes personal
+  function generate() {
+    var text = cleanText(inputEl.value);
 
-2. The psychology behind internet trolling
+    if (!text) {
+      resultEl.textContent = "Add one negative comment first.";
+      statusEl.textContent = "Please enter a negative comment.";
+      return;
+    }
 
-3. What negative comments reveal about audience fears`
+    resultEl.textContent = buildResult(text);
+    statusEl.textContent = "Content ideas generated.";
+  }
 
-document.getElementById("result").innerText=output
+  function tryExample() {
+    inputEl.value = EXAMPLE;
+    updateCount();
+    generate();
+  }
 
-}
+  function clearAll() {
+    inputEl.value = "";
+    resultEl.textContent = "Your content ideas will appear here.";
+    statusEl.textContent = "Cleared.";
+    updateCount();
+  }
 
-function copyResult(){
+  function copyResult() {
+    var text = resultEl.textContent.trim();
 
-const text=document.getElementById("result").innerText
-navigator.clipboard.writeText(text)
+    if (!text || text === "Your content ideas will appear here." || text === "Add one negative comment first.") {
+      statusEl.textContent = "Nothing to copy yet.";
+      return;
+    }
 
-}
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        statusEl.textContent = "Result copied.";
+      }).catch(function () {
+        statusEl.textContent = "Copy failed.";
+      });
+    } else {
+      statusEl.textContent = "Copy not supported here.";
+    }
+  }
 
+  inputEl.addEventListener("input", updateCount);
+  generateBtn.addEventListener("click", generate);
+  exampleBtn.addEventListener("click", tryExample);
+  clearBtn.addEventListener("click", clearAll);
+  copyBtn.addEventListener("click", copyResult);
+
+  updateCount();
+})();
 </script>
-
 </body>
 </html>
