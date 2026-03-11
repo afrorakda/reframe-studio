@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tool Factory Ultra — REFRAME Studio</title>
+
+<style>
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial;
+margin:0;
+padding:24px;
+background:#0f1117;
+color:#e6edf3;
+}
+
+a{
+color:#8ab4ff;
+text-decoration:none;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.eyebrow{
+font-size:12px;
+letter-spacing:1px;
+opacity:.6;
+margin-bottom:8px;
+}
+
+h1{
+font-size:32px;
+margin:0 0 12px 0;
+}
+
+.desc{
+opacity:.8;
+margin-bottom:24px;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:12px;
+border-radius:8px;
+border:1px solid #333;
+background:#161b22;
+color:#fff;
+font-size:16px;
+}
+
+select{
+margin-top:12px;
+padding:10px;
+border-radius:8px;
+border:1px solid #333;
+background:#161b22;
+color:#fff;
+}
+
+.buttons{
+margin-top:16px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+button{
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:#238636;
+color:white;
+font-size:14px;
+cursor:pointer;
+}
+
+button.secondary{
+background:#30363d;
+}
+
+.result{
+margin-top:32px;
+white-space:pre-wrap;
+background:#161b22;
+padding:16px;
+border-radius:8px;
+border:1px solid #333;
+}
+
+footer{
+margin-top:48px;
+font-size:12px;
+opacity:.6;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="./index.html">← Back to REFRAME Studio</a>
+
+<div class="eyebrow">REFRAME TOOL</div>
+
+<h1>Tool Factory Ultra</h1>
+
+<div class="desc">
+Generate 20 REFRAME Studio tools instantly.
+</div>
+
+<textarea id="input" placeholder="Describe a problem, idea, or thinking pattern..."></textarea>
+
+<br>
+
+<select id="mode">
+<option value="content">Content Tools</option>
+<option value="thinking">Thinking Tools</option>
+<option value="mutation">Mutation Tools</option>
+<option value="random">Random</option>
+<option value="chaos">Chaos</option>
+</select>
+
+<div class="buttons">
+
+<button onclick="generateTools()">Generate 20 tools</button>
+
+<button class="secondary" onclick="example()">Try example</button>
+
+<button class="secondary" onclick="clearAll()">Clear</button>
+
+<button class="secondary" onclick="copyResult()">Copy result</button>
+
+</div>
+
+<div id="result" class="result"></div>
+
+<footer>
+
+No login<br>
+No tracking<br>
+No personal data collected<br>
+Runs entirely in your browser
+
+</footer>
+
+</div>
+
+<script>
+
+function example(){
+
+document.getElementById("input").value =
+"People react to my posts but I don't know how to turn those reactions into new ideas.";
+
+}
+
+function clearAll(){
+
+document.getElementById("input").value="";
+document.getElementById("result").textContent="";
+
+}
+
+function copyResult(){
+
+const text=document.getElementById("result").textContent;
+
+navigator.clipboard.writeText(text);
+
+alert("Copied!");
+
+}
+
+function generateTools(){
+
+const idea=document.getElementById("input").value.trim();
+
+if(!idea){
+
+alert("Please enter an idea");
+
+return;
+
+}
+
+const mode=document.getElementById("mode").value;
+
+let mutations=[
+
+"Angle",
+"Opposite",
+"Metaphor",
+"Question",
+"Lesson",
+"Hook",
+"Thread",
+"Post",
+"Example",
+"Story",
+"Strategy",
+"Constraint",
+"Root Cause",
+"Options",
+"Action",
+"Simplify",
+"Debate",
+"Expansion",
+"Title",
+"Series"
+
+];
+
+if(mode==="thinking"){
+
+mutations=[
+"Question",
+"Root Cause",
+"Constraint",
+"Reframe",
+"Opposite",
+"Metaphor",
+"Structure",
+"Angle",
+"Lesson",
+"Options",
+"Hypothesis",
+"Simplify",
+"Framework",
+"Insight",
+"Example",
+"Pattern",
+"Connection",
+"Contrast",
+"Reflection",
+"Perspective"
+];
+
+}
+
+if(mode==="mutation"){
+
+mutations=[
+"Opposite",
+"Metaphor",
+"Angle",
+"Reframe",
+"Paradox",
+"Inversion",
+"Extreme",
+"Simplify",
+"Expansion",
+"Compression",
+"Question",
+"Anti Idea",
+"Analogy",
+"Contrast",
+"Connection",
+"Shift",
+"Zoom In",
+"Zoom Out",
+"Twist",
+"Mutation"
+];
+
+}
+
+if(mode==="chaos"){
+
+mutations=[
+"Angry Post",
+"Weird Analogy",
+"Anti Idea",
+"Paradox Hook",
+"Quiet Insight",
+"Debate",
+"Extreme Opinion",
+"Reverse Lesson",
+"Strange Metaphor",
+"Unexpected Hook",
+"Opposite Strategy",
+"Chaos Question",
+"Wild Story",
+"Odd Example",
+"Broken Logic",
+"Rebel Advice",
+"Radical Simplify",
+"Random Thread",
+"Confusing Title",
+"Unknown Path"
+];
+
+}
+
+let output="";
+
+for(let i=0;i<20;i++){
+
+output+=
+"Tool "+(i+1)+"\n"+
+idea+" → "+mutations[i]+"\n\n";
+
+}
+
+document.getElementById("result").textContent=output;
+
+}
+
+</script>
+
+</body>
+</html>
