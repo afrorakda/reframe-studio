@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Criticism → Ideas</title>
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --green:#22c55e;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:900px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+textarea{
+  font:inherit;
+}
+
+.page{
+  min-height:100vh;
+  padding:20px 16px 48px;
+}
+
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
+
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  color:#8fb0ff;
+  font-size:0.95rem;
+}
+
+.hero{
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(124,92,255,0.14), transparent 22%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.09), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
+
+.hero-inner{
+  padding:24px 20px 20px;
+  display:grid;
+  gap:18px;
+}
+
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(2rem, 6vw, 3.7rem);
+  line-height:0.98;
+  letter-spacing:-0.05em;
+}
+
+.subtitle{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:720px;
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,0.03);
+  padding:16px;
+}
+
+.panel-title{
+  margin:0 0 6px;
+  font-size:1rem;
+  font-weight:700;
+}
+
+.panel-note{
+  margin:0 0 14px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+textarea{
+  width:100%;
+  min-height:150px;
+  resize:vertical;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:#0e1420;
+  color:var(--text);
+  padding:16px;
+  outline:none;
+}
+
+textarea:focus{
+  border-color:rgba(124,92,255,0.75);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.button{
+  appearance:none;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:12px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+}
+
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.primary{
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.cyan{
+  background:linear-gradient(180deg, #22d0f0, #0faaca);
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.green{
+  background:linear-gradient(180deg, #33d17a, #1ea85e);
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.status{
+  min-height:22px;
+  color:var(--muted);
+  font-size:0.92rem;
+  margin-top:10px;
+}
+
+.result{
+  margin-top:22px;
+  display:grid;
+  gap:14px;
+}
+
+.card{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,0.03);
+  padding:16px;
+}
+
+.card h2{
+  margin:0 0 10px;
+  font-size:1rem;
+}
+
+.card p,
+.card li{
+  color:var(--muted);
+  font-size:0.94rem;
+}
+
+.card ul{
+  margin:0;
+  padding-left:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.big{
+  grid-column:1 / -1;
+}
+
+.copybox{
+  white-space:pre-wrap;
+}
+
+.footer{
+  margin-top:24px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+.hidden{
+  display:none !important;
+}
+
+@media (max-width:780px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero-inner{
+    padding:16px;
+  }
+
+  textarea{
+    min-height:130px;
+  }
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">Criticism → Idea Engine</span>
+        <h1>Turn criticism into ideas</h1>
+        <p class="subtitle">
+          Paste a negative comment, rude reply, or criticism. This tool turns friction into lessons, angles, hooks, and thread ideas.
+        </p>
+
+        <section class="panel">
+          <h2 class="panel-title">Paste criticism</h2>
+          <p class="panel-note">
+            Example: “Your ideas are too abstract and hard to understand.”
+          </p>
+
+          <textarea id="input" placeholder="Paste criticism here..."></textarea>
+
+          <div class="actions">
+            <button class="button" id="example-btn" type="button">Try example</button>
+            <button class="button primary" id="generate-btn" type="button">Generate angles</button>
+            <button class="button" id="clear-btn" type="button">Clear</button>
+            <button class="button cyan" id="copy-btn" type="button">Copy result</button>
+            <button class="button green" id="save-fragment-btn" type="button">Save as fragment</button>
+          </div>
+
+          <div class="status" id="status"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="result hidden" id="result">
+      <div class="grid">
+        <div class="card">
+          <h2>Lesson</h2>
+          <div id="lesson" class="copybox"></div>
+        </div>
+
+        <div class="card">
+          <h2>Core tension</h2>
+          <div id="tension" class="copybox"></div>
+        </div>
+
+        <div class="card">
+          <h2>Angles</h2>
+          <ul id="angles"></ul>
+        </div>
+
+        <div class="card">
+          <h2>Hooks</h2>
+          <ul id="hooks"></ul>
+        </div>
+
+        <div class="card big">
+          <h2>Thread starter</h2>
+          <div id="thread" class="copybox"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "reframe_captured_fragments_v1";
+
+  var inputEl = document.getElementById("input");
+  var resultEl = document.getElementById("result");
+  var lessonEl = document.getElementById("lesson");
+  var tensionEl = document.getElementById("tension");
+  var anglesEl = document.getElementById("angles");
+  var hooksEl = document.getElementById("hooks");
+  var threadEl = document.getElementById("thread");
+  var statusEl = document.getElementById("status");
+
+  var exampleBtn = document.getElementById("example-btn");
+  var generateBtn = document.getElementById("generate-btn");
+  var clearBtn = document.getElementById("clear-btn");
+  var copyBtn = document.getElementById("copy-btn");
+  var saveFragmentBtn = document.getElementById("save-fragment-btn");
+
+  var currentOutput = "";
+
+  var examples = [
+    "Your ideas are too abstract and hard to understand.",
+    "No one cares about this. It feels overcomplicated.",
+    "This sounds smart but has no practical value.",
+    "言ってることが抽象的すぎて何を言いたいのかわからない。",
+    "難しく言ってるだけで、中身がないように見える。"
+  ];
+
+  function setStatus(message) {
+    statusEl.textContent = message || "";
+  }
+
+  function hasJapanese(text) {
+    return /[ぁ-んァ-ン一-龯]/.test(text);
+  }
+
+  function normalize(text) {
+    return String(text || "").trim().replace(/\s+/g, " ");
+  }
+
+  function detectTheme(text) {
+    var t = text.toLowerCase();
+
+    if (hasJapanese(text)) {
+      if (text.indexOf("抽象") !== -1) return "abstract";
+      if (text.indexOf("難しい") !== -1 || text.indexOf("わから") !== -1) return "clarity";
+      if (text.indexOf("意味") !== -1 || text.indexOf("価値") !== -1) return "value";
+      if (text.indexOf("長い") !== -1) return "length";
+      return "general";
+    }
+
+    if (t.indexOf("abstract") !== -1) return "abstract";
+    if (t.indexOf("hard to understand") !== -1 || t.indexOf("unclear") !== -1 || t.indexOf("confusing") !== -1) return "clarity";
+    if (t.indexOf("no practical value") !== -1 || t.indexOf("useless") !== -1 || t.indexOf("no one cares") !== -1) return "value";
+    if (t.indexOf("too long") !== -1 || t.indexOf("long") !== -1) return "length";
+    return "general";
+  }
+
+  function buildEnglishOutput(text, theme) {
+    if (theme === "abstract") {
+      return {
+        lesson: "People are not rejecting the idea itself. They are rejecting the lack of an easy entry point.",
+        tension: "Depth vs accessibility",
+        angles: [
+          "Why abstract ideas lose people too early",
+          "How to make deep thinking easier to enter",
+          "The real problem is not abstraction. It is missing translation."
+        ],
+        hooks: [
+          "People do not hate abstract ideas. They hate being locked out of them.",
+          "If people call your idea abstract, the problem may be the doorway, not the idea.",
+          "Abstraction becomes powerful only after translation."
+        ],
+        thread: "People say abstract ideas are hard to understand.\n\nThat criticism hides something useful:\n\nThe issue is often not the depth of the idea.\nThe issue is the missing entry point.\n\nDeep ideas need a bridge.\nNot simplification.\nTranslation."
+      };
+    }
+
+    if (theme === "clarity") {
+      return {
+        lesson: "Confusion often means the framing is weak, not that the idea is weak.",
+        tension: "Signal vs framing",
+        angles: [
+          "Why good ideas still sound unclear",
+          "The hidden cost of weak framing",
+          "How to sharpen the first sentence so the rest lands"
+        ],
+        hooks: [
+          "An unclear idea is often a clear idea with a weak entrance.",
+          "When people are confused, the first sentence probably failed.",
+          "Clarity is not dumbing down. It is opening the door."
+        ],
+        thread: "When people say your idea is hard to understand, do not panic.\n\nSometimes the idea is fine.\nThe framing is the problem.\n\nWeak framing hides strong signal.\n\nThe fix is not to kill the depth.\nThe fix is to build a better doorway."
+      };
+    }
+
+    if (theme === "value") {
+      return {
+        lesson: "When people say something has no value, they may simply not see the use case yet.",
+        tension: "Perceived value vs hidden value",
+        angles: [
+          "Why people dismiss useful ideas too early",
+          "The gap between value and visible value",
+          "How to show practical relevance without shrinking the idea"
+        ],
+        hooks: [
+          "People call ideas useless when they cannot locate the use case.",
+          "Hidden value looks like no value to the wrong audience.",
+          "The problem may be not the idea, but the visible payoff."
+        ],
+        thread: "When someone says your idea has no practical value, look closer.\n\nThey may not be rejecting the idea.\nThey may be rejecting the missing use case.\n\nValue must be visible before it can be appreciated.\n\nShow the payoff.\nThen the same idea feels useful."
+      };
+    }
+
+    if (theme === "length") {
+      return {
+        lesson: "Length criticism often means the energy drops before the point becomes visible.",
+        tension: "Depth vs momentum",
+        angles: [
+          "Why long explanations lose force",
+          "How to shorten without becoming shallow",
+          "The difference between depth and drag"
+        ],
+        hooks: [
+          "The problem is not length alone. It is delayed payoff.",
+          "People stay for depth when the momentum is strong.",
+          "A long idea dies when the point arrives too late."
+        ],
+        thread: "When people say your content is too long, they are not always asking for less depth.\n\nOften they are asking for earlier payoff.\n\nIf the value appears too late, the audience leaves before the point lands.\n\nShorter is one fix.\nStronger momentum is the better fix."
+      };
+    }
+
+    return {
+      lesson: "Criticism is often compressed information about friction.",
+      tension: "Intent vs reception",
+      angles: [
+        "What this criticism reveals about audience friction",
+        "How negative feedback can expose the real communication gap",
+        "Why bad reactions can still contain useful signal"
+      ],
+      hooks: [
+        "A bad reaction can still be good data.",
+        "Criticism often hides the real communication problem.",
+        "What sounds negative may actually be compressed signal."
+      ],
+      thread: "Not all criticism is damage.\n\nSometimes criticism is compressed information.\n\nIt tells you where friction happened.\nWhere meaning was lost.\nWhere the audience dropped off.\n\nThe reaction hurts.\nBut the signal can still be useful."
+    };
+  }
+
+  function buildJapaneseOutput(text, theme) {
+    if (theme === "abstract") {
+      return {
+        lesson: "相手はアイデアそのものを拒否しているのではなく、入り口が見えないことに反応している。",
+        tension: "深さ と 入りやすさ",
+        angles: [
+          "なぜ抽象的な話は途中で嫌われるのか",
+          "深い話をわかりやすく届ける入口の作り方",
+          "問題は抽象性ではなく翻訳不足かもしれない"
+        ],
+        hooks: [
+          "人は抽象を嫌うのではない。入れないことを嫌う。",
+          "『抽象的すぎる』はアイデア否定ではなく入口不足のサインかもしれない。",
+          "抽象は翻訳された瞬間に武器になる。"
+        ],
+        thread: "『抽象的すぎてわからない』という批判は、アイデアがダメという意味ではない。\n\n多くの場合、足りないのは入り口だ。\n\n深い考えには、浅くすることではなく、入れる橋が必要になる。\n\n問題は深さではない。\n問題は翻訳不足だ。"
+      };
+    }
+
+    if (theme === "clarity") {
+      return {
+        lesson: "伝わらない時は、内容よりも見せ方の入口が弱いことが多い。",
+        tension: "中身 と 見せ方",
+        angles: [
+          "良い考えでも伝わらなくなる理由",
+          "最初の一文が弱いと全部ぼやける話",
+          "わかりやすさは浅さではないという話"
+        ],
+        hooks: [
+          "わかりにくいのは中身が弱いからとは限らない。",
+          "最初の入り口が弱いと、強い考えも霧の中に消える。",
+          "わかりやすさはレベルを下げることではない。入口を作ることだ。"
+        ],
+        thread: "『何が言いたいのかわからない』と言われた時、すぐに中身を疑わなくていい。\n\n弱いのは中身ではなく入口かもしれない。\n\n強い考えでも、最初の一文が弱いと全部ぼやける。\n\n必要なのは浅くすることではない。\n入り口を強くすることだ。"
+      };
+    }
+
+    if (theme === "value") {
+      return {
+        lesson: "価値がないのではなく、価値の見せ方がまだ届いていないだけかもしれない。",
+        tension: "本来の価値 と 見える価値",
+        angles: [
+          "なぜ価値ある話ほど最初は伝わりにくいのか",
+          "『役に立たない』の裏にある見せ方の問題",
+          "価値を小さくせずに実用を見せる方法"
+        ],
+        hooks: [
+          "『役に立たない』は、使い道が見えていないだけかもしれない。",
+          "見えない価値は、無価値に見える。",
+          "問題は中身ではなく、リターンの見せ方かもしれない。"
+        ],
+        thread: "『それって何の役に立つの？』という反応は、価値がないという意味ではない。\n\n多くの場合、使い道がまだ見えていないだけだ。\n\n価値は存在するだけでは届かない。\n見える形にして初めて伝わる。\n\n必要なのは価値を下げることではない。\n見える形にすることだ。"
+      };
+    }
+
+    if (theme === "length") {
+      return {
+        lesson: "長いと言われる時は、長さそのものより価値が見えるのが遅いことが多い。",
+        tension: "深さ と テンポ",
+        angles: [
+          "長文が嫌われる本当の理由",
+          "浅くせず短く見せるにはどうするか",
+          "深さとダラダラの違い"
+        ],
+        hooks: [
+          "長いのが悪いのではない。価値の到着が遅いのが問題だ。",
+          "深い話でもテンポがあれば読まれる。",
+          "長文が死ぬのは、要点が遅いからだ。"
+        ],
+        thread: "『長い』という批判は、深さを捨てろという意味ではない。\n\n多くの場合、価値が見えるのが遅いという意味だ。\n\n要点が遅いと、読む前に離脱される。\n\n短くするのも一つの答え。\nでも本質はテンポを上げることだ。"
+      };
+    }
+
+    return {
+      lesson: "批判はただのダメージではなく、摩擦の場所を圧縮して教えてくれることがある。",
+      tension: "伝えたいこと と 受け取られ方",
+      angles: [
+        "批判の中にある摩擦の正体",
+        "ネガティブ反応が教えてくれる伝達のズレ",
+        "嫌な反応をアイデアの燃料に変える方法"
+      ],
+      hooks: [
+        "嫌な反応にも、使える情報は入っている。",
+        "批判はダメージではなく摩擦地点の通知かもしれない。",
+        "ネガティブな一言が次のネタの入口になる。"
+      ],
+      thread: "批判は必ずしもダメージではない。\n\n批判は、どこで摩擦が起きたかを圧縮して教えてくれることがある。\n\nどこで伝わらなかったのか。\nどこで相手が離れたのか。\nどこに入口が足りなかったのか。\n\n痛いけれど、そこにはネタの種がある。"
+    };
+  }
+
+  function renderList(target, items) {
+    target.innerHTML = "";
+    items.forEach(function (item) {
+      var li = document.createElement("li");
+      li.textContent = item;
+      target.appendChild(li);
+    });
+  }
+
+  function buildOutputText(data, isJapanese) {
+    var labelLesson = isJapanese ? "Lesson" : "Lesson";
+    var labelTension = isJapanese ? "Core tension" : "Core tension";
+    var labelAngles = isJapanese ? "Angles" : "Angles";
+    var labelHooks = isJapanese ? "Hooks" : "Hooks";
+    var labelThread = isJapanese ? "Thread starter" : "Thread starter";
+
+    return (
+      labelLesson + "\n" + data.lesson + "\n\n" +
+      labelTension + "\n" + data.tension + "\n\n" +
+      labelAngles + "\n- " + data.angles.join("\n- ") + "\n\n" +
+      labelHooks + "\n- " + data.hooks.join("\n- ") + "\n\n" +
+      labelThread + "\n" + data.thread
+    );
+  }
+
+  function generate() {
+    var text = normalize(inputEl.value);
+
+    if (!text) {
+      setStatus("Paste criticism first.");
+      inputEl.focus();
+      return;
+    }
+
+    var jp = hasJapanese(text);
+    var theme = detectTheme(text);
+    var data = jp ? buildJapaneseOutput(text, theme) : buildEnglishOutput(text, theme);
+
+    lessonEl.textContent = data.lesson;
+    tensionEl.textContent = data.tension;
+    renderList(anglesEl, data.angles);
+    renderList(hooksEl, data.hooks);
+    threadEl.textContent = data.thread;
+
+    currentOutput = buildOutputText(data, jp);
+    resultEl.classList.remove("hidden");
+    setStatus("Angles generated.");
+  }
+
+  function tryExample() {
+    inputEl.value = pickRandom(examples);
+    setStatus("Example inserted.");
+    inputEl.focus();
+  }
+
+  function clearAll() {
+    inputEl.value = "";
+    lessonEl.textContent = "";
+    tensionEl.textContent = "";
+    anglesEl.innerHTML = "";
+    hooksEl.innerHTML = "";
+    threadEl.textContent = "";
+    currentOutput = "";
+    resultEl.classList.add("hidden");
+    setStatus("Cleared.");
+    inputEl.focus();
+  }
+
+  async function copyResult() {
+    if (!currentOutput) {
+      setStatus("Generate result first.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(currentOutput);
+      setStatus("Result copied.");
+    } catch (error) {
+      setStatus("Copy failed.");
+      console.error(error);
+    }
+  }
+
+  function saveAsFragment() {
+    var text = normalize(inputEl.value);
+    if (!text) {
+      setStatus("Paste criticism first.");
+      return;
+    }
+
+    var fragments = [];
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          fragments = parsed;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    fragments.unshift({
+      id: "frag-" + Date.now(),
+      type: "criticism",
+      text: text,
+      depth: "surface",
+      generated: true
+    });
+
+    if (fragments.length > 50) {
+      fragments = fragments.slice(0, 50);
+    }
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fragments));
+      setStatus("Saved as fragment.");
+    } catch (error) {
+      setStatus("Save failed.");
+      console.error(error);
+    }
+  }
+
+  exampleBtn.addEventListener("click", tryExample);
+  generateBtn.addEventListener("click", generate);
+  clearBtn.addEventListener("click", clearAll);
+  copyBtn.addEventListener("click", copyResult);
+  saveFragmentBtn.addEventListener("click", saveAsFragment);
+
+  inputEl.addEventListener("keydown", function (event) {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      generate();
+    }
+  });
+})();
+</script>
+</body>
+</html>
