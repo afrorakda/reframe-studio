@@ -1,699 +1,1141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fragment Chain by REFRAME Studio</title>
-  <style>
-    :root {
-      --bg-1: #061018;
-      --bg-2: #0a1724;
-      --bg-3: #0d1f30;
-      --panel: rgba(10, 23, 36, 0.72);
-      --text: #eef6ff;
-      --muted: #9eb4ca;
-      --line: rgba(120, 170, 255, 0.16);
-      --glow-blue: rgba(66, 153, 255, 0.28);
-      --glow-cyan: rgba(58, 224, 255, 0.18);
-      --accent-strong: #9ec5ff;
-      --button-primary-from: #4a7dff;
-      --button-primary-to: #7d5cff;
-      --button-secondary-from: rgba(127, 178, 255, 0.12);
-      --button-secondary-to: rgba(127, 178, 255, 0.06);
-      --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.36);
-      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.28);
-      --radius-xl: 28px;
-      --radius-lg: 22px;
-      --max-width: 860px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragment Chain — REFRAME Studio</title>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --amber:#f5b942;
+  --amber-2:#d79a1d;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:1040px;
+}
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(58, 224, 255, 0.12), transparent 28%),
-        radial-gradient(circle at 80% 10%, rgba(125, 92, 255, 0.14), transparent 30%),
-        radial-gradient(circle at 50% 120%, rgba(66, 153, 255, 0.12), transparent 42%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    a {
-      color: var(--accent-strong);
-      text-decoration: none;
-    }
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
 
-    a:hover {
-      text-decoration: underline;
-    }
+a{
+  color:inherit;
+  text-decoration:none;
+}
 
-    .page {
-      width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 18px 14px 40px;
-    }
+button,
+textarea{
+  font:inherit;
+}
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 18px;
-    }
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
+}
 
-    .hero {
-      margin-bottom: 18px;
-    }
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.16);
-      color: var(--accent-strong);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
+}
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(32px, 6vw, 48px);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      color: var(--text);
-      text-wrap: balance;
-    }
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
 
-    .subtitle {
-      margin: 0;
-      max-width: 700px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.75;
-    }
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
+}
 
-    .byline {
-      display: block;
-    }
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
 
-    .panel {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-xl);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 18px;
-    }
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
 
-    .panel + .panel {
-      margin-top: 14px;
-    }
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
 
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: auto auto 65% -10%;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
-      pointer-events: none;
-      opacity: 0.8;
-    }
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .panel::after {
-      content: "";
-      position: absolute;
-      inset: -20% -10% auto auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--glow-blue), transparent 70%);
-      pointer-events: none;
-      opacity: 0.7;
-    }
+.panel-head{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
 
-    .label-row {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+.panel-head h2{
+  margin:0 0 6px;
+  font-size:1.04rem;
+  letter-spacing:-0.02em;
+}
 
-    .label {
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+.panel-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .helper {
-      color: var(--muted);
-      font-size: 12px;
-    }
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
 
-    textarea {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      min-height: 170px;
-      resize: vertical;
-      border: 1px solid rgba(127, 178, 255, 0.14);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(7, 18, 29, 0.84);
-      color: var(--text);
-      padding: 16px;
-      font: inherit;
-      font-size: 16px;
-      line-height: 1.65;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    }
+.input-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    textarea::placeholder {
-      color: rgba(158, 180, 202, 0.7);
-    }
+.label-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    textarea:focus {
-      border-color: rgba(127, 178, 255, 0.38);
-      box-shadow:
-        0 0 0 4px rgba(66, 153, 255, 0.12),
-        0 0 30px rgba(66, 153, 255, 0.12);
-      background: rgba(8, 20, 32, 0.94);
-    }
+.label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .button-row {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
+.count{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 16px;
-      font: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      color: var(--text);
-      transition: transform 0.06s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
-    }
+textarea{
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+}
 
-    button:active {
-      transform: translateY(1px);
-    }
+textarea::placeholder{
+  color:#8290aa;
+}
 
-    .btn-primary {
-      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
-      box-shadow:
-        0 12px 28px rgba(74, 125, 255, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    }
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
 
-    .btn-secondary {
-      background: linear-gradient(180deg, var(--button-secondary-from), var(--button-secondary-to));
-      border: 1px solid rgba(127, 178, 255, 0.14);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    }
+.weather-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    .hint {
-      position: relative;
-      z-index: 1;
-      margin-top: 14px;
-      padding: 13px 14px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(127, 178, 255, 0.1);
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.65;
-    }
+.weather-label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .section {
-      position: relative;
-      z-index: 1;
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(127, 178, 255, 0.1);
-    }
+.weather-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .section-title {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+.weather-button{
+  appearance:none;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:999px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,box-shadow 0.18s ease;
+}
 
-    .empty-state {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.75;
-      padding: 4px 2px 2px;
-    }
+.weather-button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
 
-    .chain-wrap {
-      position: relative;
-      padding: 8px 0 4px;
-    }
+.weather-button.active{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+  background:rgba(124,92,255,0.14);
+}
 
-    .chain-line {
-      position: absolute;
-      left: 19px;
-      top: 16px;
-      bottom: 16px;
-      width: 2px;
-      background: linear-gradient(180deg, rgba(127, 178, 255, 0.32), rgba(127, 178, 255, 0.06));
-      border-radius: 999px;
-    }
+.weather-button.calm.active{
+  border-color:rgba(34,199,232,0.7);
+  box-shadow:0 0 0 4px rgba(34,199,232,0.10);
+  background:rgba(34,199,232,0.12);
+}
 
-    .chain-step {
-      position: relative;
-      padding-left: 54px;
-      margin-bottom: 16px;
-    }
+.weather-button.drift.active{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+  background:rgba(124,92,255,0.14);
+}
 
-    .chain-step:last-child {
-      margin-bottom: 0;
-    }
+.weather-button.storm.active{
+  border-color:rgba(245,185,66,0.7);
+  box-shadow:0 0 0 4px rgba(245,185,66,0.12);
+  background:rgba(245,185,66,0.14);
+}
 
-    .step-dot {
-      position: absolute;
-      left: 8px;
-      top: 16px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
-      box-shadow:
-        0 0 0 6px rgba(66, 153, 255, 0.08),
-        0 0 20px rgba(66, 153, 255, 0.18);
-      z-index: 1;
-    }
+.weather-note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .step-card {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(8, 21, 34, 0.72);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-      box-shadow: var(--shadow-lg);
-    }
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .step-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: baseline;
-      margin-bottom: 8px;
-    }
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
+}
 
-    .step-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
 
-    .step-kind {
-      font-size: 12px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+.button.primary{
+  min-width:180px;
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .step-desc {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
+.button.green{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 38px;
-      padding: 9px 12px;
-      border-radius: 999px;
-      background: rgba(127, 178, 255, 0.08);
-      border: 1px solid rgba(127, 178, 255, 0.12);
-      color: var(--accent-strong);
-      font-size: 13px;
-      line-height: 1.2;
-      backdrop-filter: blur(8px);
-    }
+.button.copied{
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
 
-    .chip.accent {
-      background: linear-gradient(135deg, rgba(74, 125, 255, 0.18), rgba(125, 92, 255, 0.16));
-      color: var(--text);
-    }
+.button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
 
-    .footer {
-      margin-top: 18px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.7;
-    }
+.chain-info{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#d8dfec;
+}
 
-    .footer strong {
-      color: var(--text);
-      font-weight: 700;
-    }
+.chain-info strong{
+  display:block;
+  margin-bottom:8px;
+  font-size:1rem;
+}
 
-    @media (max-width: 640px) {
-      .page {
-        padding: 16px 12px 34px;
-      }
+.chain-grid{
+  display:grid;
+  gap:14px;
+}
 
-      .panel {
-        padding: 16px;
-        border-radius: 24px;
-      }
+.step{
+  position:relative;
+  padding:18px;
+  border-radius:22px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
 
-      .button-row {
-        flex-direction: column;
-      }
+.step-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
 
-      button {
-        width: 100%;
-      }
+.step-badges{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
 
-      .step-top {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+.step-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#d7def0;
+  font-size:0.84rem;
+}
+
+.step-badge.type{
+  border-color:rgba(124,92,255,0.25);
+  background:rgba(124,92,255,0.10);
+  color:#cfbeff;
+}
+
+.step-badge.weather-calm{
+  border-color:rgba(34,199,232,0.25);
+  background:rgba(34,199,232,0.10);
+  color:#9befff;
+}
+
+.step-badge.weather-drift{
+  border-color:rgba(124,92,255,0.25);
+  background:rgba(124,92,255,0.10);
+  color:#cfbeff;
+}
+
+.step-badge.weather-storm{
+  border-color:rgba(245,185,66,0.30);
+  background:rgba(245,185,66,0.10);
+  color:#ffd88b;
+}
+
+.step-title{
+  margin:0;
+  font-size:1.05rem;
+  letter-spacing:-0.02em;
+}
+
+.step-body{
+  color:#e1e7f5;
+  font-size:1rem;
+  white-space:pre-wrap;
+}
+
+.step-arrow{
+  text-align:center;
+  color:var(--muted);
+  font-size:1.2rem;
+  margin:2px 0;
+}
+
+.final-card{
+  padding:18px;
+  border-radius:22px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(124,92,255,0.10), rgba(34,199,232,0.06));
+}
+
+.final-card h3{
+  margin:0 0 10px;
+  font-size:1.08rem;
+  letter-spacing:-0.02em;
+}
+
+.final-card p{
+  margin:0;
+  color:#e7ecf8;
+  white-space:pre-wrap;
+}
+
+.links{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door{
+  padding-top:8px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door a{
+  color:#b9c7ff;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:760px){
+  .hero-inner,
+  .panel-head,
+  .panel-body{
+    padding:16px;
+  }
+
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
+
+  .actions,
+  .weather-row,
+  .links{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .button,
+  .button.primary,
+  .button.secondary,
+  .button.green,
+  .weather-button{
+    width:100%;
+  }
+
+  textarea{
+    min-height:190px;
+  }
+}
+</style>
 </head>
 <body>
-  <main class="page">
-    <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
     <section class="hero">
-      <div class="eyebrow">Creation Loop</div>
-      <h1>Fragment Chain <span class="byline">by REFRAME Studio</span></h1>
-      <p class="subtitle">
-        Start with one fragment and let it mutate step by step.
-        Each step should create the next thought.
-      </p>
-    </section>
-
-    <section class="panel">
-      <div class="label-row">
-        <div class="label">Start a chain</div>
-        <div class="helper" id="charCount">0 characters</div>
-      </div>
-
-      <textarea
-        id="fragmentInput"
-        placeholder="People say my ideas are too abstract."
-        aria-label="Fragment input"
-      ></textarea>
-
-      <div class="button-row">
-        <button class="btn-primary" id="startBtn" type="button">Start Chain</button>
-        <button class="btn-secondary" id="exampleBtn" type="button">Try example</button>
-        <button class="btn-secondary" id="nextBtn" type="button">Next Mutation</button>
-        <button class="btn-secondary" id="clearBtn" type="button">Clear</button>
-      </div>
-
-      <div class="hint">
-        Fragment → Mutation → New Fragment → Mutation
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="label-row">
-        <div class="label">Chain</div>
-        <div class="helper">Thought continuation</div>
-      </div>
-
-      <div id="chainArea" class="empty-state">
-        Start a chain to see one fragment evolve into the next.
-      </div>
-    </section>
-
-    <footer class="footer">
-      <strong>No login.</strong>
-      <strong>No tracking.</strong>
-      <strong>No personal data.</strong>
-      Runs entirely in your browser.
-    </footer>
-  </main>
-
-  <script src="./mutation-map.js"></script>
-  <script>
-    const inputEl = document.getElementById("fragmentInput");
-    const startBtn = document.getElementById("startBtn");
-    const exampleBtn = document.getElementById("exampleBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const charCountEl = document.getElementById("charCount");
-    const chainArea = document.getElementById("chainArea");
-
-    let chain = [];
-
-    const exampleText = "People say my ideas are too abstract.";
-
-    const mutationPrompts = {
-      Criticism: [
-        "What are they actually reacting to?",
-        "What lesson is hidden inside this criticism?",
-        "Can this criticism become a creative angle?",
-        "What post idea is hiding here?"
-      ],
-      Emotion: [
-        "What is this feeling trying to protect?",
-        "What small action would reduce the pressure?",
-        "What truth is hidden inside this emotion?",
-        "What fragment appears underneath the feeling?"
-      ],
-      Problem: [
-        "What is the real blockage here?",
-        "Which assumption is making this heavier?",
-        "What option appears if the current frame is removed?",
-        "What small move would count as progress?"
-      ],
-      Confusion: [
-        "What exactly is unclear?",
-        "What question would make this simpler?",
-        "What is missing here?",
-        "What is the smallest clear version of this thought?"
-      ],
-      Failure: [
-        "What did this failure reveal?",
-        "What should be kept, removed, or reversed?",
-        "What smaller retry is possible now?",
-        "What lesson would success have hidden?"
-      ],
-      Idea: [
-        "What is the strongest angle inside this idea?",
-        "Could this become a tool?",
-        "What new fragment would this idea generate?",
-        "What expression form fits this idea best?"
-      ]
-    };
-
-    function updateCharCount() {
-      const count = inputEl.value.length;
-      charCountEl.textContent = count + " character" + (count === 1 ? "" : "s");
-    }
-
-    function escapeHtml(value) {
-      return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
-
-    function canBuildRoute() {
-      return typeof window.buildFragmentRoute === "function";
-    }
-
-    function randomFrom(list) {
-      return list[Math.floor(Math.random() * list.length)];
-    }
-
-    function tryExample() {
-      inputEl.value = exampleText;
-      updateCharCount();
-    }
-
-    function startChain() {
-      const text = inputEl.value.trim();
-      if (!text) {
-        chainArea.innerHTML = `
-          <div class="empty-state">
-            Drop one short fragment first. Even a rough line is enough.
-          </div>
-        `;
-        return;
-      }
-
-      let route = null;
-      if (canBuildRoute()) {
-        route = window.buildFragmentRoute(text);
-      }
-
-      chain = [];
-
-      if (route) {
-        chain.push({
-          title: "Dropped Fragment",
-          kind: route.detectedType.label,
-          text: text,
-          chips: ["Start", route.detectedType.label]
-        });
-
-        const firstPrompt = route.nextMutations && route.nextMutations.length
-          ? route.nextMutations[0]
-          : "What new thought appears here?";
-
-        chain.push({
-          title: "First Mutation",
-          kind: "Mutation",
-          text: firstPrompt,
-          chips: ["Mutation", route.detectedType.label]
-        });
-      } else {
-        chain.push({
-          title: "Dropped Fragment",
-          kind: "Start",
-          text: text,
-          chips: ["Start"]
-        });
-      }
-
-      renderChain();
-    }
-
-    function addMutation() {
-      if (chain.length === 0) {
-        return;
-      }
-
-      const first = chain[0];
-      const type = first && first.kind ? first.kind : "Problem";
-      const prompts = mutationPrompts[type] || mutationPrompts.Problem;
-      const nextText = randomFrom(prompts);
-
-      chain.push({
-        title: "Next Mutation",
-        kind: "Mutation",
-        text: nextText,
-        chips: ["Continue", type]
-      });
-
-      renderChain();
-    }
-
-    function clearChain() {
-      chain = [];
-      inputEl.value = "";
-      updateCharCount();
-      chainArea.innerHTML = `
-        <div class="empty-state">
-          Start a chain to see one fragment evolve into the next.
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Creation loop</span>
+          <h1>Fragment Chain</h1>
+          <p>
+            Start with one fragment and let it mutate step by step. The weather changes how the chain moves, so the thought does not stop after one result.
+          </p>
         </div>
-      `;
-      inputEl.focus();
-    }
 
-    function renderChain() {
-      if (!chain.length) {
-        chainArea.innerHTML = `
-          <div class="empty-state">
-            Start a chain to see one fragment evolve into the next.
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Keep the thought moving</h2>
+            <p>Fragment → mutation → mutation → angle → next thought.</p>
           </div>
-        `;
-        return;
-      }
 
-      chainArea.innerHTML = `
-        <div class="chain-wrap">
-          <div class="chain-line"></div>
-          ${chain.map((step, index) => `
-            <div class="chain-step">
-              <div class="step-dot"></div>
-              <div class="step-card">
-                <div class="step-top">
-                  <div class="step-title">${escapeHtml(step.title)}</div>
-                  <div class="step-kind">Step ${index + 1}</div>
-                </div>
-                <p class="step-desc">${escapeHtml(step.text)}</p>
-                <div class="chip-row">
-                  ${step.chips.map((chip, chipIndex) => `
-                    <div class="chip ${chipIndex === 0 ? "accent" : ""}">${escapeHtml(chip)}</div>
-                  `).join("")}
-                </div>
+          <div class="panel-body">
+            <div class="input-wrap">
+              <div class="label-row">
+                <div class="label">Start a chain</div>
+                <div class="count" id="char-count">0 characters</div>
+              </div>
+
+              <textarea id="input" placeholder="People say my ideas are too abstract."></textarea>
+            </div>
+
+            <div class="weather-wrap">
+              <div class="weather-label">Thought Weather</div>
+
+              <div class="weather-row">
+                <button class="weather-button calm" id="weather-calm" type="button" data-weather="calm">Calm</button>
+                <button class="weather-button drift" id="weather-drift" type="button" data-weather="drift">Drift</button>
+                <button class="weather-button storm" id="weather-storm" type="button" data-weather="storm">Storm</button>
+              </div>
+
+              <div class="weather-note" id="weather-note">
+                Calm = clearer, more stable chain.
               </div>
             </div>
-          `).join("")}
-        </div>
-      `;
+
+            <div class="actions">
+              <button class="button primary" id="start-btn" type="button">Start chain</button>
+              <button class="button secondary" id="next-btn" type="button">Next mutation</button>
+              <button class="button" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <button class="button green" id="copy-btn" type="button">Copy result</button>
+            </div>
+
+            <div class="chain-info">
+              <strong>Chain logic</strong>
+              <span id="chain-summary">Start with one fragment. Each mutation should create the next thought.</span>
+            </div>
+
+            <div class="chain-grid" id="chain-grid">
+              <div class="step">
+                <div class="step-head">
+                  <h3 class="step-title">No chain yet</h3>
+                </div>
+                <div class="step-body">Start a chain to see the fragment mutate step by step.</div>
+              </div>
+            </div>
+
+            <div class="final-card">
+              <h3>Current opening</h3>
+              <p id="current-opening">The current opening will appear here.</p>
+            </div>
+
+            <div class="links">
+              <a class="button" id="router-link" href="./fragment-router.html">Open router</a>
+              <a class="button" id="ocean-link" href="./thinking-ocean.html">Open ocean</a>
+            </div>
+
+            <div class="note" id="status">Start with one unfinished thought.</div>
+
+            <div class="hidden-door">
+              Already curious?
+              <a href="./enter-deeper.html">Enter deeper.</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var inputEl = document.getElementById("input");
+  var countEl = document.getElementById("char-count");
+  var weatherNoteEl = document.getElementById("weather-note");
+  var chainSummaryEl = document.getElementById("chain-summary");
+  var chainGridEl = document.getElementById("chain-grid");
+  var currentOpeningEl = document.getElementById("current-opening");
+  var statusEl = document.getElementById("status");
+  var copyBtn = document.getElementById("copy-btn");
+  var routerLinkEl = document.getElementById("router-link");
+
+  var startBtn = document.getElementById("start-btn");
+  var nextBtn = document.getElementById("next-btn");
+  var exampleBtn = document.getElementById("example-btn");
+  var clearBtn = document.getElementById("clear-btn");
+
+  var weatherButtons = Array.prototype.slice.call(document.querySelectorAll(".weather-button"));
+
+  var EXAMPLE = "People say my ideas are too abstract.";
+  var WEATHER_STORAGE_KEY = "reframe_thought_weather_v1";
+  var selectedWeather = "calm";
+  var chainSteps = [];
+
+  var TYPE_LABELS = {
+    criticism: "Criticism",
+    emotion: "Emotion",
+    problem: "Problem",
+    confusion: "Confusion",
+    failure: "Failure",
+    idea: "Idea"
+  };
+
+  var WEATHER_INFO = {
+    calm: {
+      label: "Calm",
+      note: "Calm = clearer, more stable chain."
+    },
+    drift: {
+      label: "Drift",
+      note: "Drift = slightly stranger chain."
+    },
+    storm: {
+      label: "Storm",
+      note: "Storm = sharper, more unstable chain."
+    }
+  };
+
+  var CHAIN_MAP = {
+    criticism: {
+      calm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"criticism" },
+        { kind:"lesson", title:"Lesson", makeText:function(){ return "The criticism is probably pointing at the entry point, not the value of the idea."; }, nextType:"idea" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "Abstract ideas are not the problem. The real problem is giving people a doorway into them."; }, nextType:"idea" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "Your idea is not too abstract. Your entry point is too weak."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What doorway would make the same idea instantly easier to enter?"; }, nextType:"confusion" }
+      ],
+      drift: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"criticism" },
+        { kind:"question", title:"Question", makeText:function(){ return "What exactly are people failing to catch when they call the idea abstract?"; }, nextType:"confusion" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "Maybe criticism is only failed translation between your thought and their entry point."; }, nextType:"idea" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "When people say your idea is abstract, they may just mean they never found the handle."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the handle is missing, what is the smallest version of the idea people can hold?"; }, nextType:"problem" }
+      ],
+      storm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"criticism" },
+        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe the idea is not too abstract. Maybe the world is too literal."; }, nextType:"idea" },
+        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "The idea is a deep-sea creature. People panic because they only know shallow water."; }, nextType:"idea" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "They call your idea abstract because it came from deeper water than they have seen."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What other deep-sea thought have you been hiding because the surface people would not get it?"; }, nextType:"idea" }
+      ]
+    },
+
+    emotion: {
+      calm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"emotion" },
+        { kind:"action", title:"Action", makeText:function(){ return "Reduce the pressure into one tiny action you can do today."; }, nextType:"problem" },
+        { kind:"constraint", title:"Constraint", makeText:function(){ return "The feeling may be showing that your current system is heavier than your energy."; }, nextType:"problem" },
+        { kind:"move", title:"Move", makeText:function(){ return "Protect one small rhythm instead of trying to solve everything at once."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What would become easier if you designed around your real energy instead of your ideal energy?"; }, nextType:"confusion" }
+      ],
+      drift: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"emotion" },
+        { kind:"question", title:"Question", makeText:function(){ return "What is this feeling trying to prevent you from seeing too quickly?"; }, nextType:"confusion" },
+        { kind:"structure", title:"Structure", makeText:function(){ return "The emotion may need shape before it can become movement."; }, nextType:"idea" },
+        { kind:"action", title:"Action", makeText:function(){ return "Turn the feeling into one question, then one action."; }, nextType:"problem" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What shape would make this feeling useful instead of heavy?"; }, nextType:"idea" }
+      ],
+      storm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"emotion" },
+        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe this feeling is not weakness. Maybe it is pressure from an unlived direction."; }, nextType:"idea" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "The feeling that drains you may be the map, not the obstacle."; }, nextType:"idea" },
+        { kind:"thread", title:"Thread Angle", makeText:function(){ return "What if your exhaustion is not a flaw, but evidence that your current path is false?"; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the feeling is a map, where is it trying to pull you instead?"; }, nextType:"confusion" }
+      ]
+    },
+
+    problem: {
+      calm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"problem" },
+        { kind:"root cause", title:"Root Cause", makeText:function(){ return "The visible problem may be hiding a smaller cause that keeps repeating."; }, nextType:"problem" },
+        { kind:"constraint", title:"Constraint", makeText:function(){ return "One real limit is shaping how this problem behaves."; }, nextType:"problem" },
+        { kind:"action", title:"Action", makeText:function(){ return "Shrink the next move until it fits the real limit."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What is the smallest move that still respects reality?"; }, nextType:"confusion" }
+      ],
+      drift: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"problem" },
+        { kind:"options", title:"Options", makeText:function(){ return "The problem may feel stuck because you are still inside one frame."; }, nextType:"idea" },
+        { kind:"question", title:"Question", makeText:function(){ return "What changes if this is not one problem but three smaller ones?"; }, nextType:"confusion" },
+        { kind:"action", title:"Action", makeText:function(){ return "Test one direction instead of waiting for the whole answer."; }, nextType:"problem" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "Which smaller version of the problem can you test immediately?"; }, nextType:"idea" }
+      ],
+      storm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"problem" },
+        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe the problem is not what blocks the path. Maybe it is the path."; }, nextType:"idea" },
+        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "This problem is a locked cave. The real work is not pushing harder but finding the hidden entrance."; }, nextType:"idea" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "The thing you call the problem may only be the surface crust of a deeper opening."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the problem is an entrance, what lies beneath it?"; }, nextType:"confusion" }
+      ]
+    },
+
+    confusion: {
+      calm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"confusion" },
+        { kind:"question", title:"Question", makeText:function(){ return "The real question is probably still hiding underneath the fog."; }, nextType:"confusion" },
+        { kind:"structure", title:"Structure", makeText:function(){ return "Give the confusion shape before trying to solve it."; }, nextType:"idea" },
+        { kind:"action", title:"Action", makeText:function(){ return "Write one question, then answer only that one."; }, nextType:"problem" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What single question would make the fog thinner right now?"; }, nextType:"idea" }
+      ],
+      drift: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"confusion" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "Confusion may be unfinished movement, not failure."; }, nextType:"idea" },
+        { kind:"question", title:"Question", makeText:function(){ return "What are you still protecting by keeping this unclear?"; }, nextType:"confusion" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "Sometimes confusion is just a thought waiting for the right question."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What question keeps trying to appear through the noise?"; }, nextType:"confusion" }
+      ],
+      storm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"confusion" },
+        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "The thought is mist over deep water. You do not need to clear all of it to know there is depth below."; }, nextType:"idea" },
+        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe clarity is not missing. Maybe you are ignoring the answer because it feels dangerous."; }, nextType:"idea" },
+        { kind:"question", title:"Question", makeText:function(){ return "What truth would force movement if you admitted it?"; }, nextType:"confusion" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the danger is real, what makes the truth still worth touching?"; }, nextType:"emotion" }
+      ]
+    },
+
+    failure: {
+      calm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"failure" },
+        { kind:"lesson", title:"Lesson", makeText:function(){ return "Failure revealed something the smoother path would have hidden."; }, nextType:"idea" },
+        { kind:"constraint", title:"Constraint", makeText:function(){ return "The failed attempt exposed the real limit more clearly."; }, nextType:"problem" },
+        { kind:"action", title:"Action", makeText:function(){ return "Build the next attempt around the revealed limit."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What did this failure finally make impossible to ignore?"; }, nextType:"confusion" }
+      ],
+      drift: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"failure" },
+        { kind:"question", title:"Question", makeText:function(){ return "What repeated itself here that you still have not named?"; }, nextType:"confusion" },
+        { kind:"option", title:"Option", makeText:function(){ return "A failed route often creates a more honest second route."; }, nextType:"idea" },
+        { kind:"action", title:"Action", makeText:function(){ return "Use the collapse as a filter for what not to repeat."; }, nextType:"problem" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What new route only exists because the first one broke?"; }, nextType:"idea" }
+      ],
+      storm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"failure" },
+        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe this was not failure. Maybe it was the system rejecting the wrong shape."; }, nextType:"idea" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "Collapse can be proof that the thought hit a real boundary."; }, nextType:"idea" },
+        { kind:"thread", title:"Thread Angle", makeText:function(){ return "The failed attempt may be more alive than the polished success you imagined."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What stronger form is trying to emerge through the collapse?"; }, nextType:"idea" }
+      ]
+    },
+
+    idea: {
+      calm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"idea" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "The idea needs a clearer doorway so other people can enter it."; }, nextType:"idea" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "The thought gets stronger when it learns how to land."; }, nextType:"idea" },
+        { kind:"thread", title:"Thread Angle", makeText:function(){ return "What if the whole thread is just different ways to enter the same idea?"; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What is the strongest doorway into this idea?"; }, nextType:"confusion" }
+      ],
+      drift: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"idea" },
+        { kind:"question", title:"Question", makeText:function(){ return "What is still unfinished inside this idea?"; }, nextType:"confusion" },
+        { kind:"angle", title:"Angle", makeText:function(){ return "Maybe the idea is not the answer. Maybe it is the pressure point."; }, nextType:"idea" },
+        { kind:"thread", title:"Thread Angle", makeText:function(){ return "A useful thread may come from showing how the idea mutates, not just what it says."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What happens to this idea if you let it drift one layer further?"; }, nextType:"idea" }
+      ],
+      storm: [
+        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"idea" },
+        { kind:"opposite", title:"Opposite", makeText:function(){ return "The opposite version of the idea may be just as alive as the original."; }, nextType:"idea" },
+        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "This idea is a tunnel in the seabed. It matters because it leads somewhere stranger than expected."; }, nextType:"idea" },
+        { kind:"hook", title:"Hook", makeText:function(){ return "The most interesting part of the idea may be the part that does not fit the surface world."; }, nextType:"idea" },
+        { kind:"opening", title:"Next Opening", makeText:function(){ return "What other forbidden or strange tunnel does this idea connect to?"; }, nextType:"idea" }
+      ]
+    }
+  };
+
+  function updateCount() {
+    countEl.textContent = inputEl.value.length + " characters";
+  }
+
+  function detectType(text) {
+    var lower = String(text || "").toLowerCase();
+
+    if (!lower.trim()) return "";
+
+    if (
+      lower.indexOf("people say") !== -1 ||
+      lower.indexOf("they say") !== -1 ||
+      lower.indexOf("criticism") !== -1 ||
+      lower.indexOf("comment") !== -1 ||
+      lower.indexOf("reply") !== -1
+    ) {
+      return "criticism";
     }
 
-    inputEl.addEventListener("input", updateCharCount);
-    startBtn.addEventListener("click", startChain);
-    exampleBtn.addEventListener("click", tryExample);
-    nextBtn.addEventListener("click", addMutation);
-    clearBtn.addEventListener("click", clearChain);
+    if (
+      lower.indexOf("feel") !== -1 ||
+      lower.indexOf("heavy") !== -1 ||
+      lower.indexOf("anxious") !== -1 ||
+      lower.indexOf("frustrated") !== -1 ||
+      lower.indexOf("tired") !== -1 ||
+      lower.indexOf("exhaust") !== -1
+    ) {
+      return "emotion";
+    }
 
-    inputEl.addEventListener("keydown", function(event) {
-      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-        startChain();
+    if (
+      lower.indexOf("problem") !== -1 ||
+      lower.indexOf("can't") !== -1 ||
+      lower.indexOf("cannot") !== -1 ||
+      lower.indexOf("stuck") !== -1 ||
+      lower.indexOf("blocked") !== -1
+    ) {
+      return "problem";
+    }
+
+    if (
+      lower.indexOf("don't know") !== -1 ||
+      lower.indexOf("do not know") !== -1 ||
+      lower.indexOf("confused") !== -1 ||
+      lower.indexOf("not sure") !== -1 ||
+      lower.indexOf("which direction") !== -1
+    ) {
+      return "confusion";
+    }
+
+    if (
+      lower.indexOf("failed") !== -1 ||
+      lower.indexOf("failure") !== -1 ||
+      lower.indexOf("didn't work") !== -1 ||
+      lower.indexOf("did not work") !== -1 ||
+      lower.indexOf("collapsed") !== -1
+    ) {
+      return "failure";
+    }
+
+    return "idea";
+  }
+
+  function loadWeather() {
+    var params = new URLSearchParams(window.location.search);
+    var weather = params.get("weather");
+    var saved = "";
+
+    try {
+      saved = localStorage.getItem(WEATHER_STORAGE_KEY) || "";
+    } catch (error) {}
+
+    if (weather === "calm" || weather === "drift" || weather === "storm") {
+      selectedWeather = weather;
+      return;
+    }
+
+    if (saved === "calm" || saved === "drift" || saved === "storm") {
+      selectedWeather = saved;
+    }
+  }
+
+  function loadFragment() {
+    var params = new URLSearchParams(window.location.search);
+    var fragment = params.get("fragment");
+    if (fragment) {
+      inputEl.value = fragment;
+    }
+  }
+
+  function renderWeatherUI() {
+    weatherButtons.forEach(function (button) {
+      var weather = button.getAttribute("data-weather");
+      button.classList.toggle("active", weather === selectedWeather);
+    });
+
+    weatherNoteEl.textContent = WEATHER_INFO[selectedWeather].note;
+
+    try {
+      localStorage.setItem(WEATHER_STORAGE_KEY, selectedWeather);
+    } catch (error) {}
+  }
+
+  function resetCopyButton() {
+    copyBtn.textContent = "Copy result";
+    copyBtn.classList.remove("copied");
+  }
+
+  function showCopiedState() {
+    copyBtn.textContent = "Copied!";
+    copyBtn.classList.add("copied");
+    setTimeout(function () {
+      resetCopyButton();
+    }, 1200);
+  }
+
+  function updateRouterLink() {
+    var text = inputEl.value.trim();
+    if (!text) {
+      routerLinkEl.href = "./fragment-router.html";
+      return;
+    }
+
+    var params = new URLSearchParams();
+    params.set("text", text);
+
+    if (selectedWeather === "calm") params.set("mode", "stable");
+    else if (selectedWeather === "drift") params.set("mode", "drift");
+    else params.set("mode", "chaos");
+
+    routerLinkEl.href = "./fragment-router.html?" + params.toString();
+  }
+
+  function renderChain() {
+    if (!chainSteps.length) {
+      chainGridEl.innerHTML =
+        '<div class="step"><div class="step-head"><h3 class="step-title">No chain yet</h3></div><div class="step-body">Start a chain to see the fragment mutate step by step.</div></div>';
+      currentOpeningEl.textContent = "The current opening will appear here.";
+      chainSummaryEl.textContent = "Start with one fragment. Each mutation should create the next thought.";
+      return;
+    }
+
+    chainGridEl.innerHTML = "";
+
+    chainSteps.forEach(function (step, index) {
+      var stepEl = document.createElement("div");
+      stepEl.className = "step";
+
+      var headEl = document.createElement("div");
+      headEl.className = "step-head";
+
+      var titleEl = document.createElement("h3");
+      titleEl.className = "step-title";
+      titleEl.textContent = "Step " + (index + 1) + " — " + step.title;
+
+      var badgesEl = document.createElement("div");
+      badgesEl.className = "step-badges";
+
+      var typeBadge = document.createElement("div");
+      typeBadge.className = "step-badge type";
+      typeBadge.textContent = TYPE_LABELS[step.type] || "Type";
+
+      var weatherBadge = document.createElement("div");
+      weatherBadge.className = "step-badge weather-" + selectedWeather;
+      weatherBadge.textContent = WEATHER_INFO[selectedWeather].label;
+
+      badgesEl.appendChild(typeBadge);
+      badgesEl.appendChild(weatherBadge);
+
+      headEl.appendChild(titleEl);
+      headEl.appendChild(badgesEl);
+
+      var bodyEl = document.createElement("div");
+      bodyEl.className = "step-body";
+      bodyEl.textContent = step.text;
+
+      stepEl.appendChild(headEl);
+      stepEl.appendChild(bodyEl);
+      chainGridEl.appendChild(stepEl);
+
+      if (index < chainSteps.length - 1) {
+        var arrowEl = document.createElement("div");
+        arrowEl.className = "step-arrow";
+        arrowEl.textContent = "↓";
+        chainGridEl.appendChild(arrowEl);
       }
     });
 
-    updateCharCount();
-  </script>
+    currentOpeningEl.textContent = chainSteps[chainSteps.length - 1].text;
+    chainSummaryEl.textContent =
+      (TYPE_LABELS[chainSteps[0].type] || "Fragment") +
+      " → " +
+      chainSteps.map(function(step){ return step.title; }).join(" → ");
+  }
+
+  function buildChain(maxSteps) {
+    var text = inputEl.value.trim();
+
+    if (!text) {
+      statusEl.textContent = "Please enter a fragment.";
+      chainSteps = [];
+      renderChain();
+      nextBtn.disabled = true;
+      return;
+    }
+
+    var type = detectType(text);
+    var chainTemplate = CHAIN_MAP[type][selectedWeather];
+    var steps = [];
+
+    for (var i = 0; i < Math.min(maxSteps, chainTemplate.length); i += 1) {
+      var template = chainTemplate[i];
+      steps.push({
+        title: template.title,
+        kind: template.kind,
+        type: template.nextType || type,
+        text: template.makeText(text)
+      });
+    }
+
+    chainSteps = steps;
+    renderChain();
+    updateRouterLink();
+
+    if (chainSteps.length >= chainTemplate.length) {
+      nextBtn.disabled = true;
+      statusEl.textContent = "Chain reached its current opening.";
+    } else {
+      nextBtn.disabled = false;
+      statusEl.textContent = "Chain started.";
+    }
+  }
+
+  function startChain() {
+    buildChain(2);
+  }
+
+  function nextMutation() {
+    var text = inputEl.value.trim();
+
+    if (!text) {
+      statusEl.textContent = "Please enter a fragment.";
+      return;
+    }
+
+    var type = detectType(text);
+    var chainTemplate = CHAIN_MAP[type][selectedWeather];
+
+    if (!chainSteps.length) {
+      buildChain(2);
+      return;
+    }
+
+    var nextLength = Math.min(chainSteps.length + 1, chainTemplate.length);
+    buildChain(nextLength);
+  }
+
+  function tryExample() {
+    inputEl.value = EXAMPLE;
+    updateCount();
+    buildChain(2);
+    statusEl.textContent = "Example loaded.";
+  }
+
+  function clearAll() {
+    inputEl.value = "";
+    updateCount();
+    chainSteps = [];
+    renderChain();
+    resetCopyButton();
+    nextBtn.disabled = true;
+    updateRouterLink();
+    statusEl.textContent = "Cleared.";
+  }
+
+  function buildCopyText() {
+    if (!chainSteps.length) return "";
+
+    var lines = [];
+    chainSteps.forEach(function(step, index){
+      lines.push("Step " + (index + 1) + " — " + step.title);
+      lines.push(step.text);
+      lines.push("");
+    });
+    lines.push("Current opening");
+    lines.push(currentOpeningEl.textContent);
+    return lines.join("\n");
+  }
+
+  function copyResult() {
+    var text = buildCopyText();
+
+    if (!text.trim()) {
+      statusEl.textContent = "Nothing to copy yet.";
+      return;
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        statusEl.textContent = "Chain copied.";
+        showCopiedState();
+      }).catch(function () {
+        statusEl.textContent = "Copy failed.";
+      });
+    } else {
+      statusEl.textContent = "Copy not supported here.";
+    }
+  }
+
+  weatherButtons.forEach(function(button){
+    button.addEventListener("click", function(){
+      selectedWeather = button.getAttribute("data-weather");
+      renderWeatherUI();
+      updateRouterLink();
+
+      if (inputEl.value.trim()) {
+        var currentLength = chainSteps.length || 2;
+        buildChain(currentLength);
+        statusEl.textContent = "Thought Weather changed to " + WEATHER_INFO[selectedWeather].label + ".";
+      } else {
+        statusEl.textContent = "Thought Weather changed to " + WEATHER_INFO[selectedWeather].label + ".";
+      }
+    });
+  });
+
+  inputEl.addEventListener("input", function(){
+    updateCount();
+    updateRouterLink();
+  });
+
+  startBtn.addEventListener("click", startChain);
+  nextBtn.addEventListener("click", nextMutation);
+  exampleBtn.addEventListener("click", tryExample);
+  clearBtn.addEventListener("click", clearAll);
+  copyBtn.addEventListener("click", copyResult);
+
+  loadWeather();
+  loadFragment();
+  updateCount();
+  renderWeatherUI();
+  renderChain();
+  updateRouterLink();
+  nextBtn.disabled = true;
+
+  if (inputEl.value.trim()) {
+    buildChain(2);
+    statusEl.textContent = "Fragment loaded into chain.";
+  }
+})();
+</script>
 </body>
 </html>
