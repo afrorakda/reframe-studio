@@ -1,504 +1,535 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Constraint → Action</title>
-  <meta name="description" content="Turn a constraint into one useful next action." />
-  <style>
-    :root{
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #18202a;
-      --muted: #667085;
-      --line: #e7ecf3;
-      --primary: #1f6fff;
-      --primary-pressed: #1659cc;
-      --soft: #eef4ff;
-      --success: #127a4a;
-      --shadow: 0 10px 30px rgba(24,32,42,0.08);
-      --radius: 20px;
-      --radius-sm: 14px;
-      --max: 760px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Constraint → Action — REFRAME Studio</title>
 
-    * { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background:
-        radial-gradient(circle at top, #fafdff 0%, #f5f7fb 42%, #eef2f8 100%);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-    }
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:980px;
+}
 
-    a, button, textarea {
-      -webkit-tap-highlight-color: transparent;
-    }
+*{
+  box-sizing:border-box;
+}
 
-    .wrap {
-      width: 100%;
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
-    }
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
 
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 600;
-      margin: 4px 0 16px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.7);
-      border: 1px solid var(--line);
-      backdrop-filter: blur(10px);
-    }
+a{
+  color:inherit;
+  text-decoration:none;
+}
 
-    .back-link:active {
-      transform: translateY(1px);
-    }
+button,
+textarea{
+  font:inherit;
+}
 
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(231,236,243,0.95);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px;
-    }
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
+}
 
-    .title {
-      font-size: clamp(28px, 6vw, 40px);
-      line-height: 1.08;
-      margin: 0 0 10px;
-      letter-spacing: -0.03em;
-    }
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
 
-    .desc {
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 15px;
-    }
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
+}
 
-    .label {
-      display: block;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      margin: 0 0 8px;
-      color: #344054;
-    }
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
 
-    textarea {
-      width: 100%;
-      min-height: 170px;
-      resize: vertical;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      font: inherit;
-      font-size: 16px;
-      color: var(--text);
-      background: #fbfcfe;
-      outline: none;
-      box-shadow: inset 0 1px 2px rgba(16,24,40,0.03);
-    }
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
+}
 
-    textarea:focus {
-      border-color: rgba(31,111,255,0.5);
-      box-shadow: 0 0 0 4px rgba(31,111,255,0.12);
-      background: #fff;
-    }
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
 
-    textarea::placeholder {
-      color: #98a2b3;
-      white-space: pre-line;
-    }
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
 
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
 
-    button {
-      appearance: none;
-      border: 0;
-      border-radius: 16px;
-      padding: 15px 16px;
-      font: inherit;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.06s ease, opacity 0.2s ease, background 0.2s ease;
-      min-height: 52px;
-    }
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    button:active {
-      transform: translateY(1px);
-    }
+.panel-head{
+  padding:18px 18px 14px;
+  border-bottom:1px solid var(--line);
+}
 
-    .primary {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 8px 18px rgba(31,111,255,0.25);
-    }
+.panel-head h2{
+  margin:0 0 6px;
+  font-size:1.04rem;
+  letter-spacing:-0.02em;
+}
 
-    .primary:hover {
-      background: var(--primary-pressed);
-    }
+.panel-head p{
+  margin:0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .secondary {
-      background: var(--soft);
-      color: var(--primary);
-      border: 1px solid #dce8ff;
-    }
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
+}
 
-    .secondary:hover {
-      background: #e7f0ff;
-    }
+.input-wrap{
+  display:grid;
+  gap:10px;
+}
 
-    .ghost {
-      background: #fff;
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
+.label-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .ghost:hover {
-      background: #fafcff;
-    }
+.label{
+  font-size:0.84rem;
+  font-weight:800;
+  letter-spacing:0.09em;
+  text-transform:uppercase;
+  color:#cdd8ef;
+}
 
-    .result-card {
-      margin-top: 16px;
-      padding: 16px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
-    }
+.count{
+  color:var(--muted);
+  font-size:0.92rem;
+}
 
-    .result-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+textarea{
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
+}
 
-    .result-title {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 800;
-      color: #344054;
-      letter-spacing: 0.01em;
-    }
+textarea::placeholder{
+  color:#8290aa;
+}
 
-    .status {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--success);
-      min-height: 18px;
-    }
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
 
-    .result {
-      white-space: pre-wrap;
-      font-size: 16px;
-      color: var(--text);
-      min-height: 148px;
-      padding: 4px 2px 0;
-    }
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      margin: 16px 0 0;
-      padding-bottom: 6px;
-    }
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
+}
 
-    @media (min-width: 640px) {
-      .wrap {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-      .card {
-        padding: 24px;
-      }
-      .controls {
-        grid-template-columns: 1.2fr 1fr 1fr;
-      }
-    }
-  </style>
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.primary{
+  min-width:180px;
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.copied{
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.result-card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+}
+
+.result-title{
+  margin:0 0 12px;
+  font-size:1rem;
+  letter-spacing:-0.02em;
+}
+
+.result-body{
+  color:#d8dfec;
+  font-size:1rem;
+  white-space:pre-wrap;
+  min-height:160px;
+}
+
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door{
+  padding-top:8px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.hidden-door a{
+  color:#b9c7ff;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:720px){
+  .hero-inner,
+  .panel-head,
+  .panel-body{
+    padding:16px;
+  }
+
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
+
+  .actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .button,
+  .button.primary,
+  .button.secondary{
+    width:100%;
+  }
+
+  textarea{
+    min-height:190px;
+  }
+}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <a class="back-link" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-    <section class="card">
-      <h1 class="title">Constraint → Action</h1>
-      <p class="desc">Turn a constraint into one useful next action.</p>
-
-      <label class="label" for="constraintInput">Constraint or bottleneck</label>
-      <textarea
-        id="constraintInput"
-        placeholder="I don't have a clear template.
-使えるテンプレートがまだない。"
-        aria-label="Constraint input"
-      ></textarea>
-
-      <div class="controls">
-        <button id="findBtn" class="primary" type="button">Find action</button>
-        <button id="exampleBtn" class="secondary" type="button">Try example</button>
-        <button id="copyBtn" class="ghost" type="button">Copy result</button>
-      </div>
-
-      <div class="result-card" aria-live="polite">
-        <div class="result-head">
-          <h2 class="result-title">Result</h2>
-          <div class="status" id="status"></div>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Surface tool</span>
+          <h1>Constraint → Action</h1>
+          <p>
+            Turn a real limit into a useful next step. Do not wait for ideal conditions. Use the constraint to shape movement.
+          </p>
         </div>
-        <div class="result" id="result"></div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Move with the limit, not against it</h2>
+            <p>Describe the constraint. Get a few small actions that still fit reality.</p>
+          </div>
+
+          <div class="panel-body">
+            <div class="input-wrap">
+              <div class="label-row">
+                <div class="label">What is limiting you?</div>
+                <div class="count" id="char-count">0 characters</div>
+              </div>
+
+              <textarea id="input" placeholder="Example: I only have 30 minutes a day, so I can't make big progress on this project."></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="button primary" id="generate-btn" type="button">Find actions</button>
+              <button class="button secondary" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <button class="button" id="copy-btn" type="button">Copy result</button>
+            </div>
+
+            <div class="result-card">
+              <h3 class="result-title">Possible next actions</h3>
+              <div class="result-body" id="result">Possible next actions will appear here.</div>
+            </div>
+
+            <div class="note" id="status">Start with one real constraint.</div>
+
+            <div class="hidden-door">
+              Already curious?
+              <a href="./enter-deeper.html">Enter deeper.</a>
+            </div>
+          </div>
+        </section>
       </div>
     </section>
 
-    <p class="footer">REFRAME Studio — small, clear, immediately usable actions.</p>
-  </main>
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
 
-  <script>
-    (function () {
-      const input = document.getElementById('constraintInput');
-      const result = document.getElementById('result');
-      const status = document.getElementById('status');
-      const findBtn = document.getElementById('findBtn');
-      const exampleBtn = document.getElementById('exampleBtn');
-      const copyBtn = document.getElementById('copyBtn');
+<script>
+(function () {
+  "use strict";
 
-      const EXAMPLE_EN = "I don't have a clear template for this workflow.";
-      const EXAMPLE_JA = "この作業フローで使えるテンプレートがまだない。";
+  var inputEl = document.getElementById("input");
+  var resultEl = document.getElementById("result");
+  var statusEl = document.getElementById("status");
+  var countEl = document.getElementById("char-count");
 
-      function setStatus(message) {
-        status.textContent = message || '';
-        if (message) {
-          window.clearTimeout(setStatus._timer);
-          setStatus._timer = window.setTimeout(() => {
-            status.textContent = '';
-          }, 1800);
-        }
-      }
+  var generateBtn = document.getElementById("generate-btn");
+  var exampleBtn = document.getElementById("example-btn");
+  var clearBtn = document.getElementById("clear-btn");
+  var copyBtn = document.getElementById("copy-btn");
 
-      function containsJapanese(text) {
-        return /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/.test(text);
-      }
+  var EXAMPLE = "I only have 30 minutes a day, so I can't make big progress on this project.";
 
-      function isEnglishOnly(text) {
-        const hasLetters = /[A-Za-z]/.test(text);
-        const hasJapanese = containsJapanese(text);
-        return hasLetters && !hasJapanese;
-      }
+  function updateCount() {
+    countEl.textContent = inputEl.value.length + " characters";
+  }
 
-      function detectLanguage(text) {
-        if (containsJapanese(text)) return 'ja';
-        return 'en';
-      }
+  function cleanText(text) {
+    return String(text || "").trim();
+  }
 
-      function normalize(text) {
-        return (text || '').trim().toLowerCase();
-      }
+  function resetCopyButton() {
+    copyBtn.textContent = "Copy result";
+    copyBtn.classList.remove("copied");
+  }
 
-      function hasAny(text, keywords) {
-        return keywords.some(k => text.includes(k));
-      }
+  function showCopiedState() {
+    copyBtn.textContent = "Copied!";
+    copyBtn.classList.add("copied");
+    setTimeout(function () {
+      resetCopyButton();
+    }, 1200);
+  }
 
-      function makeOutput(lang, actions) {
-        const header = lang === 'ja' ? '次のアクション候補:' : 'Possible actions:';
-        return header + '\n' + actions.map(a => '- ' + a).join('\n');
-      }
+  function buildResult(text) {
+    var lower = text.toLowerCase();
+    var lines = [];
 
-      function actionSetForTemplate(lang) {
-        if (lang === 'ja') {
-          return [
-            'まず一つの簡単なテンプレートを作る',
-            '使う構造を一つだけ固定する',
-            '選択肢を減らして判断回数を減らす',
-            '同じ型を次回も使い回す'
-          ];
-        }
-        return [
-          'Make one simple template',
-          'Fix one structure and use it',
-          'Reduce the number of choices',
-          'Reuse the same format next time'
-        ];
-      }
+    if (lower.indexOf("30 minutes") !== -1 || lower.indexOf("time") !== -1 || lower.indexOf("busy") !== -1) {
+      lines.push("1. Reduce the project into one tiny daily task that fits the time you actually have.");
+      lines.push("");
+      lines.push("2. Decide what can be ignored for now so the short time is not wasted on switching.");
+      lines.push("");
+      lines.push("3. Use the same 30-minute slot every day so the constraint becomes a rhythm.");
+      lines.push("");
+      lines.push("4. Measure progress by consistency, not by how much gets finished in one session.");
+      return lines.join("\n");
+    }
 
-      function actionSetForDecisions(lang) {
-        if (lang === 'ja') {
-          return [
-            '選択肢を三つ以下に絞る',
-            '判断ルールを一つだけ決める',
-            'まずの既定値を一つ固定する',
-            '今回の対象範囲を小さく区切る'
-          ];
-        }
-        return [
-          'Cut the options down to three',
-          'Choose one decision rule',
-          'Set one default first',
-          'Limit the scope for this round'
-        ];
-      }
+    if (lower.indexOf("money") !== -1 || lower.indexOf("budget") !== -1) {
+      lines.push("1. Replace the expensive version with the smallest possible test.");
+      lines.push("");
+      lines.push("2. Use free tools first to learn what actually matters.");
+      lines.push("");
+      lines.push("3. Remove any step that costs money before it proves value.");
+      lines.push("");
+      lines.push("4. Focus on what can create traction before what looks complete.");
+      return lines.join("\n");
+    }
 
-      function actionSetForPriorities(lang) {
-        if (lang === 'ja') {
-          return [
-            '今日の最重要ターゲットを一つ決める',
-            '進んだか分かる指標を一つ決める',
-            '横道の作業をいったん外す',
-            'まず一つだけ最後まで終える'
-          ];
-        }
-        return [
-          'Pick one target for today',
-          'Define one metric for progress',
-          'Remove side tasks for now',
-          'Finish one thing before starting another'
-        ];
-      }
+    if (lower.indexOf("energy") !== -1 || lower.indexOf("tired") !== -1 || lower.indexOf("exhaust") !== -1) {
+      lines.push("1. Move the task to the part of the day where your energy is most reliable.");
+      lines.push("");
+      lines.push("2. Cut the action down until it feels possible even on a low-energy day.");
+      lines.push("");
+      lines.push("3. Stop planning around peak energy and build around normal energy instead.");
+      lines.push("");
+      lines.push("4. Choose one action that reduces strain before trying to increase output.");
+      return lines.join("\n");
+    }
 
-      function actionSetForWorkflow(lang) {
-        if (lang === 'ja') {
-          return [
-            '毎回同じ順番で進める流れを決める',
-            '短いチェックリストを一つ作る',
-            '繰り返せる定型ルーティンにする',
-            '毎回同じ最初の一歩から始める'
-          ];
-        }
-        return [
-          'Set one fixed sequence',
-          'Use one short checklist',
-          'Create one repeatable routine',
-          'Start from the same first step each time'
-        ];
-      }
+    if (lower.indexOf("skill") !== -1 || lower.indexOf("experience") !== -1 || lower.indexOf("don't know how") !== -1) {
+      lines.push("1. Break the task into the smallest part you can learn quickly.");
+      lines.push("");
+      lines.push("2. Do one practice version before trying the real version.");
+      lines.push("");
+      lines.push("3. Use the gap in skill as a guide for what to learn first.");
+      lines.push("");
+      lines.push("4. Replace ambition with one narrow learning target for now.");
+      return lines.join("\n");
+    }
 
-      function actionSetGeneric(lang) {
-        if (lang === 'ja') {
-          return [
-            '次の一歩を五分でできる大きさまで小さくする',
-            '終わりの条件を一つだけ決める',
-            '今やらないことを一つ外す',
-            '今日中に一回だけ試して記録する'
-          ];
-        }
-        return [
-          'Shrink the next step to five minutes',
-          'Set one clear finish line',
-          'Remove one thing you will not do now',
-          'Test one small version today'
-        ];
-      }
+    lines.push("1. Accept the constraint as real and stop planning as if it is not there.");
+    lines.push("");
+    lines.push("2. Shrink the next step until it fits inside the limit.");
+    lines.push("");
+    lines.push("3. Remove one part of the task that is not essential.");
+    lines.push("");
+    lines.push("4. Let the constraint shape the method, not stop the movement.");
+    return lines.join("\n");
+  }
 
-      function generateActions(text) {
-        const lang = detectLanguage(text);
-        const t = normalize(text);
+  function generate() {
+    var text = cleanText(inputEl.value);
 
-        const templateKeywordsEn = ['template', 'format', 'structure', 'framework', 'blank', 'starting point'];
-        const templateKeywordsJa = ['テンプレート', 'ひな型', '型', 'フォーマット', '形式', '土台'];
-        const decisionKeywordsEn = ['too many decisions', 'too many choices', 'too many options', 'decision', 'choices', 'options', 'overthinking'];
-        const decisionKeywordsJa = ['判断が多い', '決めることが多い', '選択肢が多い', '迷う', '判断できない', '決められない'];
-        const priorityKeywordsEn = ['priority', 'priorities', 'unclear priorities', 'not sure what matters', 'focus', 'too many tasks'];
-        const priorityKeywordsJa = ['優先順位', '何を先にやるか', '優先が不明', '焦点', 'タスクが多い', '重要なものが分からない'];
-        const workflowKeywordsEn = ['workflow', 'inconsistent', 'routine', 'process', 'sequence', 'scattered'];
-        const workflowKeywordsJa = ['流れが安定しない', '手順がばらばら', 'ワークフロー', 'ルーティン', '進め方が一定でない', '順番が決まらない'];
+    if (!text) {
+      resultEl.textContent = "Add one constraint first.";
+      statusEl.textContent = "Please enter a constraint.";
+      resetCopyButton();
+      return;
+    }
 
-        if (hasAny(t, templateKeywordsEn) || hasAny(text, templateKeywordsJa)) {
-          return makeOutput(lang, actionSetForTemplate(lang));
-        }
-        if (hasAny(t, decisionKeywordsEn) || hasAny(text, decisionKeywordsJa)) {
-          return makeOutput(lang, actionSetForDecisions(lang));
-        }
-        if (hasAny(t, priorityKeywordsEn) || hasAny(text, priorityKeywordsJa)) {
-          return makeOutput(lang, actionSetForPriorities(lang));
-        }
-        if (hasAny(t, workflowKeywordsEn) || hasAny(text, workflowKeywordsJa)) {
-          return makeOutput(lang, actionSetForWorkflow(lang));
-        }
+    resultEl.textContent = buildResult(text);
+    statusEl.textContent = "Possible next actions generated.";
+    resetCopyButton();
+  }
 
-        const fallback = actionSetGeneric(lang);
+  function tryExample() {
+    inputEl.value = EXAMPLE;
+    updateCount();
+    generate();
+  }
 
-        if (lang === 'ja' && /ない|不足|詰ま|止ま|できない|不明|混乱/.test(text)) {
-          return makeOutput(lang, fallback);
-        }
-        if (lang === 'en' && /(can't|cannot|stuck|lack|missing|blocked|unclear|messy|slow)/.test(t)) {
-          return makeOutput(lang, fallback);
-        }
+  function clearAll() {
+    inputEl.value = "";
+    resultEl.textContent = "Possible next actions will appear here.";
+    statusEl.textContent = "Cleared.";
+    updateCount();
+    resetCopyButton();
+  }
 
-        return makeOutput(lang, fallback);
-      }
+  function copyResult() {
+    var text = resultEl.textContent.trim();
 
-      function run() {
-        const text = input.value.trim();
-        if (!text) {
-          result.textContent = '';
-          setStatus('');
-          return;
-        }
-        result.textContent = generateActions(text);
-      }
+    if (!text || text === "Possible next actions will appear here." || text === "Add one constraint first.") {
+      statusEl.textContent = "Nothing to copy yet.";
+      return;
+    }
 
-      findBtn.addEventListener('click', run);
-
-      exampleBtn.addEventListener('click', function () {
-        const lang = detectLanguage(input.value.trim() || navigator.language || 'en');
-        input.value = lang === 'ja' ? EXAMPLE_JA : EXAMPLE_EN;
-        run();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        statusEl.textContent = "Result copied.";
+        showCopiedState();
+      }).catch(function () {
+        statusEl.textContent = "Copy failed.";
       });
+    } else {
+      statusEl.textContent = "Copy not supported here.";
+    }
+  }
 
-      copyBtn.addEventListener('click', async function () {
-        const text = result.textContent.trim();
-        if (!text) return;
+  inputEl.addEventListener("input", updateCount);
+  generateBtn.addEventListener("click", generate);
+  exampleBtn.addEventListener("click", tryExample);
+  clearBtn.addEventListener("click", clearAll);
+  copyBtn.addEventListener("click", copyResult);
 
-        try {
-          await navigator.clipboard.writeText(text);
-          setStatus('Copied');
-        } catch (e) {
-          const range = document.createRange();
-          range.selectNodeContents(result);
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-          try {
-            document.execCommand('copy');
-            setStatus('Copied');
-          } catch (err) {
-            setStatus('Copy failed');
-          }
-          sel.removeAllRanges();
-        }
-      });
-
-      input.addEventListener('keydown', function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-          run();
-        }
-      });
-
-      input.addEventListener('input', function () {
-        if (!input.value.trim()) {
-          result.textContent = '';
-        }
-      });
-
-      const initial = input.value.trim();
-      if (initial) run();
-    })();
-  </script>
+  updateCount();
+})();
+</script>
 </body>
 </html>
