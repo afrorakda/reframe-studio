@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capture Fragment</title>
+<style>
+:root{
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --green:#22c55e;
+  --danger-1:#ff7b7b;
+  --danger-2:#d44d4d;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:920px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+textarea,
+select{
+  font:inherit;
+}
+
+.page{
+  min-height:100vh;
+  padding:20px 16px 48px;
+}
+
+.container{
+  max-width:var(--max);
+  margin:0 auto;
+}
+
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  color:#8fb0ff;
+  font-size:0.95rem;
+}
+
+.hero{
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(124,92,255,0.14), transparent 22%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.09), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+}
+
+.hero-inner{
+  padding:24px 20px 20px;
+  display:grid;
+  gap:18px;
+}
+
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(2rem, 6vw, 3.6rem);
+  line-height:0.98;
+  letter-spacing:-0.05em;
+}
+
+.subtitle{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:720px;
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,0.03);
+  padding:16px;
+}
+
+.panel-title{
+  margin:0 0 6px;
+  font-size:1rem;
+  font-weight:700;
+}
+
+.panel-note{
+  margin:0 0 14px;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:180px 180px 1fr;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+select{
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#0e1420;
+  color:var(--text);
+  padding:12px 14px;
+  outline:none;
+}
+
+select:focus,
+textarea:focus{
+  border-color:rgba(124,92,255,0.75);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
+}
+
+textarea{
+  width:100%;
+  min-height:150px;
+  resize:vertical;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:#0e1420;
+  color:var(--text);
+  padding:16px;
+  outline:none;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.button{
+  appearance:none;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:12px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease;
+}
+
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
+}
+
+.button.primary{
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.cyan{
+  background:linear-gradient(180deg, #22d0f0, #0faaca);
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.green{
+  background:linear-gradient(180deg, #33d17a, #1ea85e);
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.danger{
+  background:linear-gradient(180deg, var(--danger-1), var(--danger-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.status{
+  min-height:22px;
+  color:var(--muted);
+  font-size:0.92rem;
+  margin-top:10px;
+}
+
+.section{
+  margin-top:22px;
+  display:grid;
+  gap:14px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.section-head h2{
+  margin:0;
+  font-size:1.2rem;
+  letter-spacing:-0.03em;
+}
+
+.section-head p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.count-note{
+  color:var(--muted);
+  font-size:0.9rem;
+}
+
+.list{
+  display:grid;
+  gap:12px;
+}
+
+.item{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,0.03);
+  padding:16px;
+}
+
+.item-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.badges{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:999px;
+  font-size:0.76rem;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+
+.badge.criticism{
+  background:rgba(124,92,255,0.14);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+}
+
+.badge.emotion{
+  background:rgba(255,153,120,0.13);
+  border:1px solid rgba(255,153,120,0.22);
+  color:#ffc8af;
+}
+
+.badge.problem{
+  background:rgba(34,199,232,0.12);
+  border:1px solid rgba(34,199,232,0.22);
+  color:#9befff;
+}
+
+.badge.confusion{
+  background:rgba(255,219,92,0.12);
+  border:1px solid rgba(255,219,92,0.24);
+  color:#ffe89f;
+}
+
+.badge.failure{
+  background:rgba(255,110,110,0.12);
+  border:1px solid rgba(255,110,110,0.22);
+  color:#ffb1b1;
+}
+
+.badge.idea{
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.24);
+  color:#bff7cf;
+}
+
+.badge.depth{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--muted);
+}
+
+.item-text{
+  margin:0 0 14px;
+  color:var(--text);
+  font-size:0.96rem;
+  white-space:pre-wrap;
+}
+
+.item-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.item-actions .button{
+  padding:10px 12px;
+  font-size:0.9rem;
+}
+
+.empty{
+  border:1px dashed var(--line);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.footer{
+  margin-top:24px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:760px){
+  .controls{
+    grid-template-columns:1fr;
+  }
+
+  .hero-inner{
+    padding:16px;
+  }
+
+  textarea{
+    min-height:130px;
+  }
+
+  .item-top{
+    flex-direction:column;
+  }
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="eyebrow">Life → Fragment</span>
+        <h1>Capture Fragment</h1>
+        <p class="subtitle">
+          Save a criticism, feeling, problem, confusion, failure, or idea before it disappears. Captured fragments become fuel for Thinking Ocean.
+        </p>
+
+        <section class="panel">
+          <h2 class="panel-title">Capture now</h2>
+          <p class="panel-note">
+            Keep it short. Save the raw friction first. You can mutate it later.
+          </p>
+
+          <div class="controls">
+            <select id="type" aria-label="Fragment type">
+              <option value="criticism">Criticism</option>
+              <option value="emotion">Emotion</option>
+              <option value="problem">Problem</option>
+              <option value="confusion">Confusion</option>
+              <option value="failure">Failure</option>
+              <option value="idea">Idea</option>
+            </select>
+
+            <select id="depth" aria-label="Depth">
+              <option value="surface">Surface</option>
+              <option value="middle">Middle</option>
+              <option value="deep">Deep</option>
+            </select>
+
+            <div class="actions" style="margin-top:0;">
+              <button class="button" id="example-btn" type="button">Try example</button>
+              <button class="button primary" id="save-btn" type="button">Save fragment</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+            </div>
+          </div>
+
+          <textarea id="input" placeholder="Capture the fragment here..."></textarea>
+
+          <div class="actions">
+            <a class="button cyan" href="./thinking-ocean.html">Open Thinking Ocean</a>
+          </div>
+
+          <div class="status" id="status"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>Saved fragments</h2>
+          <p>Your captured fragments stay on this device.</p>
+        </div>
+        <div class="count-note" id="count-note">Saved fragments: 0</div>
+      </div>
+
+      <div class="list" id="list"></div>
+    </section>
+
+    <div class="footer">
+      No login / No tracking / No personal data collected / Runs entirely in your browser
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "reframe_captured_fragments_v1";
+
+  var inputEl = document.getElementById("input");
+  var typeEl = document.getElementById("type");
+  var depthEl = document.getElementById("depth");
+  var statusEl = document.getElementById("status");
+  var listEl = document.getElementById("list");
+  var countNoteEl = document.getElementById("count-note");
+
+  var exampleBtn = document.getElementById("example-btn");
+  var saveBtn = document.getElementById("save-btn");
+  var clearBtn = document.getElementById("clear-btn");
+
+  var examples = {
+    criticism: [
+      "People say my ideas are too abstract.",
+      "『何が言いたいのかわからない』と言われた。"
+    ],
+    emotion: [
+      "I feel heavy every time I try to publish.",
+      "出す前に全部弱く見えて止まる。"
+    ],
+    problem: [
+      "I have too many directions and no clear priority.",
+      "やることは多いのに最初の一歩が決まらない。"
+    ],
+    confusion: [
+      "I know something is here, but I cannot see the real question yet.",
+      "考えはあるのに論点がまだ掴めない。"
+    ],
+    failure: [
+      "I posted consistently and nothing landed.",
+      "頑張って出したのに反応が伸びなかった。"
+    ],
+    idea: [
+      "Criticism might be fuel, not damage.",
+      "批判は創作の燃料になるかもしれない。"
+    ]
+  };
+
+  function setStatus(message) {
+    statusEl.textContent = message || "";
+  }
+
+  function normalize(text) {
+    return String(text || "").trim().replace(/\s+/g, " ");
+  }
+
+  function pickRandom(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  function loadFragments() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  function saveFragments(items) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  function updateCount(items) {
+    countNoteEl.textContent = "Saved fragments: " + items.length;
+  }
+
+  function makeBadge(text, cls) {
+    var span = document.createElement("span");
+    span.className = "badge " + cls;
+    span.textContent = text;
+    return span;
+  }
+
+  function createButton(label, cls) {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "button" + (cls ? " " + cls : "");
+    button.textContent = label;
+    return button;
+  }
+
+  function renderList() {
+    var items = loadFragments();
+    listEl.innerHTML = "";
+    updateCount(items);
+
+    if (!items.length) {
+      var empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No fragments saved yet.";
+      listEl.appendChild(empty);
+      return;
+    }
+
+    items.forEach(function (item) {
+      var card = document.createElement("div");
+      card.className = "item";
+
+      var top = document.createElement("div");
+      top.className = "item-top";
+
+      var badges = document.createElement("div");
+      badges.className = "badges";
+      badges.appendChild(makeBadge(String(item.type || "").toUpperCase(), item.type || "idea"));
+      badges.appendChild(makeBadge("Depth: " + (item.depth || "surface"), "depth"));
+
+      var actions = document.createElement("div");
+      actions.className = "item-actions";
+
+      var toOceanBtn = createButton("Open in ocean", "cyan");
+      var deleteBtn = createButton("Delete", "danger");
+
+      actions.appendChild(toOceanBtn);
+      actions.appendChild(deleteBtn);
+
+      top.appendChild(badges);
+      top.appendChild(actions);
+
+      var text = document.createElement("p");
+      text.className = "item-text";
+      text.textContent = item.text || "";
+
+      card.appendChild(top);
+      card.appendChild(text);
+      listEl.appendChild(card);
+
+      toOceanBtn.addEventListener("click", function () {
+        window.location.href = "./thinking-ocean.html";
+      });
+
+      deleteBtn.addEventListener("click", function () {
+        var current = loadFragments().filter(function (fragment) {
+          return fragment.id !== item.id;
+        });
+
+        if (saveFragments(current)) {
+          renderList();
+          setStatus("Fragment deleted.");
+        } else {
+          setStatus("Delete failed.");
+        }
+      });
+    });
+  }
+
+  function saveCurrentFragment() {
+    var text = normalize(inputEl.value);
+    if (!text) {
+      setStatus("Write a fragment first.");
+      inputEl.focus();
+      return;
+    }
+
+    var items = loadFragments();
+
+    items.unshift({
+      id: "frag-" + Date.now(),
+      type: typeEl.value,
+      depth: depthEl.value,
+      text: text,
+      generated: true
+    });
+
+    if (items.length > 50) {
+      items = items.slice(0, 50);
+    }
+
+    if (saveFragments(items)) {
+      setStatus("Fragment saved.");
+      renderList();
+    } else {
+      setStatus("Save failed.");
+    }
+  }
+
+  function tryExample() {
+    var type = typeEl.value;
+    inputEl.value = pickRandom(examples[type] || examples.idea);
+    setStatus("Example inserted.");
+    inputEl.focus();
+  }
+
+  function clearInput() {
+    inputEl.value = "";
+    setStatus("Cleared.");
+    inputEl.focus();
+  }
+
+  exampleBtn.addEventListener("click", tryExample);
+  saveBtn.addEventListener("click", saveCurrentFragment);
+  clearBtn.addEventListener("click", clearInput);
+
+  inputEl.addEventListener("keydown", function (event) {
+    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+      saveCurrentFragment();
+    }
+  });
+
+  renderList();
+})();
+</script>
+</body>
+</html>
