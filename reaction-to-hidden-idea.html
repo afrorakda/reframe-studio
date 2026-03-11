@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Reaction → Hidden Idea</title>
+
+<style>
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+margin:0;
+padding:24px;
+background:#0f1117;
+color:#e6edf3;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+}
+
+textarea{
+width:100%;
+height:120px;
+padding:12px;
+background:#161b22;
+border:1px solid #333;
+border-radius:8px;
+color:white;
+}
+
+button{
+margin-top:12px;
+margin-right:8px;
+padding:10px 16px;
+background:#238636;
+border:none;
+border-radius:8px;
+color:white;
+cursor:pointer;
+}
+
+.result{
+margin-top:20px;
+white-space:pre-wrap;
+background:#161b22;
+padding:16px;
+border-radius:8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="./index.html">← Back</a>
+
+<h1>Reaction → Hidden Idea</h1>
+
+<p>Find the hidden idea behind reactions.</p>
+
+<textarea id="input" placeholder="Example: People react to my posts but I don't know what idea they actually care about"></textarea>
+
+<br>
+
+<button onclick="generate()">Generate</button>
+
+<button onclick="example()">Try example</button>
+
+<button onclick="clearAll()">Clear</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<script>
+
+function example(){
+
+document.getElementById("input").value =
+"People react to my posts but I don't know how to turn those reactions into new ideas.";
+
+}
+
+function clearAll(){
+
+document.getElementById("input").value="";
+document.getElementById("result").textContent="";
+
+}
+
+function generate(){
+
+const ideas = [
+
+"People reacted to the surface idea, but the hidden interest might be the problem behind it.",
+
+"The reaction may reveal what people secretly struggle with but rarely say.",
+
+"Your audience might be reacting to the emotion, not the topic.",
+
+"The strongest idea may be hidden in the comment nobody liked.",
+
+"The reaction might mean people disagree but feel curious.",
+
+"Your audience might be telling you which assumption is wrong.",
+
+"The reaction could reveal a question people are afraid to ask.",
+
+"The real idea may be the opposite of what people reacted to."
+
+];
+
+let output = "Hidden Ideas\n\n";
+
+ideas.forEach(i=>{
+output += "• " + i + "\n";
+});
+
+output += "\nNext Mutations\n";
+output += "Hook\nThread\nDebate\nMetaphor";
+
+document.getElementById("result").textContent = output;
+
+}
+
+</script>
+
+</body>
+</html>
