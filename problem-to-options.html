@@ -7,192 +7,373 @@
 
 <style>
 :root{
---bg:#0b0f18;
---panel:#121826;
---line:#293246;
---text:#f6f8fb;
---muted:#9aa7bd;
---cyan:#22c7e8;
---green:#22c55e;
+  --bg:#0b0f18;
+  --bg-2:#090d15;
+  --panel:#121826;
+  --panel-2:#171e2f;
+  --line:#293246;
+  --text:#f6f8fb;
+  --muted:#98a3b8;
+  --purple:#7c5cff;
+  --purple-2:#6b4ef2;
+  --cyan:#22c7e8;
+  --cyan-2:#0faaca;
+  --green:#22c55e;
+  --green-2:#1ea85e;
+  --shadow:0 12px 40px rgba(0,0,0,0.28);
+  --max:980px;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
-body{
-margin:0;
-font-family:Inter,system-ui;
-background:linear-gradient(180deg,#0b0f18,#090d15);
-color:var(--text);
-padding:20px;
+html,body{
+  margin:0;
+  padding:0;
+  background:
+    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,
+textarea{
+  font:inherit;
+}
+
+.page{
+  min-height:100vh;
+  padding:20px 16px 56px;
 }
 
 .container{
-max-width:900px;
-margin:auto;
+  max-width:var(--max);
+  margin:0 auto;
 }
 
 .back{
-display:inline-block;
-margin-bottom:18px;
-color:#b7c8ff;
-text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:18px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#b7c8ff;
+  box-shadow:var(--shadow);
 }
 
-.card{
-background:var(--panel);
-border:1px solid var(--line);
-border-radius:20px;
-padding:24px;
+.hero{
+  border:1px solid var(--line);
+  border-radius:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
+    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
 }
 
-h1{
-margin:0 0 10px;
-font-size:44px;
+.hero-inner{
+  padding:26px 20px 20px;
+  display:grid;
+  gap:22px;
 }
 
-p{
-color:var(--muted);
+.eyebrow{
+  display:inline-block;
+  width:max-content;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(124,92,255,0.12);
+  border:1px solid rgba(124,92,255,0.22);
+  color:#cfbeff;
+  font-size:0.82rem;
+}
+
+.hero-copy h1{
+  margin:0 0 10px;
+  font-size:clamp(2.4rem, 8vw, 4.7rem);
+  line-height:0.96;
+  letter-spacing:-0.055em;
+}
+
+.hero-copy p{
+  margin:0;
+  color:var(--muted);
+  font-size:1rem;
+  max-width:760px;
+}
+
+.panel{
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.panel-body{
+  padding:18px;
+  display:grid;
+  gap:16px;
 }
 
 textarea{
-width:100%;
-min-height:180px;
-margin-top:16px;
-padding:16px;
-border-radius:12px;
-border:1px solid var(--line);
-background:#0b1322;
-color:white;
-font-size:16px;
+  width:100%;
+  min-height:220px;
+  resize:vertical;
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(10,16,28,0.78);
+  color:var(--text);
+  outline:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
-.buttons{
-margin-top:18px;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+textarea::placeholder{
+  color:#8290aa;
 }
 
-button{
-padding:14px 18px;
-border-radius:12px;
-border:1px solid var(--line);
-background:#172033;
-color:white;
-cursor:pointer;
+textarea:focus{
+  border-color:rgba(124,92,255,0.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
 }
 
-button.primary{
-background:linear-gradient(180deg,#33d17a,#22c55e);
-border:none;
-font-weight:600;
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
-button.example{
-background:linear-gradient(180deg,#22d0f0,#0faaca);
-border:none;
+.button{
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+  color:var(--text);
+  border-radius:14px;
+  padding:14px 18px;
+  cursor:pointer;
+  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
 }
 
-.result{
-margin-top:20px;
-padding:18px;
-border-radius:14px;
-border:1px solid var(--line);
-background:#0d1424;
-white-space:pre-wrap;
+.button:hover{
+  transform:translateY(-1px);
+  border-color:#4b5872;
 }
 
-footer{
-margin-top:30px;
-text-align:center;
-color:var(--muted);
-font-size:13px;
+.button.primary{
+  min-width:180px;
+  background:linear-gradient(180deg, #33d17a, var(--green-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.secondary{
+  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.button.copied{
+  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
+  border-color:transparent;
+  color:white;
+  font-weight:700;
+}
+
+.result-card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:#d8dfec;
+  white-space:pre-wrap;
+  min-height:140px;
+}
+
+.note{
+  color:var(--muted);
+  font-size:0.92rem;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.88rem;
+}
+
+@media (max-width:720px){
+  .hero-inner,
+  .panel-body{
+    padding:16px;
+  }
+
+  .hero-copy h1{
+    font-size:3.3rem;
+  }
+
+  .actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .button,
+  .button.primary,
+  .button.secondary{
+    width:100%;
+  }
+
+  textarea{
+    min-height:190px;
+  }
 }
 </style>
 </head>
-
 <body>
+<main class="page">
+  <div class="container">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
 
-<div class="container">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Surface tool</span>
+          <h1>Problem → Options</h1>
+          <p>
+            Turn one problem into multiple possible directions. Do not search for the perfect answer. Generate options.
+          </p>
+        </div>
 
-<a class="back" href="./index.html">← Back to REFRAME Studio</a>
+        <section class="panel">
+          <div class="panel-body">
+            <textarea id="input" placeholder="Example: I want to start a project but I don't know what to build."></textarea>
 
-<div class="card">
+            <div class="actions">
+              <button class="button primary" id="generate-btn" type="button">Generate options</button>
+              <button class="button secondary" id="example-btn" type="button">Try example</button>
+              <button class="button" id="clear-btn" type="button">Clear</button>
+              <button class="button" id="copy-btn" type="button">Copy result</button>
+            </div>
 
-<h1>Problem → Options</h1>
+            <div class="result-card" id="result">Options will appear here.</div>
 
-<p>
-Turn one problem into multiple possible directions.
-Don't search for the perfect answer. Generate options.
-</p>
+            <div class="note" id="status">Start with one problem.</div>
+          </div>
+        </section>
+      </div>
+    </section>
 
-<textarea id="input" placeholder="Example: I want to start a project but I don't know what to build."></textarea>
-
-<div class="buttons">
-
-<button class="primary" onclick="generate()">Generate options</button>
-
-<button class="example" onclick="example()">Try example</button>
-
-<button onclick="clearAll()">Clear</button>
-
-<button onclick="copy()">Copy result</button>
-
-</div>
-
-<div class="result" id="result">
-Options will appear here.
-</div>
-
-</div>
-
-<footer>
-REFRAME Studio — No login / No tracking / Runs entirely in your browser
-</footer>
-
-</div>
+    <div class="footer">
+      REFRAME Studio — No login / No tracking / Runs entirely in your browser
+    </div>
+  </div>
+</main>
 
 <script>
+(function () {
+  "use strict";
 
-function example(){
-document.getElementById("input").value =
-"I want to start a project but I don't know what to build.";
-generate();
-}
+  var inputEl = document.getElementById("input");
+  var resultEl = document.getElementById("result");
+  var statusEl = document.getElementById("status");
+  var copyBtn = document.getElementById("copy-btn");
 
-function clearAll(){
-document.getElementById("input").value="";
-document.getElementById("result").textContent="Options will appear here.";
-}
+  function example() {
+    inputEl.value = "I want to start a project but I don't know what to build.";
+    generate();
+  }
 
-function copy(){
-const text=document.getElementById("result").textContent;
-navigator.clipboard.writeText(text);
-}
+  function clearAll() {
+    inputEl.value = "";
+    resultEl.textContent = "Options will appear here.";
+    statusEl.textContent = "Cleared.";
+    resetCopyButton();
+  }
 
-function generate(){
+  function resetCopyButton() {
+    copyBtn.textContent = "Copy result";
+    copyBtn.classList.remove("copied");
+  }
 
-const text=document.getElementById("input").value.trim();
+  function showCopiedState() {
+    copyBtn.textContent = "Copied!";
+    copyBtn.classList.add("copied");
+    setTimeout(function () {
+      resetCopyButton();
+    }, 1200);
+  }
 
-if(!text){
-document.getElementById("result").textContent="Please enter a problem.";
-return;
-}
+  function copyResult() {
+    var text = resultEl.textContent.trim();
 
-const options=[
-"Break the problem into smaller questions you can test.",
-"Create a very small experiment instead of a full solution.",
-"Ask who already solved a similar problem.",
-"Try the opposite approach from what you first imagined.",
-"Ignore the problem temporarily and explore adjacent ideas."
-];
+    if (!text || text === "Options will appear here." || text === "Please enter a problem.") {
+      statusEl.textContent = "Nothing to copy yet.";
+      return;
+    }
 
-document.getElementById("result").textContent =
-options.map((o,i)=>`${i+1}. ${o}`).join("\n\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        statusEl.textContent = "Result copied.";
+        showCopiedState();
+      }).catch(function () {
+        statusEl.textContent = "Copy failed.";
+      });
+    } else {
+      statusEl.textContent = "Copy not supported here.";
+    }
+  }
 
-}
+  function generate() {
+    var text = inputEl.value.trim();
 
+    if (!text) {
+      resultEl.textContent = "Please enter a problem.";
+      statusEl.textContent = "Add one problem first.";
+      resetCopyButton();
+      return;
+    }
+
+    var options = [
+      "1. Break the problem into smaller questions you can test.",
+      "",
+      "2. Create a very small experiment instead of a full solution.",
+      "",
+      "3. Ask who already solved a similar problem.",
+      "",
+      "4. Try the opposite approach from what you first imagined.",
+      "",
+      "5. Ignore the problem temporarily and explore adjacent ideas."
+    ];
+
+    resultEl.textContent = options.join("\n");
+    statusEl.textContent = "Options generated.";
+    resetCopyButton();
+  }
+
+  document.getElementById("generate-btn").addEventListener("click", generate);
+  document.getElementById("example-btn").addEventListener("click", example);
+  document.getElementById("clear-btn").addEventListener("click", clearAll);
+  document.getElementById("copy-btn").addEventListener("click", copyResult);
+})();
 </script>
-
 </body>
 </html>
