@@ -3,43 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mutation Trail — REFRAME Studio</title>
+  <title>Mutation Trail by REFRAME Studio</title>
   <style>
     :root {
-      --bg: #f4f7fb;
-      --bg-2: #eef4ff;
-      --card: rgba(255, 255, 255, 0.88);
-      --text: #122033;
-      --muted: #607089;
-      --line: rgba(18, 32, 51, 0.10);
-      --line-strong: rgba(18, 32, 51, 0.16);
-      --accent: #1d6ef2;
-      --accent-soft: rgba(29, 110, 242, 0.10);
-      --shadow: 0 20px 50px rgba(17, 24, 39, 0.08);
-      --radius: 24px;
-      --radius-sm: 16px;
-      --max: 920px;
+      --bg-1: #061018;
+      --bg-2: #0a1724;
+      --bg-3: #0d1f30;
+      --panel: rgba(10, 23, 36, 0.72);
+      --text: #eef6ff;
+      --muted: #9eb4ca;
+      --line: rgba(120, 170, 255, 0.16);
+      --glow-blue: rgba(66, 153, 255, 0.28);
+      --glow-cyan: rgba(58, 224, 255, 0.18);
+      --accent-strong: #9ec5ff;
+      --button-primary-from: #4a7dff;
+      --button-primary-to: #7d5cff;
+      --button-secondary-from: rgba(127, 178, 255, 0.12);
+      --button-secondary-to: rgba(127, 178, 255, 0.06);
+      --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.36);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.28);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --max-width: 860px;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       min-height: 100%;
       background:
-        radial-gradient(circle at top, rgba(29, 110, 242, 0.10), transparent 32%),
-        linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+        radial-gradient(circle at 20% 0%, rgba(58, 224, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(125, 92, 255, 0.14), transparent 30%),
+        radial-gradient(circle at 50% 120%, rgba(66, 153, 255, 0.12), transparent 42%),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 46%, var(--bg-3) 100%);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
     a {
-      color: var(--accent);
+      color: var(--accent-strong);
       text-decoration: none;
     }
 
@@ -49,7 +58,7 @@
 
     .page {
       width: 100%;
-      max-width: var(--max);
+      max-width: var(--max-width);
       margin: 0 auto;
       padding: 18px 14px 40px;
     }
@@ -58,8 +67,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
       color: var(--muted);
+      font-size: 14px;
       margin-bottom: 18px;
     }
 
@@ -68,61 +77,89 @@
     }
 
     .eyebrow {
-      display: inline-block;
-      padding: 7px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(29, 110, 242, 0.14);
-      background: var(--accent-soft);
-      color: var(--accent);
+      background: rgba(127, 178, 255, 0.08);
+      border: 1px solid rgba(127, 178, 255, 0.16);
+      color: var(--accent-strong);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
     }
 
     h1 {
       margin: 0 0 10px;
-      font-size: clamp(30px, 6vw, 46px);
-      line-height: 1.04;
-      letter-spacing: -0.03em;
+      font-size: clamp(32px, 6vw, 48px);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      text-wrap: balance;
     }
 
     .subtitle {
       margin: 0;
-      max-width: 720px;
+      max-width: 700px;
       color: var(--muted);
       font-size: 16px;
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
-    .card {
+    .byline {
+      display: block;
+    }
+
+    .panel {
       position: relative;
       overflow: hidden;
-      background: var(--card);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.55);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       padding: 18px;
     }
 
-    .card + .card {
+    .panel + .panel {
       margin-top: 14px;
     }
 
-    .card::before {
+    .panel::before {
       content: "";
       position: absolute;
-      inset: -40% auto auto -10%;
+      inset: auto auto 65% -10%;
       width: 220px;
       height: 220px;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(29, 110, 242, 0.07), transparent 68%);
+      background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
       pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: -20% -10% auto auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--glow-blue), transparent 70%);
+      pointer-events: none;
+      opacity: 0.7;
     }
 
     .label-row {
+      position: relative;
+      z-index: 1;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -131,39 +168,54 @@
     }
 
     .label {
+      color: var(--text);
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
-    .tiny {
-      font-size: 12px;
+    .helper {
       color: var(--muted);
+      font-size: 12px;
     }
 
     textarea {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      min-height: 144px;
+      min-height: 170px;
       resize: vertical;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(127, 178, 255, 0.14);
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.84);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        rgba(7, 18, 29, 0.84);
       color: var(--text);
       padding: 16px;
       font: inherit;
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.65;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    textarea::placeholder {
+      color: rgba(158, 180, 202, 0.7);
     }
 
     textarea:focus {
-      border-color: rgba(29, 110, 242, 0.45);
-      box-shadow: 0 0 0 4px rgba(29, 110, 242, 0.10);
-      background: #fff;
+      border-color: rgba(127, 178, 255, 0.38);
+      box-shadow:
+        0 0 0 4px rgba(66, 153, 255, 0.12),
+        0 0 30px rgba(66, 153, 255, 0.12);
+      background: rgba(8, 20, 32, 0.94);
     }
 
     .button-row {
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -178,8 +230,10 @@
       font: inherit;
       font-size: 14px;
       font-weight: 700;
+      letter-spacing: 0.01em;
       cursor: pointer;
-      transition: transform 0.06s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+      color: var(--text);
+      transition: transform 0.06s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
     }
 
     button:active {
@@ -187,82 +241,83 @@
     }
 
     .btn-primary {
-      background: var(--text);
-      color: #fff;
-      box-shadow: 0 8px 18px rgba(18, 32, 51, 0.16);
+      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
+      box-shadow:
+        0 12px 28px rgba(74, 125, 255, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
 
     .btn-secondary {
-      background: rgba(18, 32, 51, 0.06);
-      color: var(--text);
+      background: linear-gradient(180deg, var(--button-secondary-from), var(--button-secondary-to));
+      border: 1px solid rgba(127, 178, 255, 0.14);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--line);
+    .hint,
+    .warning {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.65;
     }
 
     .hint {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(18, 32, 51, 0.04);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(127, 178, 255, 0.1);
       color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
     }
 
     .warning {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255, 191, 0, 0.10);
-      border: 1px solid rgba(255, 191, 0, 0.18);
-      color: #7a5a00;
-      font-size: 14px;
-      line-height: 1.6;
+      background: rgba(255, 193, 7, 0.08);
+      border: 1px solid rgba(255, 193, 7, 0.18);
+      color: #ffd977;
+    }
+
+    .section {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(127, 178, 255, 0.1);
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .empty-state {
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.7;
+      line-height: 1.75;
       padding: 4px 2px 2px;
-    }
-
-    .section {
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-    }
-
-    .section-title {
-      margin: 0 0 10px;
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .quote {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.7;
     }
 
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 12px;
     }
 
-    .summary-card {
-      background: rgba(18, 32, 51, 0.04);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
+    .summary-card,
+    .step-card,
+    .result-card,
+    .tool-item,
+    .next-item {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+        rgba(8, 21, 34, 0.72);
+      border: 1px solid rgba(127, 178, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: var(--shadow-lg);
     }
 
     .summary-label {
@@ -274,15 +329,22 @@
     }
 
     .summary-value {
+      color: var(--text);
       font-size: 14px;
       line-height: 1.5;
-      color: var(--text);
-      word-break: break-word;
+    }
+
+    .quote,
+    .step-desc,
+    .item-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
     }
 
     .trail-wrap {
       position: relative;
-      margin-top: 8px;
       padding: 8px 0 4px;
     }
 
@@ -292,7 +354,7 @@
       top: 16px;
       bottom: 16px;
       width: 2px;
-      background: linear-gradient(180deg, rgba(29, 110, 242, 0.28), rgba(29, 110, 242, 0.08));
+      background: linear-gradient(180deg, rgba(127, 178, 255, 0.32), rgba(127, 178, 255, 0.06));
       border-radius: 999px;
     }
 
@@ -313,47 +375,37 @@
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: #fff;
-      border: 2px solid rgba(29, 110, 242, 0.42);
-      box-shadow: 0 0 0 6px rgba(29, 110, 242, 0.08);
+      background: linear-gradient(135deg, var(--button-primary-from), var(--button-primary-to));
+      box-shadow:
+        0 0 0 6px rgba(66, 153, 255, 0.08),
+        0 0 20px rgba(66, 153, 255, 0.18);
       z-index: 1;
     }
 
-    .step-card {
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 14px;
-    }
-
-    .step-top {
+    .step-top,
+    .item-top {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
       gap: 10px;
+      align-items: baseline;
       margin-bottom: 8px;
     }
 
-    .step-title {
+    .step-title,
+    .item-title {
       font-size: 15px;
       font-weight: 700;
       color: var(--text);
     }
 
-    .step-kind {
+    .step-kind,
+    .item-side {
       font-size: 12px;
       color: var(--muted);
       white-space: nowrap;
     }
 
-    .step-desc {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .step-chip-row {
+    .chip-row {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -364,70 +416,58 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      min-height: 38px;
       padding: 9px 12px;
       border-radius: 999px;
-      background: rgba(18, 32, 51, 0.06);
-      color: var(--text);
+      background: rgba(127, 178, 255, 0.08);
+      border: 1px solid rgba(127, 178, 255, 0.12);
+      color: var(--accent-strong);
       font-size: 13px;
       line-height: 1.2;
+      backdrop-filter: blur(8px);
     }
 
     .chip.accent {
-      background: rgba(29, 110, 242, 0.08);
-      color: #144ca6;
-      border: 1px solid rgba(29, 110, 242, 0.12);
+      background: linear-gradient(135deg, rgba(74, 125, 255, 0.18), rgba(125, 92, 255, 0.16));
+      color: var(--text);
     }
 
-    .grid-list {
+    .grid-list,
+    .tool-list,
+    .next-list {
       display: grid;
       gap: 10px;
     }
 
-    .tool-item,
-    .next-item {
+    .tool-item {
       display: block;
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.76);
-      transition: border-color 0.2s ease, background 0.2s ease, transform 0.06s ease;
+      text-decoration: none;
+      transition: transform 0.06s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .tool-item:hover {
-      border-color: rgba(29, 110, 242, 0.24);
-      background: #fff;
+      border-color: rgba(127, 178, 255, 0.24);
       text-decoration: none;
+      box-shadow:
+        var(--shadow-lg),
+        0 0 24px rgba(66, 153, 255, 0.08);
     }
 
     .tool-item:active {
       transform: translateY(1px);
     }
 
-    .item-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .item-title {
+    .tool-name {
       font-size: 15px;
       font-weight: 700;
       color: var(--text);
+      margin-bottom: 6px;
     }
 
-    .item-side {
+    .tool-file {
       font-size: 12px;
       color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .item-desc {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
+      margin-bottom: 8px;
     }
 
     .footer {
@@ -435,16 +475,30 @@
       text-align: center;
       color: var(--muted);
       font-size: 12px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
-    @media (max-width: 760px) {
+    .footer strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    @media (max-width: 800px) {
       .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 640px) {
+      .page {
+        padding: 16px 12px 34px;
+      }
+
+      .panel {
+        padding: 16px;
+        border-radius: 24px;
+      }
+
       .button-row {
         flex-direction: column;
       }
@@ -471,17 +525,17 @@
 
     <section class="hero">
       <div class="eyebrow">Mutation Trail</div>
-      <h1>Mutation Trail</h1>
+      <h1>Mutation Trail <span class="byline">by REFRAME Studio</span></h1>
       <p class="subtitle">
-        Drop one fragment and watch how it changes shape across the thinking system.
+        Trace how one fragment changes shape across the system.
         This is not a final answer. It is a visible trail of thought mutation.
       </p>
     </section>
 
-    <section class="card">
+    <section class="panel">
       <div class="label-row">
         <div class="label">Trace a fragment</div>
-        <div class="tiny" id="charCount">0 characters</div>
+        <div class="helper" id="charCount">0 characters</div>
       </div>
 
       <textarea
@@ -491,9 +545,9 @@
       ></textarea>
 
       <div class="button-row">
-        <button class="btn-primary" id="traceBtn">Trace mutation</button>
-        <button class="btn-secondary" id="exampleBtn">Try example</button>
-        <button class="btn-ghost" id="clearBtn">Clear</button>
+        <button class="btn-primary" id="traceBtn" type="button">Trace mutation</button>
+        <button class="btn-secondary" id="exampleBtn" type="button">Try example</button>
+        <button class="btn-secondary" id="clearBtn" type="button">Clear</button>
       </div>
 
       <div class="hint">
@@ -505,20 +559,23 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="panel">
       <div class="label-row">
-        <div class="label">Trail output</div>
-        <div class="tiny">Thought movement</div>
+        <div class="label">Result</div>
+        <div class="helper">Trail output</div>
       </div>
 
       <div id="resultArea" class="empty-state">
-        Trace one fragment to see how it moves through friction, mutation, and expression.
+        Trace a fragment to see how it moves through friction, mutation, expression, and continuation.
       </div>
     </section>
 
-    <div class="footer">
-      No login. No tracking. No personal data. Runs entirely in your browser.
-    </div>
+    <footer class="footer">
+      <strong>No login.</strong>
+      <strong>No tracking.</strong>
+      <strong>No personal data.</strong>
+      Runs entirely in your browser.
+    </footer>
   </main>
 
   <script src="./mutation-map.js"></script>
@@ -562,28 +619,18 @@
     }
 
     function getFirstMutation(route) {
-      return Array.isArray(route.mutationPaths) && route.mutationPaths.length
-        ? route.mutationPaths[0]
-        : null;
+      return Array.isArray(route.mutationPaths) && route.mutationPaths.length ? route.mutationPaths[0] : null;
     }
 
     function getFirstExpression(route) {
-      return Array.isArray(route.expressionPaths) && route.expressionPaths.length
-        ? route.expressionPaths[0]
-        : null;
+      return Array.isArray(route.expressionPaths) && route.expressionPaths.length ? route.expressionPaths[0] : null;
     }
 
     function buildTrail(route) {
       const firstMutation = getFirstMutation(route);
       const firstExpression = getFirstExpression(route);
-      const firstTool = Array.isArray(route.recommendedTools) && route.recommendedTools.length
-        ? route.recommendedTools[0]
-        : null;
-      const firstNext = Array.isArray(route.nextMutations) && route.nextMutations.length
-        ? route.nextMutations[0]
-        : null;
-
-      const detectedTypeLabel = route.detectedType && route.detectedType.label ? route.detectedType.label : "Unknown";
+      const firstTool = Array.isArray(route.recommendedTools) && route.recommendedTools.length ? route.recommendedTools[0] : null;
+      const firstNext = Array.isArray(route.nextMutations) && route.nextMutations.length ? route.nextMutations[0] : null;
       const confidence = route.detectedType && typeof route.detectedType.confidence === "number"
         ? Math.round(route.detectedType.confidence * 100) + "%"
         : "—";
@@ -596,21 +643,17 @@
           chips: ["Thought fragment", "Incomplete thought", "Signal of energy"]
         },
         {
-          title: detectedTypeLabel,
+          title: route.detectedType.label,
           kind: route.fields.from.label,
           description: route.detectedType.why || "",
-          chips: [
-            "Detected type",
-            "Confidence " + confidence,
-            route.fields.from.label
-          ]
+          chips: ["Detected type", "Confidence " + confidence, route.fields.from.label]
         },
         {
           title: firstMutation ? firstMutation.label : "Mutation",
           kind: route.fields.through.label,
           description: firstMutation ? firstMutation.description : "A mutation changes the shape of the thought.",
           chips: [
-            detectedTypeLabel + " → " + (firstMutation ? firstMutation.label : "Mutation"),
+            route.detectedType.label + " → " + (firstMutation ? firstMutation.label : "Mutation"),
             route.fields.through.label
           ]
         },
@@ -619,30 +662,21 @@
           kind: route.fields.to.label,
           description: firstExpression
             ? "This is the first visible form the mutated thought can take."
-            : "A mutation becomes visible through an expression form.",
-          chips: [
-            firstExpression ? firstExpression.label : "Expression",
-            route.fields.to.label
-          ]
+            : "A mutation becomes visible through expression.",
+          chips: [firstExpression ? firstExpression.label : "Expression", route.fields.to.label]
         },
         {
           title: firstTool ? firstTool.name : "Next Tool",
           kind: "Recommended tool",
           description: firstTool ? firstTool.description : "Use a tool to continue the mutation.",
-          chips: [
-            firstTool ? firstTool.file : "tool",
-            "Continue mutation"
-          ],
+          chips: [firstTool ? firstTool.file : "tool", "Continue mutation"],
           file: firstTool ? firstTool.file : ""
         },
         {
           title: "Next Thought",
           kind: "Continuation",
           description: firstNext || "A trail is complete only when it leads to another thought.",
-          chips: [
-            "Creation Loop",
-            "Thought continues"
-          ]
+          chips: ["Creation Loop", "Thought continues"]
         }
       ];
     }
@@ -659,31 +693,36 @@
 
       resultArea.innerHTML = `
         <div class="section" style="margin-top:0;padding-top:0;border-top:0;">
-          <h3 class="section-title">Fragment</h3>
-          <p class="quote">“${escapeHtml(route.fragment)}”</p>
+          <h2 class="section-title">Fragment</h2>
+          <div class="result-card">
+            <p class="quote">“${escapeHtml(route.fragment)}”</p>
+          </div>
 
-          <div class="summary-grid">
-            <div class="summary-card">
-              <div class="summary-label">Detected type</div>
-              <div class="summary-value">${escapeHtml(route.detectedType.label)}</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-label">Confidence</div>
-              <div class="summary-value">${escapeHtml(confidencePct)}</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-label">Mutation paths</div>
-              <div class="summary-value">${escapeHtml(String(mutationCount))}</div>
-            </div>
-            <div class="summary-card">
-              <div class="summary-label">Next tools</div>
-              <div class="summary-value">${escapeHtml(String(toolCount))}</div>
+          <div class="section">
+            <h2 class="section-title">Trail summary</h2>
+            <div class="summary-grid">
+              <div class="summary-card">
+                <div class="summary-label">Detected type</div>
+                <div class="summary-value">${escapeHtml(route.detectedType.label)}</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Confidence</div>
+                <div class="summary-value">${escapeHtml(confidencePct)}</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Mutation paths</div>
+                <div class="summary-value">${escapeHtml(String(mutationCount))}</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Next tools</div>
+                <div class="summary-value">${escapeHtml(String(toolCount))}</div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="section">
-          <h3 class="section-title">Trail</h3>
+          <h2 class="section-title">Trail</h2>
           <div class="trail-wrap">
             <div class="trail-line"></div>
             ${trail.map((step) => `
@@ -695,13 +734,13 @@
                     <div class="step-kind">${escapeHtml(step.kind)}</div>
                   </div>
                   <p class="step-desc">${escapeHtml(step.description)}</p>
-                  <div class="step-chip-row">
+                  <div class="chip-row">
                     ${step.chips.map((chip, index) => `
                       <div class="chip ${index === 0 ? "accent" : ""}">${escapeHtml(chip)}</div>
                     `).join("")}
                   </div>
                   ${step.file ? `
-                    <div class="step-chip-row" style="margin-top:12px;">
+                    <div class="chip-row" style="margin-top:12px;">
                       <a class="chip accent" href="./${escapeAttribute(step.file)}">${escapeHtml(step.file)}</a>
                     </div>
                   ` : ""}
@@ -712,7 +751,7 @@
         </div>
 
         <div class="section">
-          <h3 class="section-title">All mutation paths</h3>
+          <h2 class="section-title">All mutation paths</h2>
           <div class="grid-list">
             ${route.mutationPaths.map((path) => `
               <div class="next-item">
@@ -727,8 +766,8 @@
         </div>
 
         <div class="section">
-          <h3 class="section-title">Expression forms</h3>
-          <div class="step-chip-row">
+          <h2 class="section-title">Expression forms</h2>
+          <div class="chip-row">
             ${route.expressionPaths.map((path) => `
               <div class="chip">${escapeHtml(path.label)}</div>
             `).join("")}
@@ -736,14 +775,12 @@
         </div>
 
         <div class="section">
-          <h3 class="section-title">Recommended tools</h3>
-          <div class="grid-list">
+          <h2 class="section-title">Recommended tools</h2>
+          <div class="tool-list">
             ${route.recommendedTools.map((tool) => `
               <a class="tool-item" href="./${escapeAttribute(tool.file)}">
-                <div class="item-top">
-                  <div class="item-title">${escapeHtml(tool.name)}</div>
-                  <div class="item-side">${escapeHtml(tool.file)}</div>
-                </div>
+                <div class="tool-name">${escapeHtml(tool.name)}</div>
+                <div class="tool-file">${escapeHtml(tool.file)}</div>
                 <p class="item-desc">${escapeHtml(tool.description || "")}</p>
               </a>
             `).join("")}
@@ -751,8 +788,8 @@
         </div>
 
         <div class="section">
-          <h3 class="section-title">Next mutations</h3>
-          <div class="grid-list">
+          <h2 class="section-title">Next mutations</h2>
+          <div class="next-list">
             ${route.nextMutations.map((item) => `
               <div class="next-item">
                 <p class="item-desc">${escapeHtml(item)}</p>
@@ -762,28 +799,12 @@
         </div>
 
         <div class="section">
-          <h3 class="section-title">Trail reading</h3>
-          <p class="item-desc">
-            This trail shows how the fragment moved from friction into mutation, then into visible expression, and finally into the next thought.
-            Thinking does not end here. The last step should become the next fragment.
-          </p>
-        </div>
-      `;
-    }
-
-    function renderMissingMap() {
-      mapWarningEl.style.display = "block";
-      resultArea.innerHTML = `
-        <div class="empty-state">
-          mutation-map.js is missing, so the trail cannot be built yet.
-        </div>
-      `;
-    }
-
-    function renderEmptyPrompt() {
-      resultArea.innerHTML = `
-        <div class="empty-state">
-          Drop one short fragment first. Even a rough line is enough.
+          <h2 class="section-title">Trail reading</h2>
+          <div class="result-card">
+            <p class="quote">
+              This trail shows how the fragment moved from friction into mutation, then into visible expression, and finally into the next thought. The last step should become the next fragment.
+            </p>
+          </div>
         </div>
       `;
     }
@@ -792,12 +813,21 @@
       const value = inputEl.value.trim();
 
       if (!value) {
-        renderEmptyPrompt();
+        resultArea.innerHTML = `
+          <div class="empty-state">
+            Drop one short fragment first. Even a rough line is enough.
+          </div>
+        `;
         return;
       }
 
       if (!canTrace()) {
-        renderMissingMap();
+        mapWarningEl.style.display = "block";
+        resultArea.innerHTML = `
+          <div class="empty-state">
+            mutation-map.js is missing, so the trail cannot be built yet.
+          </div>
+        `;
         return;
       }
 
@@ -828,7 +858,7 @@
       updateCharCount();
       resultArea.innerHTML = `
         <div class="empty-state">
-          Trace one fragment to see how it moves through friction, mutation, and expression.
+          Trace a fragment to see how it moves through friction, mutation, expression, and continuation.
         </div>
       `;
       inputEl.focus();
@@ -839,7 +869,7 @@
     exampleBtn.addEventListener("click", handleExample);
     clearBtn.addEventListener("click", handleClear);
 
-    inputEl.addEventListener("keydown", (event) => {
+    inputEl.addEventListener("keydown", function(event) {
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         handleTrace();
       }
