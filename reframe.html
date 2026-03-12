@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Reframe | REFRAME Studio</title>
+  <style>
+    :root{
+      --bg-1:#060816;
+      --bg-2:#0b1430;
+      --text:#f4f7ff;
+      --muted:#aeb9dc;
+      --soft:#7f8db8;
+      --pink:#ff5fbc;
+      --pink-2:#ff7bcc;
+      --violet:#8f7dff;
+      --cyan:#63d7ff;
+      --line:#2a3d74;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118,81,255,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,174,255,.12), transparent 30%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 55%);
+      min-height:100vh;
+      line-height:1.5;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .wrap{
+      width:min(100%, 860px);
+      margin:0 auto;
+      padding:20px 16px 56px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      opacity:.92;
+    }
+
+    .hero{
+      border:1px solid rgba(110,132,210,.35);
+      background:linear-gradient(180deg, rgba(20,30,61,.94), rgba(7,11,25,.96));
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(137,111,255,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(31,193,255,.11), transparent 25%);
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding:22px 18px 24px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 16px;
+      border:1px solid rgba(116,98,235,.45);
+      border-radius:999px;
+      color:#d7cdfd;
+      background:rgba(86,68,183,.15);
+      font-size:14px;
+      margin-bottom:16px;
+    }
+
+    h1{
+      font-size:clamp(38px, 10vw, 72px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      margin:0 0 14px;
+      font-weight:800;
+      max-width:720px;
+    }
+
+    .lead{
+      margin:0 0 24px;
+      color:var(--muted);
+      font-size:clamp(18px, 4.4vw, 22px);
+      max-width:720px;
+    }
+
+    .tool{
+      border-radius:28px;
+      padding:18px;
+      background:rgba(10,15,32,.72);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .tool-title{
+      margin:0 0 6px;
+      font-size:32px;
+      line-height:1.02;
+      letter-spacing:-.03em;
+      font-weight:800;
+    }
+
+    .tool-desc{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:18px;
+    }
+
+    .label{
+      display:block;
+      margin:0 0 10px;
+      font-size:15px;
+      font-weight:700;
+      color:var(--text);
+    }
+
+    textarea{
+      width:100%;
+      min-height:158px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      color:var(--text);
+      background:rgba(3,7,22,.92);
+      border-radius:24px;
+      padding:18px;
+      font:inherit;
+      font-size:18px;
+      line-height:1.6;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.26);
+      margin-bottom:16px;
+    }
+
+    textarea::placeholder{
+      color:#8f99c2;
+    }
+
+    .button-stack{
+      display:grid;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    button{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      font:inherit;
+      font-weight:800;
+      border-radius:20px;
+      padding:18px 20px;
+      transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    button:active{
+      transform:scale(.985);
+    }
+
+    .primary{
+      background:linear-gradient(180deg, var(--pink-2), var(--pink));
+      color:#fff;
+      box-shadow:0 12px 34px rgba(255,95,188,.24);
+      font-size:18px;
+    }
+
+    .secondary{
+      background:rgba(19,28,54,.95);
+      color:#dbe3ff;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.42);
+      font-size:16px;
+    }
+
+    .result{
+      border-radius:24px;
+      padding:18px;
+      background:rgba(3,7,22,.92);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .result-badge{
+      display:inline-flex;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.16);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.28);
+      margin-bottom:12px;
+    }
+
+    .result-block{
+      padding:14px 0;
+      border-top:1px solid rgba(92,109,172,.18);
+    }
+
+    .result-block:first-of-type{
+      border-top:none;
+      padding-top:4px;
+    }
+
+    .result-label{
+      margin:0 0 8px;
+      color:#c8d2f6;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .result-text{
+      margin:0;
+      color:var(--text);
+      font-size:18px;
+      line-height:1.65;
+      white-space:pre-line;
+    }
+
+    .next{
+      margin-top:18px;
+      border-top:1px solid rgba(92,109,172,.24);
+      padding-top:18px;
+    }
+
+    .next-title{
+      margin:0 0 12px;
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .next-grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .next-card{
+      border-radius:20px;
+      padding:16px;
+      background:rgba(255,255,255,.03);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+    }
+
+    .next-card h3{
+      margin:0 0 6px;
+      font-size:22px;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .next-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    .next-links{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .link-card{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-radius:18px;
+      padding:14px 16px;
+      background:rgba(255,255,255,.03);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+    }
+
+    .link-card span{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .tiny{
+      margin-top:16px;
+      color:#8995bc;
+      font-size:13px;
+      text-align:center;
+    }
+
+    .footer{
+      padding:18px 4px 0;
+      color:#8390b8;
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (min-width: 760px){
+      .hero-inner{
+        padding:28px 28px 30px;
+      }
+
+      .button-stack{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .button-stack .primary{
+        grid-column:1 / -1;
+      }
+
+      .next-grid{
+        grid-template-columns:1fr 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./mutation-router.html" aria-label="Back to Mutation Router">← Back to Mutation Router</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">One mutation</div>
+        <h1>Reframe</h1>
+        <p class="lead">Take the hit. Change the frame. Find the thought inside the criticism.</p>
+
+        <section class="tool">
+          <h2 class="tool-title">Criticism → New frame</h2>
+          <p class="tool-desc">This tool does one thing only: it turns a bad reply into a clearer perspective.</p>
+
+          <label class="label" for="inputText">Paste one bad reply</label>
+          <textarea id="inputText" placeholder="Example:
+This is too abstract.
+Nobody needs this.
+You always say vague things."></textarea>
+
+          <div class="button-stack">
+            <button class="primary" id="generateBtn" type="button">Generate reframe</button>
+            <button class="secondary" id="exampleBtn" type="button">Try example</button>
+            <button class="secondary" id="clearBtn" type="button">Clear</button>
+            <button class="secondary" id="copyBtn" type="button">Copy result</button>
+          </div>
+
+          <section class="result" id="resultBox" aria-live="polite">
+            <div class="result-badge">Reframe result</div>
+
+            <div class="result-block">
+              <p class="result-label">Reframe</p>
+              <p class="result-text" id="reframeText">Your new frame will appear here.</p>
+            </div>
+
+            <div class="result-block">
+              <p class="result-label">Angle</p>
+              <p class="result-text" id="angleText">A usable perspective will appear here.</p>
+            </div>
+
+            <div class="result-block">
+              <p class="result-label">Hook</p>
+              <p class="result-text" id="hookText">A simple opening line will appear here.</p>
+            </div>
+
+            <div class="result-block">
+              <p class="result-label">From</p>
+              <p class="result-text" id="fromText">No reply yet.</p>
+            </div>
+          </section>
+
+          <section class="next">
+            <h2 class="next-title">Next mutations</h2>
+
+            <div class="next-grid">
+              <article class="next-card">
+                <h3>Angle</h3>
+                <p>Take the new frame and turn it into one clear point.</p>
+              </article>
+
+              <article class="next-card">
+                <h3>Hook</h3>
+                <p>Compress the frame into a line that opens the door.</p>
+              </article>
+
+              <article class="next-card">
+                <h3>Question</h3>
+                <p>Ask what the criticism is really pointing at.</p>
+              </article>
+            </div>
+
+            <div class="next-links">
+              <a class="link-card" href="./mutation-router.html">
+                <strong>Try another route</strong>
+                <span>Back to router</span>
+              </a>
+              <a class="link-card" href="./mutation-map.html">
+                <strong>See the full map</strong>
+                <span>Open mutation map</span>
+              </a>
+            </div>
+          </section>
+        </section>
+
+        <p class="tiny">No login / No tracking / In browser</p>
+      </div>
+    </section>
+
+    <p class="footer">REFRAME Studio</p>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var input = document.getElementById('inputText');
+      var generateBtn = document.getElementById('generateBtn');
+      var exampleBtn = document.getElementById('exampleBtn');
+      var clearBtn = document.getElementById('clearBtn');
+      var copyBtn = document.getElementById('copyBtn');
+
+      var reframeText = document.getElementById('reframeText');
+      var angleText = document.getElementById('angleText');
+      var hookText = document.getElementById('hookText');
+      var fromText = document.getElementById('fromText');
+
+      var exampleReply = 'This is too abstract.\nNobody needs this.\nYou always say vague things.';
+
+      function cleanText(text) {
+        return String(text || '')
+          .replace(/\s+/g, ' ')
+          .replace(/^[\s\n]+|[\s\n]+$/g, '');
+      }
+
+      function pickTone(text) {
+        var lower = text.toLowerCase();
+
+        if (lower.includes('abstract') || lower.includes('vague') || lower.includes('unclear')) {
+          return {
+            reframe: 'When someone says an idea feels "too abstract," it often means the bridge to real life is still missing.',
+            angle: 'The problem may not be the idea itself. The problem may be translation.',
+            hook: 'When people call an idea "too abstract," they may be saying one simple thing: I still cannot see where it touches real life.'
+          };
+        }
+
+        if (lower.includes('nobody') || lower.includes('no one') || lower.includes('who cares') || lower.includes('needs this')) {
+          return {
+            reframe: 'When someone says "nobody needs this," they may be showing that the value is still hidden, not that the value is absent.',
+            angle: 'Dismissal can be a clue that the practical value has not been made visible yet.',
+            hook: 'When people say "nobody needs this," they are often reacting to hidden value, not zero value.'
+          };
+        }
+
+        if (lower.includes('weak') || lower.includes('bad') || lower.includes('terrible') || lower.includes('stupid')) {
+          return {
+            reframe: 'A harsh judgment often points to a gap between what you meant and what landed.',
+            angle: 'The criticism may be less about worth and more about mismatch.',
+            hook: 'A bad reaction does not always mean a bad idea. Sometimes it means the signal landed in the wrong shape.'
+          };
+        }
+
+        if (lower.includes('boring') || lower.includes('same') || lower.includes('generic')) {
+          return {
+            reframe: 'When someone calls something boring, they may be reacting to familiarity without tension.',
+            angle: 'The missing piece may be contrast, not substance.',
+            hook: 'When people say "boring," they are often asking for sharper tension.'
+          };
+        }
+
+        return {
+          reframe: 'A rude reply can still contain signal. The first move is to separate the heat from the hint.',
+          angle: 'The criticism may be pointing to what is missing, unclear, or not landing yet.',
+          hook: 'A harsh reply is sometimes the fastest way to find the part that still needs a stronger frame.'
+        };
+      }
+
+      function generate() {
+        var raw = input.value.trim();
+
+        if (!raw) {
+          reframeText.textContent = 'Paste one bad reply first.';
+          angleText.textContent = 'Then this tool will turn it into a clearer frame.';
+          hookText.textContent = 'A simple opening line will appear here.';
+          fromText.textContent = 'No reply yet.';
+          return;
+        }
+
+        var normalized = cleanText(raw);
+        var picked = pickTone(normalized);
+
+        reframeText.textContent = picked.reframe;
+        angleText.textContent = picked.angle;
+        hookText.textContent = picked.hook;
+        fromText.textContent = '"' + normalized + '"';
+      }
+
+      function clearAll() {
+        input.value = '';
+        reframeText.textContent = 'Your new frame will appear here.';
+        angleText.textContent = 'A usable perspective will appear here.';
+        hookText.textContent = 'A simple opening line will appear here.';
+        fromText.textContent = 'No reply yet.';
+      }
+
+      async function copyResult() {
+        var text =
+          'REFRAME\n\n' +
+          'Reframe:\n' + reframeText.textContent + '\n\n' +
+          'Angle:\n' + angleText.textContent + '\n\n' +
+          'Hook:\n' + hookText.textContent + '\n\n' +
+          'From:\n' + fromText.textContent;
+
+        try {
+          await navigator.clipboard.writeText(text);
+          copyBtn.textContent = 'Copied';
+          setTimeout(function () {
+            copyBtn.textContent = 'Copy result';
+          }, 1200);
+        } catch (error) {
+          copyBtn.textContent = 'Copy failed';
+          setTimeout(function () {
+            copyBtn.textContent = 'Copy result';
+          }, 1200);
+        }
+      }
+
+      generateBtn.addEventListener('click', generate);
+      exampleBtn.addEventListener('click', function () {
+        input.value = exampleReply;
+        generate();
+      });
+      clearBtn.addEventListener('click', clearAll);
+      copyBtn.addEventListener('click', copyResult);
+    })();
+  </script>
+</body>
+</html>
