@@ -834,7 +834,6 @@
       var focusPathBtn = document.getElementById('focusPathBtn');
       var resetBtn = document.getElementById('resetBtn');
       var pathStatus = document.getElementById('pathStatus');
-      var mapScroll = document.getElementById('mapScroll');
 
       function escapeHtml(text) {
         return String(text)
@@ -918,14 +917,12 @@
         rightArrows.forEach(function (arrow) { arrow.classList.add('active'); });
         pathStatus.textContent = 'Current path: Criticism → Reframe → Angle → Hook';
         resetDetail();
-        mapScroll.scrollLeft = 220;
       }
 
       function resetMap() {
         clearStates();
         pathStatus.textContent = 'Current path: none';
         resetDetail();
-        mapScroll.scrollLeft = 0;
       }
 
       nodes.forEach(function (node) {
