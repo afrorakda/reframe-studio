@@ -1,412 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>REFRAME Mutation Map</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutation Map</title>
 
 <style>
+
 *{
-  box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  background:
-    radial-gradient(circle at top, rgba(88,120,255,0.14), transparent 34%),
-    radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 26%),
-    linear-gradient(180deg, #060816 0%, #090d1f 45%, #0b1024 100%);
-  color:#eef2ff;
-  min-height:100vh;
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+background:
+radial-gradient(circle at top, rgba(88,120,255,0.14), transparent 34%),
+radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 26%),
+linear-gradient(180deg,#060816 0%,#090d1f 45%,#0b1024 100%);
+color:#eef2ff;
+min-height:100vh;
 }
 
 .wrap{
-  max-width:760px;
-  margin:0 auto;
-  padding:20px 16px 40px;
+max-width:760px;
+margin:0 auto;
+padding:20px 16px 40px;
 }
 
 .home-link{
-  display:block;
-  width:100%;
-  margin:0 0 18px;
-  padding:14px 16px;
-  border-radius:18px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.10);
-  color:#f5f7ff;
-  text-decoration:none;
-  text-align:center;
-  font-size:clamp(18px,4.2vw,24px);
-  font-weight:700;
-  backdrop-filter:blur(10px);
+display:block;
+width:100%;
+margin:0 0 18px;
+padding:14px 16px;
+border-radius:18px;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.10);
+color:#f5f7ff;
+text-decoration:none;
+text-align:center;
+font-size:clamp(18px,4.2vw,24px);
+font-weight:700;
+backdrop-filter:blur(10px);
 }
 
 h1{
-  margin:14px 0 10px;
-  font-size:clamp(34px,7vw,58px);
-  line-height:1.05;
-  font-weight:800;
-  text-align:center;
-  letter-spacing:-0.03em;
+margin:14px 0 10px;
+font-size:clamp(34px,7vw,58px);
+line-height:1.05;
+font-weight:800;
+text-align:center;
+letter-spacing:-0.03em;
 }
 
 .subtitle{
-  margin:0 0 22px;
-  text-align:center;
-  font-size:clamp(16px,4vw,24px);
-  color:#c5cbe3;
-  line-height:1.4;
+margin:0 0 22px;
+text-align:center;
+font-size:clamp(16px,4vw,24px);
+color:#c5cbe3;
+line-height:1.4;
 }
 
 .section{
-  margin-bottom:18px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:22px;
-  overflow:hidden;
-  backdrop-filter:blur(10px);
-  box-shadow:0 10px 30px rgba(0,0,0,0.20);
+margin-bottom:18px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:22px;
+overflow:hidden;
+backdrop-filter:blur(10px);
 }
 
 .section-header{
-  width:100%;
-  padding:18px 18px;
-  border:none;
-  background:transparent;
-  color:#7fc2ff;
-  text-align:left;
-  font-size:clamp(22px,5vw,30px);
-  font-weight:800;
-  cursor:pointer;
+width:100%;
+padding:18px 18px;
+border:none;
+background:transparent;
+color:#7fc2ff;
+text-align:left;
+font-size:clamp(22px,5vw,30px);
+font-weight:800;
+cursor:pointer;
 }
 
 .section-header.active{
-  background:rgba(255,255,255,0.06);
-  color:#ffffff;
+background:rgba(255,255,255,0.06);
+color:#ffffff;
 }
 
 .section-body{
-  display:none;
-  padding:0 14px 14px;
+display:none;
+padding:0 14px 14px;
 }
 
 .section-body.open{
-  display:block;
+display:block;
 }
 
 .mutation{
-  margin-top:12px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:18px;
-  padding:14px;
+margin-top:12px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:18px;
+padding:14px;
 }
 
 .mutation-title{
-  margin:0 0 8px;
-  font-size:clamp(18px,4.2vw,24px);
-  font-weight:800;
-  color:#f5f7ff;
+margin:0 0 8px;
+font-size:clamp(18px,4.2vw,24px);
+font-weight:800;
+color:#f5f7ff;
 }
 
 .spark{
-  margin:0 0 10px;
-  font-size:clamp(16px,3.8vw,20px);
-  line-height:1.45;
-  color:#b7bed7;
-  font-style:italic;
+margin:0 0 10px;
+font-size:clamp(16px,3.8vw,20px);
+line-height:1.45;
+color:#b7bed7;
+font-style:italic;
 }
 
 .tool-link{
-  display:block;
-  width:100%;
-  margin:10px 0 0;
-  padding:14px 14px;
-  border-radius:16px;
-  background:rgba(255,255,255,0.06);
-  color:#f5f7ff;
-  text-decoration:none;
-  font-size:clamp(16px,4vw,20px);
-  line-height:1.35;
-  border:1px solid rgba(255,255,255,0.10);
-}
-
-.tool-link:hover{
-  background:rgba(255,255,255,0.10);
+display:block;
+width:100%;
+margin:10px 0 0;
+padding:14px 14px;
+border-radius:16px;
+background:rgba(255,255,255,0.06);
+color:#f5f7ff;
+text-decoration:none;
+font-size:clamp(16px,4vw,20px);
+border:1px solid rgba(255,255,255,0.10);
 }
 
 .hint{
-  margin-top:18px;
-  text-align:center;
-  color:#a7afca;
-  font-size:14px;
-  line-height:1.6;
+margin-top:18px;
+text-align:center;
+color:#a7afca;
+font-size:14px;
+line-height:1.6;
 }
+
 </style>
 </head>
+
 <body>
+
 <div class="wrap">
 
-  <a class="home-link" href="index.html">← Back to REFRAME Studio</a>
+<a class="home-link" href="index.html">← Back to REFRAME Studio</a>
 
-  <h1>Mutation Map</h1>
-  <p class="subtitle">
-    Thought doesn't move in straight lines.<br>
-    Sometimes the wrong direction is the interesting one.
-  </p>
+<h1>Mutation Map</h1>
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Criticism</button>
-    <div class="section-body">
+<p class="subtitle">
+Thought doesn't move in straight lines.<br>
+Sometimes the wrong direction is the interesting one.
+</p>
 
-      <div class="mutation">
-        <p class="mutation-title">Criticism → Lesson</p>
-        <p class="spark">Maybe the attack just pointed to something useful.</p>
-        <a class="tool-link" href="criticism-to-lesson.html">Try mutation</a>
-      </div>
+<!-- Criticism -->
 
-      <div class="mutation">
-        <p class="mutation-title">Criticism → Question</p>
-        <p class="spark">What if the comment is asking something hidden?</p>
-        <a class="tool-link" href="criticism-to-question.html">Try mutation</a>
-      </div>
+<div class="section">
 
-      <div class="mutation">
-        <p class="mutation-title">Criticism → Idea</p>
-        <p class="spark">Sometimes the reaction is already a new angle.</p>
-        <a class="tool-link" href="criticism-to-idea.html">Try mutation</a>
-      </div>
+<button class="section-header" onclick="toggleSection(this)">Criticism</button>
 
-      <div class="mutation">
-        <p class="mutation-title">Criticism → Content</p>
-        <p class="spark">Sometimes the comment is already the story.</p>
-        <a class="tool-link" href="comment-to-content.html">Try mutation</a>
-        <a class="tool-link" href="hate-to-content.html">Try mutation</a>
-      </div>
+<div class="section-body">
 
-      <div class="mutation">
-        <p class="mutation-title">Criticism → Signal</p>
-        <p class="spark">A harsh reply can still point at something alive.</p>
-        <a class="tool-link" href="hate-to-signal.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Criticism → Lesson</p>
+<p class="spark">Maybe the attack just pointed to something useful.</p>
+<a class="tool-link" href="criticism-to-lesson.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Criticism → Thread</p>
-        <p class="spark">Maybe the negative comment is the opening line.</p>
-        <a class="tool-link" href="negative-comment-to-thread.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Criticism → Question</p>
+<p class="spark">What if the comment is asking something hidden?</p>
+<a class="tool-link" href="criticism-to-question.html">Try mutation</a>
+</div>
 
-    </div>
-  </div>
+<div class="mutation">
+<p class="mutation-title">Criticism → Idea</p>
+<p class="spark">Sometimes the reaction is already a new angle.</p>
+<a class="tool-link" href="criticism-to-idea.html">Try mutation</a>
+</div>
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Emotion</button>
-    <div class="section-body">
+<div class="mutation">
+<p class="mutation-title">Criticism → Content</p>
+<p class="spark">Sometimes the comment is already the story.</p>
+<a class="tool-link" href="comment-to-content.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Emotion → Action</p>
-        <p class="spark">Sometimes a feeling just wants a small move.</p>
-        <a class="tool-link" href="emotion-to-action.html">Try mutation</a>
-      </div>
+</div>
+</div>
 
-    </div>
-  </div>
+<!-- Emotion -->
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Problem</button>
-    <div class="section-body">
+<div class="section">
 
-      <div class="mutation">
-        <p class="mutation-title">Problem → Action</p>
-        <p class="spark">A stuck thing sometimes only needs one next step.</p>
-        <a class="tool-link" href="constraint-to-action.html">Try mutation</a>
-        <a class="tool-link" href="next-step-finder.html">Try mutation</a>
-      </div>
+<button class="section-header" onclick="toggleSection(this)">Emotion</button>
 
-      <div class="mutation">
-        <p class="mutation-title">Problem → Cleaner</p>
-        <p class="spark">Maybe the problem is carrying too much shape.</p>
-        <a class="tool-link" href="complexity-cleaner.html">Try mutation</a>
-      </div>
+<div class="section-body">
 
-      <div class="mutation">
-        <p class="mutation-title">Problem → Tool</p>
-        <p class="spark">Maybe the next move is just the right mutation.</p>
-        <a class="tool-link" href="stuck-to-tool.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Emotion → Action</p>
+<p class="spark">Sometimes a feeling just wants a small move.</p>
+<a class="tool-link" href="emotion-to-action.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Problem → Break</p>
-        <p class="spark">Sometimes overthinking needs interruption, not insight.</p>
-        <a class="tool-link" href="overthinking-breaker.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Emotion → Reframe</p>
+<p class="spark">A feeling does not always need solving. Sometimes it only needs a different angle.</p>
+<a class="tool-link" href="emotion-to-reframe.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Problem → Fix</p>
-        <p class="spark">A messy draft may only need a different reading.</p>
-        <a class="tool-link" href="draft-fixer.html">Try mutation</a>
-      </div>
+</div>
+</div>
 
-    </div>
-  </div>
+<!-- Problem -->
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Idea</button>
-    <div class="section-body">
+<div class="section">
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Thread</p>
-        <p class="spark">Maybe the idea isn't one post, but a small journey.</p>
-        <a class="tool-link" href="idea-to-thread.html">Try mutation</a>
-      </div>
+<button class="section-header" onclick="toggleSection(this)">Problem</button>
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Metaphor</p>
-        <p class="spark">A strange metaphor can unlock a stuck thought.</p>
-        <a class="tool-link" href="idea-to-metaphor.html">Try mutation</a>
-      </div>
+<div class="section-body">
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Opposite</p>
-        <p class="spark">Sometimes the opposite reveals the real shape.</p>
-        <a class="tool-link" href="idea-to-opposite.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Problem → Action</p>
+<p class="spark">A stuck thing sometimes only needs one next step.</p>
+<a class="tool-link" href="constraint-to-action.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Example</p>
-        <p class="spark">An example can make a floating thought land.</p>
-        <a class="tool-link" href="idea-to-example.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Problem → Tool</p>
+<p class="spark">Maybe the next move is just the right mutation.</p>
+<a class="tool-link" href="stuck-to-tool.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Debate</p>
-        <p class="spark">A good idea often hides a useful argument.</p>
-        <a class="tool-link" href="idea-to-debate.html">Try mutation</a>
-      </div>
+</div>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Counterargument</p>
-        <p class="spark">The pushback may already be inside the idea.</p>
-        <a class="tool-link" href="idea-to-counterargument.html">Try mutation</a>
-      </div>
+<!-- Idea -->
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Priority</p>
-        <p class="spark">Not every idea wants to go first.</p>
-        <a class="tool-link" href="idea-to-priority.html">Try mutation</a>
-      </div>
+<div class="section">
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Post Angles</p>
-        <p class="spark">One idea can wear many different faces.</p>
-        <a class="tool-link" href="idea-to-post-angles.html">Try mutation</a>
-      </div>
+<button class="section-header" onclick="toggleSection(this)">Idea</button>
 
-      <div class="mutation">
-        <p class="mutation-title">Idea → Tool Spec</p>
-        <p class="spark">Maybe the idea wants to become a mutation engine.</p>
-        <a class="tool-link" href="idea-to-tool-spec.html">Try mutation</a>
-      </div>
+<div class="section-body">
 
-    </div>
-  </div>
+<div class="mutation">
+<p class="mutation-title">Idea → Thread</p>
+<p class="spark">Maybe the idea isn't one post, but a small journey.</p>
+<a class="tool-link" href="idea-to-thread.html">Try mutation</a>
+</div>
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Failure</button>
-    <div class="section-body">
+<div class="mutation">
+<p class="mutation-title">Idea → Metaphor</p>
+<p class="spark">A strange metaphor can unlock a stuck thought.</p>
+<a class="tool-link" href="idea-to-metaphor.html">Try mutation</a>
+</div>
 
-      <div class="mutation">
-        <p class="mutation-title">Failure → Lesson</p>
-        <p class="spark">Sometimes the miss is the shape of the lesson.</p>
-        <a class="tool-link" href="failure-to-lesson.html">Try mutation</a>
-      </div>
+</div>
+</div>
 
-    </div>
-  </div>
+<!-- Failure -->
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Confusion</button>
-    <div class="section-body">
+<div class="section">
 
-      <div class="mutation">
-        <p class="mutation-title">Confusion → Question</p>
-        <p class="spark">Confusion often hides the real question.</p>
-        <a class="tool-link" href="confusion-to-question.html">Try mutation</a>
-      </div>
+<button class="section-header" onclick="toggleSection(this)">Failure</button>
 
-      <div class="mutation">
-        <p class="mutation-title">Confusion → Question Builder</p>
-        <p class="spark">Sometimes the question needs building before answering.</p>
-        <a class="tool-link" href="confusion-question-builder.html">Try mutation</a>
-      </div>
+<div class="section-body">
 
-      <div class="mutation">
-        <p class="mutation-title">Confusion → Structure</p>
-        <p class="spark">Maybe the thought just needs a temporary shape.</p>
-        <a class="tool-link" href="thought-to-structure.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Failure → Lesson</p>
+<p class="spark">Sometimes the miss is the shape of the lesson.</p>
+<a class="tool-link" href="failure-to-lesson.html">Try mutation</a>
+</div>
 
-    </div>
-  </div>
+</div>
+</div>
 
-  <div class="section">
-    <button class="section-header" onclick="toggleSection(this)">Output / Publishing</button>
-    <div class="section-body">
+<!-- Confusion -->
 
-      <div class="mutation">
-        <p class="mutation-title">Output → Hook</p>
-        <p class="spark">A small twist can become the whole opening.</p>
-        <a class="tool-link" href="hook-generator.html">Try mutation</a>
-      </div>
+<div class="section">
 
-      <div class="mutation">
-        <p class="mutation-title">Output → Title</p>
-        <p class="spark">Sometimes the title arrives after the drift.</p>
-        <a class="tool-link" href="title-refiner.html">Try mutation</a>
-      </div>
+<button class="section-header" onclick="toggleSection(this)">Confusion</button>
 
-      <div class="mutation">
-        <p class="mutation-title">Output → Tweet</p>
-        <p class="spark">The thought may want a shorter body.</p>
-        <a class="tool-link" href="tweet-polisher.html">Try mutation</a>
-      </div>
+<div class="section-body">
 
-      <div class="mutation">
-        <p class="mutation-title">Output → Thread</p>
-        <p class="spark">What looks small may actually want sequence.</p>
-        <a class="tool-link" href="thread-navigator.html">Try mutation</a>
-      </div>
+<div class="mutation">
+<p class="mutation-title">Confusion → Question</p>
+<p class="spark">Confusion often hides the real question.</p>
+<a class="tool-link" href="confusion-to-question.html">Try mutation</a>
+</div>
 
-    </div>
-  </div>
+<div class="mutation">
+<p class="mutation-title">Confusion → Structure</p>
+<p class="spark">Maybe the thought just needs a temporary shape.</p>
+<a class="tool-link" href="thought-to-structure.html">Try mutation</a>
+</div>
 
-  <p class="hint">
-    This is not a tool directory.<br>
-    It is a playground for thought mutation.
-  </p>
+</div>
+</div>
+
+<!-- Output -->
+
+<div class="section">
+
+<button class="section-header" onclick="toggleSection(this)">Output / Publishing</button>
+
+<div class="section-body">
+
+<div class="mutation">
+<p class="mutation-title">Output → Hook</p>
+<p class="spark">A small twist can become the whole opening.</p>
+<a class="tool-link" href="hook-generator.html">Try mutation</a>
+</div>
+
+<div class="mutation">
+<p class="mutation-title">Output → Thread</p>
+<p class="spark">What looks small may actually want sequence.</p>
+<a class="tool-link" href="thread-navigator.html">Try mutation</a>
+</div>
+
+</div>
+</div>
+
+<p class="hint">
+This is not a tool directory.<br>
+It is a playground for thought mutation.
+</p>
 
 </div>
 
 <script>
+
 function toggleSection(button){
-  const body = button.nextElementSibling;
-  const isOpen = body.classList.contains("open");
 
-  document.querySelectorAll(".section-body").forEach(section => {
-    section.classList.remove("open");
-  });
+const body = button.nextElementSibling;
 
-  document.querySelectorAll(".section-header").forEach(header => {
-    header.classList.remove("active");
-  });
+const isOpen = body.classList.contains("open");
 
-  if(!isOpen){
-    body.classList.add("open");
-    button.classList.add("active");
-  }
+document.querySelectorAll(".section-body").forEach(section=>{
+section.classList.remove("open");
+});
+
+document.querySelectorAll(".section-header").forEach(header=>{
+header.classList.remove("active");
+});
+
+if(!isOpen){
+body.classList.add("open");
+button.classList.add("active");
 }
+
+}
+
 </script>
+
 </body>
 </html>
