@@ -316,8 +316,7 @@ Runs entirely in your browser
 <script src="./drift-engine.js"></script>
 <script>
 function tryExample(){
-document.getElementById("input").value =
-"I feel weirdly discouraged after reading the replies.";
+document.getElementById("input").value = "I feel weirdly discouraged after reading the replies.";
 }
 
 function clearAll(){
@@ -331,14 +330,16 @@ function copyResult(){
 const text = document.getElementById("output").textContent.trim();
 if(!text) return;
 navigator.clipboard.writeText(text).then(() => {
+try{
 alert("Copied!");
+}catch(e){}
 });
 }
 
-function pickFive(items){
+function pickUnique(items, count){
 const pool = [...items];
 const chosen = [];
-while(pool.length && chosen.length < 5){
+while(pool.length && chosen.length < count){
 const index = Math.floor(Math.random() * pool.length);
 chosen.push(pool.splice(index, 1)[0]);
 }
@@ -346,4 +347,226 @@ return chosen;
 }
 
 function classifyEmotionInput(input){
-const lower = input.to
+const lower = input.toLowerCase();
+
+if(lower.includes("discouraged") || lower.includes("down") || lower.includes("sad")){
+return "discouraged";
+}
+
+if(lower.includes("angry") || lower.includes("mad") || lower.includes("annoyed") || lower.includes("frustrated")){
+return "angry";
+}
+
+if(lower.includes("anxious") || lower.includes("afraid") || lower.includes("scared") || lower.includes("worried")){
+return "anxious";
+}
+
+if(lower.includes("embarrassed") || lower.includes("ashamed") || lower.includes("cringe")){
+return "embarrassed";
+}
+
+return "general";
+}
+
+function getEmotionReframes(input){
+const kind = classifyEmotionInput(input);
+
+if(kind === "discouraged"){
+return [
+"maybe this is bruised momentum, not the end of the idea",
+"maybe the replies hit confidence more than the work itself",
+"maybe the feeling needs distance before meaning",
+"maybe today is heavy, not the whole project",
+"maybe the discouragement is loud because the idea still matters",
+"maybe the mood is temporary, even if it sounds permanent",
+"maybe the sting belongs to the moment, not to the future",
+"maybe you are tired, not finished",
+"maybe the feeling is asking for gentleness, not conclusions",
+"maybe this is a pause signal, not a stop signal"
+];
+}
+
+if(kind === "angry"){
+return [
+"maybe the anger is energy looking for direction",
+"maybe this feeling wants shape, not explosion",
+"maybe the irritation found the pressure point",
+"maybe the heat means something important got touched",
+"maybe this is a reaction worth decoding before using",
+"maybe the anger is clear even if the meaning is not",
+"maybe this is fuel, not only damage",
+"maybe the feeling is faster than the insight",
+"maybe what annoyed you is the actual topic",
+"maybe the anger can become a cleaner question"
+];
+}
+
+if(kind === "anxious"){
+return [
+"maybe the fear is exaggerating the timeline",
+"maybe this is uncertainty wearing a dramatic coat",
+"maybe the feeling wants a smaller next step",
+"maybe anxiety is filling in blanks too early",
+"maybe the story is running ahead of the facts",
+"maybe this needs one action, not ten predictions",
+"maybe fear is loud because the path is still open",
+"maybe the emotion is rehearsing a future that has not happened",
+"maybe the unknown is doing most of the work here",
+"maybe this is tension, not prophecy"
+];
+}
+
+if(kind === "embarrassed"){
+return [
+"maybe this feels huge mostly because it is close",
+"maybe embarrassment is a spotlight with bad judgment",
+"maybe the moment is louder to you than to everyone else",
+"maybe this is awkwardness, not identity",
+"maybe the feeling is real, but it does not get final say",
+"maybe this is a scene, not the whole story",
+"maybe the cringe will age faster than you think",
+"maybe the shame is borrowing too much authority",
+"maybe this is a human moment, not a personal collapse",
+"maybe the sting means you still care how things land"
+];
+}
+
+return [
+"maybe the feeling is bigger than the actual problem",
+"maybe this is friction, not failure",
+"maybe the sting means something alive got touched",
+"maybe the mood is reacting faster than the meaning",
+"maybe this needs space, not judgment",
+"maybe the feeling is real, but the story around it is optional",
+"maybe this is not a dead end, just a tight corner",
+"maybe the emotion is pointing, not deciding",
+"maybe this is a signal to slow down, not stop",
+"maybe the weight comes from interpretation, not only from the event"
+];
+}
+
+function shuffleArray(items){
+const arr = [...items];
+for(let i = arr.length - 1; i > 0; i--){
+const j = Math.floor(Math.random() * (i + 1));
+[arr[i], arr[j]] = [arr[j], arr[i]];
+}
+return arr;
+}
+
+function buildCandidatesFromDrift(sparks){
+const keywordMap = {
+"failure": { label:"Try mutation: Failure → Reframe", href:"failure-to-reframe.html" },
+"wrong": { label:"Try mutation: Failure → Reframe", href:"failure-to-reframe.html" },
+"question": { label:"Try mutation: Confusion → Question", href:"confusion-to-question.html" },
+"shape": { label:"Try mutation: Confusion → Structure", href:"thought-to-structure.html" },
+"idea": { label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
+"story": { label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
+"signal": { label:"Try mutation: Criticism → Idea", href:"criticism-to-idea.html" },
+"reaction": { label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" },
+"feeling": { label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" },
+"direction": { label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" },
+"comment": { label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" },
+"comments": { label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" }
+};
+
+const built = [];
+const used = new Set();
+
+sparks.forEach(text => {
+const lower = String(text).toLowerCase();
+Object.keys(keywordMap).forEach(key => {
+if(lower.includes(key)){
+const item = keywordMap[key];
+if(!used.has(item.href)){
+used.add(item.href);
+built.push(item);
+}
+}
+});
+});
+
+return built;
+}
+
+async function getDriftSparks(){
+try{
+if(typeof reframeDrift !== "function"){
+return [];
+}
+const sparks = await reframeDrift(["emotion","confusion","shift","drift","self"], 5);
+return Array.isArray(sparks) ? sparks : [];
+}catch(error){
+console.warn("drift failed", error);
+return [];
+}
+}
+
+async function renderNextMutations(){
+const nextLinks = document.getElementById("nextLinks");
+const nextBox = document.getElementById("nextBox");
+
+const logical = [
+{ label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" },
+{ label:"Try mutation: Failure → Reframe", href:"failure-to-reframe.html" },
+{ label:"Try mutation: Confusion → Question", href:"confusion-to-question.html" }
+];
+
+const fallbackDrift = [
+{ label:"Try mutation: Confusion → Structure", href:"thought-to-structure.html" },
+{ label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
+{ label:"Try mutation: Criticism → Idea", href:"criticism-to-idea.html" },
+{ label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" },
+{ label:"Try mutation: Failure → Lesson", href:"failure-to-lesson.html" }
+];
+
+const driftSparks = await getDriftSparks();
+const driftBuilt = buildCandidatesFromDrift(driftSparks);
+const mergedDrift = [...driftBuilt, ...fallbackDrift];
+
+const picked = [];
+const used = new Set();
+
+const first = logical[Math.floor(Math.random() * logical.length)];
+picked.push(first);
+used.add(first.href);
+
+for(const item of shuffleArray(mergedDrift)){
+if(picked.length >= 3) break;
+if(used.has(item.href)) continue;
+used.add(item.href);
+picked.push(item);
+}
+
+for(const item of shuffleArray(logical)){
+if(picked.length >= 3) break;
+if(used.has(item.href)) continue;
+used.add(item.href);
+picked.push(item);
+}
+
+nextLinks.innerHTML = picked.map(item => {
+return '<a class="next-link" href="./' + item.href + '">' + item.label + '</a>';
+}).join("");
+
+nextBox.style.display = "block";
+}
+
+async function generate(){
+const input = document.getElementById("input").value.trim();
+const output = document.getElementById("output");
+
+try{
+const bank = getEmotionReframes(input);
+const chosen = pickUnique(bank, 5);
+output.textContent = chosen.map(item => "• " + item).join("\n\n");
+await renderNextMutations();
+}catch(error){
+console.error(error);
+output.textContent = "• maybe the feeling needs a different frame\n\n• maybe this is friction, not failure\n\n• maybe the mood is louder than the meaning\n\n• maybe you only need one smaller next step\n\n• maybe the feeling is real, but not final";
+document.getElementById("nextBox").style.display = "none";
+}
+}
+</script>
+</body>
+</html>
