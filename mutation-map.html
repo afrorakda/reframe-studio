@@ -1,362 +1,867 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutation Map</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mutation Map | REFRAME Studio</title>
+  <style>
+    :root{
+      --bg-1:#060816;
+      --bg-2:#0b1430;
+      --panel:#11183bcc;
+      --panel-2:#0c122acc;
+      --line:#2a3d74;
+      --text:#f4f7ff;
+      --muted:#aeb9dc;
+      --soft:#7f8db8;
+      --pink:#ff5fbc;
+      --pink-2:#ff7bcc;
+      --violet:#8f7dff;
+      --cyan:#63d7ff;
+      --green:#70e0a6;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
 
-<style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118,81,255,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,174,255,.12), transparent 30%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 55%);
+      min-height:100vh;
+      line-height:1.5;
+    }
 
-*{
-box-sizing:border-box;
-}
+    a{color:inherit;text-decoration:none}
 
-body{
-margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-background:
-radial-gradient(circle at top, rgba(88,120,255,0.14), transparent 34%),
-radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 26%),
-linear-gradient(180deg,#060816 0%,#090d1f 45%,#0b1024 100%);
-color:#eef2ff;
-min-height:100vh;
-}
+    .wrap{
+      width:min(100%, 980px);
+      margin:0 auto;
+      padding:20px 16px 56px;
+    }
 
-.wrap{
-max-width:760px;
-margin:0 auto;
-padding:20px 16px 40px;
-}
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      opacity:.92;
+    }
 
-.home-link{
-display:block;
-width:100%;
-margin:0 0 18px;
-padding:14px 16px;
-border-radius:18px;
-background:rgba(255,255,255,0.06);
-border:1px solid rgba(255,255,255,0.10);
-color:#f5f7ff;
-text-decoration:none;
-text-align:center;
-font-size:clamp(18px,4.2vw,24px);
-font-weight:700;
-}
+    .hero{
+      border:1px solid rgba(110,132,210,.35);
+      background:linear-gradient(180deg, rgba(20,30,61,.94), rgba(7,11,25,.96));
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
 
-h1{
-margin:14px 0 10px;
-font-size:clamp(34px,7vw,58px);
-line-height:1.05;
-font-weight:800;
-text-align:center;
-letter-spacing:-0.03em;
-}
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(137,111,255,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(31,193,255,.11), transparent 25%);
+      pointer-events:none;
+    }
 
-.subtitle{
-margin:0 0 22px;
-text-align:center;
-font-size:clamp(16px,4vw,24px);
-color:#c5cbe3;
-line-height:1.4;
-}
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding:22px 18px 24px;
+    }
 
-.section{
-margin-bottom:18px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:22px;
-overflow:hidden;
-}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 16px;
+      border:1px solid rgba(116,98,235,.45);
+      border-radius:999px;
+      color:#d7cdfd;
+      background:rgba(86,68,183,.15);
+      font-size:14px;
+      margin-bottom:16px;
+    }
 
-.section-header{
-width:100%;
-padding:18px 18px;
-border:none;
-background:transparent;
-color:#7fc2ff;
-text-align:left;
-font-size:clamp(22px,5vw,30px);
-font-weight:800;
-cursor:pointer;
-}
+    h1{
+      font-size:clamp(38px, 10vw, 74px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      margin:0 0 14px;
+      font-weight:800;
+      max-width:760px;
+    }
 
-.section-header.active{
-background:rgba(255,255,255,0.06);
-color:#ffffff;
-}
+    .lead{
+      margin:0 0 26px;
+      color:var(--muted);
+      font-size:clamp(18px, 4.4vw, 22px);
+      max-width:760px;
+    }
 
-.section-body{
-display:none;
-padding:0 14px 14px;
-}
+    .top-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:18px;
+    }
 
-.section-body.open{
-display:block;
-}
+    button{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      font:inherit;
+      font-weight:700;
+      border-radius:16px;
+      transition:transform .12s ease, opacity .12s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-.mutation{
-margin-top:12px;
-background:rgba(255,255,255,0.04);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:18px;
-padding:14px;
-}
+    button:active{transform:scale(.985)}
 
-.mutation-title{
-margin:0 0 8px;
-font-size:clamp(18px,4.2vw,24px);
-font-weight:800;
-}
+    .primary-btn{
+      background:linear-gradient(180deg, var(--pink-2), var(--pink));
+      color:#fff;
+      padding:14px 18px;
+      box-shadow:0 10px 30px rgba(255,95,188,.24);
+      font-size:16px;
+    }
 
-.spark{
-margin:0 0 10px;
-font-size:clamp(16px,3.8vw,20px);
-line-height:1.45;
-color:#b7bed7;
-font-style:italic;
-}
+    .secondary-btn{
+      background:rgba(19,28,54,.95);
+      color:#dbe3ff;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.42);
+      padding:14px 18px;
+      font-size:15px;
+    }
 
-.tool-link{
-display:block;
-width:100%;
-margin:10px 0 0;
-padding:14px;
-border-radius:16px;
-background:rgba(255,255,255,0.06);
-color:#f5f7ff;
-text-decoration:none;
-font-size:clamp(16px,4vw,20px);
-border:1px solid rgba(255,255,255,0.10);
-}
+    .legend{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:18px;
+    }
 
-.hint{
-margin-top:18px;
-text-align:center;
-color:#a7afca;
-font-size:14px;
-line-height:1.6;
-}
+    .legend-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:#dde5ff;
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
 
-</style>
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      flex:0 0 10px;
+    }
+
+    .dot-friction{background:var(--pink-2)}
+    .dot-mutation{background:var(--violet)}
+    .dot-expression{background:var(--cyan)}
+
+    .map-shell{
+      border:1px solid rgba(90,112,186,.35);
+      background:rgba(14,20,38,.72);
+      border-radius:28px;
+      padding:16px;
+      backdrop-filter:blur(8px);
+      overflow:hidden;
+    }
+
+    .map-scroll{
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:4px;
+    }
+
+    .map-grid{
+      min-width:860px;
+      display:grid;
+      grid-template-columns: 1fr 80px 1fr 80px 1fr;
+      gap:0;
+      align-items:start;
+    }
+
+    .field{
+      padding:8px;
+    }
+
+    .field-head{
+      position:sticky;
+      top:0;
+      z-index:2;
+      margin-bottom:12px;
+    }
+
+    .field-label{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+      backdrop-filter:blur(8px);
+    }
+
+    .field-friction .field-label{
+      color:#ffe4f4;
+      background:rgba(255,95,188,.12);
+    }
+
+    .field-mutation .field-label{
+      color:#e9e3ff;
+      background:rgba(143,125,255,.12);
+    }
+
+    .field-expression .field-label{
+      color:#dff8ff;
+      background:rgba(99,215,255,.12);
+    }
+
+    .field-sub{
+      margin:10px 4px 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .node-list{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .node{
+      border-radius:20px;
+      padding:14px;
+      background:rgba(9,14,31,.95);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.26);
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      cursor:pointer;
+    }
+
+    .node.active{
+      transform:translateY(-1px);
+      box-shadow:
+        inset 0 0 0 1px rgba(130,150,230,.5),
+        0 10px 24px rgba(0,0,0,.2);
+    }
+
+    .node-title{
+      margin:0 0 6px;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .node-desc{
+      margin:0;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .node-tag{
+      display:inline-flex;
+      align-items:center;
+      margin-top:10px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:#d6defb;
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
+    }
+
+    .arrow-col{
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding-top:110px;
+    }
+
+    .arrow-stack{
+      width:100%;
+      display:grid;
+      gap:34px;
+      justify-items:center;
+    }
+
+    .arrow{
+      width:54px;
+      height:54px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#d5ddff;
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+      font-size:22px;
+      opacity:.85;
+    }
+
+    .detail{
+      margin-top:16px;
+      border:1px solid rgba(90,112,186,.35);
+      background:rgba(14,20,38,.72);
+      border-radius:28px;
+      padding:18px;
+      backdrop-filter:blur(8px);
+    }
+
+    .detail-badge{
+      display:inline-flex;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.16);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.28);
+      margin-bottom:12px;
+    }
+
+    .detail-title{
+      margin:0 0 8px;
+      font-size:26px;
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+
+    .detail-text{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .detail-grid{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .detail-card{
+      border-radius:18px;
+      background:rgba(7,11,25,.9);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+      padding:14px;
+    }
+
+    .detail-card-label{
+      margin:0 0 8px;
+      color:#c9d4f6;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .detail-card-text{
+      margin:0;
+      color:#eef2ff;
+      font-size:15px;
+      line-height:1.55;
+      white-space:pre-line;
+    }
+
+    .mini-links{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .mini-link{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+      padding:12px 14px;
+    }
+
+    .mini-link strong{
+      display:block;
+      font-size:15px;
+      margin-bottom:4px;
+    }
+
+    .mini-link span{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .mini-link-arrow{
+      color:#d7cdfd;
+      font-size:14px;
+      white-space:nowrap;
+      padding-top:1px;
+    }
+
+    .tiny{
+      margin-top:16px;
+      color:#8995bc;
+      font-size:13px;
+    }
+
+    .footer{
+      padding:18px 4px 0;
+      color:#8390b8;
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (min-width: 900px){
+      .hero-inner{padding:28px 28px 30px}
+      .map-shell{padding:20px}
+      .detail-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="wrap">
-
-<a class="home-link" href="index.html">← Back to REFRAME Studio</a>
-
-<h1>Mutation Map</h1>
-
-<p class="subtitle">
-Thought doesn't move in straight lines.<br>
-Sometimes the wrong direction is the interesting one.
-</p>
-
-<!-- Criticism -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Criticism</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Criticism → Lesson</p>
-<p class="spark">Maybe the attack just pointed to something useful.</p>
-<a class="tool-link" href="criticism-to-lesson.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Criticism → Question</p>
-<p class="spark">What if the comment is asking something hidden?</p>
-<a class="tool-link" href="criticism-to-question.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Criticism → Idea</p>
-<p class="spark">Sometimes the reaction is already a new angle.</p>
-<a class="tool-link" href="criticism-to-idea.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Criticism → Content</p>
-<p class="spark">Sometimes the comment is already the story.</p>
-<a class="tool-link" href="comment-to-content.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<!-- Emotion -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Emotion</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Emotion → Action</p>
-<p class="spark">Sometimes a feeling just wants a small move.</p>
-<a class="tool-link" href="emotion-to-action.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Emotion → Reframe</p>
-<p class="spark">A feeling does not always need solving. Sometimes it only needs a different angle.</p>
-<a class="tool-link" href="emotion-to-reframe.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<!-- Problem -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Problem</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Problem → Action</p>
-<p class="spark">A stuck thing sometimes only needs one next step.</p>
-<a class="tool-link" href="constraint-to-action.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Problem → Tool</p>
-<p class="spark">Maybe the next move is just the right mutation.</p>
-<a class="tool-link" href="stuck-to-tool.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<!-- Idea -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Idea</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Idea → Thread</p>
-<p class="spark">Maybe the idea isn't one post, but a small journey.</p>
-<a class="tool-link" href="idea-to-thread.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Idea → Metaphor</p>
-<p class="spark">A strange metaphor can unlock a stuck thought.</p>
-<a class="tool-link" href="idea-to-metaphor.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<!-- Failure -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Failure</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Failure → Lesson</p>
-<p class="spark">Sometimes the miss is the shape of the lesson.</p>
-<a class="tool-link" href="failure-to-lesson.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Failure → Reframe</p>
-<p class="spark">Failure is often just a story told too early.</p>
-<a class="tool-link" href="failure-to-reframe.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<!-- Confusion -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Confusion</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Confusion → Question</p>
-<p class="spark">Confusion often hides the real question.</p>
-<a class="tool-link" href="confusion-to-question.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Confusion → Structure</p>
-<p class="spark">Maybe the thought just needs a temporary shape.</p>
-<a class="tool-link" href="thought-to-structure.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<!-- Output -->
-
-<div class="section">
-
-<button class="section-header" onclick="toggleSection(this)">Output / Publishing</button>
-
-<div class="section-body">
-
-<div class="mutation">
-<p class="mutation-title">Output → Hook</p>
-<p class="spark">A small twist can become the whole opening.</p>
-<a class="tool-link" href="hook-generator.html">Try mutation</a>
-</div>
-
-<div class="mutation">
-<p class="mutation-title">Output → Thread</p>
-<p class="spark">What looks small may actually want sequence.</p>
-<a class="tool-link" href="thread-navigator.html">Try mutation</a>
-</div>
-
-</div>
-</div>
-
-<p class="hint">
-This is not a tool directory.<br>
-It is a playground for thought mutation.
-</p>
-
-</div>
-
-<script>
-
-function toggleSection(button){
-
-const body = button.nextElementSibling;
-
-const isOpen = body.classList.contains("open");
-
-document.querySelectorAll(".section-body").forEach(section=>{
-section.classList.remove("open");
-});
-
-document.querySelectorAll(".section-header").forEach(header=>{
-header.classList.remove("active");
-});
-
-if(!isOpen){
-body.classList.add("open");
-button.classList.add("active");
-}
-
-}
-
-</script>
-
+  <main class="wrap">
+    <a class="back" href="./mutation-routes.html" aria-label="Back to Mutation Routes">← Back to Mutation Routes</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Visual thinking map</div>
+        <h1>See how thoughts mutate.</h1>
+        <p class="lead">REFRAME is not a list of tools. It is a movement from friction to mutation to expression.</p>
+
+        <div class="top-actions">
+          <button class="primary-btn" id="focusPathBtn" type="button">Show example path</button>
+          <button class="secondary-btn" id="resetBtn" type="button">Reset map</button>
+        </div>
+
+        <div class="legend" aria-label="Map legend">
+          <div class="legend-chip"><span class="dot dot-friction"></span>Friction</div>
+          <div class="legend-chip"><span class="dot dot-mutation"></span>Mutation</div>
+          <div class="legend-chip"><span class="dot dot-expression"></span>Expression</div>
+        </div>
+
+        <section class="map-shell">
+          <div class="map-scroll">
+            <div class="map-grid">
+              <section class="field field-friction" aria-labelledby="friction-title">
+                <div class="field-head">
+                  <div class="field-label" id="friction-title">
+                    <span class="dot dot-friction"></span>
+                    Friction Field
+                  </div>
+                  <p class="field-sub">Raw pressure. The place where thought first catches.</p>
+                </div>
+
+                <div class="node-list">
+                  <article class="node" data-id="criticism" data-type="friction">
+                    <h2 class="node-title">Criticism</h2>
+                    <p class="node-desc">A harsh reply, pushback, or dismissal.</p>
+                    <div class="node-tag">Example: “This is too abstract.”</div>
+                  </article>
+
+                  <article class="node" data-id="confusion" data-type="friction">
+                    <h2 class="node-title">Confusion</h2>
+                    <p class="node-desc">A thought that feels unclear, foggy, or stuck.</p>
+                    <div class="node-tag">Example: “I know something is here.”</div>
+                  </article>
+
+                  <article class="node" data-id="failure" data-type="friction">
+                    <h2 class="node-title">Failure</h2>
+                    <p class="node-desc">A miss, collapse, or wrong turn that still has signal.</p>
+                    <div class="node-tag">Example: “This fell flat.”</div>
+                  </article>
+
+                  <article class="node" data-id="emotion" data-type="friction">
+                    <h2 class="node-title">Emotion</h2>
+                    <p class="node-desc">A strong feeling before the thought has shape.</p>
+                    <div class="node-tag">Example: frustration, shame, excitement</div>
+                  </article>
+
+                  <article class="node" data-id="idea-fragment" data-type="friction">
+                    <h2 class="node-title">Idea Fragment</h2>
+                    <p class="node-desc">A small unfinished thought with mutation potential.</p>
+                    <div class="node-tag">Example: “Maybe this means something.”</div>
+                  </article>
+                </div>
+              </section>
+
+              <div class="arrow-col" aria-hidden="true">
+                <div class="arrow-stack">
+                  <div class="arrow">→</div>
+                  <div class="arrow">→</div>
+                  <div class="arrow">→</div>
+                </div>
+              </div>
+
+              <section class="field field-mutation" aria-labelledby="mutation-title">
+                <div class="field-head">
+                  <div class="field-label" id="mutation-title">
+                    <span class="dot dot-mutation"></span>
+                    Mutation Field
+                  </div>
+                  <p class="field-sub">The transformation layer. Thought bends here.</p>
+                </div>
+
+                <div class="node-list">
+                  <article class="node" data-id="reframe" data-type="mutation">
+                    <h2 class="node-title">Reframe</h2>
+                    <p class="node-desc">See the same thing through a different frame.</p>
+                    <div class="node-tag">Criticism → new perspective</div>
+                  </article>
+
+                  <article class="node" data-id="opposite" data-type="mutation">
+                    <h2 class="node-title">Opposite</h2>
+                    <p class="node-desc">Flip the idea and test the reverse.</p>
+                    <div class="node-tag">Pressure → reverse angle</div>
+                  </article>
+
+                  <article class="node" data-id="metaphor" data-type="mutation">
+                    <h2 class="node-title">Metaphor</h2>
+                    <p class="node-desc">Translate thought through image or analogy.</p>
+                    <div class="node-tag">Abstract → vivid</div>
+                  </article>
+
+                  <article class="node" data-id="question" data-type="mutation">
+                    <h2 class="node-title">Question</h2>
+                    <p class="node-desc">Turn pressure into a sharper question.</p>
+                    <div class="node-tag">Confusion → inquiry</div>
+                  </article>
+
+                  <article class="node" data-id="lesson" data-type="mutation">
+                    <h2 class="node-title">Lesson</h2>
+                    <p class="node-desc">Extract what the friction is trying to teach.</p>
+                    <div class="node-tag">Failure → usable signal</div>
+                  </article>
+                </div>
+              </section>
+
+              <div class="arrow-col" aria-hidden="true">
+                <div class="arrow-stack">
+                  <div class="arrow">→</div>
+                  <div class="arrow">→</div>
+                  <div class="arrow">→</div>
+                </div>
+              </div>
+
+              <section class="field field-expression" aria-labelledby="expression-title">
+                <div class="field-head">
+                  <div class="field-label" id="expression-title">
+                    <span class="dot dot-expression"></span>
+                    Expression Field
+                  </div>
+                  <p class="field-sub">Where the mutated thought becomes visible.</p>
+                </div>
+
+                <div class="node-list">
+                  <article class="node" data-id="angle" data-type="expression">
+                    <h2 class="node-title">Angle</h2>
+                    <p class="node-desc">A usable perspective that can lead a post.</p>
+                    <div class="node-tag">One clear take</div>
+                  </article>
+
+                  <article class="node" data-id="hook" data-type="expression">
+                    <h2 class="node-title">Hook</h2>
+                    <p class="node-desc">The opening line that creates attention.</p>
+                    <div class="node-tag">Entry point</div>
+                  </article>
+
+                  <article class="node" data-id="thread" data-type="expression">
+                    <h2 class="node-title">Thread</h2>
+                    <p class="node-desc">A larger structure that can carry the thought.</p>
+                    <div class="node-tag">Expansion</div>
+                  </article>
+
+                  <article class="node" data-id="post" data-type="expression">
+                    <h2 class="node-title">Post</h2>
+                    <p class="node-desc">A compact public expression of the mutation.</p>
+                    <div class="node-tag">Public output</div>
+                  </article>
+
+                  <article class="node" data-id="action" data-type="expression">
+                    <h2 class="node-title">Action</h2>
+                    <p class="node-desc">A next step in the real world, not just text.</p>
+                    <div class="node-tag">Movement</div>
+                  </article>
+                </div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="detail" id="detailPanel" aria-live="polite">
+          <div class="detail-badge">Selected node</div>
+          <h2 class="detail-title" id="detailTitle">Criticism</h2>
+          <p class="detail-text" id="detailText">A harsh reply, pushback, or dismissal. In REFRAME, friction is not the end. It is the start of movement.</p>
+
+          <div class="detail-grid">
+            <div class="detail-card">
+              <p class="detail-card-label">Example</p>
+              <p class="detail-card-text" id="detailExample">“This is too abstract.”</p>
+            </div>
+
+            <div class="detail-card">
+              <p class="detail-card-label">Common next move</p>
+              <p class="detail-card-text" id="detailNext">Criticism → Reframe → Angle → Hook</p>
+            </div>
+          </div>
+
+          <div class="mini-links" id="detailLinks">
+            <div class="mini-link">
+              <div>
+                <strong>Go to Mutation Routes</strong>
+                <span>Choose a mutation direction from the route list.</span>
+              </div>
+              <div class="mini-link-arrow">open</div>
+            </div>
+          </div>
+
+          <p class="tiny">No login / No tracking / In browser</p>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer">REFRAME Studio</p>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var nodeData = {
+        'criticism': {
+          title: 'Criticism',
+          text: 'A harsh reply, pushback, or dismissal. In REFRAME, friction is not the end. It is the start of movement.',
+          example: '“This is too abstract.”',
+          next: 'Criticism → Reframe → Angle → Hook',
+          links: [
+            { title: 'Reframe path', note: 'Turn the hit into a new frame.' },
+            { title: 'Opposite path', note: 'Flip the pressure and test the reverse.' }
+          ]
+        },
+        'confusion': {
+          title: 'Confusion',
+          text: 'A foggy thought is not empty. It often means a shape is trying to emerge but does not have language yet.',
+          example: '“I know something is here, but I can’t say it.”',
+          next: 'Confusion → Question → Thread',
+          links: [
+            { title: 'Question path', note: 'Turn fog into a sharper question.' },
+            { title: 'Metaphor path', note: 'Use image to give shape to the blur.' }
+          ]
+        },
+        'failure': {
+          title: 'Failure',
+          text: 'A miss is still material. REFRAME treats failure as compressed signal, not just loss.',
+          example: '“That post fell flat.”',
+          next: 'Failure → Lesson → Angle → Post',
+          links: [
+            { title: 'Lesson path', note: 'Extract the useful signal from the miss.' },
+            { title: 'Reframe path', note: 'See the failure through a different meaning.' }
+          ]
+        },
+        'emotion': {
+          title: 'Emotion',
+          text: 'A strong feeling often arrives before structure. Emotion is friction before language.',
+          example: 'frustration / shame / excitement / irritation',
+          next: 'Emotion → Reframe → Hook → Post',
+          links: [
+            { title: 'Reframe path', note: 'Give the feeling a different frame.' },
+            { title: 'Question path', note: 'Ask what the feeling is pointing toward.' }
+          ]
+        },
+        'idea-fragment': {
+          title: 'Idea Fragment',
+          text: 'A small unfinished thought. It does not need to be complete to be valuable. It only needs mutation potential.',
+          example: '“Maybe this means something.”',
+          next: 'Idea Fragment → Metaphor → Hook → Thread',
+          links: [
+            { title: 'Metaphor path', note: 'Make the fragment more vivid.' },
+            { title: 'Question path', note: 'Open the fragment instead of closing it.' }
+          ]
+        },
+        'reframe': {
+          title: 'Reframe',
+          text: 'Reframe does not erase the original thought. It shifts the lens so new meaning can appear.',
+          example: '“Too abstract” → “Not translated yet.”',
+          next: 'Reframe → Angle → Hook',
+          links: [
+            { title: 'Angle', note: 'Turn the new frame into one clear take.' },
+            { title: 'Hook', note: 'Compress the frame into an opening line.' }
+          ]
+        },
+        'opposite': {
+          title: 'Opposite',
+          text: 'Opposite creates movement by flipping the idea. It is useful when thought has become too stable.',
+          example: '“This is weak.” → “What if the weakness is the point?”',
+          next: 'Opposite → Angle → Thread',
+          links: [
+            { title: 'Angle', note: 'Extract the strongest reverse perspective.' },
+            { title: 'Thread', note: 'Expand the reverse into a larger arc.' }
+          ]
+        },
+        'metaphor': {
+          title: 'Metaphor',
+          text: 'Metaphor gives shape to thought. It helps abstract pressure become visible and memorable.',
+          example: '“The idea is still underwater.”',
+          next: 'Metaphor → Hook → Thread',
+          links: [
+            { title: 'Hook', note: 'Use the image as the opening line.' },
+            { title: 'Thread', note: 'Build a longer expression around the image.' }
+          ]
+        },
+        'question': {
+          title: 'Question',
+          text: 'Question keeps thought alive. It turns fog into direction without pretending to finish the thought too early.',
+          example: '“What exactly is the reply resisting?”',
+          next: 'Question → Angle → Action',
+          links: [
+            { title: 'Angle', note: 'Turn the question into a usable take.' },
+            { title: 'Action', note: 'Use the question to decide the next move.' }
+          ]
+        },
+        'lesson': {
+          title: 'Lesson',
+          text: 'Lesson extracts signal from friction. It asks what the hit is teaching rather than only how it hurts.',
+          example: '“The post failed because the bridge was missing.”',
+          next: 'Lesson → Angle → Post',
+          links: [
+            { title: 'Angle', note: 'Turn the lesson into a strong takeaway.' },
+            { title: 'Post', note: 'Compress the lesson into public form.' }
+          ]
+        },
+        'angle': {
+          title: 'Angle',
+          text: 'Angle is the usable take. It is the point where mutation starts to become shareable.',
+          example: '“Criticism often points to a translation gap.”',
+          next: 'Angle → Hook → Post',
+          links: [
+            { title: 'Hook', note: 'Find the cleanest entry point.' },
+            { title: 'Post', note: 'Turn the angle into a compact output.' }
+          ]
+        },
+        'hook': {
+          title: 'Hook',
+          text: 'Hook is the opening line that makes people enter. It is not the whole thought. It is the doorway.',
+          example: 'When someone says “This is too abstract,” it usually means one thing.',
+          next: 'Hook → Thread → Post',
+          links: [
+            { title: 'Thread', note: 'Expand the doorway into a path.' },
+            { title: 'Post', note: 'Keep it compact and public.' }
+          ]
+        },
+        'thread': {
+          title: 'Thread',
+          text: 'Thread gives a thought room to unfold. It is useful when one line is not enough to carry the mutation.',
+          example: '1/ The reply sounds harsh.\n2/ The signal is underneath.\n3/ The bridge is missing.',
+          next: 'Thread → Post → Action',
+          links: [
+            { title: 'Post', note: 'Compress the longer arc into one expression.' },
+            { title: 'Action', note: 'Move the thought beyond language.' }
+          ]
+        },
+        'post': {
+          title: 'Post',
+          text: 'Post is public expression. It is the small visible tip of the mutation underneath.',
+          example: '“Too abstract” often means the idea is still untranslated.',
+          next: 'Post → New Fragment',
+          links: [
+            { title: 'New fragment', note: 'Every public output can create new friction.' },
+            { title: 'Mutation Routes', note: 'Start another thought movement.' }
+          ]
+        },
+        'action': {
+          title: 'Action',
+          text: 'Action is expression in the real world. The mutation leaves text and changes behavior.',
+          example: 'Rewrite the bridge. Test a new example. Change the opening line.',
+          next: 'Action → New Fragment',
+          links: [
+            { title: 'New fragment', note: 'Real movement creates new pressure and new thought.' },
+            { title: 'Surface tool', note: 'Return to the public entry point.' }
+          ]
+        }
+      };
+
+      var nodes = Array.prototype.slice.call(document.querySelectorAll('.node'));
+      var detailTitle = document.getElementById('detailTitle');
+      var detailText = document.getElementById('detailText');
+      var detailExample = document.getElementById('detailExample');
+      var detailNext = document.getElementById('detailNext');
+      var detailLinks = document.getElementById('detailLinks');
+      var focusPathBtn = document.getElementById('focusPathBtn');
+      var resetBtn = document.getElementById('resetBtn');
+
+      function setActive(ids) {
+        nodes.forEach(function (node) {
+          var id = node.getAttribute('data-id');
+          node.classList.toggle('active', ids.indexOf(id) !== -1);
+        });
+      }
+
+      function renderDetail(id) {
+        var item = nodeData[id];
+        if (!item) return;
+
+        detailTitle.textContent = item.title;
+        detailText.textContent = item.text;
+        detailExample.textContent = item.example;
+        detailNext.textContent = item.next;
+
+        detailLinks.innerHTML = item.links.map(function (link) {
+          return (
+            '<div class="mini-link">' +
+              '<div>' +
+                '<strong>' + escapeHtml(link.title) + '</strong>' +
+                '<span>' + escapeHtml(link.note) + '</span>' +
+              '</div>' +
+              '<div class="mini-link-arrow">next</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      nodes.forEach(function (node) {
+        node.addEventListener('click', function () {
+          var id = node.getAttribute('data-id');
+          setActive([id]);
+          renderDetail(id);
+        });
+      });
+
+      focusPathBtn.addEventListener('click', function () {
+        setActive(['criticism', 'reframe', 'angle', 'hook']);
+        renderDetail('reframe');
+      });
+
+      resetBtn.addEventListener('click', function () {
+        setActive(['criticism']);
+        renderDetail('criticism');
+      });
+
+      setActive(['criticism']);
+      renderDetail('criticism');
+    })();
+  </script>
 </body>
 </html>
