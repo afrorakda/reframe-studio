@@ -1,319 +1,752 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kusoripu → Idea | REFRAME Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Kusoripu → Idea | REFRAME Studio</title>
+  <style>
+    :root{
+      --bg-1:#060816;
+      --bg-2:#0b1430;
+      --panel:#0f1730cc;
+      --line:#2a3d74;
+      --text:#f4f7ff;
+      --muted:#aeb9dc;
+      --soft:#7f8db8;
+      --pink:#ff5fbc;
+      --pink-2:#ff7bcc;
+      --deep:#8f7dff;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:24px;
+    }
 
-<style>
-body{
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-background:#0b1020;
-color:#fff;
-margin:0;
-padding:20px;
-}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118,81,255,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,174,255,.12), transparent 30%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 55%);
+      min-height:100vh;
+      line-height:1.5;
+    }
 
-.container{
-max-width:720px;
-margin:auto;
-}
+    a{color:inherit;text-decoration:none}
 
-h1{
-font-size:36px;
-margin-bottom:10px;
-}
+    .wrap{
+      width:min(100%, 860px);
+      margin:0 auto;
+      padding:20px 16px 56px;
+    }
 
-textarea{
-width:100%;
-height:140px;
-padding:12px;
-border-radius:10px;
-border:none;
-font-size:16px;
-background:#11182f;
-color:#fff;
-}
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      opacity:.92;
+    }
 
-button{
-width:100%;
-padding:16px;
-margin-top:12px;
-font-size:18px;
-border:none;
-border-radius:12px;
-cursor:pointer;
-}
+    .hero{
+      border:1px solid rgba(110,132,210,.35);
+      background:linear-gradient(180deg, rgba(20,30,61,.94), rgba(7,11,25,.96));
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
 
-.generate{
-background:#ff6ac1;
-color:#fff;
-}
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(137,111,255,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(31,193,255,.11), transparent 25%);
+      pointer-events:none;
+    }
 
-.secondary{
-background:#1b2448;
-color:#fff;
-}
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding:22px 18px 24px;
+    }
 
-.result{
-margin-top:24px;
-background:#0e1633;
-padding:20px;
-border-radius:14px;
-}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border:1px solid rgba(116,98,235,.45);
+      border-radius:999px;
+      color:#d7cdfd;
+      background:rgba(86,68,183,.15);
+      font-size:14px;
+      margin-bottom:16px;
+    }
 
-.section{
-margin-bottom:20px;
-}
+    h1{
+      font-size:clamp(38px, 10vw, 78px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      margin:0 0 16px;
+      font-weight:800;
+      max-width:700px;
+    }
 
-.label{
-font-size:12px;
-letter-spacing:1px;
-color:#8fa0ff;
-margin-bottom:6px;
-}
+    .lead{
+      margin:0 0 26px;
+      color:var(--muted);
+      font-size:clamp(18px, 4.4vw, 22px);
+      max-width:700px;
+    }
 
-.idea{
-font-size:22px;
-font-weight:600;
-}
+    .tool-card{
+      border:1px solid rgba(90,112,186,.35);
+      background:rgba(14,20,38,.72);
+      border-radius:28px;
+      padding:18px;
+      backdrop-filter:blur(8px);
+    }
 
-.tweet{
-white-space:pre-line;
-line-height:1.6;
-}
+    .tool-title{
+      font-size:clamp(28px, 6vw, 36px);
+      line-height:1.02;
+      letter-spacing:-.03em;
+      margin:0 0 8px;
+      font-weight:800;
+    }
 
-.angle{
-color:#a8b2ff;
-}
+    .tool-sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:17px;
+    }
 
-.footer{
-margin-top:30px;
-font-size:12px;
-color:#777;
-text-align:center;
-}
-</style>
+    .label{
+      display:block;
+      margin:0 0 8px;
+      color:#d9e0f8;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    textarea{
+      width:100%;
+      min-height:136px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:20px;
+      padding:16px 16px 18px;
+      background:rgba(8,12,25,.95);
+      color:var(--text);
+      font:inherit;
+      font-size:17px;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.4);
+    }
+
+    textarea::placeholder{color:#7f8ab0}
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      font:inherit;
+      font-weight:700;
+      border-radius:18px;
+      transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    button:active{transform:scale(.985)}
+
+    .primary{
+      flex:1 1 220px;
+      padding:18px 22px;
+      color:white;
+      font-size:22px;
+      background:linear-gradient(180deg, var(--pink-2), var(--pink));
+      box-shadow:0 10px 30px rgba(255,95,188,.28);
+    }
+
+    .secondary{
+      flex:1 1 140px;
+      padding:15px 16px;
+      color:#dbe3ff;
+      background:rgba(19,28,54,.95);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.42);
+      font-size:16px;
+    }
+
+    .result{
+      margin-top:18px;
+      border-radius:22px;
+      background:rgba(7,11,25,.9);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.32);
+      padding:16px;
+    }
+
+    .result-empty{
+      color:var(--soft);
+      font-size:16px;
+      margin:0;
+    }
+
+    .idea-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.16);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.28);
+    }
+
+    .result-section{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid rgba(92,109,172,.18);
+    }
+
+    .result-section:first-of-type{
+      margin-top:0;
+      padding-top:0;
+      border-top:none;
+    }
+
+    .section-label{
+      margin:0 0 8px;
+      color:#c9d4f6;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .idea{
+      font-size:24px;
+      line-height:1.25;
+      margin:0;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .tweet{
+      margin:0;
+      color:#f0f4ff;
+      font-size:19px;
+      line-height:1.55;
+      white-space:pre-line;
+    }
+
+    .angle{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .from-text{
+      margin:0;
+      color:#93a1ca;
+      font-size:14px;
+      line-height:1.55;
+      white-space:pre-line;
+    }
+
+    .deep-entry{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid rgba(92,109,172,.24);
+    }
+
+    .deep-button{
+      background:transparent;
+      color:#bfc8ea;
+      padding:0;
+      border-radius:0;
+      font-size:15px;
+      font-weight:500;
+      opacity:.88;
+    }
+
+    .deep-button:hover{opacity:1}
+
+    .deeper-panel{
+      display:none;
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(12,18,35,.78);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.25);
+    }
+
+    .deeper-title{
+      margin:0 0 10px;
+      font-size:14px;
+      color:#d6defb;
+      letter-spacing:.02em;
+    }
+
+    .route-list{
+      display:grid;
+      gap:8px;
+    }
+
+    .route-item{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
+    }
+
+    .route-name{
+      margin:0;
+      font-size:15px;
+      color:#eef2ff;
+      font-weight:700;
+    }
+
+    .route-note{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .route-go{
+      white-space:nowrap;
+      color:#d7cdfd;
+      font-size:13px;
+      padding-top:1px;
+    }
+
+    .mini-chain{
+      display:none;
+      margin-top:10px;
+      padding:12px 12px 2px;
+      border-radius:16px;
+      background:rgba(5,9,20,.7);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
+    }
+
+    .mini-chain-title{
+      margin:0 0 10px;
+      color:#cad4f7;
+      font-size:13px;
+    }
+
+    .chain-steps{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:0;
+      padding:0 0 10px;
+      list-style:none;
+    }
+
+    .chain-steps li{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      color:#e9eeff;
+      font-size:13px;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+    }
+
+    .tiny{
+      margin-top:16px;
+      color:#8995bc;
+      font-size:13px;
+    }
+
+    .footer{
+      padding:16px 4px 0;
+      color:#8390b8;
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (min-width: 760px){
+      .hero-inner{padding:28px 28px 30px}
+      .tool-card{padding:22px}
+      .result{padding:18px}
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="container">
-
-<h1>Turn bad replies into ideas.</h1>
-
-<textarea id="input" placeholder="Paste a bad reply here..."></textarea>
-
-<button class="generate" onclick="generate()">Generate</button>
-<button class="secondary" onclick="another()">Another angle</button>
-<button class="secondary" onclick="example()">Try example</button>
-<button class="secondary" onclick="clearBox()">Clear</button>
-
-<div class="result" id="result">
-Your idea seed will appear here.
-</div>
-
-<div class="footer">
-No login / No tracking / In browser
-</div>
-
-</div>
-
-<script>
-
-let index=0;
-let lastText="";
-
-var patternSets={
-
-clarity:[
-
-{
-idea:"When people say an idea is 'too abstract', it often means it hasn't been translated yet.",
-tweet:
-"\"This is too abstract.\"\n\nThat might not mean the idea is weak.\nIt might mean the idea hasn't been translated yet.\n\nNew ideas almost always look abstract at first.",
-angle:
-"Treat the criticism as a translation problem, not an intelligence problem."
-},
-
-{
-idea:"“Too abstract” is often a signal that the bridge to the audience is missing.",
-tweet:
-"When someone says\n\"This is too abstract\"\n\nwhat they may actually mean is\n\n\"I can't see where this connects to my world yet.\"",
-angle:
-"Focus on building the bridge between concept and real experience."
-},
-
-{
-idea:"New concepts usually feel abstract before they become obvious.",
-tweet:
-"Every useful idea goes through the same phase:\n\n1. Too abstract\n2. Maybe interesting\n3. Obviously true\n\nMost criticism happens at stage one.",
-angle:
-"Frame abstraction as the first stage of adoption."
-}
-
-],
-
-value:[
-
-{
-idea:"“Who needs this?” is often the beginning of finding the real audience.",
-tweet:
-"When someone asks\n\"Who needs this?\"\n\nthat question is actually useful.\n\nIt forces you to find the one person\nwho really does.",
-angle:
-"Use dismissal as a way to sharpen the target audience."
-},
-
-{
-idea:"Ideas look useless until the pain they solve becomes visible.",
-tweet:
-"Most ideas look unnecessary\nuntil the problem they solve becomes clear.\n\nOften the idea isn't wrong.\nThe pain just hasn't been described yet.",
-angle:
-"Explain the pain before explaining the idea."
-},
-
-{
-idea:"If everyone needs it, nobody understands it.",
-tweet:
-"When an idea tries to serve everyone\nit usually connects with no one.\n\nSometimes the real progress\nis discovering who the idea is actually for.",
-angle:
-"Turn broad ideas into precise audiences."
-}
-
-],
-
-attack:[
-
-{
-idea:"Harsh replies often hide confusion rather than disagreement.",
-tweet:
-"The harsher the reply\n\nsometimes the less clear the criticism actually is.\n\nStrong language\ncan hide weak arguments.",
-angle:
-"Look past the emotion and search for the real confusion."
-},
-
-{
-idea:"Emotional reactions often point to an unseen friction.",
-tweet:
-"When people react emotionally\nit's often not about the exact words.\n\nIt's about the friction\nthat the idea creates in their mental model.",
-angle:
-"Treat emotional replies as signals of mental friction."
-}
-
-],
-
-friction:[
-
-{
-idea:"Negative reactions often reveal where the message broke.",
-tweet:
-"A rude reply can be annoying.\n\nBut it also shows\nwhere the message stopped making sense.\n\nThat point is often the next idea.",
-angle:
-"Look for the exact place where understanding collapsed."
-},
-
-{
-idea:"Friction often appears before clarity.",
-tweet:
-"Good ideas rarely arrive smoothly.\n\nThey usually arrive\nwith friction, confusion,\nand a few bad replies.\n\nThat friction is part of the process.",
-angle:
-"Treat resistance as part of idea formation."
-}
-
-]
-
-};
-
-function detectPattern(text){
-
-text=text.toLowerCase();
-
-if(text.includes("abstract")||text.includes("vague")) return "clarity";
-
-if(text.includes("who needs")||text.includes("nobody")||text.includes("useless")) return "value";
-
-if(text.includes("stupid")||text.includes("idiot")||text.includes("dumb")) return "attack";
-
-return "friction";
-}
-
-function render(data,input){
-
-document.getElementById("result").innerHTML=
-
-`<div class="section">
-<div class="label">IDEA</div>
-<div class="idea">${data.idea}</div>
-</div>
-
-<div class="section">
-<div class="label">TWEET</div>
-<div class="tweet">${data.tweet}</div>
-</div>
-
-<div class="section">
-<div class="label">ANGLE</div>
-<div class="angle">${data.angle}</div>
-</div>
-
-<div class="section">
-<div class="label">FROM</div>
-<div>${input}</div>
-</div>`;
-}
-
-function generate(){
-
-let text=document.getElementById("input").value.trim();
-
-if(!text)return;
-
-lastText=text;
-index=0;
-
-let type=detectPattern(text);
-
-render(patternSets[type][index],text);
-
-}
-
-function another(){
-
-let text=document.getElementById("input").value.trim();
-
-if(!text)return;
-
-if(text!==lastText){
-generate();
-return;
-}
-
-let type=detectPattern(text);
-
-index++;
-
-if(index>=patternSets[type].length) index=0;
-
-render(patternSets[type][index],text);
-
-}
-
-function example(){
-
-document.getElementById("input").value="Your idea is too abstract. Nobody needs this.";
-
-generate();
-
-}
-
-function clearBox(){
-
-document.getElementById("input").value="";
-document.getElementById("result").innerHTML="Your idea seed will appear here.";
-
-}
-
-</script>
-
+  <main class="wrap">
+    <a class="back" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Looks simple first</div>
+        <h1>Turn bad replies into ideas.</h1>
+        <p class="lead">Start with one annoying reply. Turn it into something usable.</p>
+
+        <section class="tool-card" aria-labelledby="tool-title">
+          <h2 class="tool-title" id="tool-title">クソリプ → ネタに</h2>
+          <p class="tool-sub">A simple tool on the surface. Start here.</p>
+
+          <label class="label" for="replyInput">Paste one bad reply</label>
+          <textarea id="replyInput" placeholder="Example:
+This is too abstract.
+Nobody needs this.
+You always say vague things."></textarea>
+
+          <div class="actions">
+            <button class="primary" id="generateBtn" type="button">Generate</button>
+            <button class="secondary" id="anotherBtn" type="button">Another angle</button>
+            <button class="secondary" id="exampleBtn" type="button">Try example</button>
+            <button class="secondary" id="clearBtn" type="button">Clear</button>
+          </div>
+
+          <section class="result" id="resultBox" aria-live="polite">
+            <p class="result-empty">Your idea seed will appear here.</p>
+          </section>
+
+          <div class="deep-entry">
+            <button class="deep-button" id="deepBtn" type="button">Go deeper</button>
+
+            <div class="deeper-panel" id="deeperPanel">
+              <p class="deeper-title">Next mutation</p>
+              <div class="route-list" id="routeList"></div>
+
+              <div class="mini-chain" id="miniChain">
+                <p class="mini-chain-title">One possible route</p>
+                <ul class="chain-steps" id="chainSteps"></ul>
+              </div>
+            </div>
+          </div>
+
+          <p class="tiny">No login / No tracking / In browser</p>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer">REFRAME Studio</p>
+  </main>
+
+  <script src="./mutation-routes.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var input = document.getElementById('replyInput');
+      var generateBtn = document.getElementById('generateBtn');
+      var anotherBtn = document.getElementById('anotherBtn');
+      var exampleBtn = document.getElementById('exampleBtn');
+      var clearBtn = document.getElementById('clearBtn');
+      var resultBox = document.getElementById('resultBox');
+      var deepBtn = document.getElementById('deepBtn');
+      var deeperPanel = document.getElementById('deeperPanel');
+      var routeList = document.getElementById('routeList');
+      var miniChain = document.getElementById('miniChain');
+      var chainSteps = document.getElementById('chainSteps');
+
+      var exampleReply = 'Your idea is too abstract. Nobody needs this.';
+      var angleIndex = 0;
+      var lastInput = '';
+
+      var patternSets = {
+        clarity: [
+          {
+            idea: "When people say an idea is 'too abstract', it often means it hasn't been translated yet.",
+            tweet: "\"This is too abstract.\"\n\nThat might not mean the idea is weak.\nIt might mean the idea hasn't been translated yet.\n\nNew ideas almost always look abstract at first.",
+            angle: "Treat the criticism as a translation problem, not an intelligence problem."
+          },
+          {
+            idea: "\"Too abstract\" is often a signal that the bridge to the audience is missing.",
+            tweet: "When someone says\n\"This is too abstract\"\n\nwhat they may actually mean is\n\n\"I can't see where this connects to my world yet.\"",
+            angle: "Focus on building the bridge between concept and real experience."
+          },
+          {
+            idea: "New concepts usually feel abstract before they become obvious.",
+            tweet: "Every useful idea goes through the same phase:\n\n1. Too abstract\n2. Maybe interesting\n3. Obviously true\n\nMost criticism happens at stage one.",
+            angle: "Frame abstraction as the first stage of adoption."
+          }
+        ],
+
+        value: [
+          {
+            idea: "\"Who needs this?\" is often the beginning of finding the real audience.",
+            tweet: "When someone asks\n\"Who needs this?\"\n\nthat question is actually useful.\n\nIt forces you to find the one person\nwho really does.",
+            angle: "Use dismissal as a way to sharpen the target audience."
+          },
+          {
+            idea: "Ideas look useless until the pain they solve becomes visible.",
+            tweet: "Most ideas look unnecessary\nuntil the problem they solve becomes clear.\n\nOften the idea isn't wrong.\nThe pain just hasn't been described yet.",
+            angle: "Explain the pain before explaining the idea."
+          },
+          {
+            idea: "If everyone needs it, nobody understands it.",
+            tweet: "When an idea tries to serve everyone\nit usually connects with no one.\n\nSometimes the real progress\nis discovering who the idea is actually for.",
+            angle: "Turn broad ideas into precise audiences."
+          }
+        ],
+
+        attack: [
+          {
+            idea: "Harsh replies often hide confusion rather than disagreement.",
+            tweet: "The harsher the reply\n\nsometimes the less clear the criticism actually is.\n\nStrong language\ncan hide weak arguments.",
+            angle: "Look past the emotion and search for the real confusion."
+          },
+          {
+            idea: "Emotional reactions often point to an unseen friction.",
+            tweet: "When people react emotionally\nit's often not about the exact words.\n\nIt's about the friction\nthat the idea creates in their mental model.",
+            angle: "Treat emotional replies as signals of mental friction."
+          },
+          {
+            idea: "A rude tone can reveal the exact place where the idea hit resistance.",
+            tweet: "Sometimes the most useful part of a rude reply\nis not the insult.\n\nIt's the point of resistance hidden inside it.\n\nThat point is often the next post.",
+            angle: "Ignore the tone. Extract the resistance."
+          }
+        ],
+
+        repetition: [
+          {
+            idea: "\"You always say the same thing\" may mean the core message is still forming.",
+            tweet: "Repeating a theme does not always mean you're stuck.\n\nSometimes it means the core idea\nis still trying to find its clearest form.",
+            angle: "Treat repetition as compression in progress."
+          },
+          {
+            idea: "The ideas you repeat are often the ones worth developing.",
+            tweet: "If the same theme keeps coming back\nmaybe it is not a weakness.\n\nMaybe it is a signal.\n\nSome ideas repeat because they are still unfinished.",
+            angle: "Repetition can mark an unfinished pillar."
+          },
+          {
+            idea: "What sounds repetitive may actually be unresolved depth.",
+            tweet: "Not every repeated thought is stale.\n\nSome thoughts return\nbecause there is still something inside them\nthat has not been said clearly enough.",
+            angle: "Read repetition as hidden depth, not failure."
+          }
+        ],
+
+        friction: [
+          {
+            idea: "Negative reactions often reveal where the message broke.",
+            tweet: "A rude reply can be annoying.\n\nBut it also shows\nwhere the message stopped making sense.\n\nThat point is often the next idea.",
+            angle: "Look for the exact place where understanding collapsed."
+          },
+          {
+            idea: "Friction often appears before clarity.",
+            tweet: "Good ideas rarely arrive smoothly.\n\nThey usually arrive\nwith friction, confusion,\nand a few bad replies.\n\nThat friction is part of the process.",
+            angle: "Treat resistance as part of idea formation."
+          },
+          {
+            idea: "The hidden value of a bad reply is that it exposes the gap.",
+            tweet: "Not every rude reply contains value.\n\nBut some of them expose the gap\nbetween what you meant\nand what people actually heard.",
+            angle: "Use the reply to locate the gap between intention and reception."
+          }
+        ]
+      };
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function detectPattern(text) {
+        var lower = String(text || '').toLowerCase();
+
+        if (lower.includes('abstract') || lower.includes('vague') || lower.includes('unclear')) {
+          return 'clarity';
+        }
+        if (lower.includes('nobody') || lower.includes('no one') || lower.includes('useless') || lower.includes('need this') || lower.includes('who needs')) {
+          return 'value';
+        }
+        if (lower.includes('stupid') || lower.includes('dumb') || lower.includes('idiot') || lower.includes('trash') || lower.includes('garbage')) {
+          return 'attack';
+        }
+        if (lower.includes('again') || lower.includes('always') || lower.includes('same thing')) {
+          return 'repetition';
+        }
+        return 'friction';
+      }
+
+      function chooseVariant(text, step) {
+        var pattern = detectPattern(text);
+        var list = patternSets[pattern] || patternSets.friction;
+        var index = Math.abs(step || 0) % list.length;
+        return list[index];
+      }
+
+      function renderResult(data, original) {
+        resultBox.innerHTML =
+          '<div class="idea-badge">Surface result</div>' +
+
+          '<div class="result-section">' +
+            '<p class="section-label">Idea</p>' +
+            '<p class="idea">' + escapeHtml(data.idea) + '</p>' +
+          '</div>' +
+
+          '<div class="result-section">' +
+            '<p class="section-label">Tweet</p>' +
+            '<p class="tweet">' + escapeHtml(data.tweet) + '</p>' +
+          '</div>' +
+
+          '<div class="result-section">' +
+            '<p class="section-label">Angle</p>' +
+            '<p class="angle">' + escapeHtml(data.angle) + '</p>' +
+          '</div>' +
+
+          '<div class="result-section">' +
+            '<p class="section-label">From</p>' +
+            '<p class="from-text">"' + escapeHtml(original) + '"</p>' +
+          '</div>';
+      }
+
+      function renderEmpty() {
+        resultBox.innerHTML = '<p class="result-empty">Your idea seed will appear here.</p>';
+      }
+
+      function generate(resetAngle) {
+        var text = input.value.trim();
+        if (!text) {
+          input.focus();
+          return;
+        }
+
+        if (resetAngle || text !== lastInput) {
+          angleIndex = 0;
+        }
+
+        lastInput = text;
+        var result = chooseVariant(text, angleIndex);
+        renderResult(result, text);
+      }
+
+      function anotherAngle() {
+        var text = input.value.trim();
+        if (!text) {
+          input.focus();
+          return;
+        }
+
+        if (text !== lastInput) {
+          angleIndex = 0;
+          lastInput = text;
+        } else {
+          angleIndex += 1;
+        }
+
+        var result = chooseVariant(text, angleIndex);
+        renderResult(result, text);
+      }
+
+      function renderDeepLinks() {
+        if (!window.MutationRoutes || !window.MutationRoutes.getSubtleDeepLinks) {
+          routeList.innerHTML =
+            '<div class="route-item">' +
+              '<div>' +
+                '<p class="route-name">Reaction → Hidden Idea</p>' +
+                '<p class="route-note">Find the hidden idea inside the reply.</p>' +
+              '</div>' +
+              '<div class="route-go">next</div>' +
+            '</div>';
+          return;
+        }
+
+        var items = window.MutationRoutes.getSubtleDeepLinks('kusoripu-to-idea', {
+          mode: 'stable',
+          limit: 3
+        });
+
+        routeList.innerHTML = items.map(function (item) {
+          var niceLabel = item.label || item.id || 'Next mutation';
+          return (
+            '<div class="route-item">' +
+              '<div>' +
+                '<p class="route-name">' + escapeHtml(niceLabel) + '</p>' +
+                '<p class="route-note">' + escapeHtml(item.reason || '') + '</p>' +
+              '</div>' +
+              '<div class="route-go">next</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      function renderChain() {
+        if (!window.MutationRoutes || !window.MutationRoutes.getRouteChain) {
+          chainSteps.innerHTML =
+            '<li>クソリプ → ネタに</li>' +
+            '<li>Reaction → Hidden Idea</li>' +
+            '<li>Idea → Hook</li>' +
+            '<li>Idea → Thread</li>';
+          miniChain.style.display = 'block';
+          return;
+        }
+
+        var chain = window.MutationRoutes.getRouteChain('kusoripu-to-idea', {
+          mode: 'stable',
+          depth: 4
+        });
+
+        if (!chain || !chain.length) {
+          miniChain.style.display = 'none';
+          return;
+        }
+
+        chainSteps.innerHTML = chain.map(function (step) {
+          return '<li>' + escapeHtml(step.label || step.id) + '</li>';
+        }).join('');
+
+        miniChain.style.display = 'block';
+      }
+
+      generateBtn.addEventListener('click', function () {
+        generate(true);
+      });
+
+      anotherBtn.addEventListener('click', anotherAngle);
+
+      exampleBtn.addEventListener('click', function () {
+        input.value = exampleReply;
+        generate(true);
+      });
+
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        lastInput = '';
+        angleIndex = 0;
+        renderEmpty();
+        input.focus();
+      });
+
+      deepBtn.addEventListener('click', function () {
+        var open = deeperPanel.style.display === 'block';
+        deeperPanel.style.display = open ? 'none' : 'block';
+        deepBtn.textContent = open ? 'Go deeper' : 'Hide deeper path';
+
+        if (!open) {
+          renderDeepLinks();
+          renderChain();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
