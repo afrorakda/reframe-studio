@@ -6,7 +6,6 @@
 <title>Failure → Reframe</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 }
@@ -82,12 +81,16 @@ padding:18px;
 border-radius:22px;
 background:rgba(255,255,255,0.04);
 border:1px solid rgba(255,255,255,0.08);
+color:#d6ddf3;
+font-size:clamp(18px,4.4vw,22px);
+line-height:1.6;
 }
 
 .step-title{
 font-size:clamp(20px,5vw,30px);
 font-weight:800;
 margin-bottom:8px;
+color:#f5f7ff;
 }
 
 textarea{
@@ -142,11 +145,52 @@ border:1px solid rgba(255,255,255,0.08);
 min-height:140px;
 }
 
+.result-title{
+margin:0 0 14px;
+font-size:clamp(22px,5vw,30px);
+font-weight:800;
+color:#f5f7ff;
+}
+
 .output{
 white-space:pre-wrap;
 font-size:clamp(19px,4.5vw,24px);
 line-height:1.7;
 color:#d6ddf3;
+}
+
+.next-box{
+margin-top:18px;
+padding:20px;
+border-radius:22px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);
+display:none;
+}
+
+.next-title{
+margin:0 0 12px;
+font-size:clamp(22px,5vw,30px);
+font-weight:800;
+color:#f5f7ff;
+}
+
+.next-links{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.next-link{
+display:block;
+width:100%;
+padding:14px;
+border-radius:16px;
+background:rgba(255,255,255,0.06);
+color:#f5f7ff;
+text-decoration:none;
+font-size:clamp(16px,4vw,20px);
+border:1px solid rgba(255,255,255,0.10);
 }
 
 .footer{
@@ -179,8 +223,7 @@ Sometimes a different frame reveals something else entirely.
 
 <div class="step">
 <div class="step-title">Drop the failure</div>
-Describe what went wrong.  
-No polishing needed.
+Describe what went wrong. No polishing needed.
 </div>
 
 <div class="step">
@@ -198,7 +241,13 @@ The tool will show alternative ways to interpret the situation.
 </div>
 
 <div class="result">
+<div class="result-title">Reframe sparks</div>
 <div class="output" id="output"></div>
+</div>
+
+<div class="next-box" id="nextBox">
+<div class="next-title">Next mutations</div>
+<div class="next-links" id="nextLinks"></div>
 </div>
 
 <div class="footer">
@@ -213,58 +262,132 @@ Runs entirely in your browser
 </div>
 
 <script>
-
 function example(){
-document.getElementById("input").value="My post completely failed and nobody reacted.";
+document.getElementById("input").value = "My post completely failed and nobody reacted.";
 }
 
 function clearAll(){
-document.getElementById("input").value="";
-document.getElementById("output").textContent="";
+document.getElementById("input").value = "";
+document.getElementById("output").textContent = "";
+document.getElementById("nextLinks").innerHTML = "";
+document.getElementById("nextBox").style.display = "none";
 }
 
 function copyResult(){
-const text=document.getElementById("output").textContent;
+const text = document.getElementById("output").textContent.trim();
+if(!text) return;
 navigator.clipboard.writeText(text);
+}
+
+function pickUnique(items, count){
+const pool = [...items];
+const chosen = [];
+while(pool.length && chosen.length < count){
+const index = Math.floor(Math.random() * pool.length);
+chosen.push(pool.splice(index, 1)[0]);
+}
+return chosen;
+}
+
+function pickNextMutations(){
+const primary = [
+{ label:"Try mutation: Failure → Lesson", href:"failure-to-lesson.html" },
+{ label:"Try mutation: Emotion → Reframe", href:"emotion-to-reframe.html" },
+{ label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" }
+];
+
+const drift = [
+{ label:"Try mutation: Confusion → Question", href:"confusion-to-question.html" },
+{ label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
+{ label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" },
+{ label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" }
+];
+
+const picked = [];
+const used = new Set();
+
+while(picked.length < 3){
+let source;
+if(Math.random() < 0.7){
+source = primary;
+}else{
+source = drift;
+}
+const item = source[Math.floor(Math.random() * source.length)];
+if(used.has(item.href)) continue;
+used.add(item.href);
+picked.push(item);
+}
+
+return picked;
+}
+
+function renderNextMutations(){
+const nextLinks = document.getElementById("nextLinks");
+const nextBox = document.getElementById("nextBox");
+const mutations = pickNextMutations();
+
+nextLinks.innerHTML = mutations.map(item => {
+return `<a class="next-link" href="./${item.href}">${item.label}</a>`;
+}).join("");
+
+nextBox.style.display = "block";
 }
 
 function generate(){
 
-const reframes=[
+const input = document.getElementById("input").value.trim();
+const output = document.getElementById("output");
 
+let reframes = [
 "maybe the timing was wrong, not the idea",
-
 "maybe the post was early for the audience",
-
 "maybe the reaction you expected was not the reaction it triggered",
-
 "maybe this version was a prototype",
-
 "maybe silence is data",
-
 "maybe the signal was too subtle",
-
 "maybe the failure shows where curiosity actually is",
-
 "maybe the audience needs a different door",
-
 "maybe the experiment worked even if the metric failed",
-
 "maybe this was friction before traction"
-
 ];
 
-let result="";
+if(input){
+const lower = input.toLowerCase();
 
-for(let i=0;i<5;i++){
-const r=reframes[Math.floor(Math.random()*reframes.length)];
-result+="• "+r+"\n\n";
+if(lower.includes("nobody") || lower.includes("no one") || lower.includes("no one reacted") || lower.includes("silence")){
+reframes = [
+"maybe silence is data",
+"maybe the timing was wrong, not the idea",
+"maybe the audience needs a different door",
+"maybe the signal was too subtle",
+"maybe the post landed quietly, not uselessly",
+"maybe nothing failed except the expectation",
+"maybe the wrong metric is making this look dead",
+"maybe this was early, not empty",
+"maybe the post needed a sharper entry point",
+"maybe quiet does not mean worthless"
+];
+} else if(lower.includes("failed") || lower.includes("failure") || lower.includes("flopped")){
+reframes = [
+"maybe this version was a prototype",
+"maybe the experiment worked even if the metric failed",
+"maybe this was friction before traction",
+"maybe the miss reveals the next adjustment",
+"maybe the result is rough, not final",
+"maybe this only failed in one frame",
+"maybe the failure is showing where the edge is",
+"maybe the wrong thing broke, not the whole idea",
+"maybe this is feedback wearing ugly clothes",
+"maybe the flop is just incomplete information"
+];
+}
 }
 
-document.getElementById("output").textContent=result;
-
+const chosen = pickUnique(reframes, 5);
+document.getElementById("output").textContent = chosen.map(item => "• " + item).join("\n\n");
+renderNextMutations();
 }
-
 </script>
 
 </body>
