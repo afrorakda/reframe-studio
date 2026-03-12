@@ -1,39 +1,46 @@
-// REFRAME Drift Engine v1
+// REFRAME Drift Engine v1.1
+// Simple intentional glitch generator
 
-function driftFragments(fragments){
+async function reframeDrift(tags = [], count = 5) {
+  try {
+    const response = await fetch("./fragment-pool.json");
+    const data = await response.json();
+    const pool = data.fragments || [];
 
-  return fragments.map(fragment => {
-
-    let score = fragment.score || 0
-    let history = fragment.history ? fragment.history.length : 0
-
-    let drift = 0
-
-    // Gravity
-    if(score >= 6) drift += 1
-
-    // Friction
-    if(history <= 1) drift -= 1
-
-    // Noise
-    if(Math.random() < 0.25){
-      drift += Math.random() < 0.5 ? 1 : -1
+    if (!pool.length) {
+      return ["fragment pool is empty"];
     }
 
-    let depth = fragment.depth || "surface"
+    const matched = pool.filter(f =>
+      Array.isArray(f.tags) && tags.some(tag => f.tags.includes(tag))
+    );
 
-    if(drift > 0){
-      if(depth === "surface") depth = "middle"
-      else if(depth === "middle") depth = "deep"
+    const source = matched.length > 0 ? matched : pool;
+    const results = [];
+    const used = new Set();
+
+    while (results.length < count && used.size < pool.length) {
+      let pick;
+
+      // 70% logical match
+      if (Math.random() < 0.7) {
+        pick = source[Math.floor(Math.random() * source.length)];
+      }
+      // 30% intentional glitch
+      else {
+        pick = pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      if (!pick || used.has(pick.text)) continue;
+
+      used.add(pick.text);
+      results.push(pick.text);
     }
 
-    if(drift < 0){
-      if(depth === "deep") depth = "middle"
-      else if(depth === "middle") depth = "surface"
-    }
+    return results;
 
-    fragment.depth = depth
-
-    return fragment
-  })
+  } catch (error) {
+    console.error("Drift Engine error:", error);
+    return ["drift engine failed to load fragments"];
+  }
 }
