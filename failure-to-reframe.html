@@ -175,6 +175,13 @@ font-weight:800;
 color:#f5f7ff;
 }
 
+.next-copy{
+margin:0 0 14px;
+font-size:clamp(16px,4vw,20px);
+line-height:1.6;
+color:#aeb6d1;
+}
+
 .next-links{
 display:flex;
 flex-direction:column;
@@ -247,6 +254,7 @@ The tool will show alternative ways to interpret the situation.
 
 <div class="next-box" id="nextBox">
 <div class="next-title">Next mutations</div>
+<p class="next-copy">Not all next moves should be obvious.</p>
 <div class="next-links" id="nextLinks"></div>
 </div>
 
@@ -261,6 +269,7 @@ Runs entirely in your browser
 
 </div>
 
+<script src="./drift-engine.js"></script>
 <script>
 function example(){
 document.getElementById("input").value = "My post completely failed and nobody reacted.";
@@ -289,74 +298,37 @@ chosen.push(pool.splice(index, 1)[0]);
 return chosen;
 }
 
-function pickNextMutations(){
-const primary = [
-{ label:"Try mutation: Failure → Lesson", href:"failure-to-lesson.html" },
-{ label:"Try mutation: Emotion → Reframe", href:"emotion-to-reframe.html" },
-{ label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" }
-];
-
-const drift = [
-{ label:"Try mutation: Confusion → Question", href:"confusion-to-question.html" },
-{ label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
-{ label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" },
-{ label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" }
-];
-
-const picked = [];
-const used = new Set();
-
-while(picked.length < 3){
-let source;
-if(Math.random() < 0.7){
-source = primary;
-}else{
-source = drift;
-}
-const item = source[Math.floor(Math.random() * source.length)];
-if(used.has(item.href)) continue;
-used.add(item.href);
-picked.push(item);
-}
-
-return picked;
-}
-
-function renderNextMutations(){
-const nextLinks = document.getElementById("nextLinks");
-const nextBox = document.getElementById("nextBox");
-const mutations = pickNextMutations();
-
-nextLinks.innerHTML = mutations.map(item => {
-return `<a class="next-link" href="./${item.href}">${item.label}</a>`;
-}).join("");
-
-nextBox.style.display = "block";
-}
-
-function generate(){
-
-const input = document.getElementById("input").value.trim();
-const output = document.getElementById("output");
-
-let reframes = [
-"maybe the timing was wrong, not the idea",
-"maybe the post was early for the audience",
-"maybe the reaction you expected was not the reaction it triggered",
-"maybe this version was a prototype",
-"maybe silence is data",
-"maybe the signal was too subtle",
-"maybe the failure shows where curiosity actually is",
-"maybe the audience needs a different door",
-"maybe the experiment worked even if the metric failed",
-"maybe this was friction before traction"
-];
-
-if(input){
+function classifyFailureInput(input){
 const lower = input.toLowerCase();
 
-if(lower.includes("nobody") || lower.includes("no one") || lower.includes("no one reacted") || lower.includes("silence")){
-reframes = [
+if(
+lower.includes("nobody") ||
+lower.includes("no one") ||
+lower.includes("silence") ||
+lower.includes("ignored") ||
+lower.includes("no reaction")
+){
+return "silence";
+}
+
+if(
+lower.includes("failed") ||
+lower.includes("failure") ||
+lower.includes("flopped") ||
+lower.includes("didn't work") ||
+lower.includes("did not work")
+){
+return "failure";
+}
+
+return "general";
+}
+
+function getReframes(input){
+const kind = classifyFailureInput(input);
+
+if(kind === "silence"){
+return [
 "maybe silence is data",
 "maybe the timing was wrong, not the idea",
 "maybe the audience needs a different door",
@@ -368,8 +340,10 @@ reframes = [
 "maybe the post needed a sharper entry point",
 "maybe quiet does not mean worthless"
 ];
-} else if(lower.includes("failed") || lower.includes("failure") || lower.includes("flopped")){
-reframes = [
+}
+
+if(kind === "failure"){
+return [
 "maybe this version was a prototype",
 "maybe the experiment worked even if the metric failed",
 "maybe this was friction before traction",
@@ -382,11 +356,135 @@ reframes = [
 "maybe the flop is just incomplete information"
 ];
 }
+
+return [
+"maybe the timing was wrong, not the idea",
+"maybe the post was early for the audience",
+"maybe the reaction you expected was not the reaction it triggered",
+"maybe this version was a prototype",
+"maybe silence is data",
+"maybe the signal was too subtle",
+"maybe the failure shows where curiosity actually is",
+"maybe the audience needs a different door",
+"maybe the experiment worked even if the metric failed",
+"maybe this was friction before traction"
+];
 }
 
+function shuffleArray(items){
+const arr = [...items];
+for(let i = arr.length - 1; i > 0; i--){
+const j = Math.floor(Math.random() * (i + 1));
+[arr[i], arr[j]] = [arr[j], arr[i]];
+}
+return arr;
+}
+
+function buildCandidatesFromDrift(sparks){
+const keywordMap = {
+"emotion": { label:"Try mutation: Emotion → Reframe", href:"emotion-to-reframe.html" },
+"feeling": { label:"Try mutation: Emotion → Reframe", href:"emotion-to-reframe.html" },
+"problem": { label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" },
+"question": { label:"Try mutation: Confusion → Question", href:"confusion-to-question.html" },
+"comments": { label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" },
+"comment": { label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" },
+"wrong": { label:"Try mutation: Failure → Lesson", href:"failure-to-lesson.html" },
+"story": { label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
+"direction": { label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" },
+"angle": { label:"Try mutation: Criticism → Idea", href:"criticism-to-idea.html" },
+"quiet": { label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" },
+"signal": { label:"Try mutation: Criticism → Idea", href:"criticism-to-idea.html" }
+};
+
+const built = [];
+const used = new Set();
+
+sparks.forEach(text => {
+const lower = text.toLowerCase();
+Object.keys(keywordMap).forEach(key => {
+if(lower.includes(key)){
+const item = keywordMap[key];
+if(!used.has(item.href)){
+used.add(item.href);
+built.push(item);
+}
+}
+});
+});
+
+return built;
+}
+
+async function getDriftSparks(){
+if(typeof reframeDrift !== "function"){
+return [];
+}
+
+const sparks = await reframeDrift(["failure","shift","drift","confusion","emotion"], 5);
+return Array.isArray(sparks) ? sparks : [];
+}
+
+async function renderNextMutations(){
+const nextLinks = document.getElementById("nextLinks");
+const nextBox = document.getElementById("nextBox");
+
+const logical = [
+{ label:"Try mutation: Failure → Lesson", href:"failure-to-lesson.html" },
+{ label:"Try mutation: Emotion → Reframe", href:"emotion-to-reframe.html" },
+{ label:"Try mutation: Problem → Tool", href:"stuck-to-tool.html" }
+];
+
+const driftSparks = await getDriftSparks();
+const driftBuilt = buildCandidatesFromDrift(driftSparks);
+
+const fallbackDrift = [
+{ label:"Try mutation: Emotion → Action", href:"emotion-to-action.html" },
+{ label:"Try mutation: Confusion → Question", href:"confusion-to-question.html" },
+{ label:"Try mutation: Idea → Thread", href:"idea-to-thread.html" },
+{ label:"Try mutation: Criticism → Lesson", href:"criticism-to-lesson.html" },
+{ label:"Try mutation: Criticism → Idea", href:"criticism-to-idea.html" }
+];
+
+const mergedDrift = [...driftBuilt, ...fallbackDrift];
+const picked = [];
+const used = new Set();
+
+const first = logical[Math.floor(Math.random() * logical.length)];
+picked.push(first);
+used.add(first.href);
+
+const shuffledDrift = shuffleArray(mergedDrift);
+for(const item of shuffledDrift){
+if(picked.length >= 3) break;
+if(used.has(item.href)) continue;
+used.add(item.href);
+picked.push(item);
+}
+
+const shuffledLogical = shuffleArray(logical);
+for(const item of shuffledLogical){
+if(picked.length >= 3) break;
+if(used.has(item.href)) continue;
+used.add(item.href);
+picked.push(item);
+}
+
+nextLinks.innerHTML = picked.map(item => {
+return `<a class="next-link" href="./${item.href}">${item.label}</a>`;
+}).join("");
+
+nextBox.style.display = "block";
+}
+
+async function generate(){
+const input = document.getElementById("input").value.trim();
+const output = document.getElementById("output");
+
+const reframes = getReframes(input);
 const chosen = pickUnique(reframes, 5);
-document.getElementById("output").textContent = chosen.map(item => "• " + item).join("\n\n");
-renderNextMutations();
+
+output.textContent = chosen.map(item => "• " + item).join("\n\n");
+await renderNextMutations();
 }
 </script>
 
