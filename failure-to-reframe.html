@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Failure → Reframe</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+background:
+radial-gradient(circle at top, rgba(88,120,255,0.14), transparent 34%),
+radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 26%),
+linear-gradient(180deg,#060816 0%,#090d1f 45%,#0b1024 100%);
+color:#eef2ff;
+min-height:100vh;
+}
+
+.wrap{
+max-width:760px;
+margin:0 auto;
+padding:20px 16px 40px;
+}
+
+.back{
+display:block;
+width:100%;
+margin:0 0 18px;
+padding:14px 16px;
+border-radius:18px;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.10);
+color:#f5f7ff;
+text-decoration:none;
+text-align:center;
+font-size:clamp(18px,4.2vw,24px);
+font-weight:700;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:24px;
+padding:20px;
+}
+
+.tag{
+display:inline-block;
+padding:8px 14px;
+border-radius:999px;
+background:rgba(130,110,255,0.18);
+border:1px solid rgba(130,110,255,0.28);
+color:#d7ccff;
+font-size:14px;
+font-weight:700;
+margin-bottom:14px;
+}
+
+h1{
+margin:0 0 10px;
+font-size:clamp(38px,8vw,64px);
+line-height:1;
+font-weight:800;
+}
+
+.desc{
+font-size:clamp(18px,4.5vw,24px);
+line-height:1.6;
+color:#c4cbe2;
+margin-bottom:22px;
+}
+
+.step{
+margin-bottom:16px;
+padding:18px;
+border-radius:22px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.step-title{
+font-size:clamp(20px,5vw,30px);
+font-weight:800;
+margin-bottom:8px;
+}
+
+textarea{
+width:100%;
+min-height:160px;
+margin-top:18px;
+padding:18px;
+border-radius:22px;
+border:1px solid rgba(255,255,255,0.10);
+background:rgba(10,15,34,0.85);
+color:#f4f7ff;
+font-size:17px;
+line-height:1.6;
+resize:vertical;
+outline:none;
+}
+
+textarea::placeholder{
+color:#8f98b8;
+}
+
+.controls{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:16px;
+}
+
+button{
+appearance:none;
+border:none;
+cursor:pointer;
+padding:14px 18px;
+border-radius:16px;
+font-size:18px;
+font-weight:700;
+color:#f5f7ff;
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.10);
+}
+
+.primary{
+background:linear-gradient(135deg, rgba(88,120,255,0.38), rgba(0,255,200,0.14));
+}
+
+.result{
+margin-top:18px;
+padding:20px;
+border-radius:22px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);
+min-height:140px;
+}
+
+.output{
+white-space:pre-wrap;
+font-size:clamp(19px,4.5vw,24px);
+line-height:1.7;
+color:#d6ddf3;
+}
+
+.footer{
+margin-top:24px;
+text-align:center;
+color:#95a0c0;
+font-size:14px;
+line-height:1.7;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
+<div class="card">
+
+<div class="tag">Failure → Reframe</div>
+
+<h1>Failure → Reframe</h1>
+
+<p class="desc">
+Failure is often just a story told too early.
+Sometimes a different frame reveals something else entirely.
+</p>
+
+<div class="step">
+<div class="step-title">Drop the failure</div>
+Describe what went wrong.  
+No polishing needed.
+</div>
+
+<div class="step">
+<div class="step-title">Let it mutate</div>
+The tool will show alternative ways to interpret the situation.
+</div>
+
+<textarea id="input" placeholder="Example: My post completely failed and nobody reacted."></textarea>
+
+<div class="controls">
+<button class="primary" onclick="generate()">Try mutation</button>
+<button onclick="example()">Try example</button>
+<button onclick="clearAll()">Clear</button>
+<button onclick="copyResult()">Copy result</button>
+</div>
+
+<div class="result">
+<div class="output" id="output"></div>
+</div>
+
+<div class="footer">
+No login<br>
+No tracking<br>
+No personal data<br>
+Runs entirely in your browser
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function example(){
+document.getElementById("input").value="My post completely failed and nobody reacted.";
+}
+
+function clearAll(){
+document.getElementById("input").value="";
+document.getElementById("output").textContent="";
+}
+
+function copyResult(){
+const text=document.getElementById("output").textContent;
+navigator.clipboard.writeText(text);
+}
+
+function generate(){
+
+const reframes=[
+
+"maybe the timing was wrong, not the idea",
+
+"maybe the post was early for the audience",
+
+"maybe the reaction you expected was not the reaction it triggered",
+
+"maybe this version was a prototype",
+
+"maybe silence is data",
+
+"maybe the signal was too subtle",
+
+"maybe the failure shows where curiosity actually is",
+
+"maybe the audience needs a different door",
+
+"maybe the experiment worked even if the metric failed",
+
+"maybe this was friction before traction"
+
+];
+
+let result="";
+
+for(let i=0;i<5;i++){
+const r=reframes[Math.floor(Math.random()*reframes.length)];
+result+="• "+r+"\n\n";
+}
+
+document.getElementById("output").textContent=result;
+
+}
+
+</script>
+
+</body>
+</html>
