@@ -3,82 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutation Map</title>
+<title>REFRAME Mutation Map</title>
 
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
-background:#0f1115;
-color:#e8ecf1;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 margin:0;
-padding:20px;
+font-family:Arial, sans-serif;
+background:#f7f7f7;
+color:#111;
 }
 
-.container{
-max-width:900px;
-margin:auto;
+.wrap{
+max-width:760px;
+margin:0 auto;
+padding:20px 16px 40px;
 }
 
-.card{
-background:#171a21;
-border:1px solid #2a3140;
-border-radius:16px;
-padding:16px;
-margin-bottom:16px;
-}
-
-textarea{
-width:100%;
-min-height:120px;
-background:#0f1115;
-border:1px solid #333c4d;
-border-radius:12px;
-color:#e8ecf1;
-padding:12px;
-font-size:15px;
-}
-
-button{
-background:#2b6cff;
-border:none;
-color:white;
-padding:10px 16px;
-border-radius:10px;
-cursor:pointer;
-margin-top:10px;
-}
-
-.map{
-margin-top:20px;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:20px;
-}
-
-.node{
-background:#0f1115;
-border:1px solid #33405a;
-border-radius:12px;
-padding:12px 16px;
+h1{
+margin:10px 0 8px;
+font-size:clamp(34px,7vw,58px);
+font-weight:800;
 text-align:center;
 }
 
-.row{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-justify-content:center;
+.subtitle{
+margin:0 0 20px;
+text-align:center;
+font-size:clamp(16px,4vw,24px);
+color:#444;
+line-height:1.4;
 }
 
-.pill{
-display:inline-block;
-padding:6px 10px;
-border-radius:999px;
-background:#222938;
-border:1px solid #33405a;
-margin:4px;
+.home-link{
+display:block;
+width:100%;
+margin:0 0 18px;
+padding:14px 16px;
+border-radius:16px;
+background:#111;
+color:#fff;
+text-decoration:none;
+text-align:center;
+font-size:clamp(18px,4.2vw,24px);
+font-weight:700;
+}
+
+.section{
+margin-bottom:18px;
+background:#fff;
+border:1px solid #e5e5e5;
+border-radius:20px;
+overflow:hidden;
+}
+
+.section-header{
+width:100%;
+padding:18px;
+border:none;
+background:#fff;
+text-align:left;
+font-size:clamp(22px,5vw,30px);
+font-weight:800;
+cursor:pointer;
+}
+
+.section-header.active{
+background:#111;
+color:#fff;
+}
+
+.section-body{
+display:none;
+padding:0 14px 14px;
+background:#fafafa;
+}
+
+.section-body.open{
+display:block;
+}
+
+.mutation{
+margin-top:12px;
+background:#fff;
+border:1px solid #e8e8e8;
+border-radius:16px;
+padding:14px;
+}
+
+.mutation-title{
+margin:0 0 6px;
+font-size:clamp(18px,4vw,24px);
+font-weight:800;
+}
+
+.spark{
+font-size:14px;
+color:#666;
+margin-bottom:10px;
+line-height:1.4;
+font-style:italic;
+}
+
+.tool-link{
+display:block;
+margin-top:6px;
+padding:14px;
+border-radius:14px;
+background:#f3f3f3;
+text-decoration:none;
+color:#111;
+border:1px solid #dfdfdf;
+font-size:clamp(16px,4vw,20px);
+}
+
+.hint{
+margin-top:18px;
+text-align:center;
+color:#666;
+font-size:14px;
+line-height:1.5;
 }
 
 </style>
@@ -86,66 +134,203 @@ margin:4px;
 
 <body>
 
-<div class="container">
+<div class="wrap">
+
+<a class="home-link" href="index.html">← Back to REFRAME Studio</a>
 
 <h1>Mutation Map</h1>
 
-<div class="card">
+<p class="subtitle">
+Thought doesn't move in straight lines.<br>
+Sometimes the wrong direction is the interesting one.
+</p>
 
-<textarea id="input">I feel stuck and cannot decide what to build next.</textarea>
+<!-- Criticism -->
 
-<button onclick="runMap()">Generate map</button>
+<div class="section">
+
+<button class="section-header" onclick="toggleSection(this)">
+Criticism
+</button>
+
+<div class="section-body">
+
+<div class="mutation">
+
+<p class="mutation-title">Criticism → Lesson</p>
+
+<p class="spark">
+Maybe the attack just pointed to something useful.
+</p>
+
+<a class="tool-link" href="criticism-to-lesson.html">
+Open tool
+</a>
 
 </div>
 
-<div class="card">
+<div class="mutation">
 
-<h3>Thought Map</h3>
+<p class="mutation-title">Criticism → Question</p>
 
-<div id="map"></div>
+<p class="spark">
+What if the comment is asking something hidden?
+</p>
+
+<a class="tool-link" href="criticism-to-question.html">
+Open tool
+</a>
 
 </div>
+
+<div class="mutation">
+
+<p class="mutation-title">Criticism → Content</p>
+
+<p class="spark">
+Sometimes the comment is already the story.
+</p>
+
+<a class="tool-link" href="comment-to-content.html">
+comment-to-content
+</a>
+
+<a class="tool-link" href="hate-to-content.html">
+hate-to-content
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Idea -->
+
+<div class="section">
+
+<button class="section-header" onclick="toggleSection(this)">
+Idea
+</button>
+
+<div class="section-body">
+
+<div class="mutation">
+
+<p class="mutation-title">Idea → Opposite</p>
+
+<p class="spark">
+Sometimes the opposite reveals the real shape.
+</p>
+
+<a class="tool-link" href="idea-to-opposite.html">
+Open tool
+</a>
+
+</div>
+
+<div class="mutation">
+
+<p class="mutation-title">Idea → Metaphor</p>
+
+<p class="spark">
+A strange metaphor can unlock a stuck idea.
+</p>
+
+<a class="tool-link" href="idea-to-metaphor.html">
+Open tool
+</a>
+
+</div>
+
+<div class="mutation">
+
+<p class="mutation-title">Idea → Thread</p>
+
+<p class="spark">
+Maybe the idea isn't one post, but a story.
+</p>
+
+<a class="tool-link" href="idea-to-thread.html">
+Open tool
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Confusion -->
+
+<div class="section">
+
+<button class="section-header" onclick="toggleSection(this)">
+Confusion
+</button>
+
+<div class="section-body">
+
+<div class="mutation">
+
+<p class="mutation-title">Confusion → Question</p>
+
+<p class="spark">
+Confusion often hides the real question.
+</p>
+
+<a class="tool-link" href="confusion-to-question.html">
+Open tool
+</a>
+
+</div>
+
+<div class="mutation">
+
+<p class="mutation-title">Confusion → Structure</p>
+
+<p class="spark">
+Maybe the thought just needs a shape.
+</p>
+
+<a class="tool-link" href="thought-to-structure.html">
+Open tool
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<p class="hint">
+
+This is not a tool directory.<br>
+It is a playground for thought mutation.
+
+</p>
 
 </div>
 
 <script>
 
-const mutations=[
-"Next Step Finder",
-"Problem → Options",
-"Constraint → Action",
-"Problem → Root Causes",
-"Thought Map",
-"Tool Factory"
-];
+function toggleSection(button){
 
-function randomMutation(){
-return mutations[Math.floor(Math.random()*mutations.length)];
+const body = button.nextElementSibling;
+const isOpen = body.classList.contains("open");
+
+document.querySelectorAll(".section-body").forEach(section=>{
+section.classList.remove("open");
+});
+
+document.querySelectorAll(".section-header").forEach(header=>{
+header.classList.remove("active");
+});
+
+if(!isOpen){
+body.classList.add("open");
+button.classList.add("active");
 }
-
-function runMap(){
-
-let input=document.getElementById("input").value;
-
-let a=randomMutation();
-let b=randomMutation();
-let c=randomMutation();
-
-let html="";
-
-html+="<div class='map'>";
-
-html+="<div class='node'><strong>Input</strong><br>"+input+"</div>";
-
-html+="<div class='row'>";
-html+="<div class='node'>"+a+"</div>";
-html+="<div class='node'>"+b+"</div>";
-html+="<div class='node'>"+c+"</div>";
-html+="</div>";
-
-html+="</div>";
-
-document.getElementById("map").innerHTML=html;
 
 }
 
