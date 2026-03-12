@@ -245,11 +245,20 @@
       letter-spacing:-.02em;
     }
 
+    .hook{
+      margin:0;
+      color:#f0f4ff;
+      font-size:20px;
+      line-height:1.55;
+      white-space:pre-line;
+      font-weight:600;
+    }
+
     .tweet{
       margin:0;
       color:#f0f4ff;
       font-size:19px;
-      line-height:1.55;
+      line-height:1.62;
       white-space:pre-line;
     }
 
@@ -471,91 +480,106 @@ You always say vague things."></textarea>
       var patternSets = {
         clarity: [
           {
-            idea: "When people say an idea is 'too abstract', it often means it hasn't been translated yet.",
-            tweet: "\"This is too abstract.\"\n\nThat might not mean the idea is weak.\nIt might mean the idea hasn't been translated yet.\n\nNew ideas almost always look abstract at first.",
-            angle: "Treat the criticism as a translation problem, not an intelligence problem."
+            idea: "When people call an idea \"too abstract,\" it usually means the idea is still stuck in your language.",
+            hook: "\"This is too abstract\"\n\nusually means one thing:\n\nyou have not translated the idea yet.",
+            tweet: "\"This is too abstract.\"\n\nThat reply usually means one thing:\n\nyou have not translated the idea yet.\n\nThe idea still makes sense in your head.\nIt just has not reached their language yet.",
+            angle: "Treat the reply as a translation problem, not a failure."
           },
           {
-            idea: "\"Too abstract\" is often a signal that the bridge to the audience is missing.",
-            tweet: "When someone says\n\"This is too abstract\"\n\nwhat they may actually mean is\n\n\"I can't see where this connects to my world yet.\"",
-            angle: "Focus on building the bridge between concept and real experience."
+            idea: "\"Too abstract\" often means the bridge between the concept and real life is missing.",
+            hook: "When someone says\n\"This is too abstract\"\n\nthey are often saying:\n\nI cannot see where this touches real life yet.",
+            tweet: "When someone says\n\"This is too abstract\"\n\nwhat they often mean is simple:\n\nI cannot see where this connects to my world yet.\n\nThe missing piece is usually not the idea.\nIt is the bridge.",
+            angle: "Build the bridge between the concept and lived experience."
           },
           {
-            idea: "New concepts usually feel abstract before they become obvious.",
-            tweet: "Every useful idea goes through the same phase:\n\n1. Too abstract\n2. Maybe interesting\n3. Obviously true\n\nMost criticism happens at stage one.",
-            angle: "Frame abstraction as the first stage of adoption."
+            idea: "New ideas often look vague before they become obvious.",
+            hook: "A lot of useful ideas go through the same stage first:\n\n\"too abstract.\"",
+            tweet: "A lot of useful ideas go through the same stage first:\n\n\"too abstract\"\n\nThen later:\ninteresting.\nThen later:\nobvious.\n\nMost people only see the first stage.",
+            angle: "Frame abstraction as the early stage of adoption."
           }
         ],
 
         value: [
           {
-            idea: "\"Who needs this?\" is often the beginning of finding the real audience.",
-            tweet: "When someone asks\n\"Who needs this?\"\n\nthat question is actually useful.\n\nIt forces you to find the one person\nwho really does.",
-            angle: "Use dismissal as a way to sharpen the target audience."
+            idea: "\"Who needs this?\" is often the start of finding the real audience.",
+            hook: "\"Who needs this?\"\n\nSometimes that is not rejection.\nIt is targeting pressure.",
+            tweet: "\"Who needs this?\"\n\nThat question can be annoying.\nBut it is useful.\n\nIt forces you to stop talking to everyone\nand find the one person who actually needs it.",
+            angle: "Use dismissal to sharpen the audience."
           },
           {
             idea: "Ideas look useless until the pain they solve becomes visible.",
-            tweet: "Most ideas look unnecessary\nuntil the problem they solve becomes clear.\n\nOften the idea isn't wrong.\nThe pain just hasn't been described yet.",
-            angle: "Explain the pain before explaining the idea."
+            hook: "A lot of ideas look unnecessary\nuntil the pain is clear.",
+            tweet: "A lot of ideas look unnecessary\nuntil the pain is clear.\n\nOften the idea is not weak.\nThe pain is just still invisible.\n\nExplain the pain first.\nThen the idea starts to make sense.",
+            angle: "Lead with the pain, not the solution."
           },
           {
-            idea: "If everyone needs it, nobody understands it.",
-            tweet: "When an idea tries to serve everyone\nit usually connects with no one.\n\nSometimes the real progress\nis discovering who the idea is actually for.",
-            angle: "Turn broad ideas into precise audiences."
+            idea: "Trying to make an idea for everyone usually makes it land on no one.",
+            hook: "If everyone needs it,\nno one really feels it.",
+            tweet: "If everyone needs it,\nno one really feels it.\n\nSometimes progress is not making the idea bigger.\nIt is making the audience smaller.\n\nThat is when the words start to hit.",
+            angle: "Turn broad value into specific relevance."
           }
         ],
 
         attack: [
           {
-            idea: "Harsh replies often hide confusion rather than disagreement.",
-            tweet: "The harsher the reply\n\nsometimes the less clear the criticism actually is.\n\nStrong language\ncan hide weak arguments.",
-            angle: "Look past the emotion and search for the real confusion."
+            idea: "Harsh replies often hide confusion more than real disagreement.",
+            hook: "The rougher the reply,\nthe blurrier the real criticism often is.",
+            tweet: "The rougher the reply,\nthe blurrier the real criticism often is.\n\nStrong language can hide weak thinking.\n\nSo do not copy the tone.\nFind the confusion underneath it.",
+            angle: "Ignore the tone. Extract the confusion."
           },
           {
-            idea: "Emotional reactions often point to an unseen friction.",
-            tweet: "When people react emotionally\nit's often not about the exact words.\n\nIt's about the friction\nthat the idea creates in their mental model.",
-            angle: "Treat emotional replies as signals of mental friction."
+            idea: "Emotional replies can show where the idea created friction in someone's mental model.",
+            hook: "Sometimes the emotional reaction is the clue.",
+            tweet: "Sometimes the emotional reaction is the clue.\n\nNot because the insult matters.\nBut because it shows where the idea hit friction\ninside someone's mental model.\n\nThat point of friction is often usable.",
+            angle: "Treat emotional reactions as friction signals."
           },
           {
-            idea: "A rude tone can reveal the exact place where the idea hit resistance.",
-            tweet: "Sometimes the most useful part of a rude reply\nis not the insult.\n\nIt's the point of resistance hidden inside it.\n\nThat point is often the next post.",
-            angle: "Ignore the tone. Extract the resistance."
+            idea: "A rude tone can still reveal the exact place where the idea met resistance.",
+            hook: "The insult is usually noise.\nThe resistance is the signal.",
+            tweet: "The insult is usually noise.\nThe resistance is the signal.\n\nInside a rude reply\nthere is sometimes one useful thing:\n\nthe exact place where the idea got rejected.\n\nThat is often the next post.",
+            angle: "Separate the noise from the resistance."
           }
         ],
 
         repetition: [
           {
-            idea: "\"You always say the same thing\" may mean the core message is still forming.",
-            tweet: "Repeating a theme does not always mean you're stuck.\n\nSometimes it means the core idea\nis still trying to find its clearest form.",
-            angle: "Treat repetition as compression in progress."
+            idea: "\"You always say the same thing\" can mean the core message is still forming.",
+            hook: "Repeating a theme does not always mean you are stuck.",
+            tweet: "Repeating a theme does not always mean you are stuck.\n\nSometimes it means the core idea\nis still trying to find its cleanest shape.\n\nThat is not failure.\nThat is compression in progress.",
+            angle: "Read repetition as unfinished clarity."
           },
           {
             idea: "The ideas you repeat are often the ones worth developing.",
-            tweet: "If the same theme keeps coming back\nmaybe it is not a weakness.\n\nMaybe it is a signal.\n\nSome ideas repeat because they are still unfinished.",
-            angle: "Repetition can mark an unfinished pillar."
+            hook: "Some ideas keep coming back\nfor a reason.",
+            tweet: "Some ideas keep coming back\nfor a reason.\n\nNot because you lack variety.\nBut because something inside that thought\nstill wants to be said better.\n\nRepeated themes often point to real pillars.",
+            angle: "Treat repeated thoughts as pillar candidates."
           },
           {
             idea: "What sounds repetitive may actually be unresolved depth.",
-            tweet: "Not every repeated thought is stale.\n\nSome thoughts return\nbecause there is still something inside them\nthat has not been said clearly enough.",
-            angle: "Read repetition as hidden depth, not failure."
+            hook: "Not every repeated thought is stale.",
+            tweet: "Not every repeated thought is stale.\n\nSome thoughts return\nbecause there is still something inside them\nthat has not been fully opened yet.\n\nSometimes repetition is depth asking for language.",
+            angle: "Read repetition as hidden depth."
           }
         ],
 
         friction: [
           {
             idea: "Negative reactions often reveal where the message broke.",
-            tweet: "A rude reply can be annoying.\n\nBut it also shows\nwhere the message stopped making sense.\n\nThat point is often the next idea.",
-            angle: "Look for the exact place where understanding collapsed."
+            hook: "A bad reply can show\nwhere the message stopped landing.",
+            tweet: "A bad reply can be annoying.\n\nBut sometimes it shows something useful:\n\nthe exact place where the message stopped landing.\n\nThat break point is often the next idea.",
+            angle: "Look for the point where understanding collapsed."
           },
           {
-            idea: "Friction often appears before clarity.",
-            tweet: "Good ideas rarely arrive smoothly.\n\nThey usually arrive\nwith friction, confusion,\nand a few bad replies.\n\nThat friction is part of the process.",
-            angle: "Treat resistance as part of idea formation."
+            idea: "Friction often appears before clarity does.",
+            hook: "Good ideas do not always arrive clean.",
+            tweet: "Good ideas do not always arrive clean.\n\nThey often arrive with friction,\nconfusion,\nand a few bad replies.\n\nThat mess is not always a warning.\nSometimes it is the start of shape.",
+            angle: "Treat resistance as part of formation."
           },
           {
-            idea: "The hidden value of a bad reply is that it exposes the gap.",
-            tweet: "Not every rude reply contains value.\n\nBut some of them expose the gap\nbetween what you meant\nand what people actually heard.",
-            angle: "Use the reply to locate the gap between intention and reception."
+            idea: "A bad reply can expose the gap between what you meant and what people heard.",
+            hook: "Sometimes the value of a bad reply\nis the gap it exposes.",
+            tweet: "Sometimes the value of a bad reply\nis the gap it exposes.\n\nYou meant one thing.\nThey heard another.\n\nThat gap is frustrating.\nBut it is also material.",
+            angle: "Use the reply to locate the intention-reception gap."
           }
         ]
       };
@@ -601,6 +625,11 @@ You always say vague things."></textarea>
           '<div class="result-section">' +
             '<p class="section-label">Idea</p>' +
             '<p class="idea">' + escapeHtml(data.idea) + '</p>' +
+          '</div>' +
+
+          '<div class="result-section">' +
+            '<p class="section-label">Hook</p>' +
+            '<p class="hook">' + escapeHtml(data.hook) + '</p>' +
           '</div>' +
 
           '<div class="result-section">' +
