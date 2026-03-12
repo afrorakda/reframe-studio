@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Kusoripu → Idea | REFRAME Studio</title>
+  <style>
+    :root{
+      --bg-1:#060816;
+      --bg-2:#0b1430;
+      --panel:#0f1730cc;
+      --line:#2a3d74;
+      --text:#f4f7ff;
+      --muted:#aeb9dc;
+      --soft:#7f8db8;
+      --pink:#ff5fbc;
+      --pink-2:#ff7bcc;
+      --deep:#8f7dff;
+      --good:#9dd6b1;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118,81,255,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,174,255,.12), transparent 30%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 55%);
+      min-height:100vh;
+      line-height:1.5;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .wrap{
+      width:min(100%, 860px);
+      margin:0 auto;
+      padding:20px 16px 56px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      opacity:.92;
+    }
+
+    .hero{
+      border:1px solid rgba(110,132,210,.35);
+      background:linear-gradient(180deg, rgba(20,30,61,.94), rgba(7,11,25,.96));
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(137,111,255,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(31,193,255,.11), transparent 25%);
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding:22px 18px 24px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border:1px solid rgba(116,98,235,.45);
+      border-radius:999px;
+      color:#d7cdfd;
+      background:rgba(86,68,183,.15);
+      font-size:14px;
+      margin-bottom:16px;
+    }
+
+    h1{
+      font-size:clamp(38px, 10vw, 78px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      margin:0 0 16px;
+      font-weight:800;
+      max-width:700px;
+    }
+
+    .lead{
+      margin:0 0 26px;
+      color:var(--muted);
+      font-size:clamp(18px, 4.4vw, 22px);
+      max-width:700px;
+    }
+
+    .tool-card{
+      border:1px solid rgba(90,112,186,.35);
+      background:rgba(14,20,38,.72);
+      border-radius:28px;
+      padding:18px;
+      backdrop-filter:blur(8px);
+    }
+
+    .tool-title{
+      font-size:clamp(28px, 6vw, 36px);
+      line-height:1.02;
+      letter-spacing:-.03em;
+      margin:0 0 8px;
+      font-weight:800;
+    }
+
+    .tool-sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:17px;
+    }
+
+    .label{
+      display:block;
+      margin:0 0 8px;
+      color:#d9e0f8;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    textarea{
+      width:100%;
+      min-height:136px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:20px;
+      padding:16px 16px 18px;
+      background:rgba(8,12,25,.95);
+      color:var(--text);
+      font:inherit;
+      font-size:17px;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.4);
+    }
+
+    textarea::placeholder{color:#7f8ab0}
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      font:inherit;
+      font-weight:700;
+      border-radius:18px;
+      transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    button:active{transform:scale(.985)}
+
+    .primary{
+      flex:1 1 220px;
+      padding:18px 22px;
+      color:white;
+      font-size:22px;
+      background:linear-gradient(180deg, var(--pink-2), var(--pink));
+      box-shadow:0 10px 30px rgba(255,95,188,.28);
+    }
+
+    .secondary{
+      flex:1 1 140px;
+      padding:15px 16px;
+      color:#dbe3ff;
+      background:rgba(19,28,54,.95);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.42);
+      font-size:16px;
+    }
+
+    .result{
+      margin-top:18px;
+      border-radius:22px;
+      background:rgba(7,11,25,.9);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.32);
+      padding:16px;
+    }
+
+    .result-empty{
+      color:var(--soft);
+      font-size:16px;
+      margin:0;
+    }
+
+    .idea-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.16);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.28);
+    }
+
+    .idea{
+      font-size:24px;
+      line-height:1.25;
+      margin:0 0 12px;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    .reason{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .deep-entry{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid rgba(92,109,172,.24);
+    }
+
+    .deep-button{
+      background:transparent;
+      color:#bfc8ea;
+      padding:0;
+      border-radius:0;
+      font-size:15px;
+      font-weight:500;
+      opacity:.88;
+    }
+
+    .deep-button:hover{opacity:1}
+
+    .deeper-panel{
+      display:none;
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      background:rgba(12,18,35,.78);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.25);
+    }
+
+    .deeper-title{
+      margin:0 0 10px;
+      font-size:14px;
+      color:#d6defb;
+      letter-spacing:.02em;
+    }
+
+    .route-list{
+      display:grid;
+      gap:8px;
+    }
+
+    .route-item{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.02);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
+    }
+
+    .route-name{
+      margin:0;
+      font-size:15px;
+      color:#eef2ff;
+      font-weight:700;
+    }
+
+    .route-note{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .route-go{
+      white-space:nowrap;
+      color:#d7cdfd;
+      font-size:13px;
+      padding-top:1px;
+    }
+
+    .mini-chain{
+      display:none;
+      margin-top:10px;
+      padding:12px 12px 2px;
+      border-radius:16px;
+      background:rgba(5,9,20,.7);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
+    }
+
+    .mini-chain-title{
+      margin:0 0 10px;
+      color:#cad4f7;
+      font-size:13px;
+    }
+
+    .chain-steps{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:0;
+      padding:0 0 10px;
+      list-style:none;
+    }
+
+    .chain-steps li{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      color:#e9eeff;
+      font-size:13px;
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+    }
+
+    .tiny{
+      margin-top:16px;
+      color:#8995bc;
+      font-size:13px;
+    }
+
+    .footer{
+      padding:16px 4px 0;
+      color:#8390b8;
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (min-width: 760px){
+      .hero-inner{padding:28px 28px 30px}
+      .tool-card{padding:22px}
+      .result{padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./index.html" aria-label="Back to REFRAME Studio">← Back to REFRAME Studio</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Looks simple first</div>
+        <h1>Turn bad replies into ideas.</h1>
+        <p class="lead">Start with one annoying reply. Turn it into something usable.</p>
+
+        <section class="tool-card" aria-labelledby="tool-title">
+          <h2 class="tool-title" id="tool-title">クソリプ → ネタに</h2>
+          <p class="tool-sub">A simple tool on the surface. Start here.</p>
+
+          <label class="label" for="replyInput">Paste one bad reply</label>
+          <textarea id="replyInput" placeholder="Example:
+This is just shallow.
+Nobody needs this.
+You always say vague things."></textarea>
+
+          <div class="actions">
+            <button class="primary" id="generateBtn" type="button">Generate</button>
+            <button class="secondary" id="exampleBtn" type="button">Try example</button>
+            <button class="secondary" id="clearBtn" type="button">Clear</button>
+          </div>
+
+          <section class="result" id="resultBox" aria-live="polite">
+            <p class="result-empty">Your content idea will appear here.</p>
+          </section>
+
+          <div class="deep-entry">
+            <button class="deep-button" id="deepBtn" type="button">Go deeper</button>
+
+            <div class="deeper-panel" id="deeperPanel">
+              <p class="deeper-title">Next mutation</p>
+              <div class="route-list" id="routeList"></div>
+
+              <div class="mini-chain" id="miniChain">
+                <p class="mini-chain-title">One possible route</p>
+                <ul class="chain-steps" id="chainSteps"></ul>
+              </div>
+            </div>
+          </div>
+
+          <p class="tiny">No login / No tracking / In browser</p>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer">REFRAME Studio</p>
+  </main>
+
+  <script src="./mutation-routes.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var input = document.getElementById('replyInput');
+      var generateBtn = document.getElementById('generateBtn');
+      var exampleBtn = document.getElementById('exampleBtn');
+      var clearBtn = document.getElementById('clearBtn');
+      var resultBox = document.getElementById('resultBox');
+      var deepBtn = document.getElementById('deepBtn');
+      var deeperPanel = document.getElementById('deeperPanel');
+      var routeList = document.getElementById('routeList');
+      var miniChain = document.getElementById('miniChain');
+      var chainSteps = document.getElementById('chainSteps');
+
+      var exampleReply = 'Your ideas are too abstract. Nobody can use this.';
+
+      var hooks = [
+        'Why people call useful ideas “too abstract” at first',
+        'The hidden fear behind “nobody needs this” comments',
+        'What rude replies reveal about audience confusion',
+        'When criticism is actually a positioning clue',
+        'Why vague criticism can become sharp content'
+      ];
+
+      var formats = [
+        'Post a short thread explaining what the reply misunderstands.',
+        'Write one post that translates the criticism into a clearer message.',
+        'Turn it into a “myth vs reality” post.',
+        'Make a 3-point post: what they saw, what they missed, what matters.',
+        'Use it as the opening line for a practical thread.'
+      ];
+
+      var angles = [
+        'The reply may point to a gap between your idea and your wording.',
+        'The emotional sting can hide a real positioning hint.',
+        'Bad replies often reveal where curiosity is blocked.',
+        'A rude reaction can expose the exact place your message lost people.',
+        'What sounds like dismissal can contain a usable question.'
+      ];
+
+      function pickFrom(text, list) {
+        if (!text) return list[0];
+        var score = 0;
+        for (var i = 0; i < text.length; i += 1) {
+          score += text.charCodeAt(i);
+        }
+        return list[score % list.length];
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function extractPattern(text) {
+        var lower = text.toLowerCase();
+
+        if (lower.includes('abstract') || lower.includes('vague')) {
+          return 'clarity gap';
+        }
+        if (lower.includes('nobody') || lower.includes('no one') || lower.includes('useless')) {
+          return 'value doubt';
+        }
+        if (lower.includes('stupid') || lower.includes('dumb') || lower.includes('idiot')) {
+          return 'emotional attack';
+        }
+        if (lower.includes('again') || lower.includes('always')) {
+          return 'repetition fatigue';
+        }
+        return 'hidden friction';
+      }
+
+      function buildIdea(text) {
+        var clean = String(text || '').trim();
+        var pattern = extractPattern(clean);
+        var hook = pickFrom(clean, hooks);
+        var format = pickFrom(clean + 'x', formats);
+        var angle = pickFrom(clean + 'y', angles);
+
+        var idea;
+        if (pattern === 'clarity gap') {
+          idea = 'Content idea: explain why “too abstract” often means “not translated yet,” then show one concrete example.';
+        } else if (pattern === 'value doubt') {
+          idea = 'Content idea: write about why new ideas look unnecessary until they solve a pain people already have.';
+        } else if (pattern === 'emotional attack') {
+          idea = 'Content idea: show how insult-heavy replies usually signal weak criticism and strong discomfort.';
+        } else if (pattern === 'repetition fatigue') {
+          idea = 'Content idea: create a post on why repeated messages are sometimes a sign of an unfinished core idea, not a lack of creativity.';
+        } else {
+          idea = 'Content idea: turn the rude reply into a post about the hidden friction behind negative reactions.';
+        }
+
+        return {
+          idea: idea,
+          hook: hook,
+          angle: angle,
+          format: format
+        };
+      }
+
+      function renderResult(data, original) {
+        resultBox.innerHTML =
+          '<div class="idea-badge">Surface result</div>' +
+          '<p class="idea">' + escapeHtml(data.idea) + '</p>' +
+          '<p class="reason"><strong>Hook:</strong> ' + escapeHtml(data.hook) + '</p>' +
+          '<p class="reason" style="margin-top:8px;"><strong>Angle:</strong> ' + escapeHtml(data.angle) + '</p>' +
+          '<p class="reason" style="margin-top:8px;"><strong>Next move:</strong> ' + escapeHtml(data.format) + '</p>' +
+          '<p class="reason" style="margin-top:12px;"><strong>From:</strong> “‘' + escapeHtml(original) + '”</p>';
+      }
+
+      function renderEmpty() {
+        resultBox.innerHTML = '<p class="result-empty">Your content idea will appear here.</p>';
+      }
+
+      function generate() {
+        var text = input.value.trim();
+        if (!text) {
+          input.focus();
+          return;
+        }
+        var result = buildIdea(text);
+        renderResult(result, text);
+      }
+
+      function renderDeepLinks() {
+        if (!window.MutationRoutes || !window.MutationRoutes.getSubtleDeepLinks) {
+          routeList.innerHTML =
+            '<div class="route-item">' +
+              '<div>' +
+                '<p class="route-name">Reaction → Hidden Idea</p>' +
+                '<p class="route-note">Find the hidden idea inside the reply.</p>' +
+              '</div>' +
+              '<div class="route-go">next</div>' +
+            '</div>';
+          return;
+        }
+
+        var items = window.MutationRoutes.getSubtleDeepLinks('kusoripu-to-idea', {
+          mode: 'stable',
+          limit: 3
+        });
+
+        routeList.innerHTML = items.map(function (item) {
+          var niceLabel = item.label || item.id || 'Next mutation';
+          return (
+            '<div class="route-item">' +
+              '<div>' +
+                '<p class="route-name">' + escapeHtml(niceLabel) + '</p>' +
+                '<p class="route-note">' + escapeHtml(item.reason || '') + '</p>' +
+              '</div>' +
+              '<div class="route-go">next</div>' +
+            '</div>'
+          );
+        }).join('');
+      }
+
+      function renderChain() {
+        if (!window.MutationRoutes || !window.MutationRoutes.getRouteChain) {
+          chainSteps.innerHTML =
+            '<li>クソリプ → ネタに</li>' +
+            '<li>Reaction → Hidden Idea</li>' +
+            '<li>Idea → Hook</li>' +
+            '<li>Idea → Thread</li>';
+          miniChain.style.display = 'block';
+          return;
+        }
+
+        var chain = window.MutationRoutes.getRouteChain('kusoripu-to-idea', {
+          mode: 'stable',
+          depth: 4
+        });
+
+        if (!chain || !chain.length) {
+          miniChain.style.display = 'none';
+          return;
+        }
+
+        chainSteps.innerHTML = chain.map(function (step) {
+          return '<li>' + escapeHtml(step.label || step.id) + '</li>';
+        }).join('');
+
+        miniChain.style.display = 'block';
+      }
+
+      generateBtn.addEventListener('click', generate);
+
+      exampleBtn.addEventListener('click', function () {
+        input.value = exampleReply;
+        generate();
+      });
+
+      clearBtn.addEventListener('click', function () {
+        input.value = '';
+        renderEmpty();
+        input.focus();
+      });
+
+      deepBtn.addEventListener('click', function () {
+        var open = deeperPanel.style.display === 'block';
+        deeperPanel.style.display = open ? 'none' : 'block';
+        deepBtn.textContent = open ? 'Go deeper' : 'Hide deeper path';
+
+        if (!open) {
+          renderDeepLinks();
+          renderChain();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
