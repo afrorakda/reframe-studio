@@ -346,7 +346,6 @@
       border-radius:28px;
       padding:18px;
       backdrop-filter:blur(8px);
-      scroll-margin-top:24px;
     }
 
     .detail-badge{
@@ -475,7 +474,7 @@
         </div>
 
         <div class="path-status" id="pathStatus">
-          Current path: Criticism
+          Current path: none
         </div>
 
         <div class="legend" aria-label="Map legend">
@@ -634,22 +633,30 @@
 
         <section class="detail" id="detailPanel" aria-live="polite">
           <div class="detail-badge">Selected node</div>
-          <h2 class="detail-title" id="detailTitle">Criticism</h2>
-          <p class="detail-text" id="detailText">A harsh reply, pushback, or dismissal. In REFRAME, friction is not the end. It is the start of movement.</p>
+          <h2 class="detail-title" id="detailTitle">No node selected</h2>
+          <p class="detail-text" id="detailText">Tap a node to inspect it. Or use “Show example path” to highlight one route across the map.</p>
 
           <div class="detail-grid">
             <div class="detail-card">
               <p class="detail-card-label">Example</p>
-              <p class="detail-card-text" id="detailExample">“This is too abstract.”</p>
+              <p class="detail-card-text" id="detailExample">Nothing selected yet.</p>
             </div>
 
             <div class="detail-card">
               <p class="detail-card-label">Common next move</p>
-              <p class="detail-card-text" id="detailNext">Criticism → Reframe → Angle → Hook</p>
+              <p class="detail-card-text" id="detailNext">Choose a node first.</p>
             </div>
           </div>
 
-          <div class="mini-links" id="detailLinks"></div>
+          <div class="mini-links" id="detailLinks">
+            <div class="mini-link">
+              <div>
+                <strong>Try tapping a node</strong>
+                <span>Each node updates this panel below.</span>
+              </div>
+              <div class="mini-link-arrow">tap</div>
+            </div>
+          </div>
 
           <p class="tiny">No login / No tracking / In browser</p>
         </section>
@@ -827,7 +834,6 @@
       var focusPathBtn = document.getElementById('focusPathBtn');
       var resetBtn = document.getElementById('resetBtn');
       var pathStatus = document.getElementById('pathStatus');
-      var detailPanel = document.getElementById('detailPanel');
       var mapScroll = document.getElementById('mapScroll');
 
       function escapeHtml(text) {
@@ -890,29 +896,36 @@
         }).join('');
       }
 
-      function scrollToDetail() {
-        detailPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      function resetDetail() {
+        detailTitle.textContent = 'No node selected';
+        detailText.textContent = 'Tap a node to inspect it. Or use “Show example path” to highlight one route across the map.';
+        detailExample.textContent = 'Nothing selected yet.';
+        detailNext.textContent = 'Choose a node first.';
+        detailLinks.innerHTML =
+          '<div class="mini-link">' +
+            '<div>' +
+              '<strong>Try tapping a node</strong>' +
+              '<span>Each node updates this panel below.</span>' +
+            '</div>' +
+            '<div class="mini-link-arrow">tap</div>' +
+          '</div>';
       }
 
       function showExamplePath() {
         clearStates();
         setPath(['criticism', 'reframe', 'angle', 'hook']);
-        setActive('reframe');
         leftArrows.forEach(function (arrow) { arrow.classList.add('active'); });
         rightArrows.forEach(function (arrow) { arrow.classList.add('active'); });
-        renderDetail('reframe');
         pathStatus.textContent = 'Current path: Criticism → Reframe → Angle → Hook';
+        resetDetail();
         mapScroll.scrollLeft = 220;
-        scrollToDetail();
       }
 
       function resetMap() {
         clearStates();
-        setActive('criticism');
-        renderDetail('criticism');
-        pathStatus.textContent = 'Current path: Criticism';
+        pathStatus.textContent = 'Current path: none';
+        resetDetail();
         mapScroll.scrollLeft = 0;
-        scrollToDetail();
       }
 
       nodes.forEach(function (node) {
@@ -922,7 +935,6 @@
           setActive(id);
           renderDetail(id);
           pathStatus.textContent = 'Current path: ' + nodeData[id].title;
-          scrollToDetail();
         });
       });
 
