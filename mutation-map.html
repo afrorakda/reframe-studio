@@ -12,9 +12,13 @@
 
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#f7f7f7;
-  color:#111;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(88,120,255,0.14), transparent 34%),
+    radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 26%),
+    linear-gradient(180deg, #060816 0%, #090d1f 45%, #0b1024 100%);
+  color:#eef2ff;
+  min-height:100vh;
 }
 
 .wrap{
@@ -23,49 +27,55 @@ body{
   padding:20px 16px 40px;
 }
 
-h1{
-  margin:10px 0 8px;
-  font-size:clamp(34px,7vw,58px);
-  line-height:1.05;
-  font-weight:800;
-  text-align:center;
-}
-
-.subtitle{
-  margin:0 0 20px;
-  text-align:center;
-  font-size:clamp(16px,4vw,24px);
-  color:#444;
-  line-height:1.4;
-}
-
 .home-link{
   display:block;
   width:100%;
   margin:0 0 18px;
   padding:14px 16px;
-  border-radius:16px;
-  background:#111;
-  color:#fff;
+  border-radius:18px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#f5f7ff;
   text-decoration:none;
   text-align:center;
   font-size:clamp(18px,4.2vw,24px);
   font-weight:700;
+  backdrop-filter:blur(10px);
+}
+
+h1{
+  margin:14px 0 10px;
+  font-size:clamp(34px,7vw,58px);
+  line-height:1.05;
+  font-weight:800;
+  text-align:center;
+  letter-spacing:-0.03em;
+}
+
+.subtitle{
+  margin:0 0 22px;
+  text-align:center;
+  font-size:clamp(16px,4vw,24px);
+  color:#c5cbe3;
+  line-height:1.4;
 }
 
 .section{
   margin-bottom:18px;
-  background:#fff;
-  border:1px solid #e5e5e5;
-  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:22px;
   overflow:hidden;
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.20);
 }
 
 .section-header{
   width:100%;
   padding:18px 18px;
   border:none;
-  background:#fff;
+  background:transparent;
+  color:#7fc2ff;
   text-align:left;
   font-size:clamp(22px,5vw,30px);
   font-weight:800;
@@ -73,14 +83,13 @@ h1{
 }
 
 .section-header.active{
-  background:#111;
-  color:#fff;
+  background:rgba(255,255,255,0.06);
+  color:#ffffff;
 }
 
 .section-body{
   display:none;
   padding:0 14px 14px;
-  background:#fafafa;
 }
 
 .section-body.open{
@@ -89,9 +98,9 @@ h1{
 
 .mutation{
   margin-top:12px;
-  background:#fff;
-  border:1px solid #e8e8e8;
-  border-radius:16px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
   padding:14px;
 }
 
@@ -99,13 +108,14 @@ h1{
   margin:0 0 8px;
   font-size:clamp(18px,4.2vw,24px);
   font-weight:800;
+  color:#f5f7ff;
 }
 
 .spark{
   margin:0 0 10px;
   font-size:clamp(16px,3.8vw,20px);
   line-height:1.45;
-  color:#666;
+  color:#b7bed7;
   font-style:italic;
 }
 
@@ -114,25 +124,25 @@ h1{
   width:100%;
   margin:10px 0 0;
   padding:14px 14px;
-  border-radius:14px;
-  background:#f3f3f3;
-  color:#111;
+  border-radius:16px;
+  background:rgba(255,255,255,0.06);
+  color:#f5f7ff;
   text-decoration:none;
   font-size:clamp(16px,4vw,20px);
   line-height:1.35;
-  border:1px solid #dfdfdf;
+  border:1px solid rgba(255,255,255,0.10);
 }
 
 .tool-link:hover{
-  background:#ececec;
+  background:rgba(255,255,255,0.10);
 }
 
 .hint{
   margin-top:18px;
   text-align:center;
-  color:#666;
+  color:#a7afca;
   font-size:14px;
-  line-height:1.5;
+  line-height:1.6;
 }
 </style>
 </head>
@@ -147,7 +157,6 @@ h1{
     Sometimes the wrong direction is the interesting one.
   </p>
 
-  <!-- Criticism -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Criticism</button>
     <div class="section-body">
@@ -192,7 +201,6 @@ h1{
     </div>
   </div>
 
-  <!-- Emotion -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Emotion</button>
     <div class="section-body">
@@ -206,7 +214,6 @@ h1{
     </div>
   </div>
 
-  <!-- Problem -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Problem</button>
     <div class="section-body">
@@ -245,7 +252,6 @@ h1{
     </div>
   </div>
 
-  <!-- Idea -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Idea</button>
     <div class="section-body">
@@ -307,7 +313,6 @@ h1{
     </div>
   </div>
 
-  <!-- Failure -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Failure</button>
     <div class="section-body">
@@ -321,7 +326,6 @@ h1{
     </div>
   </div>
 
-  <!-- Confusion -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Confusion</button>
     <div class="section-body">
@@ -347,7 +351,6 @@ h1{
     </div>
   </div>
 
-  <!-- Output -->
   <div class="section">
     <button class="section-header" onclick="toggleSection(this)">Output / Publishing</button>
     <div class="section-body">
