@@ -9,7 +9,6 @@
       --bg-1:#060816;
       --bg-2:#0b1430;
       --panel:#11183bcc;
-      --panel-2:#0c122acc;
       --line:#2a3d74;
       --text:#f4f7ff;
       --muted:#aeb9dc;
@@ -18,7 +17,6 @@
       --pink-2:#ff7bcc;
       --violet:#8f7dff;
       --cyan:#63d7ff;
-      --green:#70e0a6;
       --shadow:0 20px 60px rgba(0,0,0,.35);
     }
 
@@ -110,7 +108,7 @@
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin-bottom:18px;
+      margin-bottom:16px;
     }
 
     button{
@@ -120,7 +118,7 @@
       font:inherit;
       font-weight:700;
       border-radius:16px;
-      transition:transform .12s ease, opacity .12s ease;
+      transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
       -webkit-tap-highlight-color:transparent;
     }
 
@@ -140,6 +138,17 @@
       box-shadow:inset 0 0 0 1px rgba(92,109,172,.42);
       padding:14px 18px;
       font-size:15px;
+    }
+
+    .path-status{
+      margin:0 0 16px;
+      padding:12px 14px;
+      border-radius:16px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.12);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.22);
+      font-size:14px;
+      line-height:1.5;
     }
 
     .legend{
@@ -185,6 +194,7 @@
       overflow:auto;
       -webkit-overflow-scrolling:touch;
       padding-bottom:4px;
+      scroll-behavior:smooth;
     }
 
     .map-grid{
@@ -200,9 +210,6 @@
     }
 
     .field-head{
-      position:sticky;
-      top:0;
-      z-index:2;
       margin-bottom:12px;
     }
 
@@ -250,15 +257,24 @@
       padding:14px;
       background:rgba(9,14,31,.95);
       box-shadow:inset 0 0 0 1px rgba(92,109,172,.26);
-      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
       cursor:pointer;
     }
 
     .node.active{
-      transform:translateY(-1px);
+      transform:translateY(-2px);
+      background:rgba(16,23,48,.98);
       box-shadow:
-        inset 0 0 0 1px rgba(130,150,230,.5),
-        0 10px 24px rgba(0,0,0,.2);
+        inset 0 0 0 2px rgba(255,255,255,.14),
+        0 0 0 2px rgba(143,125,255,.35),
+        0 18px 34px rgba(0,0,0,.28);
+    }
+
+    .node.path{
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.12),
+        0 0 0 2px rgba(99,215,255,.25),
+        0 16px 30px rgba(0,0,0,.22);
     }
 
     .node-title{
@@ -312,6 +328,15 @@
       box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
       font-size:22px;
       opacity:.85;
+      transition:all .15s ease;
+    }
+
+    .arrow.active{
+      color:#fff;
+      background:rgba(143,125,255,.18);
+      box-shadow:
+        inset 0 0 0 1px rgba(143,125,255,.28),
+        0 0 0 2px rgba(143,125,255,.18);
     }
 
     .detail{
@@ -321,6 +346,7 @@
       border-radius:28px;
       padding:18px;
       backdrop-filter:blur(8px);
+      scroll-margin-top:24px;
     }
 
     .detail-badge{
@@ -448,6 +474,10 @@
           <button class="secondary-btn" id="resetBtn" type="button">Reset map</button>
         </div>
 
+        <div class="path-status" id="pathStatus">
+          Current path: Criticism
+        </div>
+
         <div class="legend" aria-label="Map legend">
           <div class="legend-chip"><span class="dot dot-friction"></span>Friction</div>
           <div class="legend-chip"><span class="dot dot-mutation"></span>Mutation</div>
@@ -455,7 +485,7 @@
         </div>
 
         <section class="map-shell">
-          <div class="map-scroll">
+          <div class="map-scroll" id="mapScroll">
             <div class="map-grid">
               <section class="field field-friction" aria-labelledby="friction-title">
                 <div class="field-head">
@@ -467,31 +497,31 @@
                 </div>
 
                 <div class="node-list">
-                  <article class="node" data-id="criticism" data-type="friction">
+                  <article class="node" data-id="criticism">
                     <h2 class="node-title">Criticism</h2>
                     <p class="node-desc">A harsh reply, pushback, or dismissal.</p>
                     <div class="node-tag">Example: “This is too abstract.”</div>
                   </article>
 
-                  <article class="node" data-id="confusion" data-type="friction">
+                  <article class="node" data-id="confusion">
                     <h2 class="node-title">Confusion</h2>
                     <p class="node-desc">A thought that feels unclear, foggy, or stuck.</p>
                     <div class="node-tag">Example: “I know something is here.”</div>
                   </article>
 
-                  <article class="node" data-id="failure" data-type="friction">
+                  <article class="node" data-id="failure">
                     <h2 class="node-title">Failure</h2>
                     <p class="node-desc">A miss, collapse, or wrong turn that still has signal.</p>
                     <div class="node-tag">Example: “This fell flat.”</div>
                   </article>
 
-                  <article class="node" data-id="emotion" data-type="friction">
+                  <article class="node" data-id="emotion">
                     <h2 class="node-title">Emotion</h2>
                     <p class="node-desc">A strong feeling before the thought has shape.</p>
                     <div class="node-tag">Example: frustration, shame, excitement</div>
                   </article>
 
-                  <article class="node" data-id="idea-fragment" data-type="friction">
+                  <article class="node" data-id="idea-fragment">
                     <h2 class="node-title">Idea Fragment</h2>
                     <p class="node-desc">A small unfinished thought with mutation potential.</p>
                     <div class="node-tag">Example: “Maybe this means something.”</div>
@@ -501,9 +531,9 @@
 
               <div class="arrow-col" aria-hidden="true">
                 <div class="arrow-stack">
-                  <div class="arrow">→</div>
-                  <div class="arrow">→</div>
-                  <div class="arrow">→</div>
+                  <div class="arrow" data-arrow-group="left">→</div>
+                  <div class="arrow" data-arrow-group="left">→</div>
+                  <div class="arrow" data-arrow-group="left">→</div>
                 </div>
               </div>
 
@@ -517,31 +547,31 @@
                 </div>
 
                 <div class="node-list">
-                  <article class="node" data-id="reframe" data-type="mutation">
+                  <article class="node" data-id="reframe">
                     <h2 class="node-title">Reframe</h2>
                     <p class="node-desc">See the same thing through a different frame.</p>
                     <div class="node-tag">Criticism → new perspective</div>
                   </article>
 
-                  <article class="node" data-id="opposite" data-type="mutation">
+                  <article class="node" data-id="opposite">
                     <h2 class="node-title">Opposite</h2>
                     <p class="node-desc">Flip the idea and test the reverse.</p>
                     <div class="node-tag">Pressure → reverse angle</div>
                   </article>
 
-                  <article class="node" data-id="metaphor" data-type="mutation">
+                  <article class="node" data-id="metaphor">
                     <h2 class="node-title">Metaphor</h2>
                     <p class="node-desc">Translate thought through image or analogy.</p>
                     <div class="node-tag">Abstract → vivid</div>
                   </article>
 
-                  <article class="node" data-id="question" data-type="mutation">
+                  <article class="node" data-id="question">
                     <h2 class="node-title">Question</h2>
                     <p class="node-desc">Turn pressure into a sharper question.</p>
                     <div class="node-tag">Confusion → inquiry</div>
                   </article>
 
-                  <article class="node" data-id="lesson" data-type="mutation">
+                  <article class="node" data-id="lesson">
                     <h2 class="node-title">Lesson</h2>
                     <p class="node-desc">Extract what the friction is trying to teach.</p>
                     <div class="node-tag">Failure → usable signal</div>
@@ -551,9 +581,9 @@
 
               <div class="arrow-col" aria-hidden="true">
                 <div class="arrow-stack">
-                  <div class="arrow">→</div>
-                  <div class="arrow">→</div>
-                  <div class="arrow">→</div>
+                  <div class="arrow" data-arrow-group="right">→</div>
+                  <div class="arrow" data-arrow-group="right">→</div>
+                  <div class="arrow" data-arrow-group="right">→</div>
                 </div>
               </div>
 
@@ -567,31 +597,31 @@
                 </div>
 
                 <div class="node-list">
-                  <article class="node" data-id="angle" data-type="expression">
+                  <article class="node" data-id="angle">
                     <h2 class="node-title">Angle</h2>
                     <p class="node-desc">A usable perspective that can lead a post.</p>
                     <div class="node-tag">One clear take</div>
                   </article>
 
-                  <article class="node" data-id="hook" data-type="expression">
+                  <article class="node" data-id="hook">
                     <h2 class="node-title">Hook</h2>
                     <p class="node-desc">The opening line that creates attention.</p>
                     <div class="node-tag">Entry point</div>
                   </article>
 
-                  <article class="node" data-id="thread" data-type="expression">
+                  <article class="node" data-id="thread">
                     <h2 class="node-title">Thread</h2>
                     <p class="node-desc">A larger structure that can carry the thought.</p>
                     <div class="node-tag">Expansion</div>
                   </article>
 
-                  <article class="node" data-id="post" data-type="expression">
+                  <article class="node" data-id="post">
                     <h2 class="node-title">Post</h2>
                     <p class="node-desc">A compact public expression of the mutation.</p>
                     <div class="node-tag">Public output</div>
                   </article>
 
-                  <article class="node" data-id="action" data-type="expression">
+                  <article class="node" data-id="action">
                     <h2 class="node-title">Action</h2>
                     <p class="node-desc">A next step in the real world, not just text.</p>
                     <div class="node-tag">Movement</div>
@@ -619,15 +649,7 @@
             </div>
           </div>
 
-          <div class="mini-links" id="detailLinks">
-            <div class="mini-link">
-              <div>
-                <strong>Go to Mutation Routes</strong>
-                <span>Choose a mutation direction from the route list.</span>
-              </div>
-              <div class="mini-link-arrow">open</div>
-            </div>
-          </div>
+          <div class="mini-links" id="detailLinks"></div>
 
           <p class="tiny">No login / No tracking / In browser</p>
         </section>
@@ -795,6 +817,8 @@
       };
 
       var nodes = Array.prototype.slice.call(document.querySelectorAll('.node'));
+      var leftArrows = Array.prototype.slice.call(document.querySelectorAll('[data-arrow-group="left"]'));
+      var rightArrows = Array.prototype.slice.call(document.querySelectorAll('[data-arrow-group="right"]'));
       var detailTitle = document.getElementById('detailTitle');
       var detailText = document.getElementById('detailText');
       var detailExample = document.getElementById('detailExample');
@@ -802,11 +826,45 @@
       var detailLinks = document.getElementById('detailLinks');
       var focusPathBtn = document.getElementById('focusPathBtn');
       var resetBtn = document.getElementById('resetBtn');
+      var pathStatus = document.getElementById('pathStatus');
+      var detailPanel = document.getElementById('detailPanel');
+      var mapScroll = document.getElementById('mapScroll');
 
-      function setActive(ids) {
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function clearStates() {
+        nodes.forEach(function (node) {
+          node.classList.remove('active');
+          node.classList.remove('path');
+        });
+        leftArrows.forEach(function (arrow) {
+          arrow.classList.remove('active');
+        });
+        rightArrows.forEach(function (arrow) {
+          arrow.classList.remove('active');
+        });
+      }
+
+      function setPath(ids) {
         nodes.forEach(function (node) {
           var id = node.getAttribute('data-id');
-          node.classList.toggle('active', ids.indexOf(id) !== -1);
+          if (ids.indexOf(id) !== -1) {
+            node.classList.add('path');
+          }
+        });
+      }
+
+      function setActive(id) {
+        nodes.forEach(function (node) {
+          var nodeId = node.getAttribute('data-id');
+          node.classList.toggle('active', nodeId === id);
         });
       }
 
@@ -832,35 +890,46 @@
         }).join('');
       }
 
-      function escapeHtml(text) {
-        return String(text)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
+      function scrollToDetail() {
+        detailPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function showExamplePath() {
+        clearStates();
+        setPath(['criticism', 'reframe', 'angle', 'hook']);
+        setActive('reframe');
+        leftArrows.forEach(function (arrow) { arrow.classList.add('active'); });
+        rightArrows.forEach(function (arrow) { arrow.classList.add('active'); });
+        renderDetail('reframe');
+        pathStatus.textContent = 'Current path: Criticism → Reframe → Angle → Hook';
+        mapScroll.scrollLeft = 220;
+        scrollToDetail();
+      }
+
+      function resetMap() {
+        clearStates();
+        setActive('criticism');
+        renderDetail('criticism');
+        pathStatus.textContent = 'Current path: Criticism';
+        mapScroll.scrollLeft = 0;
+        scrollToDetail();
       }
 
       nodes.forEach(function (node) {
         node.addEventListener('click', function () {
           var id = node.getAttribute('data-id');
-          setActive([id]);
+          clearStates();
+          setActive(id);
           renderDetail(id);
+          pathStatus.textContent = 'Current path: ' + nodeData[id].title;
+          scrollToDetail();
         });
       });
 
-      focusPathBtn.addEventListener('click', function () {
-        setActive(['criticism', 'reframe', 'angle', 'hook']);
-        renderDetail('reframe');
-      });
+      focusPathBtn.addEventListener('click', showExamplePath);
+      resetBtn.addEventListener('click', resetMap);
 
-      resetBtn.addEventListener('click', function () {
-        setActive(['criticism']);
-        renderDetail('criticism');
-      });
-
-      setActive(['criticism']);
-      renderDetail('criticism');
+      resetMap();
     })();
   </script>
 </body>
