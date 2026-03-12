@@ -1,121 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutation Routes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Mutation Routes | REFRAME Studio</title>
+  <style>
+    :root{
+      --bg-1:#060816;
+      --bg-2:#0b1430;
+      --text:#f4f7ff;
+      --muted:#aeb9dc;
+      --pink:#ff5fbc;
+      --pink-2:#ff7bcc;
+      --line:#2a3d74;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
 
-<style>
-body{
-margin:0;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-background:linear-gradient(180deg,#0a0f2a,#050814);
-color:white;
-padding:24px;
-}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
 
-.container{
-max-width:700px;
-margin:auto;
-}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118,81,255,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,174,255,.12), transparent 30%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 55%);
+      min-height:100vh;
+      line-height:1.5;
+    }
 
-h1{
-font-size:34px;
-margin-bottom:10px;
-}
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
 
-.subtitle{
-color:#9aa3c7;
-margin-bottom:40px;
-line-height:1.5;
-}
+    .wrap{
+      width:min(100%, 820px);
+      margin:0 auto;
+      padding:20px 16px 56px;
+    }
 
-.route{
-display:block;
-background:#11183b;
-border-radius:18px;
-padding:20px;
-margin-bottom:16px;
-text-decoration:none;
-color:white;
-border:1px solid rgba(255,255,255,0.08);
-}
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      opacity:.92;
+    }
 
-.route:hover{
-background:#1a2458;
-}
+    .hero{
+      border:1px solid rgba(110,132,210,.35);
+      background:linear-gradient(180deg, rgba(20,30,61,.94), rgba(7,11,25,.96));
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
 
-.route-title{
-font-size:18px;
-font-weight:600;
-margin-bottom:6px;
-}
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(137,111,255,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(31,193,255,.11), transparent 25%);
+      pointer-events:none;
+    }
 
-.route-desc{
-color:#9aa3c7;
-font-size:14px;
-}
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding:22px 18px 24px;
+    }
 
-.back{
-margin-top:40px;
-display:inline-block;
-color:#9aa3c7;
-text-decoration:none;
-}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 16px;
+      border:1px solid rgba(116,98,235,.45);
+      border-radius:999px;
+      color:#d7cdfd;
+      background:rgba(86,68,183,.15);
+      font-size:14px;
+      margin-bottom:16px;
+    }
 
-.footer{
-margin-top:40px;
-color:#6c7396;
-font-size:13px;
-}
+    h1{
+      font-size:clamp(38px, 10vw, 72px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      margin:0 0 14px;
+      font-weight:800;
+      max-width:700px;
+    }
 
-</style>
+    .lead{
+      margin:0 0 26px;
+      color:var(--muted);
+      font-size:clamp(18px, 4.4vw, 22px);
+      max-width:700px;
+    }
+
+    .route-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .route{
+      display:block;
+      border-radius:24px;
+      padding:18px;
+      background:rgba(14,20,38,.72);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+      transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    .route:active{
+      transform:scale(.99);
+    }
+
+    .route:hover{
+      background:rgba(18,26,50,.86);
+      box-shadow:
+        inset 0 0 0 1px rgba(120,138,210,.34),
+        0 12px 24px rgba(0,0,0,.18);
+    }
+
+    .route-title{
+      margin:0 0 6px;
+      font-size:clamp(28px, 6vw, 36px);
+      line-height:1.02;
+      letter-spacing:-.03em;
+      font-weight:800;
+    }
+
+    .route-desc{
+      margin:0;
+      color:var(--muted);
+      font-size:17px;
+    }
+
+    .map-card{
+      display:block;
+      margin-top:18px;
+      border-radius:22px;
+      padding:16px 18px;
+      background:rgba(111,85,255,.12);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.24);
+    }
+
+    .map-card-title{
+      margin:0 0 6px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .map-card-desc{
+      margin:0;
+      color:#d8dffc;
+      font-size:15px;
+    }
+
+    .tiny{
+      margin-top:16px;
+      color:#8995bc;
+      font-size:13px;
+    }
+
+    .footer{
+      padding:18px 4px 0;
+      color:#8390b8;
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (min-width: 760px){
+      .hero-inner{
+        padding:28px 28px 30px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <main class="wrap">
+    <a class="back" href="./kusoripu-tool.html" aria-label="Back to surface tool">← Back to Surface</a>
 
-<div class="container">
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">Choose a mutation</div>
+        <h1>Mutation Routes</h1>
+        <p class="lead">Choose how the thought should mutate.</p>
 
-<h1>Mutation Routes</h1>
+        <div class="route-list">
+          <a class="route" href="./kusoripu-tool.html">
+            <h2 class="route-title">Reframe</h2>
+            <p class="route-desc">Turn criticism into a new perspective.</p>
+          </a>
 
-<div class="subtitle">
-Choose how the thought should mutate.
-</div>
+          <a class="route" href="./kusoripu-tool.html">
+            <h2 class="route-title">Opposite</h2>
+            <p class="route-desc">Flip the idea and explore the reverse angle.</p>
+          </a>
 
-<a class="route" href="#">
-<div class="route-title">Reframe</div>
-<div class="route-desc">Turn criticism into a new perspective.</div>
-</a>
+          <a class="route" href="./kusoripu-tool.html">
+            <h2 class="route-title">Metaphor</h2>
+            <p class="route-desc">Translate the idea through metaphor.</p>
+          </a>
 
-<a class="route" href="#">
-<div class="route-title">Opposite</div>
-<div class="route-desc">Flip the idea and explore the reverse angle.</div>
-</a>
+          <a class="route" href="./kusoripu-tool.html">
+            <h2 class="route-title">Question</h2>
+            <p class="route-desc">Turn the thought into a powerful question.</p>
+          </a>
 
-<a class="route" href="#">
-<div class="route-title">Metaphor</div>
-<div class="route-desc">Translate the idea through metaphor.</div>
-</a>
+          <a class="route" href="./kusoripu-tool.html">
+            <h2 class="route-title">Lesson</h2>
+            <p class="route-desc">Extract the hidden lesson.</p>
+          </a>
+        </div>
 
-<a class="route" href="#">
-<div class="route-title">Question</div>
-<div class="route-desc">Turn the thought into a powerful question.</div>
-</a>
+        <a class="map-card" href="./mutation-map.html">
+          <h3 class="map-card-title">See the full map →</h3>
+          <p class="map-card-desc">Open the visual map of how friction becomes mutation and expression.</p>
+        </a>
 
-<a class="route" href="#">
-<div class="route-title">Lesson</div>
-<div class="route-desc">Extract the hidden lesson.</div>
-</a>
+        <p class="tiny">No login / No tracking / In browser</p>
+      </div>
+    </section>
 
-<a class="back" href="./index.html">
-← Back to Surface
-</a>
-
-<div class="footer">
-No login / No tracking / In browser
-</div>
-
-</div>
-
+    <p class="footer">REFRAME Studio</p>
+  </main>
 </body>
 </html>
