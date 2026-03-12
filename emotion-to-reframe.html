@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emotion → Reframe</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(88,120,255,0.14), transparent 34%),
+    radial-gradient(circle at 20% 20%, rgba(0,255,200,0.08), transparent 26%),
+    linear-gradient(180deg, #060816 0%, #090d1f 45%, #0b1024 100%);
+  color:#eef2ff;
+  min-height:100vh;
+}
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+  padding:20px 16px 40px;
+}
+
+.back-link{
+  display:block;
+  width:100%;
+  margin:0 0 18px;
+  padding:14px 16px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  color:#f5f7ff;
+  text-decoration:none;
+  text-align:center;
+  font-size:clamp(18px,4.2vw,24px);
+  font-weight:700;
+  backdrop-filter:blur(10px);
+}
+
+.card{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px;
+  padding:18px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.20);
+}
+
+.eyebrow{
+  display:inline-block;
+  margin:0 0 14px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(130,110,255,0.18);
+  border:1px solid rgba(130,110,255,0.28);
+  color:#d7ccff;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:clamp(40px,8vw,68px);
+  line-height:0.98;
+  font-weight:800;
+  letter-spacing:-0.04em;
+}
+
+.desc{
+  margin:0 0 22px;
+  font-size:clamp(18px,4.5vw,24px);
+  line-height:1.55;
+  color:#c4cbe2;
+}
+
+.step{
+  margin:0 0 16px;
+  padding:18px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.step-title{
+  margin:0 0 10px;
+  font-size:clamp(20px,5vw,30px);
+  font-weight:800;
+  color:#f4f7ff;
+}
+
+.step-copy{
+  margin:0;
+  font-size:clamp(18px,4.4vw,22px);
+  line-height:1.65;
+  color:#aeb6d1;
+}
+
+textarea{
+  width:100%;
+  min-height:170px;
+  margin-top:18px;
+  padding:18px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(10,15,34,0.85);
+  color:#f4f7ff;
+  font-size:17px;
+  line-height:1.6;
+  resize:vertical;
+  outline:none;
+}
+
+textarea::placeholder{
+  color:#8f98b8;
+}
+
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:16px;
+}
+
+button{
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  padding:14px 18px;
+  border-radius:16px;
+  font-size:18px;
+  line-height:1.2;
+  font-weight:700;
+  color:#f5f7ff;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+}
+
+button.primary{
+  background:linear-gradient(135deg, rgba(88,120,255,0.38), rgba(0,255,200,0.14));
+  border:1px solid rgba(130,180,255,0.24);
+}
+
+.result{
+  margin-top:18px;
+  padding:20px 18px;
+  border-radius:22px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  min-height:160px;
+}
+
+.result-title{
+  margin:0 0 14px;
+  font-size:clamp(22px,5vw,30px);
+  font-weight:800;
+}
+
+.output{
+  white-space:pre-wrap;
+  font-size:clamp(19px,4.5vw,24px);
+  line-height:1.7;
+  color:#d6ddf3;
+}
+
+.deeper{
+  display:block;
+  margin-top:18px;
+  color:#8abfff;
+  text-decoration:none;
+  font-size:16px;
+}
+
+.footer{
+  margin-top:26px;
+  text-align:center;
+  color:#95a0c0;
+  font-size:14px;
+  line-height:1.8;
+}
+
+@media (max-width:640px){
+  .wrap{
+    padding:16px 14px 36px;
+  }
+
+  .card{
+    padding:16px;
+    border-radius:22px;
+  }
+
+  textarea{
+    min-height:160px;
+    font-size:16px;
+  }
+
+  button{
+    font-size:17px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="./index.html">← Back to REFRAME Studio</a>
+
+  <div class="card">
+    <div class="eyebrow">Emotion → Reframe</div>
+
+    <h1>Emotion → Reframe</h1>
+
+    <p class="desc">
+      A feeling does not always need solving.
+      Sometimes it only needs a different angle.
+    </p>
+
+    <div class="step">
+      <p class="step-title">Name the feeling</p>
+      <p class="step-copy">
+        Drop the emotion as it is.<br>
+        No need to make it smart yet.
+      </p>
+    </div>
+
+    <div class="step">
+      <p class="step-title">Let it drift</p>
+      <p class="step-copy">
+        The tool gives you a few softer, stranger, or more useful ways to see it.
+      </p>
+    </div>
+
+    <div class="step">
+      <p class="step-title">Keep what clicks</p>
+      <p class="step-copy">
+        You are not looking for the correct answer.<br>
+        You are looking for the small shift.
+      </p>
+    </div>
+
+    <textarea id="input" placeholder="Example: I feel weirdly discouraged after reading the replies."></textarea>
+
+    <div class="controls">
+      <button class="primary" onclick="generate()">Try mutation</button>
+      <button onclick="tryExample()">Try example</button>
+      <button onclick="clearAll()">Clear</button>
+      <button onclick="copyResult()">Copy result</button>
+    </div>
+
+    <div class="result">
+      <p class="result-title">Reframe sparks</p>
+      <div class="output" id="output"></div>
+    </div>
+
+    <a class="deeper" href="./mutation-map.html">Already drifting? Enter the Mutation Map →</a>
+
+    <div class="footer">
+      No login<br>
+      No tracking<br>
+      No personal data<br>
+      Runs entirely in your browser
+    </div>
+  </div>
+</div>
+
+<script>
+function tryExample(){
+  document.getElementById("input").value =
+    "I feel weirdly discouraged after reading the replies.";
+}
+
+function clearAll(){
+  document.getElementById("input").value = "";
+  document.getElementById("output").textContent = "";
+}
+
+function copyResult(){
+  const text = document.getElementById("output").textContent.trim();
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copied!");
+  });
+}
+
+function pickFive(items){
+  const pool = [...items];
+  const chosen = [];
+  while(pool.length && chosen.length < 5){
+    const index = Math.floor(Math.random() * pool.length);
+    chosen.push(pool.splice(index, 1)[0]);
+  }
+  return chosen;
+}
+
+function generate(){
+  const input = document.getElementById("input").value.trim();
+  const output = document.getElementById("output");
+
+  if(!input){
+    output.textContent = "• maybe the feeling just needs a smaller frame\n\n• maybe nothing is wrong, only noisy\n\n• maybe this is friction, not failure\n\n• maybe the sting means something alive got touched\n\n• maybe the mood needs a different reading";
+    return;
+  }
+
+  const lower = input.toLowerCase();
+
+  let bank = [
+    "maybe the feeling is bigger than the actual problem",
+    "maybe this is friction, not failure",
+    "maybe the sting means something alive got touched",
+    "maybe the mood is reacting faster than the meaning",
+    "maybe this needs space, not judgment",
+    "maybe the feeling is real, but the story around it is optional",
+    "maybe this is not a dead end, just a tight corner",
+    "maybe the emotion is pointing, not deciding",
+    "maybe this is a signal to slow down, not stop",
+    "maybe the weight comes from interpretation, not only from the event"
+  ];
+
+  if(lower.includes("discouraged") || lower.includes("down") || lower.includes("sad")){
+    bank = [
+      "maybe this is bruised momentum, not the end of the idea",
+      "maybe the replies hit confidence more than the work itself",
+      "maybe the feeling needs distance before meaning",
+      "maybe today is heavy, not the whole project",
+      "maybe the discouragement is loud because the idea still matters",
+      "maybe the mood is temporary, even if it sounds permanent",
+      "maybe the sting belongs to the moment, not to the future",
+      "maybe you are tired, not finished",
+      "maybe the feeling is asking for gentleness, not conclusions",
+      "maybe this is a pause signal, not a stop signal"
+    ];
+  } else if(lower.includes("angry") || lower.includes("mad") || lower.includes("annoyed")){
+    bank = [
+      "maybe the anger is energy looking for direction",
+      "maybe this feeling wants shape, not explosion",
+      "maybe the irritation found the pressure point",
+      "maybe the heat means something important got touched",
+      "maybe this is a reaction worth decoding before using",
+      "maybe the anger is clear even if the meaning is not",
+      "maybe this is fuel, not only damage",
+      "maybe the feeling is faster than the insight",
+      "maybe what annoyed you is the actual topic",
+      "maybe the anger can become a cleaner question"
+    ];
+  } else if(lower.includes("anxious") || lower.includes("afraid") || lower.includes("scared") || lower.includes("worried")){
+    bank = [
+      "maybe the fear is exaggerating the timeline",
+      "maybe this is uncertainty wearing a dramatic coat",
+      "maybe the feeling wants a smaller next step",
+      "maybe anxiety is filling in blanks too early",
+      "maybe the story is running ahead of the facts",
+      "maybe this needs one action, not ten predictions",
+      "maybe fear is loud because the path is still open",
+      "maybe the emotion is rehearsing a future that has not happened",
+      "maybe the unknown is doing most of the work here",
+      "maybe this is tension, not prophecy"
+    ];
+  } else if(lower.includes("embarrassed") || lower.includes("ashamed")){
+    bank = [
+      "maybe this feels huge mostly because it is close",
+      "maybe embarrassment is a spotlight with bad judgment",
+      "maybe the moment is louder to you than to everyone else",
+      "maybe this is awkwardness, not identity",
+      "maybe the feeling is real, but it does not get final say",
+      "maybe this is a scene, not the whole story",
+      "maybe the cringe will age faster than you think",
+      "maybe the shame is borrowing too much authority",
+      "maybe this is a human moment, not a personal collapse",
+      "maybe the sting means you still care how things land"
+    ];
+  }
+
+  const chosen = pickFive(bank);
+  output.textContent = chosen.map(item => "• " + item).join("\n\n");
+}
+</script>
+</body>
+</html>
