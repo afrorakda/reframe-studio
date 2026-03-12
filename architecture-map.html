@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>REFRAME Studio Architecture Map</title>
+  <style>
+    :root{
+      --bg-1:#060816;
+      --bg-2:#0b1430;
+      --text:#f4f7ff;
+      --muted:#aeb9dc;
+      --soft:#7f8db8;
+      --pink:#ff5fbc;
+      --pink-2:#ff7bcc;
+      --violet:#8f7dff;
+      --cyan:#63d7ff;
+      --green:#70e0a6;
+      --line:#2a3d74;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(118,81,255,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(0,174,255,.12), transparent 30%),
+        linear-gradient(180deg, var(--bg-2), var(--bg-1) 55%);
+      min-height:100vh;
+      line-height:1.5;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .wrap{
+      width:min(100%, 980px);
+      margin:0 auto;
+      padding:20px 16px 56px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:14px;
+      opacity:.92;
+    }
+
+    .hero{
+      border:1px solid rgba(110,132,210,.35);
+      background:linear-gradient(180deg, rgba(20,30,61,.94), rgba(7,11,25,.96));
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(137,111,255,.18), transparent 28%),
+        radial-gradient(circle at 15% 10%, rgba(31,193,255,.11), transparent 25%);
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:1;
+      padding:22px 18px 24px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      padding:10px 16px;
+      border:1px solid rgba(116,98,235,.45);
+      border-radius:999px;
+      color:#d7cdfd;
+      background:rgba(86,68,183,.15);
+      font-size:14px;
+      margin-bottom:16px;
+    }
+
+    h1{
+      font-size:clamp(38px, 10vw, 72px);
+      line-height:.95;
+      letter-spacing:-.04em;
+      margin:0 0 14px;
+      font-weight:800;
+      max-width:760px;
+    }
+
+    .lead{
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:clamp(18px, 4.4vw, 22px);
+      max-width:760px;
+    }
+
+    .status{
+      margin:0 0 22px;
+      padding:12px 14px;
+      border-radius:16px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.12);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.22);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .section{
+      margin-top:18px;
+      border-radius:28px;
+      padding:18px;
+      background:rgba(14,20,38,.72);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .section:first-of-type{
+      margin-top:0;
+    }
+
+    .section-label{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:12px;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .section-surface .section-label{
+      color:#ffe4f4;
+      background:rgba(255,95,188,.12);
+    }
+
+    .section-depth .section-label{
+      color:#e9e3ff;
+      background:rgba(143,125,255,.12);
+    }
+
+    .section-engine .section-label{
+      color:#dff8ff;
+      background:rgba(99,215,255,.12);
+    }
+
+    .section-title{
+      margin:0 0 8px;
+      font-size:32px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      font-weight:800;
+    }
+
+    .section-text{
+      margin:0;
+      color:var(--muted);
+      font-size:17px;
+    }
+
+    .flow{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .flow-card{
+      border-radius:22px;
+      padding:16px;
+      background:rgba(8,12,25,.92);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .flow-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .flow-name{
+      margin:0 0 6px;
+      font-size:28px;
+      line-height:1.02;
+      letter-spacing:-.03em;
+      font-weight:800;
+    }
+
+    .flow-role{
+      white-space:nowrap;
+      color:#d7cdfd;
+      font-size:13px;
+      padding-top:4px;
+    }
+
+    .flow-desc{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:12px;
+      color:#d6defb;
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
+    }
+
+    .arrow-line{
+      display:flex;
+      justify-content:center;
+      margin:6px 0;
+      color:#bfc8ea;
+      font-size:22px;
+      opacity:.86;
+    }
+
+    .grid-two{
+      display:grid;
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .mini-card{
+      border-radius:22px;
+      padding:16px;
+      background:rgba(8,12,25,.92);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .mini-title{
+      margin:0 0 8px;
+      font-size:22px;
+      line-height:1.08;
+      letter-spacing:-.02em;
+      font-weight:800;
+    }
+
+    .mini-text{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    .stack{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .architecture-shell{
+      margin-top:16px;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:4px;
+    }
+
+    .architecture-grid{
+      min-width:860px;
+      display:grid;
+      grid-template-columns:1fr 70px 1fr 70px 1fr;
+      gap:0;
+      align-items:start;
+    }
+
+    .architecture-col{
+      display:grid;
+      gap:12px;
+    }
+
+    .arch-head{
+      border-radius:20px;
+      padding:14px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      background:rgba(255,255,255,.05);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+    }
+
+    .arch-col-surface .arch-head{
+      color:#ffe4f4;
+      background:rgba(255,95,188,.10);
+    }
+
+    .arch-col-depth .arch-head{
+      color:#e9e3ff;
+      background:rgba(143,125,255,.10);
+    }
+
+    .arch-col-output .arch-head{
+      color:#dff8ff;
+      background:rgba(99,215,255,.10);
+    }
+
+    .arch-node{
+      border-radius:20px;
+      padding:14px;
+      background:rgba(8,12,25,.92);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .arch-node h3{
+      margin:0 0 6px;
+      font-size:20px;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .arch-node p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .arch-arrow-col{
+      display:flex;
+      justify-content:center;
+      padding-top:90px;
+    }
+
+    .arch-arrow-stack{
+      display:grid;
+      gap:32px;
+      justify-items:center;
+    }
+
+    .arch-arrow{
+      width:48px;
+      height:48px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#d5ddff;
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.2);
+      font-size:20px;
+    }
+
+    .path-card{
+      margin-top:16px;
+      border-radius:22px;
+      padding:16px;
+      background:rgba(111,85,255,.12);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.24);
+    }
+
+    .path-title{
+      margin:0 0 8px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .path-text{
+      margin:0;
+      color:#d8dffc;
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    .link-list{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .link-card{
+      display:block;
+      border-radius:22px;
+      padding:16px;
+      background:rgba(8,12,25,.92);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.24);
+    }
+
+    .link-card h3{
+      margin:0 0 6px;
+      font-size:22px;
+      line-height:1.08;
+      letter-spacing:-.02em;
+      font-weight:800;
+    }
+
+    .link-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    .tiny{
+      margin-top:16px;
+      color:#8995bc;
+      font-size:13px;
+    }
+
+    .footer{
+      padding:18px 4px 0;
+      color:#8390b8;
+      font-size:13px;
+      text-align:center;
+    }
+
+    @media (min-width: 860px){
+      .hero-inner{
+        padding:28px 28px 30px;
+      }
+
+      .grid-two{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="./mutation-router.html" aria-label="Back to Mutation Router">← Back to Mutation Router</a>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="eyebrow">System overview</div>
+        <h1>REFRAME Studio Architecture Map</h1>
+        <p class="lead">This is the whole shape. The surface looks small. The inside is a mutation system.</p>
+
+        <div class="status">
+          Surface → Router → Map → Mutation → Expression
+        </div>
+
+        <section class="section section-surface">
+          <div class="section-label">Surface layer</div>
+          <h2 class="section-title">Looks small first</h2>
+          <p class="section-text">The first contact is simple. One useful tool. Fast to understand. No philosophy dump.</p>
+
+          <div class="flow">
+            <div class="flow-card">
+              <div class="flow-top">
+                <div>
+                  <h3 class="flow-name">クソリプ → ネタに</h3>
+                  <p class="flow-desc">The public entry tool. Turn one bad reply into something usable.</p>
+                </div>
+                <div class="flow-role">surface</div>
+              </div>
+              <div class="chip-row">
+                <div class="chip">Input: bad reply</div>
+                <div class="chip">Output: idea / hook / tweet / angle</div>
+                <div class="chip">Fast utility</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="arrow-line">↓</div>
+
+        <section class="section section-depth">
+          <div class="section-label">Depth layer</div>
+          <h2 class="section-title">The quiet abyss</h2>
+          <p class="section-text">Curious users notice a deeper path. This is where the tool becomes a thinking playground.</p>
+
+          <div class="grid-two">
+            <div class="mini-card">
+              <h3 class="mini-title">Mutation Router</h3>
+              <p class="mini-text">Choose the next mutation direction. Reframe, Opposite, Metaphor, Question, Lesson.</p>
+            </div>
+
+            <div class="mini-card">
+              <h3 class="mini-title">Mutation Map</h3>
+              <p class="mini-text">See the whole architecture. Friction becomes mutation. Mutation becomes expression.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="arrow-line">↓</div>
+
+        <section class="section section-engine">
+          <div class="section-label">Thinking engine</div>
+          <h2 class="section-title">The mutation architecture</h2>
+          <p class="section-text">This is the core system. Thoughts do not stop at one tool. They move across a graph.</p>
+
+          <div class="architecture-shell">
+            <div class="architecture-grid">
+              <div class="architecture-col arch-col-surface">
+                <div class="arch-head">Friction</div>
+
+                <div class="arch-node">
+                  <h3>Criticism</h3>
+                  <p>Pushback, rude replies, dismissal.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Confusion</h3>
+                  <p>Foggy thoughts that need shape.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Failure</h3>
+                  <p>Misses that still contain signal.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Emotion</h3>
+                  <p>Pressure before language is ready.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Idea Fragment</h3>
+                  <p>Small unfinished thoughts with potential.</p>
+                </div>
+              </div>
+
+              <div class="arch-arrow-col" aria-hidden="true">
+                <div class="arch-arrow-stack">
+                  <div class="arch-arrow">→</div>
+                  <div class="arch-arrow">→</div>
+                  <div class="arch-arrow">→</div>
+                </div>
+              </div>
+
+              <div class="architecture-col arch-col-depth">
+                <div class="arch-head">Mutation</div>
+
+                <div class="arch-node">
+                  <h3>Reframe</h3>
+                  <p>See the same thing differently.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Opposite</h3>
+                  <p>Flip the thought and test the reverse.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Metaphor</h3>
+                  <p>Translate the thought through image.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Question</h3>
+                  <p>Turn pressure into a sharper inquiry.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Lesson</h3>
+                  <p>Extract signal from the hit.</p>
+                </div>
+              </div>
+
+              <div class="arch-arrow-col" aria-hidden="true">
+                <div class="arch-arrow-stack">
+                  <div class="arch-arrow">→</div>
+                  <div class="arch-arrow">→</div>
+                  <div class="arch-arrow">→</div>
+                </div>
+              </div>
+
+              <div class="architecture-col arch-col-output">
+                <div class="arch-head">Expression</div>
+
+                <div class="arch-node">
+                  <h3>Angle</h3>
+                  <p>One usable perspective.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Hook</h3>
+                  <p>The line that opens the door.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Thread</h3>
+                  <p>A larger structure for the thought.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Post</h3>
+                  <p>Compact public expression.</p>
+                </div>
+
+                <div class="arch-node">
+                  <h3>Action</h3>
+                  <p>Real-world movement, not just text.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="path-card">
+            <h3 class="path-title">Example system path</h3>
+            <p class="path-text">Bad reply → Criticism → Reframe → Angle → Hook → Tweet → New fragment</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-label">Why this page exists</div>
+          <h2 class="section-title">Not a tool. A compass.</h2>
+          <p class="section-text">This page helps you and the user understand where each tool sits inside the whole system. It keeps development from drifting into random utility pages.</p>
+
+          <div class="stack">
+            <div class="mini-card">
+              <h3 class="mini-title">For users</h3>
+              <p class="mini-text">It shows that there is more under the surface than one quick converter.</p>
+            </div>
+
+            <div class="mini-card">
+              <h3 class="mini-title">For development</h3>
+              <p class="mini-text">It helps place every new tool in the right layer: friction, mutation, or expression.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-label">Connected pages</div>
+          <h2 class="section-title">Current REFRAME path</h2>
+          <p class="section-text">These are the pages already connected in the current build.</p>
+
+          <div class="link-list">
+            <a class="link-card" href="./kusoripu-tool.html">
+              <h3>Surface Tool</h3>
+              <p>Public entry: bad reply → idea.</p>
+            </a>
+
+            <a class="link-card" href="./mutation-router.html">
+              <h3>Mutation Router</h3>
+              <p>Choose the next mutation direction.</p>
+            </a>
+
+            <a class="link-card" href="./mutation-map.html">
+              <h3>Mutation Map</h3>
+              <p>See the friction → mutation → expression structure.</p>
+            </a>
+          </div>
+
+          <p class="tiny">No login / No tracking / In browser</p>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer">REFRAME Studio</p>
+  </main>
+</body>
+</html>
