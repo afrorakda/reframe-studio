@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Mutation Routes | REFRAME Studio</title>
+  <title>Mutation Router | REFRAME Studio</title>
   <style>
     :root{
       --bg-1:#060816;
@@ -38,7 +38,7 @@
     }
 
     .wrap{
-      width:min(100%, 820px);
+      width:min(100%, 860px);
       margin:0 auto;
       padding:20px 16px 56px;
     }
@@ -96,14 +96,25 @@
       letter-spacing:-.04em;
       margin:0 0 14px;
       font-weight:800;
-      max-width:700px;
+      max-width:720px;
     }
 
     .lead{
-      margin:0 0 26px;
+      margin:0 0 24px;
       color:var(--muted);
       font-size:clamp(18px, 4.4vw, 22px);
-      max-width:700px;
+      max-width:720px;
+    }
+
+    .status{
+      margin:0 0 18px;
+      padding:12px 14px;
+      border-radius:16px;
+      color:#e8ddff;
+      background:rgba(111,85,255,.12);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.22);
+      font-size:14px;
+      line-height:1.5;
     }
 
     .route-list{
@@ -131,6 +142,13 @@
         0 12px 24px rgba(0,0,0,.18);
     }
 
+    .route-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
     .route-title{
       margin:0 0 6px;
       font-size:clamp(28px, 6vw, 36px);
@@ -139,29 +157,50 @@
       font-weight:800;
     }
 
+    .route-arrow{
+      color:#d7cdfd;
+      font-size:18px;
+      white-space:nowrap;
+      padding-top:6px;
+    }
+
     .route-desc{
-      margin:0;
+      margin:0 0 12px;
       color:var(--muted);
       font-size:17px;
     }
 
-    .deep-link{
-      margin-top:18px;
-      padding-top:14px;
-      border-top:1px solid rgba(92,109,172,.24);
-    }
-
-    .map-link{
+    .route-flow{
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      color:#c3cbeb;
-      font-size:15px;
-      opacity:.9;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color:#d6defb;
+      background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(92,109,172,.18);
     }
 
-    .map-link:hover{
-      opacity:1;
+    .map-card{
+      display:block;
+      margin-top:18px;
+      border-radius:22px;
+      padding:16px 18px;
+      background:rgba(111,85,255,.12);
+      box-shadow:inset 0 0 0 1px rgba(111,85,255,.24);
+    }
+
+    .map-card-title{
+      margin:0 0 6px;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .map-card-desc{
+      margin:0;
+      color:#d8dffc;
+      font-size:15px;
     }
 
     .tiny{
@@ -191,39 +230,74 @@
     <section class="hero">
       <div class="hero-inner">
         <div class="eyebrow">Choose a mutation</div>
-        <h1>Mutation Routes</h1>
-        <p class="lead">Choose how the thought should mutate.</p>
+        <h1>Mutation Router</h1>
+        <p class="lead">Pick the next direction. The surface stays simple. The depth opens here.</p>
+
+        <div class="status">
+          Current entry point: Bad reply → idea
+        </div>
 
         <div class="route-list">
           <a class="route" href="./kusoripu-tool.html">
-            <h2 class="route-title">Reframe</h2>
-            <p class="route-desc">Turn criticism into a new perspective.</p>
+            <div class="route-top">
+              <div>
+                <h2 class="route-title">Reframe</h2>
+                <p class="route-desc">Turn criticism into a new perspective.</p>
+              </div>
+              <div class="route-arrow">next</div>
+            </div>
+            <div class="route-flow">Criticism → Reframe → Angle → Hook</div>
           </a>
 
           <a class="route" href="./kusoripu-tool.html">
-            <h2 class="route-title">Opposite</h2>
-            <p class="route-desc">Flip the idea and explore the reverse angle.</p>
+            <div class="route-top">
+              <div>
+                <h2 class="route-title">Opposite</h2>
+                <p class="route-desc">Flip the idea and explore the reverse angle.</p>
+              </div>
+              <div class="route-arrow">next</div>
+            </div>
+            <div class="route-flow">Criticism → Opposite → Angle → Thread</div>
           </a>
 
           <a class="route" href="./kusoripu-tool.html">
-            <h2 class="route-title">Metaphor</h2>
-            <p class="route-desc">Translate the idea through metaphor.</p>
+            <div class="route-top">
+              <div>
+                <h2 class="route-title">Metaphor</h2>
+                <p class="route-desc">Translate the idea through metaphor.</p>
+              </div>
+              <div class="route-arrow">next</div>
+            </div>
+            <div class="route-flow">Fragment → Metaphor → Hook → Thread</div>
           </a>
 
           <a class="route" href="./kusoripu-tool.html">
-            <h2 class="route-title">Question</h2>
-            <p class="route-desc">Turn the thought into a powerful question.</p>
+            <div class="route-top">
+              <div>
+                <h2 class="route-title">Question</h2>
+                <p class="route-desc">Turn the thought into a sharper question.</p>
+              </div>
+              <div class="route-arrow">next</div>
+            </div>
+            <div class="route-flow">Confusion → Question → Angle → Action</div>
           </a>
 
           <a class="route" href="./kusoripu-tool.html">
-            <h2 class="route-title">Lesson</h2>
-            <p class="route-desc">Extract the hidden lesson.</p>
+            <div class="route-top">
+              <div>
+                <h2 class="route-title">Lesson</h2>
+                <p class="route-desc">Extract the hidden lesson from friction.</p>
+              </div>
+              <div class="route-arrow">next</div>
+            </div>
+            <div class="route-flow">Failure → Lesson → Angle → Post</div>
           </a>
         </div>
 
-        <div class="deep-link">
-          <a class="map-link" href="./mutation-map.html">See the full map →</a>
-        </div>
+        <a class="map-card" href="./mutation-map.html">
+          <h3 class="map-card-title">See the full map →</h3>
+          <p class="map-card-desc">Open the visual map of how friction becomes mutation and expression.</p>
+        </a>
 
         <p class="tiny">No login / No tracking / In browser</p>
       </div>
