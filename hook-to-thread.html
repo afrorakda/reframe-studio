@@ -28,10 +28,10 @@
       --button-line:rgba(255,255,255,0.1);
       --result-card:rgba(255,255,255,0.04);
       --result-line:rgba(255,255,255,0.08);
-      --radius-outer:32px;
-      --radius-inner:26px;
-      --radius-textarea:22px;
-      --shadow:0 24px 70px rgba(0,0,0,0.28);
+      --radius-outer:28px;
+      --radius-inner:22px;
+      --radius-textarea:18px;
+      --shadow:0 20px 56px rgba(0,0,0,0.28);
     }
 
     *{box-sizing:border-box}
@@ -54,19 +54,19 @@
     }
 
     .page{
-      width:min(820px, calc(100% - 28px));
+      width:min(780px, calc(100% - 24px));
       margin:0 auto;
-      padding:24px 0 34px;
+      padding:18px 0 28px;
     }
 
     .back-link{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:18px;
+      font-size:16px;
       line-height:1.4;
       color:var(--muted);
-      margin-bottom:18px;
+      margin-bottom:14px;
       opacity:0.95;
     }
 
@@ -74,7 +74,7 @@
       background:var(--card-outer);
       border:1px solid var(--card-outer-line);
       border-radius:var(--radius-outer);
-      padding:22px 14px 14px;
+      padding:18px 12px 12px;
       box-shadow:var(--shadow);
       backdrop-filter:blur(6px);
       -webkit-backdrop-filter:blur(6px);
@@ -84,61 +84,58 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:48px;
-      padding:0 18px;
+      min-height:42px;
+      padding:0 16px;
       border-radius:999px;
       background:var(--pill-bg);
       border:1px solid var(--pill-line);
       color:#e8ddff;
-      font-size:16px;
+      font-size:15px;
       letter-spacing:-0.01em;
-      margin-bottom:18px;
+      margin-bottom:14px;
     }
 
     .hero-title{
-      margin:0 0 10px 0;
-      font-size:44px;
-      line-height:0.98;
+      margin:0 0 6px 0;
+      font-size:38px;
+      line-height:1;
       letter-spacing:-0.05em;
       font-weight:800;
     }
 
     .hero-desc{
-      margin:0 0 20px 0;
-      font-size:18px;
-      line-height:1.55;
+      margin:0 0 14px 0;
+      font-size:16px;
+      line-height:1.5;
       color:var(--muted);
-      max-width:none;
     }
 
     .inner{
       background:var(--card-inner);
       border:1px solid var(--card-inner-line);
       border-radius:var(--radius-inner);
-      padding:22px 14px 16px;
+      padding:18px 12px 14px;
     }
 
     .mutation-title{
-      margin:0 0 10px 0;
-      font-size:38px;
-      line-height:1.02;
-      letter-spacing:-0.05em;
+      margin:0 0 8px 0;
+      font-size:30px;
+      line-height:1.04;
+      letter-spacing:-0.04em;
       font-weight:800;
-      max-width:8.5em;
     }
 
     .mutation-desc{
-      margin:0 0 18px 0;
-      font-size:17px;
-      line-height:1.58;
+      margin:0 0 14px 0;
+      font-size:15px;
+      line-height:1.5;
       color:var(--muted);
-      max-width:none;
     }
 
     .label{
       display:block;
-      margin:0 0 10px 0;
-      font-size:16px;
+      margin:0 0 8px 0;
+      font-size:15px;
       line-height:1.4;
       font-weight:700;
       color:var(--text);
@@ -146,7 +143,7 @@
 
     textarea{
       width:100%;
-      min-height:150px;
+      min-height:128px;
       resize:vertical;
       border:none;
       outline:none;
@@ -154,10 +151,10 @@
       background:var(--textarea-bg);
       border:1px solid var(--textarea-line);
       color:var(--text);
-      padding:18px 18px;
+      padding:16px;
       font:inherit;
-      font-size:18px;
-      line-height:1.58;
+      font-size:16px;
+      line-height:1.55;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02);
     }
 
@@ -168,18 +165,18 @@
     .button-stack{
       display:flex;
       flex-direction:column;
-      gap:10px;
-      margin-top:14px;
+      gap:8px;
+      margin-top:12px;
     }
 
     button{
       appearance:none;
       border:none;
       width:100%;
-      min-height:58px;
-      border-radius:18px;
+      min-height:52px;
+      border-radius:16px;
       font:inherit;
-      font-size:17px;
+      font-size:16px;
       font-weight:800;
       letter-spacing:-0.02em;
       cursor:pointer;
@@ -202,37 +199,37 @@
     }
 
     .status{
-      margin-top:14px;
-      font-size:14px;
+      margin-top:12px;
+      font-size:13px;
       line-height:1.5;
       color:var(--soft);
     }
 
     .result{
-      margin-top:18px;
+      margin-top:14px;
       display:none;
-      gap:10px;
+      gap:8px;
       flex-direction:column;
     }
 
     .result-card{
       background:var(--result-card);
       border:1px solid var(--result-line);
-      border-radius:18px;
-      padding:14px 14px;
+      border-radius:16px;
+      padding:12px;
     }
 
     .result-top{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:10px;
-      margin-bottom:8px;
+      gap:8px;
+      margin-bottom:6px;
       flex-wrap:wrap;
     }
 
     .result-label{
-      font-size:12px;
+      font-size:11px;
       line-height:1.4;
       letter-spacing:0.08em;
       text-transform:uppercase;
@@ -241,35 +238,35 @@
     }
 
     .result-count{
-      font-size:12px;
+      font-size:11px;
       color:var(--soft);
     }
 
     .result-text{
       margin:0;
-      font-size:17px;
-      line-height:1.58;
+      font-size:15px;
+      line-height:1.55;
       color:var(--text);
       white-space:pre-wrap;
     }
 
     .meta{
-      margin-top:4px;
+      margin-top:2px;
       background:rgba(255,255,255,0.03);
       border:1px solid rgba(255,255,255,0.06);
-      border-radius:18px;
-      padding:16px 14px;
+      border-radius:16px;
+      padding:12px;
       display:grid;
-      gap:14px;
+      gap:10px;
     }
 
     .meta-item{
       display:grid;
-      gap:4px;
+      gap:3px;
     }
 
     .meta-label{
-      font-size:12px;
+      font-size:11px;
       line-height:1.4;
       letter-spacing:0.08em;
       text-transform:uppercase;
@@ -278,48 +275,33 @@
     }
 
     .meta-value{
-      font-size:16px;
-      line-height:1.55;
+      font-size:14px;
+      line-height:1.5;
       color:var(--text);
     }
 
     .next{
-      margin-top:18px;
+      margin-top:12px;
       display:grid;
-      gap:10px;
+      gap:6px;
+      padding-top:10px;
+      border-top:1px solid rgba(255,255,255,0.08);
     }
 
-    .next-card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:18px;
-      padding:14px 14px;
-    }
-
-    .next-card strong{
-      display:block;
-      font-size:17px;
-      line-height:1.4;
-      margin-bottom:6px;
-    }
-
-    .next-card p{
-      margin:0 0 8px 0;
-      font-size:15px;
-      line-height:1.5;
+    .next-link{
+      font-size:14px;
+      line-height:1.45;
       color:var(--muted);
     }
 
-    .next-card a{
-      color:#ffffff;
-      font-size:14px;
+    .next-link strong{
+      color:var(--text);
       font-weight:700;
-      opacity:0.95;
     }
 
     .footer{
-      margin-top:16px;
-      font-size:14px;
+      margin-top:14px;
+      font-size:13px;
       line-height:1.5;
       color:var(--soft);
       text-align:center;
@@ -328,7 +310,7 @@
     @media (min-width: 761px){
       .page{
         width:min(860px, calc(100% - 40px));
-        padding:30px 0 42px;
+        padding:28px 0 40px;
       }
 
       .back-link{
@@ -350,29 +332,27 @@
 
       .hero-title{
         font-size:74px;
-        margin-bottom:16px;
+        margin-bottom:12px;
       }
 
       .hero-desc{
-        font-size:25px;
-        margin-bottom:30px;
-        max-width:12.5em;
+        font-size:22px;
+        margin-bottom:24px;
       }
 
       .inner{
-        padding:34px;
+        padding:30px;
         border-radius:30px;
       }
 
       .mutation-title{
-        font-size:60px;
-        margin-bottom:14px;
+        font-size:56px;
+        margin-bottom:12px;
       }
 
       .mutation-desc{
-        font-size:25px;
-        margin-bottom:26px;
-        max-width:12em;
+        font-size:22px;
+        margin-bottom:22px;
       }
 
       .label{
@@ -381,79 +361,67 @@
       }
 
       textarea{
-        min-height:230px;
-        padding:26px 28px;
-        font-size:27px;
-        border-radius:28px;
+        min-height:210px;
+        padding:24px 26px;
+        font-size:24px;
+        border-radius:24px;
       }
 
       .button-stack{
-        gap:16px;
-        margin-top:22px;
+        gap:14px;
+        margin-top:20px;
       }
 
       button{
-        min-height:78px;
-        border-radius:24px;
-        font-size:28px;
+        min-height:74px;
+        border-radius:22px;
+        font-size:24px;
       }
 
       .status{
-        margin-top:18px;
-        font-size:18px;
+        margin-top:16px;
+        font-size:17px;
       }
 
       .result{
-        margin-top:26px;
-        gap:14px;
+        margin-top:24px;
+        gap:12px;
       }
 
       .result-card{
-        border-radius:24px;
-        padding:18px 20px;
+        border-radius:22px;
+        padding:18px;
       }
 
       .result-label,
       .result-count{
-        font-size:15px;
-      }
-
-      .result-text{
-        font-size:22px;
-      }
-
-      .meta{
-        border-radius:24px;
-        padding:20px;
-      }
-
-      .meta-label{
         font-size:14px;
       }
 
-      .meta-value{
+      .result-text{
         font-size:20px;
       }
 
-      .next{
-        margin-top:24px;
-        gap:14px;
+      .meta{
+        border-radius:22px;
+        padding:18px;
       }
 
-      .next-card{
-        border-radius:24px;
-        padding:18px 20px;
+      .meta-label{
+        font-size:13px;
       }
 
-      .next-card strong{
-        font-size:22px;
-      }
-
-      .next-card p{
+      .meta-value{
         font-size:18px;
       }
 
-      .next-card a{
+      .next{
+        margin-top:18px;
+        gap:10px;
+        padding-top:14px;
+      }
+
+      .next-link{
         font-size:17px;
       }
 
@@ -472,11 +440,11 @@
       <div class="pill">One mutation</div>
 
       <h1 class="hero-title">Thread</h1>
-      <p class="hero-desc">Expand the hook. Build the sequence. Turn one sharp thought into a usable thread.</p>
+      <p class="hero-desc">Expand one hook into a short thread.</p>
 
       <section class="inner">
         <h2 class="mutation-title">Hook → Thread</h2>
-        <p class="mutation-desc">This tool does one thing only: it turns one hook into a short thread you can build on.</p>
+        <p class="mutation-desc">Turn one hook into five short posts.</p>
 
         <label class="label" for="hookInput">Paste one hook</label>
 
@@ -507,30 +475,12 @@ But sometimes they reveal what people are secretly reacting to."></textarea>
               <div class="meta-label">Core tension</div>
               <div class="meta-value" id="threadTension"></div>
             </div>
-            <div class="meta-item">
-              <div class="meta-label">Closing move</div>
-              <div class="meta-value" id="threadClosing"></div>
-            </div>
           </div>
 
           <div class="next">
-            <div class="next-card">
-              <strong>Next mutation: Thread → Post</strong>
-              <p>Compress the sequence into one sharper public post.</p>
-              <a href="./idea-to-thread.html">Go to nearby thread node →</a>
-            </div>
-
-            <div class="next-card">
-              <strong>Next mutation: Hook → Post</strong>
-              <p>Skip expansion and turn the hook into a direct post.</p>
-              <a href="./hook-generator.html">Return to hook work →</a>
-            </div>
-
-            <div class="next-card">
-              <strong>Next mutation: Thread → Action</strong>
-              <p>Turn the thread into one practical next move.</p>
-              <a href="./constraint-to-action.html">Move toward action →</a>
-            </div>
+            <a class="next-link" href="./idea-to-thread.html"><strong>Next:</strong> Thread → Post</a>
+            <a class="next-link" href="./hook-generator.html"><strong>Next:</strong> Hook → Post</a>
+            <a class="next-link" href="./constraint-to-action.html"><strong>Next:</strong> Thread → Action</a>
           </div>
         </div>
       </section>
@@ -551,7 +501,6 @@ But sometimes they reveal what people are secretly reacting to."></textarea>
     const threadList = document.getElementById('threadList');
     const threadTitle = document.getElementById('threadTitle');
     const threadTension = document.getElementById('threadTension');
-    const threadClosing = document.getElementById('threadClosing');
 
     const exampleHook = `People think hate comments are just noise.
 
@@ -584,7 +533,7 @@ But sometimes they reveal what people are secretly reacting to.`;
     }
 
     function makeTitle(text) {
-      const value = shorten(stripLead(text), 58).replace(/[.?!]+$/, '');
+      const value = shorten(stripLead(text), 52).replace(/[.?!]+$/, '');
       return value || 'Untitled thread';
     }
 
@@ -598,19 +547,18 @@ But sometimes they reveal what people are secretly reacting to.`;
       const twist = second ? stripLead(second) : 'That reaction often reveals something useful underneath.';
       const expansion = third || 'The strongest ideas are sometimes hidden inside what people resist.';
       const tension = second
-        ? shorten(second, 110)
+        ? shorten(second, 88)
         : 'What looks negative on the surface may contain hidden creative direction.';
 
-      const post1 = shorten(core, 240);
-      const post2 = shorten(`Most people stop at the surface. ${twist}`, 240);
-      const post3 = shorten(`That matters because ${lowerFirst(expansion)}`, 240);
-      const post4 = shorten(`Instead of asking "How do I avoid this?" ask "What is this reaction pointing at?"`, 240);
-      const post5 = shorten(`Sometimes the next strong content idea is hidden inside the response you wanted to ignore.`, 240);
+      const post1 = shorten(core, 220);
+      const post2 = shorten(`Most people stop at the surface. ${twist}`, 220);
+      const post3 = shorten(`That matters because ${lowerFirst(expansion)}`, 220);
+      const post4 = shorten(`Ask not "How do I avoid this?" but "What is this reaction pointing at?"`, 220);
+      const post5 = shorten(`Sometimes the next strong content idea is hidden inside the response you wanted to ignore.`, 220);
 
       return {
         title: makeTitle(core),
         tension: tension,
-        closing: post5,
         posts: [post1, post2, post3, post4, post5]
       };
     }
@@ -646,8 +594,6 @@ But sometimes they reveal what people are secretly reacting to.`;
 
       threadTitle.textContent = data.title;
       threadTension.textContent = data.tension;
-      threadClosing.textContent = data.closing;
-
       resultWrap.style.display = 'flex';
       statusText.textContent = 'Thread generated';
     }
@@ -670,7 +616,6 @@ But sometimes they reveal what people are secretly reacting to.`;
       threadList.innerHTML = '';
       threadTitle.textContent = '';
       threadTension.textContent = '';
-      threadClosing.textContent = '';
       resultWrap.style.display = 'none';
       statusText.textContent = 'Waiting for input';
     }
