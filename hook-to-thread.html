@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hook → Thread | REFRAME Studio</title>
+  <meta name="description" content="Turn one hook into a short thread. No login. No tracking. Runs entirely in your browser.">
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --panel:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#d9e0ea;
+      --accent:#2563eb;
+      --accent-soft:#eff6ff;
+      --shadow:0 10px 30px rgba(15, 23, 42, 0.06);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      word-break:break-word;
+    }
+
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    .wrap{
+      width:min(920px, calc(100% - 24px));
+      margin:0 auto;
+      padding:18px 0 36px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+      flex-wrap:wrap;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .privacy{
+      font-size:12px;
+      color:var(--muted);
+      text-align:right;
+    }
+
+    .hero,
+    .panel,
+    .result-card,
+    .next-card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .hero{
+      padding:22px 18px;
+      margin-bottom:16px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--accent);
+      background:var(--accent-soft);
+      border:1px solid #cfe0ff;
+      border-radius:999px;
+      padding:7px 10px;
+      margin-bottom:12px;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:30px;
+      line-height:1.15;
+      letter-spacing:-0.03em;
+    }
+
+    .desc{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      max-width:58ch;
+    }
+
+    .flow{
+      margin-top:14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .flow span{
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fafcff;
+      color:#334155;
+    }
+
+    .panel{
+      padding:16px;
+      margin-bottom:16px;
+    }
+
+    label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:150px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px 14px 16px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      resize:vertical;
+      outline:none;
+    }
+
+    textarea:focus{
+      border-color:#b8cbff;
+      box-shadow:0 0 0 4px rgba(37,99,235,.08);
+    }
+
+    .helper{
+      margin-top:8px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .buttons{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:13px 16px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+
+    button:active{transform:translateY(1px)}
+
+    .primary{
+      background:var(--accent);
+      color:#fff;
+    }
+
+    .secondary{
+      background:#eef2f7;
+      color:#1f2937;
+    }
+
+    .ghost{
+      background:#fff;
+      color:#1f2937;
+      border:1px solid var(--line);
+    }
+
+    .result-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+
+    .result-title{
+      margin:0;
+      font-size:18px;
+    }
+
+    .status{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .result-empty{
+      color:var(--muted);
+      font-size:15px;
+      padding:2px 0 0;
+    }
+
+    .thread-list{
+      display:grid;
+      gap:12px;
+      margin-top:10px;
+    }
+
+    .result-card{
+      padding:14px;
+    }
+
+    .card-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:8px;
+    }
+
+    .card-label{
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+
+    .char-count{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .card-text{
+      margin:0;
+      white-space:pre-wrap;
+      font-size:15px;
+    }
+
+    .mini{
+      margin-top:16px;
+      padding-top:14px;
+      border-top:1px solid var(--line);
+      display:grid;
+      gap:8px;
+    }
+
+    .mini-row{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      font-size:14px;
+    }
+
+    .mini-label{
+      min-width:96px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .next{
+      margin-top:18px;
+    }
+
+    .next h2{
+      margin:0 0 10px;
+      font-size:18px;
+    }
+
+    .next-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+
+    .next-card{
+      padding:14px;
+    }
+
+    .next-card strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:15px;
+    }
+
+    .next-card p{
+      margin:0 0 12px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .next-card a{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .footer{
+      margin-top:20px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    @media (max-width: 760px){
+      h1{font-size:26px}
+      .next-grid{grid-template-columns:1fr}
+      .wrap{width:min(100% - 16px, 920px)}
+      .hero,.panel{padding:15px}
+      button{width:100%}
+      .buttons{display:grid}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="back" href="./hook-generator.html">← Back to Hook Generator</a>
+      <div class="privacy">No login · No tracking · Runs entirely in browser</div>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">REFRAME mutation node</div>
+      <h1>Hook → Thread</h1>
+      <p class="desc">
+        Turn one hook into a short thread. One input. One mutation. Clear next movement.
+      </p>
+      <div class="flow">
+        <span>Fragment</span>
+        <span>Reframe</span>
+        <span>Hook</span>
+        <span><strong>Thread</strong></span>
+        <span>Post</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <label for="hookInput">Drop a hook</label>
+      <textarea id="hookInput" placeholder="Example:
+People think hate comments are just noise.
+But sometimes they reveal what people are secretly reacting to."></textarea>
+      <div class="helper">Paste one hook. The tool turns it into a 5-part thread.</div>
+
+      <div class="buttons">
+        <button class="primary" id="generateBtn">Generate thread</button>
+        <button class="secondary" id="exampleBtn">Try example</button>
+        <button class="secondary" id="clearBtn">Clear</button>
+        <button class="ghost" id="copyBtn">Copy result</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="result-head">
+        <h2 class="result-title">Result</h2>
+        <div class="status" id="statusText">Waiting for input</div>
+      </div>
+
+      <div id="resultEmpty" class="result-empty">
+        Your thread will appear here.
+      </div>
+
+      <div id="resultArea" style="display:none;">
+        <div class="thread-list" id="threadList"></div>
+
+        <div class="mini">
+          <div class="mini-row">
+            <div class="mini-label">Thread title</div>
+            <div id="threadTitle"></div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-label">Core tension</div>
+            <div id="threadTension"></div>
+          </div>
+          <div class="mini-row">
+            <div class="mini-label">Closing move</div>
+            <div id="threadClosing"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="next">
+      <h2>Next mutations</h2>
+      <div class="next-grid">
+        <div class="next-card">
+          <strong>Thread → Post</strong>
+          <p>Compress the thread into one sharper public post.</p>
+          <a href="./idea-to-thread.html">Use nearby thread node →</a>
+        </div>
+        <div class="next-card">
+          <strong>Hook → Post</strong>
+          <p>Skip expansion and turn the hook into a direct post.</p>
+          <a href="./hook-generator.html">Return to hook work →</a>
+        </div>
+        <div class="next-card">
+          <strong>Thread → Action</strong>
+          <p>Turn the idea into one practical next move.</p>
+          <a href="./constraint-to-action.html">Move toward action →</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      REFRAME Studio · One tool = one mutation
+    </div>
+  </div>
+
+  <script>
+    const hookInput = document.getElementById('hookInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    const resultEmpty = document.getElementById('resultEmpty');
+    const resultArea = document.getElementById('resultArea');
+    const threadList = document.getElementById('threadList');
+    const threadTitle = document.getElementById('threadTitle');
+    const threadTension = document.getElementById('threadTension');
+    const threadClosing = document.getElementById('threadClosing');
+    const statusText = document.getElementById('statusText');
+
+    const exampleHook = `People think hate comments are just noise.
+But sometimes they reveal what people are secretly reacting to.`;
+
+    function cleanLine(text) {
+      return text
+        .replace(/\s+/g, ' ')
+        .replace(/[“”]/g, '"')
+        .trim();
+    }
+
+    function splitSentences(text) {
+      return text
+        .split(/\n+/)
+        .map(cleanLine)
+        .filter(Boolean);
+    }
+
+    function shorten(text, max = 110) {
+      const value = cleanLine(text);
+      if (value.length <= max) return value;
+      return value.slice(0, max).trim().replace(/[.,;:!?-]*$/, '') + '…';
+    }
+
+    function removeLead(text) {
+      return text
+        .replace(/^(but|and|so|because|then|also|still|yet)\s+/i, '')
+        .trim();
+    }
+
+    function makeTitle(core) {
+      const short = shorten(removeLead(core), 56).replace(/[.?!]+$/, '');
+      return short || 'Untitled thread';
+    }
+
+    function buildThread(input) {
+      const parts = splitSentences(input);
+      const first = parts[0] || cleanLine(input);
+      const second = parts[1] || '';
+      const third = parts[2] || '';
+
+      const core = removeLead(first || input);
+      const twist = second ? removeLead(second) : 'That reaction usually points to something more useful underneath.';
+      const expansion = third || 'The negative response is often a signal, not just a problem.';
+      const tension = second
+        ? shorten(second, 100)
+        : 'What looks negative on the surface may contain hidden creative direction.';
+
+      const post1 = shorten(core, 240);
+      const post2 = shorten(
+        `Most people stop at the surface. ${twist}`,
+        240
+      );
+      const post3 = shorten(
+        `That matters because ${expansion.charAt(0).toLowerCase() + expansion.slice(1)}`,
+        240
+      );
+      const post4 = shorten(
+        `Instead of asking "How do I avoid this?", ask "What is this reaction pointing at?"`,
+        240
+      );
+      const post5 = shorten(
+        `Sometimes the strongest content idea is hidden inside the response you wanted to ignore.`,
+        240
+      );
+
+      const posts = [post1, post2, post3, post4, post5];
+
+      return {
+        title: makeTitle(core),
+        tension: tension,
+        closing: post5,
+        posts
+      };
+    }
+
+    function renderThread(data) {
+      threadList.innerHTML = '';
+
+      data.posts.forEach((text, index) => {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+
+        const top = document.createElement('div');
+        top.className = 'card-top';
+
+        const label = document.createElement('div');
+        label.className = 'card-label';
+        label.textContent = `Post ${index + 1}`;
+
+        const count = document.createElement('div');
+        count.className = 'char-count';
+        count.textContent = `${text.length} chars`;
+
+        top.appendChild(label);
+        top.appendChild(count);
+
+        const body = document.createElement('p');
+        body.className = 'card-text';
+        body.textContent = text;
+
+        card.appendChild(top);
+        card.appendChild(body);
+        threadList.appendChild(card);
+      });
+
+      threadTitle.textContent = data.title;
+      threadTension.textContent = data.tension;
+      threadClosing.textContent = data.closing;
+
+      resultEmpty.style.display = 'none';
+      resultArea.style.display = 'block';
+      statusText.textContent = 'Thread generated';
+    }
+
+    function generateThread() {
+      const value = hookInput.value.trim();
+      if (!value) {
+        statusText.textContent = 'Add a hook first';
+        resultEmpty.style.display = 'block';
+        resultArea.style.display = 'none';
+        resultEmpty.textContent = 'Paste one hook to generate a thread.';
+        return;
+      }
+
+      const thread = buildThread(value);
+      renderThread(thread);
+    }
+
+    function clearAll() {
+      hookInput.value = '';
+      resultArea.style.display = 'none';
+      resultEmpty.style.display = 'block';
+      resultEmpty.textContent = 'Your thread will appear here.';
+      statusText.textContent = 'Cleared';
+      threadList.innerHTML = '';
+      threadTitle.textContent = '';
+      threadTension.textContent = '';
+      threadClosing.textContent = '';
+    }
+
+    function getPlainResult() {
+      const cards = [...threadList.querySelectorAll('.result-card .card-text')];
+      if (!cards.length) return '';
+
+      return cards.map((node, i) => `${i + 1}. ${node.textContent}`).join('\n\n');
+    }
+
+    async function copyResult() {
+      const text = getPlainResult();
+      if (!text) {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        statusText.textContent = 'Copied';
+      } catch (error) {
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+        statusText.textContent = 'Copied';
+      }
+    }
+
+    generateBtn.addEventListener('click', generateThread);
+    exampleBtn.addEventListener('click', () => {
+      hookInput.value = exampleHook;
+      generateThread();
+    });
+    clearBtn.addEventListener('click', clearAll);
+    copyBtn.addEventListener('click', copyResult);
+  </script>
+</body>
+</html>
