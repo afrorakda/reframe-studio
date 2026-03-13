@@ -3,28 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>REFRAME Studio</title>
-  <meta name="description" content="Bad reply → Content. No login. No tracking. Runs entirely in browser." />
+  <title>Reframe</title>
+  <meta name="description" content="Bad reply → Content. Turn one bad reply into a content idea." />
   <style>
     :root{
       --bg:#03133f;
-      --bg2:#102766;
       --panel:#2a3f89;
-      --card:#03124f;
-      --line:rgba(126,146,255,0.20);
-      --soft:rgba(255,255,255,0.74);
-      --text:#f5f7ff;
+      --card:#071757;
+      --ink:#f4f6ff;
+      --soft:rgba(235,239,255,0.76);
       --muted:#aeb9f6;
-      --pill:#31387a;
+      --line:rgba(126,146,255,0.18);
       --pill-line:rgba(115,102,255,0.55);
       --button:#24305f;
       --button-text:#f4f6ff;
       --button-main:#f2f2f5;
       --button-main-text:#0d1a4d;
+      --textarea:#020d3d;
       --shadow:0 20px 50px rgba(0,0,0,0.28);
-      --radius-xl:30px;
-      --radius-lg:24px;
-      --radius-md:18px;
       --max:820px;
     }
 
@@ -36,7 +32,7 @@
         radial-gradient(1200px 700px at 80% 10%, rgba(74,93,195,0.28), transparent 55%),
         radial-gradient(900px 640px at 20% 80%, rgba(10,29,95,0.25), transparent 55%),
         linear-gradient(180deg,var(--bg) 0%, #041245 48%, #04103a 100%);
-      color:var(--text);
+      color:var(--ink);
       min-height:100vh;
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
@@ -47,7 +43,16 @@
     .wrap{
       width:min(var(--max), calc(100% - 24px));
       margin:0 auto;
-      padding:18px 0 30px;
+      padding:18px 0 36px;
+    }
+
+    .back{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:15px;
+      margin:6px 0 18px;
     }
 
     .shell{
@@ -58,7 +63,6 @@
       box-shadow:var(--shadow);
       position:relative;
       overflow:hidden;
-      margin-top:24px;
     }
 
     .shell::before{
@@ -108,34 +112,89 @@
       padding:12px;
     }
 
-    .buttons{
-      display:grid;
-      gap:10px;
+    .stage-title{
+      font-size:18px;
+      font-weight:800;
+      margin:0 0 8px;
+    }
+
+    .stage-sub{
+      margin:0 0 12px;
+      color:var(--soft);
+      font-size:15px;
+      line-height:1.45;
+    }
+
+    .textarea-wrap{
+      border-top:1px solid rgba(121,142,255,0.16);
+      padding-top:12px;
+      margin-top:6px;
+    }
+
+    .label-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
       margin-bottom:10px;
     }
 
-    .button-link{
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    .label{
+      color:#dbe2ff;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+    }
+
+    .count{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    textarea{
       width:100%;
-      border:1px solid rgba(130,147,236,0.18);
+      min-height:190px;
+      resize:vertical;
+      border:1px solid rgba(113,132,235,0.22);
+      border-radius:22px;
+      background:var(--textarea);
+      color:var(--ink);
+      padding:18px 18px 20px;
+      font:inherit;
+      font-size:16px;
+      line-height:1.6;
+      outline:none;
+    }
+
+    textarea::placeholder{
+      color:rgba(207,215,255,0.56);
+    }
+
+    .buttons{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      width:100%;
       border-radius:18px;
       min-height:52px;
       padding:10px 16px;
+      font:inherit;
       font-size:16px;
       font-weight:760;
       background:var(--button);
       color:var(--button-text);
-      transition:transform .04s ease, opacity .15s ease, background .15s ease;
+      border:1px solid rgba(130,147,236,0.18);
+      cursor:pointer;
       -webkit-tap-highlight-color:transparent;
     }
 
-    .button-link:active{
-      transform:scale(0.995);
-    }
-
-    .button-link.primary{
+    button.primary{
       background:var(--button-main);
       color:var(--button-main-text);
       border-color:transparent;
@@ -146,7 +205,7 @@
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      margin:2px 2px 4px;
+      margin:12px 2px 8px;
       color:var(--muted);
       font-size:14px;
       min-height:18px;
@@ -156,7 +215,31 @@
       color:rgba(193,203,255,0.82);
       font-size:14px;
       white-space:nowrap;
-      user-select:none;
+    }
+
+    .result-card{
+      background:rgba(19,31,89,0.95);
+      border:1px solid rgba(121,142,255,0.16);
+      border-radius:20px;
+      padding:14px;
+      margin-top:8px;
+    }
+
+    .result-label{
+      color:#dbe2ff;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .result-text{
+      color:var(--ink);
+      font-size:17px;
+      line-height:1.65;
+      white-space:pre-wrap;
+      word-break:break-word;
     }
 
     .footer{
@@ -172,10 +255,14 @@
         padding:22px 0 54px;
       }
 
+      .back{
+        font-size:24px;
+        margin:8px 0 22px;
+      }
+
       .shell{
         border-radius:34px;
         padding:20px;
-        margin-top:34px;
       }
 
       .shell::before{
@@ -206,12 +293,43 @@
         padding:20px;
       }
 
-      .buttons{
-        gap:14px;
-        margin-bottom:14px;
+      .stage-title{
+        font-size:42px;
+        margin-bottom:12px;
       }
 
-      .button-link{
+      .stage-sub{
+        font-size:26px;
+        line-height:1.5;
+        margin-bottom:18px;
+      }
+
+      .textarea-wrap{
+        padding-top:18px;
+      }
+
+      .label{
+        font-size:22px;
+      }
+
+      .count{
+        font-size:22px;
+      }
+
+      textarea{
+        min-height:260px;
+        font-size:24px;
+        line-height:1.75;
+        padding:24px 24px 26px;
+        border-radius:24px;
+      }
+
+      .buttons{
+        gap:14px;
+        margin-top:16px;
+      }
+
+      button{
         min-height:78px;
         padding:14px 18px;
         font-size:28px;
@@ -220,11 +338,26 @@
 
       .status-row{
         font-size:24px;
-        margin:4px 2px 6px;
+        margin:16px 2px 10px;
       }
 
       .deeper{
         font-size:24px;
+      }
+
+      .result-card{
+        border-radius:22px;
+        padding:18px;
+      }
+
+      .result-label{
+        font-size:20px;
+        margin-bottom:12px;
+      }
+
+      .result-text{
+        font-size:31px;
+        line-height:1.7;
       }
 
       .footer{
@@ -236,24 +369,142 @@
 </head>
 <body>
   <div class="wrap">
+    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+
     <section class="shell">
       <div class="pill">Bad reply → Content</div>
-      <h1>REFRAME Studio</h1>
+      <h1>Reframe</h1>
       <p class="sub">Turn one bad reply into a content idea.</p>
 
       <div class="card">
+        <div class="stage-title">Bad reply → Content</div>
+        <div class="stage-sub">Turn one bad reply into a content idea.</div>
+
+        <div class="textarea-wrap">
+          <div class="label-row">
+            <div class="label">Drop a bad reply</div>
+            <div class="count" id="charCount">0 characters</div>
+          </div>
+
+          <textarea id="inputBox" placeholder="This is too abstract.
+
+Nobody needs this.
+
+You always say vague things."></textarea>
+        </div>
+
         <div class="buttons">
-          <a class="button-link primary" href="./reframe.html">Start</a>
+          <button id="generateBtn" class="primary">Generate</button>
+          <button id="exampleBtn">Try example</button>
+          <button id="copyBtn">Copy result</button>
+          <button id="clearBtn">Clear</button>
         </div>
 
         <div class="status-row">
-          <div></div>
-          <a class="deeper" href="./fragment-router.html">Deeper</a>
+          <div id="statusText">Waiting for input</div>
+          <a class="deeper" href="./fragment-router.html">deeper</a>
+        </div>
+
+        <div class="result-card">
+          <div class="result-label">Result</div>
+          <div class="result-text" id="resultText">—</div>
         </div>
       </div>
 
       <div class="footer">No login • No tracking • Runs entirely in browser</div>
     </section>
   </div>
+
+  <script>
+    const inputBox = document.getElementById('inputBox');
+    const resultText = document.getElementById('resultText');
+    const statusText = document.getElementById('statusText');
+    const charCount = document.getElementById('charCount');
+
+    const generateBtn = document.getElementById('generateBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    const EXAMPLE = `This is too abstract.
+
+Nobody needs this.
+
+You always say vague things.`;
+
+    const reframes = [
+      'Maybe the reply is asking for a clearer, sharper version of the idea.',
+      'Maybe the negative reaction reveals where the content can become more usable.',
+      'Maybe the hit contains the outline of a better angle.',
+      'Maybe they reacted because something in the idea almost landed.',
+      'Maybe the problem is not the idea, but the frame around it.',
+      'Maybe the reply shows where the content needs more concrete language.',
+      'Maybe the tension is pointing toward the next version of the thought.',
+      'Maybe the bad reply is rough feedback about what wants to become clearer.'
+    ];
+
+    function updateCount() {
+      const count = inputBox.value.length;
+      charCount.textContent = `${count} characters`;
+    }
+
+    function generateResult() {
+      const raw = inputBox.value.trim();
+
+      if (!raw) {
+        statusText.textContent = 'Add one bad reply first';
+        resultText.textContent = '—';
+        return;
+      }
+
+      let base = reframes[Math.floor(Math.random() * reframes.length)];
+
+      const lower = raw.toLowerCase();
+
+      if (lower.includes('abstract')) {
+        base = 'Maybe they are pushing for a version of the idea that feels more concrete and easier to hold.';
+      } else if (lower.includes('vague')) {
+        base = 'Maybe the reply is really asking for sharper language and a more direct point.';
+      } else if (lower.includes('nobody needs')) {
+        base = 'Maybe the reply is exposing a gap between the idea and the way its usefulness is being shown.';
+      }
+
+      resultText.textContent = base;
+      statusText.textContent = 'Frame changed';
+    }
+
+    function copyResult() {
+      const text = resultText.textContent.trim();
+      if (!text || text === '—') {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      navigator.clipboard.writeText(text).then(() => {
+        statusText.textContent = 'Copied';
+      }).catch(() => {
+        statusText.textContent = 'Copy failed';
+      });
+    }
+
+    function clearAll() {
+      inputBox.value = '';
+      resultText.textContent = '—';
+      statusText.textContent = 'Waiting for input';
+      updateCount();
+    }
+
+    inputBox.addEventListener('input', updateCount);
+    generateBtn.addEventListener('click', generateResult);
+    exampleBtn.addEventListener('click', () => {
+      inputBox.value = EXAMPLE;
+      updateCount();
+      statusText.textContent = 'Example loaded';
+    });
+    copyBtn.addEventListener('click', copyResult);
+    clearBtn.addEventListener('click', clearAll);
+
+    updateCount();
+  </script>
 </body>
 </html>
