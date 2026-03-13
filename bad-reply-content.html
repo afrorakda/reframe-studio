@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bad reply → Content</title>
+  <style>
+    :root{
+      --bg:#0f1115;
+      --panel:#171a21;
+      --panel-2:#1d212b;
+      --text:#e9edf3;
+      --muted:#98a1b3;
+      --line:#2a3040;
+      --soft:#c9d1e1;
+      --hover:#232938;
+      --btn:#202636;
+      --btn-text:#f3f6fb;
+      --shadow:0 10px 30px rgba(0,0,0,.28);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      line-height:1.5;
+      min-height:100%;
+    }
+
+    body{
+      padding:20px 14px 40px;
+    }
+
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+    }
+
+    .card{
+      background:linear-gradient(180deg,var(--panel),var(--panel-2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .head{
+      padding:22px 18px 10px;
+    }
+
+    h1{
+      margin:0;
+      font-size:28px;
+      font-weight:700;
+      letter-spacing:-0.02em;
+      color:var(--text);
+    }
+
+    .sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .body{
+      padding:14px 18px 18px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:180px;
+      resize:vertical;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#11151d;
+      color:var(--text);
+      padding:16px;
+      font-size:16px;
+      line-height:1.6;
+      outline:none;
+      transition:border-color .15s ease, background .15s ease;
+    }
+
+    textarea:focus{
+      border-color:#3a4258;
+      background:#10141c;
+    }
+
+    textarea::placeholder{
+      color:#788297;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    button, a.button{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:13px 12px;
+      background:var(--btn);
+      color:var(--btn-text);
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      text-align:center;
+      text-decoration:none;
+      border:1px solid #2d3446;
+      transition:transform .04s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    button:hover, a.button:hover{
+      background:var(--hover);
+      border-color:#3a4258;
+    }
+
+    button:active, a.button:active{
+      transform:translateY(1px);
+    }
+
+    .result{
+      margin-top:16px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#10141b;
+      min-height:260px;
+      padding:16px;
+    }
+
+    .result.empty{
+      display:flex;
+      align-items:center;
+      color:var(--muted);
+    }
+
+    .ideas{
+      display:grid;
+      gap:12px;
+    }
+
+    .idea{
+      padding:14px 14px 13px;
+      border:1px solid #283042;
+      border-radius:14px;
+      background:#141923;
+    }
+
+    .idea-label{
+      display:inline-block;
+      margin-bottom:8px;
+      font-size:11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+
+    .idea-text{
+      font-size:16px;
+      color:var(--soft);
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    .foot{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:12px;
+    }
+
+    .deeper{
+      margin-top:14px;
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .deeper a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:13px;
+      padding:8px 2px;
+      border-bottom:1px solid transparent;
+      transition:color .15s ease, border-color .15s ease;
+    }
+
+    .deeper a:hover{
+      color:var(--text);
+      border-color:#40495f;
+    }
+
+    .tiny{
+      margin-top:14px;
+      color:#6f7890;
+      font-size:12px;
+    }
+
+    @media (max-width:640px){
+      h1{
+        font-size:24px;
+      }
+      .actions{
+        grid-template-columns:1fr 1fr;
+      }
+      .result{
+        min-height:220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="head">
+        <h1>Bad reply → Content</h1>
+        <p class="sub">Turn friction into angles.</p>
+      </div>
+
+      <div class="body">
+        <textarea id="input" placeholder="Paste replies, criticism, or friction.
+
+Example:
+stop
+boring
+too abstract
+what are you even saying
+leftist
+right-wing
+nobody gets this"></textarea>
+
+        <div class="actions">
+          <button id="generateBtn">Generate</button>
+          <button id="exampleBtn">Try example</button>
+          <button id="clearBtn">Clear</button>
+          <button id="copyBtn">Copy result</button>
+        </div>
+
+        <div id="result" class="result empty">3–5 angles appear here.</div>
+
+        <div class="deeper">
+          <a href="./fragment-router.html" aria-label="Go deeper">Deeper</a>
+        </div>
+
+        <div class="tiny">No login. No tracking. Browser only.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('input');
+    const result = document.getElementById('result');
+    const generateBtn = document.getElementById('generateBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    const exampleInput = [
+      'stop',
+      'boring',
+      'too abstract',
+      'what are you even saying',
+      'nobody gets this'
+    ].join('\n');
+
+    const practicalOpeners = [
+      'A post about how',
+      'A thread on why',
+      'A sharp angle on how',
+      'A piece on why',
+      ''A short post on how',
+      'A content angle about why',
+      'A creator note on how',
+      'A post showing why'
+    ];
+
+    const practicalFrames = [
+      'people reject what they cannot repeat',
+      'clarity is often demanded too early',
+      'the internet punishes ideas before they fully form',
+      'confusion can be the first sign of an original thought',
+      'many reactions are just discomfort wearing confidence',
+      'some criticism is only boredom looking for a target',
+      'people often call something bad when they cannot place it',
+      'certainty spreads faster than thought',
+      'misunderstanding is part of the cost of originality',
+      'the crowd trusts templates more than unfinished insight',
+      'not being understood is different from having nothing to say',
+      'people want ideas that fit in one sentence'
+    ];
+
+    const practicalTurns = [
+      'and why that matters for creators',
+      'before an idea becomes obvious',
+      'when your work is still alive and unstable',
+      'instead of treating every bad reply as truth',
+      'and how that changes what you should publish next',
+      'without flattening the interesting part',
+      'before you over-explain your own work',
+      'and why friction can be a better signal than praise'
+    ];
+
+    const selfDeprecating = [
+      'Maybe I am not bad at explaining. Maybe I just keep posting thoughts before they learn how to sit still.',
+      'A post called: My ideas are not always unclear. Sometimes they are just still wet.',
+      'Maybe the problem is not that I confuse people. Maybe I publish too early and call it bravery.',
+      'A self-own: I keep serving half-cooked thoughts and acting surprised when people ask for a menu.',
+      'Maybe I do make sense. Just not at the speed the internet prefers.'
+    ];
+
+    const spicy = [
+      'If everyone understands your idea instantly, it may already be too dead to matter.',
+      'The internet does not hate bad ideas. It hates having to think for more than three seconds.',
+      'Some replies are not criticism. They are panic from people whose categories stopped working.',
+      'People call something “nonsense” when they want the comfort of dismissing it fast.',
+      'A lot of certainty online is just low-resolution thinking with good posture.'
+    ];
+
+    const bridgeFragments = [
+      'before it became legible',
+      'while it still had teeth',
+      'before the strange part was cleaned off',
+      'while it still resisted neat language',
+      'before it was turned into a lesson',
+      'while it was still slightly dangerous',
+      'before it learned how to behave',
+      'while it was still open at the edges'
+    ];
+
+    const quietFragments = [
+      'something unfinished can still be worth sharing',
+      'not everything meaningful arrives in a tidy form',
+      'an early idea often sounds wrong before it sounds true',
+      'people often mistake unfamiliarity for weakness',
+      'a rough signal can carry more life than a polished answer',
+      'some ideas lose their force when made too explainable',
+      'what feels vague can also hold room for thought',
+      'the first version of an idea is often mostly atmosphere'
+    ];
+
+    const edgeFragments = [
+      'the crowd prefers repeatable language',
+      'most people want recognition, not surprise',
+      'bad replies often reveal the limits of the reader, not the work',
+      'the internet rewards confidence over perception',
+      'people protect themselves by rejecting what stays open',
+      'many reactions are attempts to end thinking quickly',
+      'ambiguity threatens systems built on fast judgment',
+      'some hostility is just fear of not knowing what to do with a thought'
+    ];
+
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function shuffle(arr){
+      const copy = [...arr];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function uniquePush(list, value){
+      if(!list.includes(value)) list.push(value);
+    }
+
+    function cleanLines(text){
+      return text
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean)
+        .slice(0, 12);
+    }
+
+    function seedFromInput(lines){
+      if(!lines.length) return 'bad reply';
+      return pick(lines);
+    }
+
+    function lineFragment(line){
+      const stripped = line.replace(/[“”"'`]/g, '').trim();
+      if(!stripped) return 'a bad reply';
+      return `"${stripped}"`;
+    }
+
+    function makePractical(seedLine){
+      const seed = lineFragment(seedLine);
+      const opener = pick(practicalOpeners);
+      const frame = pick(practicalFrames);
+      const turn = pick(practicalTurns);
+      const bridge = pick(bridgeFragments);
+      const quiet = pick(quietFragments);
+      const edge = pick(edgeFragments);
+
+      const variants = [
+        `${opener} ${frame} ${turn}. Use ${seed} as the entry point.`,
+        `${opener} ${quiet} ${bridge}. Start from ${seed}.`,
+        `${opener} ${edge} ${turn}. Build it around ${seed}.`
+      ];
+
+      return pick(variants);
+    }
+
+    function makeSelf(seedLine){
+      const seed = lineFragment(seedLine);
+      const base = pick(selfDeprecating);
+      const tail = [
+        `Open with ${seed}.`,
+        `Use ${seed} as the first line.`,
+        `Begin from ${seed} and turn the knife slightly toward yourself.`,
+        `Start with ${seed}, then make yourself part of the joke.`
+      ];
+      return `${base} ${pick(tail)}`;
+    }
+
+    function makeSpicy(seedLine){
+      const seed = lineFragment(seedLine);
+      const base = pick(spicy);
+      const tail = [
+        `Lead with ${seed}.`,
+        `Use ${seed} as proof.`,
+        `Frame ${seed} as the symptom, not the point.`,
+        `Start from ${seed} and hit the culture around it.`
+      ];
+      return `${base} ${pick(tail)}`;
+    }
+
+    function generateIdeas(rawText){
+      const lines = cleanLines(rawText);
+      const fallback = ['too abstract', 'nobody gets this', 'boring', 'stop'];
+      const source = lines.length ? shuffle(lines) : shuffle(fallback);
+
+      const chosen = [];
+      while(chosen.length < 5){
+        uniquePush(chosen, source[chosen.length % source.length]);
+        if(source.length === 1 && chosen.length < 5){
+          uniquePush(chosen, source[0] + ' ');
+        }
+      }
+
+      const ideas = [];
+      ideas.push({ type:'Practical', text: makePractical(chosen[0]) });
+      ideas.push({ type:'Practical', text: makePractical(chosen[1]) });
+      ideas.push({ type:'Practical', text: makePractical(chosen[2]) });
+      ideas.push({ type:'Self-deprecating', text: makeSelf(chosen[3]) });
+      ideas.push({ type:'Spicy', text: makeSpicy(chosen[4]) });
+
+      return ideas;
+    }
+
+    function renderIdeas(ideas){
+      result.classList.remove('empty');
+      result.innerHTML = '';
+
+      const list = document.createElement('div');
+      list.className = 'ideas';
+
+      ideas.forEach((idea, index) => {
+        const card = document.createElement('div');
+        card.className = 'idea';
+
+        const label = document.createElement('div');
+        label.className = 'idea-label';
+        label.textContent = `${index + 1}. ${idea.type}`;
+
+        const text = document.createElement('div');
+        text.className = 'idea-text';
+        text.textContent = idea.text;
+
+        card.appendChild(label);
+        card.appendChild(text);
+        list.appendChild(card);
+      });
+
+      result.appendChild(list);
+    }
+
+    function generate(){
+      const ideas = generateIdeas(input.value);
+      renderIdeas(ideas);
+    }
+
+    function clearAll(){
+      input.value = '';
+      result.className = 'result empty';
+      result.textContent = '3–5 angles appear here.';
+    }
+
+    function copyResult(){
+      const cards = Array.from(result.querySelectorAll('.idea'));
+      if(!cards.length){
+        return;
+      }
+      const text = cards.map(card => {
+        const label = card.querySelector('.idea-label')?.textContent || '';
+        const body = card.querySelector('.idea-text')?.textContent || '';
+        return `${label}\n${body}`;
+      }).join('\n\n');
+
+      navigator.clipboard.writeText(text).then(() => {
+        const original = copyBtn.textContent;
+        copyBtn.textContent = 'Copied';
+        setTimeout(() => {
+          copyBtn.textContent = original;
+        }, 1200);
+      }).catch(() => {
+        const original = copyBtn.textContent;
+        copyBtn.textContent = 'Copy failed';
+        setTimeout(() => {
+          copyBtn.textContent = original;
+        }, 1200);
+      });
+    }
+
+    generateBtn.addEventListener('click', generate);
+    exampleBtn.addEventListener('click', () => {
+      input.value = exampleInput;
+      generate();
+    });
+    clearBtn.addEventListener('click', clearAll);
+    copyBtn.addEventListener('click', copyResult);
+  </script>
+</body>
+</html>
