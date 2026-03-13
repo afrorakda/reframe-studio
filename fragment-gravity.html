@@ -323,23 +323,28 @@
 
         <div class="result-list" id="resultList">
           <div class="result-card">
-            <div class="result-label">Seed</div>
+            <div class="result-label">Current</div>
             <p class="result-text" id="seedText"></p>
           </div>
 
           <div class="result-card">
-            <div class="result-label">Seed tone</div>
+            <div class="result-label">Tone</div>
             <p class="result-text" id="seedToneText"></p>
           </div>
 
           <div class="result-card">
-            <div class="result-label">Gravity pull</div>
+            <div class="result-label">Gravity</div>
             <p class="result-text" id="gravityText"></p>
           </div>
 
           <div class="result-card">
-            <div class="result-label">Next fragment</div>
+            <div class="result-label">Next</div>
             <p class="result-text" id="nextText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Rare</div>
+            <p class="result-text" id="rareText"></p>
           </div>
 
           <div class="result-card">
@@ -368,13 +373,17 @@
     const seedToneText = document.getElementById('seedToneText');
     const gravityText = document.getElementById('gravityText');
     const nextText = document.getElementById('nextText');
+    const rareText = document.getElementById('rareText');
     const logText = document.getElementById('logText');
 
     let fragmentPool = [];
-    let currentSeed = null;
-    let currentNext = null;
+    let currentFragment = null;
+    let nextFragment = null;
     let driftLog = [];
     let loaded = false;
+    let recentTexts = [];
+    let recentReadings = [];
+    let rareFlag = false;
 
     const tonePullMap = {
       warm: [
@@ -444,7 +453,8 @@
         value.includes('not landing') ||
         value.includes('wrong frame') ||
         value.includes('bad translation') ||
-        value.includes('clumsy')
+        value.includes('clumsy') ||
+        value.includes('rough')
       ) return 'edge';
 
       if (
@@ -461,15 +471,17 @@
     function normalizeFragment(item) {
       if (typeof item === 'string') {
         const text = cleanText(item);
-        return text ? { text, tone: detectToneFromText(text) } : null;
+        return text ? { text, tone: detectToneFromText(text), weight: 1 } : null;
       }
 
       if (item && typeof item === 'object') {
         const text = cleanText(item.text || '');
         if (!text) return null;
+        const weightValue = Number(item.weight);
         return {
           text,
-          tone: cleanText(item.tone) || detectToneFromText(text)
+          tone: cleanText(item.tone) || detectToneFromText(text),
+          weight: Number.isFinite(weightValue) && weightValue > 0 ? weightValue : 1
         };
       }
 
@@ -505,7 +517,7 @@
             const normalized = normalizeFragment(item);
             if (!normalized) return;
 
-            const key = `${normalized.text.toLowerCase()}__${normalized.tone}`;
+            const key = normalized.text.toLowerCase();
             if (seen.has(key)) return;
             seen.add(key);
             merged.push(normalized);
@@ -522,65 +534,136 @@
       }
     }
 
-    function pickRandomFromPool() {
-      if (!fragmentPool.length) return null;
-      return fragmentPool[Math.floor(Math.random() * fragmentPool.length)];
-    }
-
-    function weightedChoice(options) {
-      const total = options.reduce((sum, item) => sum + item.weight, 0);
+    function weightedChoice(list) {
+      const total = list.reduce((sum, item) => sum + item.weight, 0);
       let roll = Math.random() * total;
 
-      for (const item of options) {
+      for (const item of list) {
         roll -= item.weight;
-        if (roll <= 0) return item.tone;
+        if (roll <= 0) return item.value;
       }
 
-      return options[0].tone;
+      return list[0].value;
     }
 
-    function describePull(tone) {
-      const options = tonePullMap[tone] || tonePullMap.calm;
-      return options.map(item => `${item.tone} ×${item.weight}`).join(' / ');
+    function getPullList(tone) {
+      const base = tonePullMap[tone] || tonePullMap.calm;
+      return base.map(item => ({ tone: item.tone, weight: item.weight }));
     }
 
-    function pickByGravity(seed) {
-      const options = tonePullMap[seed.tone] || tonePullMap.calm;
-      const targetTone = weightedChoice(options);
+    function applyInertia(baseList) {
+      const adjusted = baseList.map(item => ({ ...item }));
 
-      const candidates = fragmentPool.filter(item => {
-        if (!item) return false;
-        if (item.text === seed.text) return false;
-        return item.tone === targetTone;
-      });
+      if (recentTones().length >= 2) {
+        const lastTwo = recentTones().slice(-2);
+        if (lastTwo[0] === lastTwo[1]) {
+          adjusted.forEach(item => {
+            if (item.tone === lastTwo[1]) item.weight += 2;
+          });
+        }
+      }
+
+      if (recentTones().length >= 3) {
+        const lastThree = recentTones().slice(-3);
+        if (lastThree[0] === lastThree[1] && lastThree[1] === lastThree[2]) {
+          adjusted.forEach(item => {
+            if (item.tone === lastThree[2]) item.weight = Math.max(1, item.weight - 2);
+            if (item.tone === 'twist' || item.tone === 'edge') item.weight += 1;
+          });
+        }
+      }
+
+      return adjusted;
+    }
+
+    function recentTones() {
+      return driftLog
+        .map(item => item.tone)
+        .filter(Boolean);
+    }
+
+    function describePull(list) {
+      return list.map(item => `${item.tone} ×${item.weight}`).join(' / ');
+    }
+
+    function toneChaosShift(list) {
+      const shifted = list.map(item => ({ ...item }));
+
+      if (Math.random() < 0.18) {
+        shifted.forEach(item => {
+          if (item.tone === 'chaos' || item.tone === 'twist') item.weight += 2;
+        });
+      }
+
+      return shifted;
+    }
+
+    function buildCandidateList(targetTone) {
+      return fragmentPool
+        .filter(item => item.tone === targetTone)
+        .filter(item => !recentTexts.includes(item.text.toLowerCase()))
+        .map(item => ({
+          value: item,
+          weight: Math.max(0.1, item.weight)
+        }));
+    }
+
+    function buildFallbackList() {
+      return fragmentPool
+        .filter(item => !recentTexts.includes(item.text.toLowerCase()))
+        .map(item => ({
+          value: item,
+          weight: Math.max(0.1, item.weight)
+        }));
+    }
+
+    function chooseFragmentByGravity(seedTone) {
+      let pullList = getPullList(seedTone);
+      pullList = applyInertia(pullList);
+      pullList = toneChaosShift(pullList);
+
+      const targetTone = weightedChoice(
+        pullList.map(item => ({ value: item.tone, weight: item.weight }))
+      );
+
+      let candidates = buildCandidateList(targetTone);
 
       if (!candidates.length) {
-        const fallback = fragmentPool.filter(item => item.text !== seed.text);
-        return {
-          targetTone,
-          fragment: fallback[Math.floor(Math.random() * fallback.length)] || null
-        };
+        candidates = buildFallbackList();
       }
 
+      if (!candidates.length) {
+        return { fragment: null, targetTone, pullList };
+      }
+
+      const chosen = weightedChoice(candidates);
+      const isRare = chosen.weight < 1;
+
       return {
+        fragment: chosen,
         targetTone,
-        fragment: candidates[Math.floor(Math.random() * candidates.length)]
+        pullList,
+        isRare
       };
     }
 
+    function pushRecent(text) {
+      recentTexts.push(text.toLowerCase());
+      if (recentTexts.length > 4) recentTexts.shift();
+    }
+
     function render() {
-      if (!currentSeed) {
+      if (!currentFragment) {
         resultList.style.display = 'none';
         deeperLink.style.display = 'none';
         return;
       }
 
-      seedText.textContent = currentSeed.text;
-      seedToneText.textContent = currentSeed.tone;
-      gravityText.textContent = describePull(currentSeed.tone);
-      nextText.textContent = currentNext ? `${currentNext.text} (${currentNext.tone})` : '';
-      logText.textContent = driftLog.join('\n\n');
-
+      seedText.textContent = currentFragment.text;
+      seedToneText.textContent = currentFragment.tone;
+      nextText.textContent = nextFragment ? `${nextFragment.text} (${nextFragment.tone})` : '';
+      rareText.textContent = rareFlag ? 'rare pull' : 'normal pull';
+      logText.textContent = driftLog.map(item => `${item.text} (${item.tone})`).join('\n→ ');
       resultList.style.display = 'flex';
       deeperLink.style.display = 'inline';
     }
@@ -591,16 +674,22 @@
         return;
       }
 
-      currentSeed = pickRandomFromPool();
-      currentNext = null;
-      driftLog = [];
-
-      if (!currentSeed) {
-        statusText.textContent = 'No seed found';
+      if (!fragmentPool.length) {
+        statusText.textContent = 'Nothing loaded';
         return;
       }
 
-      driftLog.push(`${currentSeed.text} (${currentSeed.tone})`);
+      const seed = fragmentPool[Math.floor(Math.random() * fragmentPool.length)];
+      currentFragment = seed;
+      nextFragment = null;
+      driftLog = [{ text: seed.text, tone: seed.tone }];
+      recentTexts = [];
+      pushRecent(seed.text);
+      rareFlag = false;
+
+      const pullList = applyInertia(getPullList(seed.tone));
+      gravityText.textContent = describePull(pullList);
+
       statusText.textContent = 'Seed picked';
       render();
     }
@@ -611,20 +700,25 @@
         return;
       }
 
-      if (!currentSeed) {
+      if (!currentFragment) {
         statusText.textContent = 'Pick seed first';
         return;
       }
 
-      const result = pickByGravity(currentSeed);
+      const result = chooseFragmentByGravity(currentFragment.tone);
+
       if (!result.fragment) {
         statusText.textContent = 'No next fragment found';
         return;
       }
 
-      currentNext = result.fragment;
-      driftLog.push(`→ ${currentNext.text} (${currentNext.tone})`);
-      currentSeed = currentNext;
+      nextFragment = result.fragment;
+      currentFragment = nextFragment;
+      rareFlag = !!result.isRare;
+
+      gravityText.textContent = describePull(result.pullList);
+      driftLog.push({ text: nextFragment.text, tone: nextFragment.tone });
+      pushRecent(nextFragment.text);
 
       statusText.textContent = `Pulled toward ${result.targetTone}`;
       render();
@@ -636,7 +730,7 @@
         return;
       }
 
-      const text = driftLog.join('\n');
+      const text = driftLog.map(item => `${item.text} (${item.tone})`).join('\n→ ');
 
       try {
         await navigator.clipboard.writeText(text);
@@ -647,13 +741,16 @@
     }
 
     function clearAll() {
-      currentSeed = null;
-      currentNext = null;
+      currentFragment = null;
+      nextFragment = null;
       driftLog = [];
+      recentTexts = [];
+      rareFlag = false;
       seedText.textContent = '';
       seedToneText.textContent = '';
       gravityText.textContent = '';
       nextText.textContent = '';
+      rareText.textContent = '';
       logText.textContent = '';
       resultList.style.display = 'none';
       deeperLink.style.display = 'none';
