@@ -34,6 +34,14 @@
       .trim();
   }
 
+  function fragmentValue(item) {
+    if (typeof item === 'string') return normalizeText(item);
+    if (item && typeof item === 'object') {
+      return normalizeText(item.text || item.value || '');
+    }
+    return '';
+  }
+
   function extractFragments(data) {
     if (Array.isArray(data)) {
       return data;
@@ -50,41 +58,66 @@
     return [];
   }
 
+  function countWords(text) {
+    return normalizeText(text)
+      .replace(/\n/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean).length;
+  }
+
   function classifyFragment(text) {
-    const value = normalizeText(text);
+    const value = fragmentValue(text);
     const compact = value.replace(/\n/g, ' ').trim();
     const length = compact.length;
+    const words = countWords(compact);
+    const lower = compact.toLowerCase();
 
     const hasEllipsis = compact.includes('…') || compact.includes('...');
     const hasQuestion = compact.includes('?');
-    const hasPeriod = /[.!。]$/.test(compact);
-    const hasMaybe = /^maybe\b/i.test(compact);
-    const hasBut = /\bbut\b/i.test(compact);
-    const lineCount = value.split('\n').filter(Boolean).length;
+    const hasTerminalPunctuation = /[.!?。]$/.test(compact);
+    const hasLineBreak = value.includes('\n');
 
-    if (lineCount > 1) {
-      return 'full';
-    }
+    const startsMaybe = /^maybe\b/.test(lower);
+    const startsBut = /^but\b/.test(lower);
+    const startsAnd = /^and\b/.test(lower);
+    const startsOr = /^or\b/.test(lower);
 
-    if (length <= 24 && !hasPeriod && !hasQuestion) {
+    const isClearlyShort =
+      length <= 24 &&
+      words <= 4 &&
+      !hasQuestion &&
+      !hasEllipsis &&
+      !hasLineBreak;
+
+    if (isClearlyShort) {
       return 'short';
     }
 
-    if (
+    const isClearlyHalf =
       hasEllipsis ||
       hasQuestion ||
-      hasMaybe ||
-      hasBut ||
-      (!hasPeriod && length <= 54)
-    ) {
+      ((startsMaybe || startsBut || startsAnd || startsOr) && length <= 34) ||
+      (words <= 5 && length <= 32 && !hasTerminalPunctuation);
+
+    if (isClearlyHalf) {
       return 'half';
     }
 
-    if (length <= 32 && !hasPeriod) {
-      return 'short';
+    const isClearlyFull =
+      hasLineBreak ||
+      hasTerminalPunctuation ||
+      words >= 6 ||
+      length >= 38;
+
+    if (isClearlyFull) {
+      return 'full';
     }
 
-    return 'full';
+    if (words >= 5 || length >= 30) {
+      return 'half';
+    }
+
+    return 'short';
   }
 
   function uniqueFragments(list) {
@@ -92,7 +125,7 @@
     const output = [];
 
     for (const item of list) {
-      const text = normalizeText(item);
+      const text = fragmentValue(item);
       if (!text) continue;
 
       const key = text.toLowerCase();
@@ -164,7 +197,7 @@
   }
 
   function refillFromAnywhere(current, needed, buckets, used) {
-    if (needed <= 0) return current;
+    if (current.length >= needed) return current;
 
     const all = shuffle([
       ...buckets.short,
