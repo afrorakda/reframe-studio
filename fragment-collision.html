@@ -1,713 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fragment Collision | REFRAME Studio</title>
-  <meta name="description" content="Let two fragments collide and become a new reading. No login. No tracking. Runs entirely in your browser." />
-  <style>
-    :root{
-      --bg-top:#081331;
-      --bg-mid:#0b1f4f;
-      --bg-bottom:#07112b;
-      --card-outer:rgba(35,55,122,0.55);
-      --card-outer-line:rgba(122,145,255,0.18);
-      --card-inner:rgba(4,11,40,0.92);
-      --card-inner-line:rgba(103,129,255,0.14);
-      --text:#f4f7ff;
-      --muted:#b7c2f0;
-      --soft:#96a5df;
-      --pill-bg:rgba(74,62,163,0.24);
-      --pill-line:rgba(124,108,255,0.45);
-      --button:#ffffff;
-      --button-text:#081331;
-      --button-soft:rgba(255,255,255,0.08);
-      --button-soft-text:#eef2ff;
-      --button-line:rgba(255,255,255,0.1);
-      --result-card:rgba(255,255,255,0.04);
-      --result-line:rgba(255,255,255,0.08);
-      --radius-outer:26px;
-      --radius-inner:20px;
-      --shadow:0 20px 56px rgba(0,0,0,0.28);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fragment Collision</title>
 
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      padding:0;
-      min-height:100%;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top right, rgba(53,94,255,0.24), transparent 30%),
-        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
-    }
+<style>
 
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+background:#07112b;
+color:white;
+margin:0;
+padding:20px;
+}
 
-    .page{
-      width:min(760px, calc(100% - 22px));
-      margin:0 auto;
-      padding:16px 0 24px;
-    }
+.container{
+max-width:700px;
+margin:auto;
+}
 
-    .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:15px;
-      line-height:1.4;
-      color:var(--muted);
-      margin-bottom:12px;
-      opacity:0.95;
-    }
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border-radius:12px;
+border:none;
+font-size:16px;
+cursor:pointer;
+}
 
-    .shell{
-      background:var(--card-outer);
-      border:1px solid var(--card-outer-line);
-      border-radius:26px;
-      padding:16px 10px 10px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(6px);
-      -webkit-backdrop-filter:blur(6px);
-    }
+.primary{
+background:white;
+color:black;
+font-weight:700;
+}
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:38px;
-      padding:0 14px;
-      border-radius:999px;
-      background:var(--pill-bg);
-      border:1px solid var(--pill-line);
-      color:#e8ddff;
-      font-size:14px;
-      letter-spacing:-0.01em;
-      margin-bottom:12px;
-    }
+.soft{
+background:#1b2446;
+color:white;
+}
 
-    .hero-title{
-      margin:0 0 4px 0;
-      font-size:34px;
-      line-height:1;
-      letter-spacing:-0.05em;
-      font-weight:800;
-    }
+.card{
+background:#111a3a;
+padding:14px;
+margin-top:12px;
+border-radius:12px;
+}
 
-    .hero-desc{
-      margin:0 0 12px 0;
-      font-size:15px;
-      line-height:1.45;
-      color:var(--muted);
-    }
+.label{
+font-size:12px;
+opacity:0.7;
+margin-bottom:6px;
+}
 
-    .inner{
-      background:var(--card-inner);
-      border:1px solid var(--card-inner-line);
-      border-radius:20px;
-      padding:16px 10px 12px;
-    }
+.text{
+font-size:16px;
+}
 
-    .button-stack{
-      display:flex;
-      flex-direction:column;
-      gap:7px;
-      margin-top:10px;
-    }
+.result{
+font-size:18px;
+font-weight:600;
+}
 
-    button{
-      appearance:none;
-      border:none;
-      width:100%;
-      min-height:46px;
-      border-radius:14px;
-      font:inherit;
-      font-size:15px;
-      font-weight:800;
-      letter-spacing:-0.02em;
-      cursor:pointer;
-      transition:transform .05s ease, opacity .18s ease;
-    }
-
-    button:active{
-      transform:translateY(1px);
-    }
-
-    .btn-primary{
-      background:var(--button);
-      color:var(--button-text);
-    }
-
-    .btn-soft{
-      background:var(--button-soft);
-      color:var(--button-soft-text);
-      border:1px solid var(--button-line);
-    }
-
-    .status-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:10px;
-      min-height:18px;
-    }
-
-    .status{
-      font-size:12px;
-      line-height:1.4;
-      color:var(--soft);
-    }
-
-    .deeper-link{
-      font-size:12px;
-      line-height:1.4;
-      color:var(--soft);
-      opacity:0.78;
-      white-space:nowrap;
-      display:none;
-    }
-
-    .result-list{
-      margin-top:12px;
-      display:none;
-      gap:8px;
-      flex-direction:column;
-    }
-
-    .result-card{
-      background:var(--result-card);
-      border:1px solid var(--result-line);
-      border-radius:14px;
-      padding:10px;
-    }
-
-    .result-label{
-      font-size:10px;
-      line-height:1.4;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
-      color:#d7deff;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-
-    .result-text{
-      margin:0;
-      font-size:14px;
-      line-height:1.5;
-      color:var(--text);
-      white-space:pre-wrap;
-    }
-
-    .footer{
-      margin-top:12px;
-      font-size:12px;
-      line-height:1.45;
-      color:var(--soft);
-      text-align:center;
-    }
-
-    @media (min-width: 761px){
-      .page{
-        width:min(860px, calc(100% - 40px));
-        padding:28px 0 40px;
-      }
-
-      .back-link{
-        font-size:22px;
-        margin-bottom:24px;
-      }
-
-      .shell{
-        padding:34px;
-        border-radius:38px;
-      }
-
-      .pill{
-        min-height:62px;
-        padding:0 28px;
-        font-size:22px;
-        margin-bottom:28px;
-      }
-
-      .hero-title{
-        font-size:74px;
-        margin-bottom:12px;
-      }
-
-      .hero-desc{
-        font-size:22px;
-        margin-bottom:24px;
-      }
-
-      .inner{
-        padding:30px;
-        border-radius:30px;
-      }
-
-      .button-stack{
-        gap:14px;
-        margin-top:20px;
-      }
-
-      button{
-        min-height:74px;
-        border-radius:22px;
-        font-size:24px;
-      }
-
-      .status-row{
-        margin-top:16px;
-      }
-
-      .status,
-      .deeper-link{
-        font-size:17px;
-      }
-
-      .result-list{
-        margin-top:24px;
-        gap:12px;
-      }
-
-      .result-card{
-        border-radius:22px;
-        padding:18px;
-      }
-
-      .result-label{
-        font-size:13px;
-        margin-bottom:6px;
-      }
-
-      .result-text{
-        font-size:18px;
-      }
-
-      .footer{
-        font-size:15px;
-        margin-top:18px;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <main class="page">
-    <a class="back-link" href="./fragment-router.html">← Back to Fragment Router</a>
-
-    <section class="shell">
-      <div class="pill">One collision</div>
-
-      <h1 class="hero-title">Collision</h1>
-      <p class="hero-desc">Let two fragments become a different reading.</p>
-
-      <section class="inner">
-        <div class="button-stack">
-          <button class="btn-primary" id="loadBtn">Load fragments</button>
-          <button class="btn-soft" id="collideBtn">Collide</button>
-          <button class="btn-soft" id="copyBtn">Copy result</button>
-          <button class="btn-soft" id="clearBtn">Clear</button>
-        </div>
-
-        <div class="status-row">
-          <div class="status" id="statusText">Waiting</div>
-          <a class="deeper-link" id="deeperLink" href="./fragment-chain.html">deeper</a>
-        </div>
-
-        <div class="result-list" id="resultList">
-          <div class="result-card">
-            <div class="result-label">Fragment A</div>
-            <p class="result-text" id="fragmentA"></p>
-          </div>
-
-          <div class="result-card">
-            <div class="result-label">Fragment B</div>
-            <p class="result-text" id="fragmentB"></p>
-          </div>
-
-          <div class="result-card">
-            <div class="result-label">Reading</div>
-            <p class="result-text" id="readingText"></p>
-          </div>
-
-          <div class="result-card">
-            <div class="result-label">Next fragment</div>
-            <p class="result-text" id="nextFragmentText"></p>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <div class="footer">No login · No tracking · Runs entirely in browser</div>
-  </main>
-
-  <script src="./fragment-system.js"></script>
-  <script>
-    const loadBtn = document.getElementById('loadBtn');
-    const collideBtn = document.getElementById('collideBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const clearBtn = document.getElementById('clearBtn');
-
-    const statusText = document.getElementById('statusText');
-    const deeperLink = document.getElementById('deeperLink');
-    const resultList = document.getElementById('resultList');
-
-    const fragmentAEl = document.getElementById('fragmentA');
-    const fragmentBEl = document.getElementById('fragmentB');
-    const readingTextEl = document.getElementById('readingText');
-    const nextFragmentTextEl = document.getElementById('nextFragmentText');
-
-    let loaded = false;
-    let recentReadings = [];
-    let recentNextFragments = [];
-    let currentResult = {
-      a: '',
-      b: '',
-      reading: '',
-      nextFragment: ''
-    };
-
-    function cleanText(text) {
-      return String(text || '').trim();
-    }
-
-    function lowerText(text) {
-      return cleanText(text).toLowerCase();
-    }
-
-    function sentenceCase(text) {
-      const value = cleanText(text);
-      if (!value) return '';
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    }
-
-    function dedupeSpaces(text) {
-      return cleanText(text).replace(/\s{2,}/g, ' ');
-    }
-
-    function analyzeFragment(text) {
-      const value = lowerText(text);
-
-      const tags = new Set();
-      const hooks = [];
-
-      function add(tag, hook) {
-        tags.add(tag);
-        if (hook) hooks.push(hook);
-      }
-
-      if (/(watch|looking|read|reads|seeing|seen|noticed|notice|follow|follows)/.test(value)) {
-        add('attention', 'they keep noticing you');
-      }
-
-      if (/(reply|comment|comments|reaction|react|reacts)/.test(value)) {
-        add('reaction', 'the reaction is still engaged');
-      }
-
-      if (/(vague|abstract|unclear|meaningless|meaning|too clear|too vague|wrong thing|translation)/.test(value)) {
-        add('clarity', 'something about the translation is not landing');
-      }
-
-      if (/(wrong frame|frame|door|angle|surface|story|shape|direction)/.test(value)) {
-        add('frame', 'the frame might be doing more than the idea itself');
-      }
-
-      if (/(upside down|misread|heard|different message|interpreted|emotional|sarcasm)/.test(value)) {
-        add('misread', 'the message may be getting heard through another lens');
-      }
-
-      if (/(better|improve|next experiment|pointing|lesson|encourage|encouragement)/.test(value)) {
-        add('care', 'there may be clumsy encouragement inside the friction');
-      }
-
-      if (/(can\'t hold|unfinished|missing|almost|not quite|drifted|something feels off|circling)/.test(value)) {
-        add('unfinished', 'something unfinished is still trying to appear');
-      }
-
-      if (/(late|early|timing|audience)/.test(value)) {
-        add('timing', 'timing or audience might be shaping the response');
-      }
-
-      if (/(silence|stops the conversation|don\'t continue)/.test(value)) {
-        add('distance', 'the silence may still contain a signal');
-      }
-
-      if (!tags.size) {
-        add('drift', 'the fragment may be pointing somewhere sideways');
-      }
-
-      return { tags, hooks };
-    }
-
-    function overlapCount(setA, setB) {
-      let count = 0;
-      for (const item of setA) {
-        if (setB.has(item)) count += 1;
-      }
-      return count;
-    }
-
-    function similarityScore(a, b) {
-      const wordsA = new Set(lowerText(a).split(/[^a-z0-9]+/).filter(Boolean));
-      const wordsB = new Set(lowerText(b).split(/[^a-z0-9]+/).filter(Boolean));
-      return overlapCount(wordsA, wordsB);
-    }
-
-    function pickDistinctPair() {
-      const pool = window.REFRAMEFragmentSystem.pickMixed(18);
-      let bestA = '';
-      let bestB = '';
-      let bestScore = Infinity;
-
-      for (let i = 0; i < pool.length; i += 1) {
-        for (let j = i + 1; j < pool.length; j += 1) {
-          const a = cleanText(pool[i]);
-          const b = cleanText(pool[j]);
-          if (!a || !b) continue;
-
-          const score = similarityScore(a, b);
-          if (score < bestScore) {
-            bestScore = score;
-            bestA = a;
-            bestB = b;
-          }
-        }
-      }
-
-      if (!bestA || !bestB) {
-        const fallback = window.REFRAMEFragmentSystem.pickMixed(2);
-        bestA = cleanText(fallback[0] || '');
-        bestB = cleanText(fallback[1] || '');
-      }
-
-      return { a: bestA, b: bestB };
-    }
-
-    function buildReading(a, b) {
-      const left = analyzeFragment(a);
-      const right = analyzeFragment(b);
-
-      const combinedTags = new Set([...left.tags, ...right.tags]);
-      const both = overlapCount(left.tags, right.tags);
-
-      const candidates = [];
-
-      function push(text) {
-        const value = dedupeSpaces(text);
-        if (!value) return;
-        if (recentReadings.includes(value)) return;
-        candidates.push(value);
-      }
-
-      if (combinedTags.has('attention') && combinedTags.has('reaction')) {
-        push('The reaction may be less like rejection and more like sustained attention wearing rough language.');
-        push('Someone may be staying close to your work, even if they only know how to show it through friction.');
-      }
-
-      if (combinedTags.has('care') && combinedTags.has('clarity')) {
-        push('There may be a clumsy wish for the work to become clearer, not a wish for it to disappear.');
-        push('The harshness may be covering an awkward kind of push toward a stronger version.');
-      }
-
-      if (combinedTags.has('misread') && combinedTags.has('frame')) {
-        push('The message may have changed shape in the listener before it changed shape on the page.');
-        push('What looks like a bad reaction may be a reading problem created by the frame itself.');
-      }
-
-      if (combinedTags.has('unfinished') && combinedTags.has('clarity')) {
-        push('The friction may be circling a part of the work that is still half-born, not fully translated yet.');
-        push('Something unfinished may be getting mistaken for something empty.');
-      }
-
-      if (combinedTags.has('timing') && combinedTags.has('reaction')) {
-        push('The response may be about timing or audience fit more than the worth of the idea itself.');
-      }
-
-      if (combinedTags.has('distance') && combinedTags.has('attention')) {
-        push('Even the silence around the work may be a form of attention that has not found language yet.');
-      }
-
-      if (both >= 2) {
-        push('Both fragments seem to point at the same hidden pressure from two different sides.');
-      }
-
-      if (left.hooks[0] && right.hooks[0]) {
-        push(`${sentenceCase(left.hooks[0])}. At the same time, ${right.hooks[0]}.`);
-      }
-
-      push('The collision may be hiding a different motive than the surface tone suggests.');
-      push('The rough response may be carrying a signal that has not been decoded yet.');
-      push('What sounds hostile at first may still be a distorted form of interest.');
-      push('The attack may be pointing at desire, confusion, or clumsy care rather than simple rejection.');
-
-      return candidates[Math.floor(Math.random() * candidates.length)];
-    }
-
-    function buildNextFragment(a, b, reading) {
-      const left = analyzeFragment(a);
-      const right = analyzeFragment(b);
-      const readingLower = lowerText(reading);
-
-      const candidates = [];
-
-      function push(text) {
-        const value = sentenceCase(dedupeSpaces(text));
-        if (!value) return;
-        if (recentNextFragments.includes(value)) return;
-        candidates.push(value);
-      }
-
-      if (readingLower.includes('attention')) {
-        push('Maybe attention is hiding inside the friction');
-      }
-
-      if (readingLower.includes('care')) {
-        push('Maybe the roughness is clumsy care');
-      }
-
-      if (readingLower.includes('translation')) {
-        push('Maybe the translation is where the damage happened');
-      }
-
-      if (readingLower.includes('frame')) {
-        push('Maybe the frame changed the meaning before the reader did');
-      }
-
-      if (readingLower.includes('interest')) {
-        push('Maybe hostility is only one mask for interest');
-      }
-
-      if (left.tags.has('misread') || right.tags.has('misread')) {
-        push('Maybe the reply is describing a misreading, not a verdict');
-      }
-
-      if (left.tags.has('clarity') || right.tags.has('clarity')) {
-        push('Maybe the signal is there but the wording is not carrying it');
-      }
-
-      if (left.tags.has('care') || right.tags.has('care')) {
-        push('Maybe the shove is trying to act like support');
-      }
-
-      if (left.tags.has('unfinished') || right.tags.has('unfinished')) {
-        push('Maybe the unfinished part is what the reaction is touching');
-      }
-
-      if (left.tags.has('attention') || right.tags.has('attention')) {
-        push('Maybe they keep returning because something there still hooks them');
-      }
-
-      push('Maybe the reaction is saying more about its motive than its wording');
-      push('Maybe the hidden signal matters more than the surface tone');
-      push('Maybe this reply wants a better reading, not a faster defense');
-      push('Maybe the signal inside the hit is the real fragment');
-
-      return candidates[Math.floor(Math.random() * candidates.length)];
-    }
-
-    function remember(list, value, limit = 8) {
-      list.unshift(value);
-      while (list.length > limit) list.pop();
-    }
-
-    async function loadSystem() {
-      try {
-        statusText.textContent = 'Loading';
-        await window.REFRAMEFragmentSystem.load();
-        loaded = true;
-        statusText.textContent = 'Loaded';
-      } catch (error) {
-        loaded = false;
-        statusText.textContent = 'Load failed';
-      }
-    }
-
-    function collide() {
-      if (!loaded) {
-        statusText.textContent = 'Load fragments first';
-        return;
-      }
-
-      const pair = pickDistinctPair();
-      const a = pair.a;
-      const b = pair.b;
-
-      if (!a || !b) {
-        statusText.textContent = 'Not enough fragments';
-        return;
-      }
-
-      const reading = buildReading(a, b);
-      const nextFragment = buildNextFragment(a, b, reading);
-
-      currentResult = { a, b, reading, nextFragment };
-
-      fragmentAEl.textContent = a;
-      fragmentBEl.textContent = b;
-      readingTextEl.textContent = reading;
-      nextFragmentTextEl.textContent = nextFragment;
-
-      remember(recentReadings, reading);
-      remember(recentNextFragments, nextFragment);
-
-      resultList.style.display = 'flex';
-      deeperLink.style.display = 'inline';
-      statusText.textContent = 'Collision made';
-    }
-
-    async function copyResult() {
-      if (!currentResult.reading) {
-        statusText.textContent = 'Nothing to copy';
-        return;
-      }
-
-      const text = [
-        currentResult.a,
-        '',
-        currentResult.b,
-        '',
-        currentResult.reading,
-        '',
-        currentResult.nextFragment
-      ].join('\n');
-
-      try {
-        await navigator.clipboard.writeText(text);
-        statusText.textContent = 'Copied';
-      } catch (error) {
-        statusText.textContent = 'Copy failed';
-      }
-    }
-
-    function clearAll() {
-      currentResult = {
-        a: '',
-        b: '',
-        reading: '',
-        nextFragment: ''
-      };
-
-      fragmentAEl.textContent = '';
-      fragmentBEl.textContent = '';
-      readingTextEl.textContent = '';
-      nextFragmentTextEl.textContent = '';
-
-      resultList.style.display = 'none';
-      deeperLink.style.display = 'none';
-      statusText.textContent = loaded ? 'Loaded' : 'Waiting';
-    }
-
-    loadBtn.addEventListener('click', loadSystem);
-    collideBtn.addEventListener('click', collide);
-    copyBtn.addEventListener('click', copyResult);
-    clearBtn.addEventListener('click', clearAll);
-  </script>
+
+<div class="container">
+
+<h2>Fragment Collision</h2>
+<p>Two fragments collide and produce a new thought.</p>
+
+<button id="loadBtn" class="primary">Load fragments</button>
+<button id="pickBtn" class="soft">Pick fragments</button>
+<button id="collideBtn" class="soft">Collide</button>
+<button id="copyBtn" class="soft">Copy result</button>
+
+<div class="card">
+<div class="label">Fragment A</div>
+<div id="fragA" class="text"></div>
+</div>
+
+<div class="card">
+<div class="label">Fragment B</div>
+<div id="fragB" class="text"></div>
+</div>
+
+<div class="card">
+<div class="label">Collision result</div>
+<div id="result" class="result"></div>
+</div>
+
+</div>
+
+<script>
+
+let pool = []
+let A = null
+let B = null
+
+async function loadFragments(){
+
+const files = [
+"./fragment-pool.json",
+"./fragment-pack-1.json",
+"./fragment-pack-2.json"
+]
+
+let all = []
+
+for(const file of files){
+
+try{
+const r = await fetch(file)
+const j = await r.json()
+
+j.forEach(f=>{
+if(typeof f === "string"){
+all.push({text:f})
+}else{
+all.push(f)
+}
+})
+
+}catch(e){}
+
+}
+
+pool = all
+alert("Loaded "+pool.length+" fragments")
+
+}
+
+function randomFragment(){
+return pool[Math.floor(Math.random()*pool.length)]
+}
+
+function pickFragments(){
+
+A = randomFragment()
+B = randomFragment()
+
+document.getElementById("fragA").innerText = A.text
+document.getElementById("fragB").innerText = B.text
+
+}
+
+function collide(){
+
+if(!A || !B) return
+
+let a = A.text
+let b = B.text
+
+let result = ""
+
+if(Math.random()<0.33){
+
+result = a + ". " + b
+
+}
+
+else if(Math.random()<0.66){
+
+let first = a.split(" ")[0]
+result = first + " " + b.toLowerCase()
+
+}
+
+else{
+
+result = "Maybe " + a.toLowerCase()
+
+}
+
+document.getElementById("result").innerText = result
+
+}
+
+async function copyResult(){
+
+let t = document.getElementById("result").innerText
+
+await navigator.clipboard.writeText(t)
+
+}
+
+document.getElementById("loadBtn").onclick = loadFragments
+document.getElementById("pickBtn").onclick = pickFragments
+document.getElementById("collideBtn").onclick = collide
+document.getElementById("copyBtn").onclick = copyResult
+
+</script>
+
 </body>
 </html>
