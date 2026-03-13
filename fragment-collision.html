@@ -335,6 +335,11 @@
             <div class="result-label">Collision</div>
             <p class="result-text" id="collisionText"></p>
           </div>
+
+          <div class="result-card">
+            <div class="result-label">Next fragment</div>
+            <p class="result-text" id="nextFragmentText"></p>
+          </div>
         </div>
       </section>
     </section>
@@ -354,38 +359,74 @@
     const fragmentAEl = document.getElementById('fragmentA');
     const fragmentBEl = document.getElementById('fragmentB');
     const collisionTextEl = document.getElementById('collisionText');
+    const nextFragmentTextEl = document.getElementById('nextFragmentText');
 
     let loaded = false;
     let currentResult = {
       a: '',
       b: '',
-      collision: ''
+      collision: '',
+      nextFragment: ''
     };
 
-    function normalizeStart(text) {
-      const value = String(text || '').trim();
+    function cleanText(text) {
+      return String(text || '').trim();
+    }
+
+    function cleanEnd(text) {
+      return cleanText(text).replace(/[.。!?]+$/, '');
+    }
+
+    function lowerFirst(text) {
+      const value = cleanText(text);
       if (!value) return '';
       return value.charAt(0).toLowerCase() + value.slice(1);
     }
 
-    function cleanEnd(text) {
-      return String(text || '').trim().replace(/[.。!?]+$/, '');
+    function sentenceCase(text) {
+      const value = cleanText(text);
+      if (!value) return '';
+      return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
     function makeCollision(a, b) {
       const left = cleanEnd(a);
-      const right = normalizeStart(cleanEnd(b));
+      const right = lowerFirst(cleanEnd(b));
 
       const patterns = [
-        `${left}\n${right}`,
-        `${left}.\nMaybe ${right}`,
+        `${left}.\n${sentenceCase(right)}`,
         `${left}.\nBut ${right}`,
         `${left}.\nOr maybe ${right}`,
+        `${left}.\nWhich might mean ${right}`,
         `${left}.\nAt the same time, ${right}`,
-        `${left}.\nWhich might mean ${right}`
+        `${left}.\nMaybe ${right}`
       ];
 
       return patterns[Math.floor(Math.random() * patterns.length)];
+    }
+
+    function makeNextFragment(a, b) {
+      const left = lowerFirst(cleanEnd(a));
+      const right = lowerFirst(cleanEnd(b));
+
+      const patterns = [
+        `maybe the reply became a different story`,
+        `maybe something changed between the two`,
+        `maybe the collision is pointing somewhere else`,
+        `something drifted between the fragments`,
+        `maybe the meaning moved in the collision`,
+        `maybe this is another angle trying to appear`,
+        `maybe the problem changed shape`,
+        `something in the reply tilted`,
+        `maybe the fragment is not where it started`,
+        `maybe the second fragment heard the first differently`,
+        `maybe ${right}`,
+        `maybe ${left}`,
+        `something in "${left}" bent toward "${right}"`,
+        `maybe the space between them is the real fragment`
+      ];
+
+      return sentenceCase(patterns[Math.floor(Math.random() * patterns.length)]);
     }
 
     async function loadSystem() {
@@ -412,15 +453,17 @@
         return;
       }
 
-      const a = picked[0];
-      const b = picked[1];
+      const a = cleanText(picked[0]);
+      const b = cleanText(picked[1]);
       const collision = makeCollision(a, b);
+      const nextFragment = makeNextFragment(a, b);
 
-      currentResult = { a, b, collision };
+      currentResult = { a, b, collision, nextFragment };
 
       fragmentAEl.textContent = a;
       fragmentBEl.textContent = b;
       collisionTextEl.textContent = collision;
+      nextFragmentTextEl.textContent = nextFragment;
 
       resultList.style.display = 'flex';
       deeperLink.style.display = 'inline';
@@ -438,7 +481,9 @@
         '',
         currentResult.b,
         '',
-        currentResult.collision
+        currentResult.collision,
+        '',
+        currentResult.nextFragment
       ].join('\n');
 
       try {
