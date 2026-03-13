@@ -1,34 +1,42 @@
 [
-  {
-    "text": "Too abstract",
-    "tone": "edge"
-  },
-  {
-    "text": "Something is there",
-    "tone": "calm"
-  },
-  {
-    "text": "Not landing",
-    "tone": "edge"
-  },
-  {
-    "text": "Wrong frame",
-    "tone": "edge"
-  },
-  {
-    "text": "Maybe they care",
-    "tone": "warm"
-  },
-  {
-    "text": "Clumsy care",
-    "tone": "edge"
-  },
-  {
-    "text": "Wrong door",
-    "tone": "chaos"
-  },
-  {
-    "text": "Maybe the reaction is the signal",
-    "tone": "twist"
-  }
+{"text":"Wrong frame","tone":"edge"},
+{"text":"Wrong door","tone":"edge"},
+{"text":"Too abstract","tone":"edge"},
+{"text":"Maybe the reaction is the signal","tone":"mystery"},
+{"text":"Something is there","tone":"mystery"},
+{"text":"Maybe they care","tone":"warm"},
+{"text":"Maybe they care but can't say it","tone":"warm"},
+{"text":"Maybe the noise hides the signal","tone":"mystery"},
+{"text":"Maybe the signal is small","tone":"calm"},
+{"text":"Not rejection, just friction","tone":"calm"},
+{"text":"Maybe the wording failed","tone":"calm"},
+{"text":"Maybe the door is wrong","tone":"edge"},
+{"text":"Maybe the map is wrong","tone":"edge"},
+{"text":"Maybe the frame is wrong","tone":"edge"},
+{"text":"Maybe the angle is wrong","tone":"edge"},
+{"text":"Maybe the timing is wrong","tone":"edge"},
+{"text":"Maybe the signal is quiet","tone":"calm"},
+{"text":"Maybe attention hides inside criticism","tone":"mystery"},
+{"text":"Maybe friction means something matters","tone":"warm"},
+{"text":"Maybe confusion is part of the path","tone":"calm"},
+{"text":"Maybe you are early","tone":"calm"},
+{"text":"Maybe you are late","tone":"calm"},
+{"text":"Maybe the message is too small","tone":"edge"},
+{"text":"Maybe the message is too big","tone":"edge"},
+{"text":"Maybe the noise is the signal","tone":"twist"},
+{"text":"Maybe the signal looks like noise","tone":"twist"},
+{"text":"Maybe disagreement is attention","tone":"twist"},
+{"text":"Maybe the problem is the lens","tone":"twist"},
+{"text":"Maybe the question is wrong","tone":"edge"},
+{"text":"Maybe the answer came too early","tone":"calm"},
+{"text":"Maybe the door opens later","tone":"warm"},
+{"text":"Maybe nothing is wrong","tone":"warm"},
+{"text":"Maybe something small is right","tone":"warm"},
+{"text":"Maybe you saw the wrong pattern","tone":"edge"},
+{"text":"Maybe the pattern is incomplete","tone":"mystery"},
+{"text":"Maybe the chaos hides structure","tone":"mystery"},
+{"text":"Maybe structure hides chaos","tone":"twist"},
+{"text":"Maybe the reaction is curiosity","tone":"warm"},
+{"text":"Maybe curiosity looks like criticism","tone":"twist"},
+{"text":"Maybe the signal is not obvious","tone":"mystery"}
 ]
