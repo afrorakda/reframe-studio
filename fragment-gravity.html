@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragment Gravity | REFRAME Studio</title>
+  <meta name="description" content="Let one fragment pull the next. No login. No tracking. Runs entirely in browser." />
+  <style>
+    :root{
+      --bg-top:#081331;
+      --bg-mid:#0b1f4f;
+      --bg-bottom:#07112b;
+      --card-outer:rgba(35,55,122,0.55);
+      --card-outer-line:rgba(122,145,255,0.18);
+      --card-inner:rgba(4,11,40,0.92);
+      --card-inner-line:rgba(103,129,255,0.14);
+      --text:#f4f7ff;
+      --muted:#b7c2f0;
+      --soft:#96a5df;
+      --pill-bg:rgba(74,62,163,0.24);
+      --pill-line:rgba(124,108,255,0.45);
+      --button:#ffffff;
+      --button-text:#081331;
+      --button-soft:rgba(255,255,255,0.08);
+      --button-soft-text:#eef2ff;
+      --button-line:rgba(255,255,255,0.1);
+      --result-card:rgba(255,255,255,0.04);
+      --result-line:rgba(255,255,255,0.08);
+      --shadow:0 20px 56px rgba(0,0,0,0.28);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(53,94,255,0.24), transparent 30%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(760px, calc(100% - 22px));
+      margin:0 auto;
+      padding:16px 0 24px;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:15px;
+      line-height:1.4;
+      color:var(--muted);
+      margin-bottom:12px;
+      opacity:0.95;
+    }
+
+    .shell{
+      background:var(--card-outer);
+      border:1px solid var(--card-outer-line);
+      border-radius:26px;
+      padding:16px 10px 10px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:38px;
+      padding:0 14px;
+      border-radius:999px;
+      background:var(--pill-bg);
+      border:1px solid var(--pill-line);
+      color:#e8ddff;
+      font-size:14px;
+      letter-spacing:-0.01em;
+      margin-bottom:12px;
+    }
+
+    .hero-title{
+      margin:0 0 4px 0;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:-0.05em;
+      font-weight:800;
+    }
+
+    .hero-desc{
+      margin:0 0 12px 0;
+      font-size:15px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    .inner{
+      background:var(--card-inner);
+      border:1px solid var(--card-inner-line);
+      border-radius:20px;
+      padding:16px 10px 12px;
+    }
+
+    .button-stack{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      margin-top:10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      font:inherit;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      cursor:pointer;
+      transition:transform .05s ease, opacity .18s ease;
+    }
+
+    button:active{
+      transform:translateY(1px);
+    }
+
+    .btn-primary{
+      background:var(--button);
+      color:var(--button-text);
+    }
+
+    .btn-soft{
+      background:var(--button-soft);
+      color:var(--button-soft-text);
+      border:1px solid var(--button-line);
+    }
+
+    .status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:10px;
+      min-height:18px;
+    }
+
+    .status{
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+    }
+
+    .deeper-link{
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+      opacity:0.78;
+      white-space:nowrap;
+      display:none;
+    }
+
+    .result-list{
+      margin-top:12px;
+      display:none;
+      gap:8px;
+      flex-direction:column;
+    }
+
+    .result-card{
+      background:var(--result-card);
+      border:1px solid var(--result-line);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .result-label{
+      font-size:10px;
+      line-height:1.4;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#d7deff;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .result-text{
+      margin:0;
+      font-size:14px;
+      line-height:1.5;
+      color:var(--text);
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    .footer{
+      margin-top:12px;
+      font-size:12px;
+      line-height:1.45;
+      color:var(--soft);
+      text-align:center;
+    }
+
+    @media (min-width: 761px){
+      .page{
+        width:min(860px, calc(100% - 40px));
+        padding:28px 0 40px;
+      }
+
+      .back-link{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .shell{
+        padding:34px;
+        border-radius:38px;
+      }
+
+      .pill{
+        min-height:62px;
+        padding:0 28px;
+        font-size:22px;
+        margin-bottom:28px;
+      }
+
+      .hero-title{
+        font-size:74px;
+        margin-bottom:12px;
+      }
+
+      .hero-desc{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .inner{
+        padding:30px;
+        border-radius:30px;
+      }
+
+      .button-stack{
+        gap:14px;
+        margin-top:20px;
+      }
+
+      button{
+        min-height:74px;
+        border-radius:22px;
+        font-size:24px;
+      }
+
+      .status-row{
+        margin-top:16px;
+      }
+
+      .status,
+      .deeper-link{
+        font-size:17px;
+      }
+
+      .result-list{
+        margin-top:24px;
+        gap:12px;
+      }
+
+      .result-card{
+        border-radius:22px;
+        padding:18px;
+      }
+
+      .result-label{
+        font-size:13px;
+        margin-bottom:6px;
+      }
+
+      .result-text{
+        font-size:18px;
+      }
+
+      .footer{
+        font-size:15px;
+        margin-top:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back-link" href="./fragment-router.html">← Back to Fragment Router</a>
+
+    <section class="shell">
+      <div class="pill">Tone gravity</div>
+
+      <h1 class="hero-title">Gravity</h1>
+      <p class="hero-desc">Let one fragment pull the next.</p>
+
+      <section class="inner">
+        <div class="button-stack">
+          <button class="btn-primary" id="loadBtn">Load fragments</button>
+          <button class="btn-soft" id="seedBtn">Pick seed</button>
+          <button class="btn-soft" id="driftBtn">Drift next</button>
+          <button class="btn-soft" id="copyBtn">Copy result</button>
+          <button class="btn-soft" id="clearBtn">Clear</button>
+        </div>
+
+        <div class="status-row">
+          <div class="status" id="statusText">Waiting</div>
+          <a class="deeper-link" id="deeperLink" href="./fragment-collision.html">deeper</a>
+        </div>
+
+        <div class="result-list" id="resultList">
+          <div class="result-card">
+            <div class="result-label">Seed</div>
+            <p class="result-text" id="seedText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Seed tone</div>
+            <p class="result-text" id="seedToneText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Gravity pull</div>
+            <p class="result-text" id="gravityText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Next fragment</div>
+            <p class="result-text" id="nextText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Drift log</div>
+            <p class="result-text" id="logText"></p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <div class="footer">No login · No tracking · Runs entirely in browser</div>
+  </main>
+
+  <script>
+    const loadBtn = document.getElementById('loadBtn');
+    const seedBtn = document.getElementById('seedBtn');
+    const driftBtn = document.getElementById('driftBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    const statusText = document.getElementById('statusText');
+    const deeperLink = document.getElementById('deeperLink');
+    const resultList = document.getElementById('resultList');
+
+    const seedText = document.getElementById('seedText');
+    const seedToneText = document.getElementById('seedToneText');
+    const gravityText = document.getElementById('gravityText');
+    const nextText = document.getElementById('nextText');
+    const logText = document.getElementById('logText');
+
+    let fragmentPool = [];
+    let currentSeed = null;
+    let currentNext = null;
+    let driftLog = [];
+    let loaded = false;
+
+    const tonePullMap = {
+      warm: [
+        { tone: 'warm', weight: 4 },
+        { tone: 'calm', weight: 4 },
+        { tone: 'twist', weight: 2 },
+        { tone: 'edge', weight: 1 },
+        { tone: 'chaos', weight: 1 }
+      ],
+      calm: [
+        { tone: 'calm', weight: 4 },
+        { tone: 'twist', weight: 3 },
+        { tone: 'warm', weight: 2 },
+        { tone: 'edge', weight: 2 },
+        { tone: 'chaos', weight: 1 }
+      ],
+      edge: [
+        { tone: 'edge', weight: 4 },
+        { tone: 'chaos', weight: 3 },
+        { tone: 'twist', weight: 2 },
+        { tone: 'calm', weight: 2 },
+        { tone: 'warm', weight: 1 }
+      ],
+      chaos: [
+        { tone: 'chaos', weight: 4 },
+        { tone: 'twist', weight: 3 },
+        { tone: 'edge', weight: 2 },
+        { tone: 'calm', weight: 1 },
+        { tone: 'warm', weight: 1 }
+      ],
+      twist: [
+        { tone: 'twist', weight: 4 },
+        { tone: 'calm', weight: 3 },
+        { tone: 'edge', weight: 2 },
+        { tone: 'chaos', weight: 2 },
+        { tone: 'warm', weight: 1 }
+      ]
+    };
+
+    function cleanText(value) {
+      return String(value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function detectToneFromText(text) {
+      const value = cleanText(text).toLowerCase();
+
+      if (
+        value.includes('signal') ||
+        value.includes('experiment') ||
+        value.includes('silence answered') ||
+        value.includes('different story')
+      ) return 'twist';
+
+      if (
+        value.includes('wrong door') ||
+        value.includes('something off') ||
+        value.includes('silence') ||
+        value.includes('strange') ||
+        value.includes('upside down') ||
+        value.includes('missing')
+      ) return 'chaos';
+
+      if (
+        value.includes('too abstract') ||
+        value.includes('too clean') ||
+        value.includes('too safe') ||
+        value.includes('not landing') ||
+        value.includes('wrong frame') ||
+        value.includes('bad translation') ||
+        value.includes('clumsy')
+      ) return 'edge';
+
+      if (
+        value.includes('care') ||
+        value.includes('noticed') ||
+        value.includes('attention') ||
+        value.includes('listen') ||
+        value.includes('tried')
+      ) return 'warm';
+
+      return 'calm';
+    }
+
+    function normalizeFragment(item) {
+      if (typeof item === 'string') {
+        const text = cleanText(item);
+        return text ? { text, tone: detectToneFromText(text) } : null;
+      }
+
+      if (item && typeof item === 'object') {
+        const text = cleanText(item.text || '');
+        if (!text) return null;
+        return {
+          text,
+          tone: cleanText(item.tone) || detectToneFromText(text)
+        };
+      }
+
+      return null;
+    }
+
+    async function loadJson(path) {
+      const response = await fetch(path, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Failed: ${path}`);
+      }
+      return response.json();
+    }
+
+    async function loadFragments() {
+      statusText.textContent = 'Loading';
+
+      try {
+        const paths = [
+          './fragment-pool.json',
+          './fragment-pack-1.json',
+          './fragment-pack-2.json'
+        ];
+
+        const results = await Promise.allSettled(paths.map(loadJson));
+        const merged = [];
+        const seen = new Set();
+
+        results.forEach((result) => {
+          if (result.status !== 'fulfilled' || !Array.isArray(result.value)) return;
+
+          result.value.forEach((item) => {
+            const normalized = normalizeFragment(item);
+            if (!normalized) return;
+
+            const key = `${normalized.text.toLowerCase()}__${normalized.tone}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+            merged.push(normalized);
+          });
+        });
+
+        fragmentPool = merged;
+        loaded = fragmentPool.length > 0;
+        statusText.textContent = loaded ? `Loaded ${fragmentPool.length}` : 'Nothing loaded';
+      } catch (error) {
+        loaded = false;
+        fragmentPool = [];
+        statusText.textContent = 'Load failed';
+      }
+    }
+
+    function pickRandomFromPool() {
+      if (!fragmentPool.length) return null;
+      return fragmentPool[Math.floor(Math.random() * fragmentPool.length)];
+    }
+
+    function weightedChoice(options) {
+      const total = options.reduce((sum, item) => sum + item.weight, 0);
+      let roll = Math.random() * total;
+
+      for (const item of options) {
+        roll -= item.weight;
+        if (roll <= 0) return item.tone;
+      }
+
+      return options[0].tone;
+    }
+
+    function describePull(tone) {
+      const options = tonePullMap[tone] || tonePullMap.calm;
+      return options.map(item => `${item.tone} ×${item.weight}`).join(' / ');
+    }
+
+    function pickByGravity(seed) {
+      const options = tonePullMap[seed.tone] || tonePullMap.calm;
+      const targetTone = weightedChoice(options);
+
+      const candidates = fragmentPool.filter(item => {
+        if (!item) return false;
+        if (item.text === seed.text) return false;
+        return item.tone === targetTone;
+      });
+
+      if (!candidates.length) {
+        const fallback = fragmentPool.filter(item => item.text !== seed.text);
+        return {
+          targetTone,
+          fragment: fallback[Math.floor(Math.random() * fallback.length)] || null
+        };
+      }
+
+      return {
+        targetTone,
+        fragment: candidates[Math.floor(Math.random() * candidates.length)]
+      };
+    }
+
+    function render() {
+      if (!currentSeed) {
+        resultList.style.display = 'none';
+        deeperLink.style.display = 'none';
+        return;
+      }
+
+      seedText.textContent = currentSeed.text;
+      seedToneText.textContent = currentSeed.tone;
+      gravityText.textContent = describePull(currentSeed.tone);
+      nextText.textContent = currentNext ? `${currentNext.text} (${currentNext.tone})` : '';
+      logText.textContent = driftLog.join('\n\n');
+
+      resultList.style.display = 'flex';
+      deeperLink.style.display = 'inline';
+    }
+
+    function pickSeed() {
+      if (!loaded) {
+        statusText.textContent = 'Load fragments first';
+        return;
+      }
+
+      currentSeed = pickRandomFromPool();
+      currentNext = null;
+      driftLog = [];
+
+      if (!currentSeed) {
+        statusText.textContent = 'No seed found';
+        return;
+      }
+
+      driftLog.push(`${currentSeed.text} (${currentSeed.tone})`);
+      statusText.textContent = 'Seed picked';
+      render();
+    }
+
+    function driftNext() {
+      if (!loaded) {
+        statusText.textContent = 'Load fragments first';
+        return;
+      }
+
+      if (!currentSeed) {
+        statusText.textContent = 'Pick seed first';
+        return;
+      }
+
+      const result = pickByGravity(currentSeed);
+      if (!result.fragment) {
+        statusText.textContent = 'No next fragment found';
+        return;
+      }
+
+      currentNext = result.fragment;
+      driftLog.push(`→ ${currentNext.text} (${currentNext.tone})`);
+      currentSeed = currentNext;
+
+      statusText.textContent = `Pulled toward ${result.targetTone}`;
+      render();
+    }
+
+    async function copyResult() {
+      if (!driftLog.length) {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      const text = driftLog.join('\n');
+
+      try {
+        await navigator.clipboard.writeText(text);
+        statusText.textContent = 'Copied';
+      } catch (error) {
+        statusText.textContent = 'Copy failed';
+      }
+    }
+
+    function clearAll() {
+      currentSeed = null;
+      currentNext = null;
+      driftLog = [];
+      seedText.textContent = '';
+      seedToneText.textContent = '';
+      gravityText.textContent = '';
+      nextText.textContent = '';
+      logText.textContent = '';
+      resultList.style.display = 'none';
+      deeperLink.style.display = 'none';
+      statusText.textContent = loaded ? `Loaded ${fragmentPool.length}` : 'Waiting';
+    }
+
+    loadBtn.addEventListener('click', loadFragments);
+    seedBtn.addEventListener('click', pickSeed);
+    driftBtn.addEventListener('click', driftNext);
+    copyBtn.addEventListener('click', copyResult);
+    clearBtn.addEventListener('click', clearAll);
+  </script>
+</body>
+</html>
