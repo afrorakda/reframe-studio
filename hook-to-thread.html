@@ -28,12 +28,9 @@
       --button-line:rgba(255,255,255,0.1);
       --result-card:rgba(255,255,255,0.04);
       --result-line:rgba(255,255,255,0.08);
-      --deep-bg:rgba(255,255,255,0.03);
-      --deep-line:rgba(255,255,255,0.08);
-      --deep-hover:rgba(255,255,255,0.06);
-      --radius-outer:28px;
-      --radius-inner:22px;
-      --radius-textarea:18px;
+      --radius-outer:26px;
+      --radius-inner:20px;
+      --radius-textarea:16px;
       --shadow:0 20px 56px rgba(0,0,0,0.28);
     }
 
@@ -57,19 +54,19 @@
     }
 
     .page{
-      width:min(780px, calc(100% - 24px));
+      width:min(760px, calc(100% - 22px));
       margin:0 auto;
-      padding:18px 0 28px;
+      padding:16px 0 24px;
     }
 
     .back-link{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:16px;
+      font-size:15px;
       line-height:1.4;
       color:var(--muted);
-      margin-bottom:14px;
+      margin-bottom:12px;
       opacity:0.95;
     }
 
@@ -77,7 +74,7 @@
       background:var(--card-outer);
       border:1px solid var(--card-outer-line);
       border-radius:var(--radius-outer);
-      padding:18px 12px 12px;
+      padding:16px 10px 10px;
       box-shadow:var(--shadow);
       backdrop-filter:blur(6px);
       -webkit-backdrop-filter:blur(6px);
@@ -87,29 +84,29 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:42px;
-      padding:0 16px;
+      min-height:38px;
+      padding:0 14px;
       border-radius:999px;
       background:var(--pill-bg);
       border:1px solid var(--pill-line);
       color:#e8ddff;
-      font-size:15px;
+      font-size:14px;
       letter-spacing:-0.01em;
-      margin-bottom:14px;
+      margin-bottom:12px;
     }
 
     .hero-title{
-      margin:0 0 6px 0;
-      font-size:38px;
+      margin:0 0 4px 0;
+      font-size:34px;
       line-height:1;
       letter-spacing:-0.05em;
       font-weight:800;
     }
 
     .hero-desc{
-      margin:0 0 14px 0;
-      font-size:16px;
-      line-height:1.5;
+      margin:0 0 12px 0;
+      font-size:15px;
+      line-height:1.45;
       color:var(--muted);
     }
 
@@ -117,36 +114,36 @@
       background:var(--card-inner);
       border:1px solid var(--card-inner-line);
       border-radius:var(--radius-inner);
-      padding:18px 12px 14px;
+      padding:16px 10px 12px;
     }
 
     .mutation-title{
-      margin:0 0 8px 0;
-      font-size:30px;
-      line-height:1.04;
+      margin:0 0 6px 0;
+      font-size:27px;
+      line-height:1.03;
       letter-spacing:-0.04em;
       font-weight:800;
     }
 
     .mutation-desc{
-      margin:0 0 14px 0;
-      font-size:15px;
-      line-height:1.5;
+      margin:0 0 12px 0;
+      font-size:14px;
+      line-height:1.45;
       color:var(--muted);
     }
 
     .label{
       display:block;
-      margin:0 0 8px 0;
-      font-size:15px;
-      line-height:1.4;
+      margin:0 0 7px 0;
+      font-size:14px;
+      line-height:1.35;
       font-weight:700;
       color:var(--text);
     }
 
     textarea{
       width:100%;
-      min-height:128px;
+      min-height:110px;
       resize:vertical;
       border:none;
       outline:none;
@@ -154,10 +151,10 @@
       background:var(--textarea-bg);
       border:1px solid var(--textarea-line);
       color:var(--text);
-      padding:16px;
+      padding:14px;
       font:inherit;
-      font-size:16px;
-      line-height:1.55;
+      font-size:15px;
+      line-height:1.5;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02);
     }
 
@@ -168,18 +165,18 @@
     .button-stack{
       display:flex;
       flex-direction:column;
-      gap:8px;
-      margin-top:12px;
+      gap:7px;
+      margin-top:10px;
     }
 
     button{
       appearance:none;
       border:none;
       width:100%;
-      min-height:52px;
-      border-radius:16px;
+      min-height:46px;
+      border-radius:14px;
       font:inherit;
-      font-size:16px;
+      font-size:15px;
       font-weight:800;
       letter-spacing:-0.02em;
       cursor:pointer;
@@ -201,25 +198,41 @@
       border:1px solid var(--button-line);
     }
 
+    .subrow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:10px;
+      min-height:18px;
+    }
+
     .status{
-      margin-top:12px;
-      font-size:13px;
-      line-height:1.5;
+      font-size:12px;
+      line-height:1.4;
       color:var(--soft);
     }
 
+    .deep-link{
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+      opacity:0.78;
+      white-space:nowrap;
+    }
+
     .result{
-      margin-top:14px;
+      margin-top:12px;
       display:none;
-      gap:8px;
+      gap:7px;
       flex-direction:column;
     }
 
     .result-card{
       background:var(--result-card);
       border:1px solid var(--result-line);
-      border-radius:16px;
-      padding:12px;
+      border-radius:14px;
+      padding:10px;
     }
 
     .result-top{
@@ -227,12 +240,12 @@
       justify-content:space-between;
       align-items:center;
       gap:8px;
-      margin-bottom:6px;
+      margin-bottom:5px;
       flex-wrap:wrap;
     }
 
     .result-label{
-      font-size:11px;
+      font-size:10px;
       line-height:1.4;
       letter-spacing:0.08em;
       text-transform:uppercase;
@@ -241,14 +254,14 @@
     }
 
     .result-count{
-      font-size:11px;
+      font-size:10px;
       color:var(--soft);
     }
 
     .result-text{
       margin:0;
-      font-size:15px;
-      line-height:1.55;
+      font-size:14px;
+      line-height:1.5;
       color:var(--text);
       white-space:pre-wrap;
     }
@@ -257,19 +270,19 @@
       margin-top:2px;
       background:rgba(255,255,255,0.03);
       border:1px solid rgba(255,255,255,0.06);
-      border-radius:16px;
-      padding:12px;
+      border-radius:14px;
+      padding:10px;
       display:grid;
-      gap:10px;
+      gap:8px;
     }
 
     .meta-item{
       display:grid;
-      gap:3px;
+      gap:2px;
     }
 
     .meta-label{
-      font-size:11px;
+      font-size:10px;
       line-height:1.4;
       letter-spacing:0.08em;
       text-transform:uppercase;
@@ -278,51 +291,15 @@
     }
 
     .meta-value{
-      font-size:14px;
-      line-height:1.5;
+      font-size:13px;
+      line-height:1.45;
       color:var(--text);
-    }
-
-    .deep-wrap{
-      margin-top:10px;
-      padding-top:10px;
-      border-top:1px solid rgba(255,255,255,0.08);
-    }
-
-    .deep-link{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      width:100%;
-      padding:12px 14px;
-      border-radius:16px;
-      background:var(--deep-bg);
-      border:1px solid var(--deep-line);
-      color:var(--text);
-      font-size:15px;
-      font-weight:700;
-      line-height:1.4;
-      transition:background .18s ease, border-color .18s ease, transform .05s ease;
-    }
-
-    .deep-link:active{
-      transform:translateY(1px);
-    }
-
-    .deep-link:hover{
-      background:var(--deep-hover);
-    }
-
-    .deep-link span:last-child{
-      color:var(--muted);
-      font-weight:600;
     }
 
     .footer{
-      margin-top:14px;
-      font-size:13px;
-      line-height:1.5;
+      margin-top:12px;
+      font-size:12px;
+      line-height:1.45;
       color:var(--soft);
       text-align:center;
     }
@@ -398,8 +375,12 @@
         font-size:24px;
       }
 
-      .status{
+      .subrow{
         margin-top:16px;
+      }
+
+      .status,
+      .deep-link{
         font-size:17px;
       }
 
@@ -432,17 +413,6 @@
       }
 
       .meta-value{
-        font-size:18px;
-      }
-
-      .deep-wrap{
-        margin-top:16px;
-        padding-top:14px;
-      }
-
-      .deep-link{
-        padding:16px 18px;
-        border-radius:20px;
         font-size:18px;
       }
 
@@ -482,7 +452,10 @@ But sometimes they reveal what people are secretly reacting to."></textarea>
           <button class="btn-soft" id="clearBtn">Clear</button>
         </div>
 
-        <div class="status" id="statusText">Waiting for input</div>
+        <div class="subrow">
+          <div class="status" id="statusText">Waiting for input</div>
+          <a class="deep-link" id="deepLink" href="./mutation-router.html">go deeper</a>
+        </div>
 
         <div class="result" id="resultWrap">
           <div id="threadList"></div>
@@ -496,13 +469,6 @@ But sometimes they reveal what people are secretly reacting to."></textarea>
               <div class="meta-label">Core tension</div>
               <div class="meta-value" id="threadTension"></div>
             </div>
-          </div>
-
-          <div class="deep-wrap">
-            <a class="deep-link" href="./mutation-router.html">
-              <span>Go Deeper</span>
-              <span>→</span>
-            </a>
           </div>
         </div>
       </section>
