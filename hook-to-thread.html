@@ -28,6 +28,9 @@
       --button-line:rgba(255,255,255,0.1);
       --result-card:rgba(255,255,255,0.04);
       --result-line:rgba(255,255,255,0.08);
+      --deep-bg:rgba(255,255,255,0.03);
+      --deep-line:rgba(255,255,255,0.08);
+      --deep-hover:rgba(255,255,255,0.06);
       --radius-outer:28px;
       --radius-inner:22px;
       --radius-textarea:18px;
@@ -180,7 +183,7 @@
       font-weight:800;
       letter-spacing:-0.02em;
       cursor:pointer;
-      transition:transform .05s ease, opacity .18s ease;
+      transition:transform .05s ease, opacity .18s ease, background .18s ease;
     }
 
     button:active{
@@ -280,23 +283,40 @@
       color:var(--text);
     }
 
-    .next{
-      margin-top:12px;
-      display:grid;
-      gap:6px;
+    .deep-wrap{
+      margin-top:10px;
       padding-top:10px;
       border-top:1px solid rgba(255,255,255,0.08);
     }
 
-    .next-link{
-      font-size:14px;
-      line-height:1.45;
-      color:var(--muted);
+    .deep-link{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      width:100%;
+      padding:12px 14px;
+      border-radius:16px;
+      background:var(--deep-bg);
+      border:1px solid var(--deep-line);
+      color:var(--text);
+      font-size:15px;
+      font-weight:700;
+      line-height:1.4;
+      transition:background .18s ease, border-color .18s ease, transform .05s ease;
     }
 
-    .next-link strong{
-      color:var(--text);
-      font-weight:700;
+    .deep-link:active{
+      transform:translateY(1px);
+    }
+
+    .deep-link:hover{
+      background:var(--deep-hover);
+    }
+
+    .deep-link span:last-child{
+      color:var(--muted);
+      font-weight:600;
     }
 
     .footer{
@@ -415,14 +435,15 @@
         font-size:18px;
       }
 
-      .next{
-        margin-top:18px;
-        gap:10px;
+      .deep-wrap{
+        margin-top:16px;
         padding-top:14px;
       }
 
-      .next-link{
-        font-size:17px;
+      .deep-link{
+        padding:16px 18px;
+        border-radius:20px;
+        font-size:18px;
       }
 
       .footer{
@@ -477,10 +498,11 @@ But sometimes they reveal what people are secretly reacting to."></textarea>
             </div>
           </div>
 
-          <div class="next">
-            <a class="next-link" href="./idea-to-thread.html"><strong>Next:</strong> Thread → Post</a>
-            <a class="next-link" href="./hook-generator.html"><strong>Next:</strong> Hook → Post</a>
-            <a class="next-link" href="./constraint-to-action.html"><strong>Next:</strong> Thread → Action</a>
+          <div class="deep-wrap">
+            <a class="deep-link" href="./mutation-router.html">
+              <span>Go Deeper</span>
+              <span>→</span>
+            </a>
           </div>
         </div>
       </section>
