@@ -1,105 +1,34 @@
-{
-  "fragments": [
-    {"text":"people read something else","tags":["misunderstanding","interpretation"]},
-    {"text":"the comments rewrote it","tags":["reaction","mutation"]},
-    {"text":"the meaning shifted","tags":["shift","interpretation"]},
-    {"text":"someone heard a different message","tags":["misunderstanding"]},
-    {"text":"the replies changed the story","tags":["reaction","mutation"]},
-
-    {"text":"maybe I wrote the wrong thing","tags":["confusion","self"]},
-    {"text":"now I'm curious what I said","tags":["curiosity","self"]},
-    {"text":"that reply saw another angle","tags":["interpretation","angle"]},
-    {"text":"the post drifted away","tags":["drift","shift"]},
-    {"text":"the wrong reading stuck","tags":["misunderstanding"]},
-
-    {"text":"the replies found another meaning","tags":["mutation","interpretation"]},
-    {"text":"someone followed a different thread","tags":["drift","angle"]},
-    {"text":"the idea bent a little","tags":["mutation","shift"]},
-    {"text":"that comment heard something else","tags":["misunderstanding"]},
-    {"text":"the story changed in the replies","tags":["reaction","mutation"]},
-
-    {"text":"I might be reading it wrong too","tags":["confusion","self"]},
-    {"text":"maybe the misunderstanding matters","tags":["misunderstanding","shift"]},
-    {"text":"the replies added another layer","tags":["interpretation","mutation"]},
-    {"text":"someone saw a hidden version","tags":["interpretation","angle"]},
-    {"text":"the meaning moved slightly","tags":["shift"]},
-
-    {"text":"the comments created a new path","tags":["mutation","drift"]},
-    {"text":"that reaction changed the tone","tags":["reaction","emotion"]},
-    {"text":"the idea wandered a bit","tags":["drift","mutation"]},
-    {"text":"the replies opened another direction","tags":["angle","mutation"]},
-    {"text":"maybe the confusion is useful","tags":["confusion","shift"]},
-
-    {"text":"the wrong idea kept growing","tags":["misunderstanding","drift"]},
-    {"text":"someone followed strange logic","tags":["absurd","interpretation"]},
-    {"text":"the post turned into something else","tags":["mutation","shift"]},
-    {"text":"that comment heard a different story","tags":["misunderstanding"]},
-    {"text":"the meaning drifted slightly","tags":["drift","shift"]},
-
-    {"text":"maybe the replies improved it","tags":["irony","reaction"]},
-    {"text":"someone solved a different problem","tags":["interpretation"]},
-    {"text":"the idea bent in the comments","tags":["mutation","reaction"]},
-    {"text":"a strange reading appeared","tags":["absurd","misunderstanding"]},
-    {"text":"the comments found another signal","tags":["interpretation","reaction"]},
-
-    {"text":"the meaning split in two","tags":["shift","interpretation"]},
-    {"text":"someone followed the wrong clue","tags":["misunderstanding"]},
-    {"text":"the replies changed the direction","tags":["mutation","reaction"]},
-    {"text":"the idea slipped sideways","tags":["drift","mutation"]},
-    {"text":"that reaction revealed another layer","tags":["interpretation","emotion"]},
-
-    {"text":"the replies misunderstood the tone","tags":["misunderstanding","reaction"]},
-    {"text":"someone focused on the wrong detail","tags":["misunderstanding"]},
-    {"text":"the post created another meaning","tags":["mutation","interpretation"]},
-    {"text":"the replies bent the idea","tags":["mutation","reaction"]},
-    {"text":"someone heard irony where none existed","tags":["misunderstanding","irony"]},
-
-    {"text":"the story tilted slightly","tags":["shift"]},
-    {"text":"the replies found a new angle","tags":["angle","reaction"]},
-    {"text":"someone heard a hidden message","tags":["interpretation"]},
-    {"text":"the meaning wandered","tags":["drift"]},
-    {"text":"a different narrative appeared","tags":["mutation"]},
-
-    {"text":"someone answered another question","tags":["misunderstanding"]},
-    {"text":"the replies rewired the idea","tags":["mutation"]},
-    {"text":"someone followed a strange path","tags":["absurd","drift"]},
-    {"text":"the idea twisted a little","tags":["mutation","shift"]},
-    {"text":"the tone changed in the replies","tags":["reaction","emotion"]},
-
-    {"text":"someone heard sarcasm","tags":["misunderstanding","emotion"]},
-    {"text":"the replies made it stranger","tags":["absurd","mutation"]},
-    {"text":"the post drifted into another topic","tags":["drift"]},
-    {"text":"someone followed a side meaning","tags":["interpretation"]},
-    {"text":"the replies pulled the idea elsewhere","tags":["drift","reaction"]},
-
-    {"text":"someone misunderstood the direction","tags":["misunderstanding"]},
-    {"text":"the replies reframed the thought","tags":["mutation","interpretation"]},
-    {"text":"the idea started sliding","tags":["drift"]},
-    {"text":"someone read between the wrong lines","tags":["misunderstanding"]},
-    {"text":"the replies discovered another version","tags":["interpretation"]},
-
-    {"text":"the meaning tilted","tags":["shift"]},
-    {"text":"someone extended the idea sideways","tags":["angle"]},
-    {"text":"the replies shifted the focus","tags":["reaction","shift"]},
-    {"text":"someone imagined another context","tags":["interpretation"]},
-    {"text":"the idea moved slightly","tags":["drift"]},
-
-    {"text":"someone interpreted it emotionally","tags":["emotion"]},
-    {"text":"the replies changed the frame","tags":["mutation","interpretation"]},
-    {"text":"someone misunderstood the premise","tags":["misunderstanding"]},
-    {"text":"the idea warped a bit","tags":["mutation"]},
-    {"text":"someone followed the wrong signal","tags":["misunderstanding"]},
-
-    {"text":"the replies bent the meaning","tags":["mutation"]},
-    {"text":"someone imagined another intention","tags":["interpretation"]},
-    {"text":"the idea wandered into humor","tags":["absurd"]},
-    {"text":"someone took it literally","tags":["misunderstanding"]},
-    {"text":"the replies shifted the atmosphere","tags":["emotion","reaction"]},
-
-    {"text":"someone read it upside down","tags":["absurd"]},
-    {"text":"the idea moved in a strange way","tags":["drift"]},
-    {"text":"someone invented another explanation","tags":["interpretation"]},
-    {"text":"the replies turned it sideways","tags":["mutation"]},
-    {"text":"someone heard a different story","tags":["misunderstanding"]}
-  ]
-}
+[
+  {
+    "text": "Too abstract",
+    "tone": "edge"
+  },
+  {
+    "text": "Something is there",
+    "tone": "calm"
+  },
+  {
+    "text": "Not landing",
+    "tone": "edge"
+  },
+  {
+    "text": "Wrong frame",
+    "tone": "edge"
+  },
+  {
+    "text": "Maybe they care",
+    "tone": "warm"
+  },
+  {
+    "text": "Clumsy care",
+    "tone": "edge"
+  },
+  {
+    "text": "Wrong door",
+    "tone": "chaos"
+  },
+  {
+    "text": "Maybe the reaction is the signal",
+    "tone": "twist"
+  }
+]
