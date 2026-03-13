@@ -219,6 +219,7 @@
       color:var(--soft);
       opacity:0.78;
       white-space:nowrap;
+      display:none;
     }
 
     .result{
@@ -427,7 +428,7 @@ You always say vague things."></textarea>
 
         <div class="subrow">
           <div class="status" id="statusText">Waiting for input</div>
-          <a class="deep-link" href="./mutation-router.html">go deeper</a>
+          <a class="deep-link" id="deepLink" href="./mutation-router.html">deeper</a>
         </div>
 
         <div class="result" id="resultWrap">
@@ -456,6 +457,7 @@ You always say vague things."></textarea>
     const statusText = document.getElementById('statusText');
     const resultWrap = document.getElementById('resultWrap');
     const resultText = document.getElementById('resultText');
+    const deepLink = document.getElementById('deepLink');
 
     const exampleReply = `This is too abstract.
 Nobody needs this.
@@ -498,6 +500,7 @@ You always say vague things.`;
 
       if (!value) {
         resultWrap.style.display = 'none';
+        deepLink.style.display = 'none';
         statusText.textContent = 'Paste one bad reply first';
         return;
       }
@@ -506,12 +509,14 @@ You always say vague things.`;
       resultText.textContent = frame;
       resultWrap.style.display = 'flex';
       statusText.textContent = 'Frame changed';
+      deepLink.style.display = 'inline';
     }
 
     function clearAll() {
       inputText.value = '';
       resultText.textContent = '';
       resultWrap.style.display = 'none';
+      deepLink.style.display = 'none';
       statusText.textContent = 'Waiting for input';
     }
 
