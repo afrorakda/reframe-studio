@@ -1,1141 +1,563 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fragment Chain — REFRAME Studio</title>
-
-<style>
-:root{
-  --bg:#0b0f18;
-  --bg-2:#090d15;
-  --panel:#121826;
-  --panel-2:#171e2f;
-  --line:#293246;
-  --text:#f6f8fb;
-  --muted:#98a3b8;
-  --purple:#7c5cff;
-  --purple-2:#6b4ef2;
-  --cyan:#22c7e8;
-  --cyan-2:#0faaca;
-  --green:#22c55e;
-  --green-2:#1ea85e;
-  --amber:#f5b942;
-  --amber-2:#d79a1d;
-  --shadow:0 12px 40px rgba(0,0,0,0.28);
-  --max:1040px;
-}
-
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:
-    radial-gradient(circle at top left, rgba(124,92,255,0.14), transparent 28%),
-    radial-gradient(circle at top right, rgba(34,199,232,0.09), transparent 26%),
-    linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  line-height:1.6;
-}
-
-a{
-  color:inherit;
-  text-decoration:none;
-}
-
-button,
-textarea{
-  font:inherit;
-}
-
-.page{
-  min-height:100vh;
-  padding:20px 16px 56px;
-}
-
-.container{
-  max-width:var(--max);
-  margin:0 auto;
-}
-
-.back{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:18px;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  color:#b7c8ff;
-  box-shadow:var(--shadow);
-}
-
-.hero{
-  border:1px solid var(--line);
-  border-radius:28px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 82% 0%, rgba(124,92,255,0.18), transparent 24%),
-    radial-gradient(circle at 20% 0%, rgba(34,199,232,0.08), transparent 24%),
-    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-}
-
-.hero-inner{
-  padding:26px 20px 20px;
-  display:grid;
-  gap:22px;
-}
-
-.eyebrow{
-  display:inline-block;
-  width:max-content;
-  padding:7px 11px;
-  border-radius:999px;
-  background:rgba(124,92,255,0.12);
-  border:1px solid rgba(124,92,255,0.22);
-  color:#cfbeff;
-  font-size:0.82rem;
-}
-
-.hero-copy h1{
-  margin:0 0 10px;
-  font-size:clamp(2.4rem, 8vw, 4.7rem);
-  line-height:0.96;
-  letter-spacing:-0.055em;
-}
-
-.hero-copy p{
-  margin:0;
-  color:var(--muted);
-  font-size:1rem;
-  max-width:760px;
-}
-
-.panel{
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-
-.panel-head{
-  padding:18px 18px 14px;
-  border-bottom:1px solid var(--line);
-}
-
-.panel-head h2{
-  margin:0 0 6px;
-  font-size:1.04rem;
-  letter-spacing:-0.02em;
-}
-
-.panel-head p{
-  margin:0;
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.panel-body{
-  padding:18px;
-  display:grid;
-  gap:16px;
-}
-
-.input-wrap{
-  display:grid;
-  gap:10px;
-}
-
-.label-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.label{
-  font-size:0.84rem;
-  font-weight:800;
-  letter-spacing:0.09em;
-  text-transform:uppercase;
-  color:#cdd8ef;
-}
-
-.count{
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-textarea{
-  width:100%;
-  min-height:220px;
-  resize:vertical;
-  padding:18px;
-  border-radius:20px;
-  border:1px solid var(--line);
-  background:rgba(10,16,28,0.78);
-  color:var(--text);
-  outline:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,0.03);
-}
-
-textarea::placeholder{
-  color:#8290aa;
-}
-
-textarea:focus{
-  border-color:rgba(124,92,255,0.7);
-  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
-}
-
-.weather-wrap{
-  display:grid;
-  gap:10px;
-}
-
-.weather-label{
-  font-size:0.84rem;
-  font-weight:800;
-  letter-spacing:0.09em;
-  text-transform:uppercase;
-  color:#cdd8ef;
-}
-
-.weather-row{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.weather-button{
-  appearance:none;
-  border:1px solid var(--line);
-  background:var(--panel-2);
-  color:var(--text);
-  border-radius:999px;
-  padding:12px 16px;
-  cursor:pointer;
-  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,box-shadow 0.18s ease;
-}
-
-.weather-button:hover{
-  transform:translateY(-1px);
-  border-color:#4b5872;
-}
-
-.weather-button.active{
-  border-color:rgba(124,92,255,0.7);
-  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
-  background:rgba(124,92,255,0.14);
-}
-
-.weather-button.calm.active{
-  border-color:rgba(34,199,232,0.7);
-  box-shadow:0 0 0 4px rgba(34,199,232,0.10);
-  background:rgba(34,199,232,0.12);
-}
-
-.weather-button.drift.active{
-  border-color:rgba(124,92,255,0.7);
-  box-shadow:0 0 0 4px rgba(124,92,255,0.12);
-  background:rgba(124,92,255,0.14);
-}
-
-.weather-button.storm.active{
-  border-color:rgba(245,185,66,0.7);
-  box-shadow:0 0 0 4px rgba(245,185,66,0.12);
-  background:rgba(245,185,66,0.14);
-}
-
-.weather-note{
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.actions{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.button{
-  appearance:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:max-content;
-  border:1px solid var(--line);
-  background:var(--panel-2);
-  color:var(--text);
-  border-radius:14px;
-  padding:14px 18px;
-  cursor:pointer;
-  transition:transform 0.15s ease,border-color 0.18s ease,background 0.18s ease,opacity 0.18s ease;
-}
-
-.button:hover{
-  transform:translateY(-1px);
-  border-color:#4b5872;
-}
-
-.button.primary{
-  min-width:180px;
-  background:linear-gradient(180deg, #8a68ff, var(--purple-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.secondary{
-  background:linear-gradient(180deg, #22d0f0, var(--cyan-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.green{
-  background:linear-gradient(180deg, #33d17a, var(--green-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button.copied{
-  background:linear-gradient(180deg, #33d17a, var(--green-2));
-  border-color:transparent;
-  color:white;
-  font-weight:700;
-}
-
-.button:disabled{
-  opacity:0.5;
-  cursor:not-allowed;
-  transform:none;
-}
-
-.chain-info{
-  padding:18px;
-  border-radius:20px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  color:#d8dfec;
-}
-
-.chain-info strong{
-  display:block;
-  margin-bottom:8px;
-  font-size:1rem;
-}
-
-.chain-grid{
-  display:grid;
-  gap:14px;
-}
-
-.step{
-  position:relative;
-  padding:18px;
-  border-radius:22px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-}
-
-.step-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
-
-.step-badges{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.step-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:8px 12px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,0.03);
-  color:#d7def0;
-  font-size:0.84rem;
-}
-
-.step-badge.type{
-  border-color:rgba(124,92,255,0.25);
-  background:rgba(124,92,255,0.10);
-  color:#cfbeff;
-}
-
-.step-badge.weather-calm{
-  border-color:rgba(34,199,232,0.25);
-  background:rgba(34,199,232,0.10);
-  color:#9befff;
-}
-
-.step-badge.weather-drift{
-  border-color:rgba(124,92,255,0.25);
-  background:rgba(124,92,255,0.10);
-  color:#cfbeff;
-}
-
-.step-badge.weather-storm{
-  border-color:rgba(245,185,66,0.30);
-  background:rgba(245,185,66,0.10);
-  color:#ffd88b;
-}
-
-.step-title{
-  margin:0;
-  font-size:1.05rem;
-  letter-spacing:-0.02em;
-}
-
-.step-body{
-  color:#e1e7f5;
-  font-size:1rem;
-  white-space:pre-wrap;
-}
-
-.step-arrow{
-  text-align:center;
-  color:var(--muted);
-  font-size:1.2rem;
-  margin:2px 0;
-}
-
-.final-card{
-  padding:18px;
-  border-radius:22px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(124,92,255,0.10), rgba(34,199,232,0.06));
-}
-
-.final-card h3{
-  margin:0 0 10px;
-  font-size:1.08rem;
-  letter-spacing:-0.02em;
-}
-
-.final-card p{
-  margin:0;
-  color:#e7ecf8;
-  white-space:pre-wrap;
-}
-
-.links{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.note{
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.hidden-door{
-  padding-top:8px;
-  color:var(--muted);
-  font-size:0.92rem;
-}
-
-.hidden-door a{
-  color:#b9c7ff;
-}
-
-.footer{
-  margin-top:26px;
-  text-align:center;
-  color:var(--muted);
-  font-size:0.88rem;
-}
-
-@media (max-width:760px){
-  .hero-inner,
-  .panel-head,
-  .panel-body{
-    padding:16px;
-  }
-
-  .hero-copy h1{
-    font-size:3.3rem;
-  }
-
-  .actions,
-  .weather-row,
-  .links{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .button,
-  .button.primary,
-  .button.secondary,
-  .button.green,
-  .weather-button{
-    width:100%;
-  }
-
-  textarea{
-    min-height:190px;
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragment Chain | REFRAME Studio</title>
+  <meta name="description" content="Let fragments chain into the next drift. No login. No tracking. Runs entirely in your browser." />
+  <style>
+    :root{
+      --bg-top:#081331;
+      --bg-mid:#0b1f4f;
+      --bg-bottom:#07112b;
+      --card-outer:rgba(35,55,122,0.55);
+      --card-outer-line:rgba(122,145,255,0.18);
+      --card-inner:rgba(4,11,40,0.92);
+      --card-inner-line:rgba(103,129,255,0.14);
+      --text:#f4f7ff;
+      --muted:#b7c2f0;
+      --soft:#96a5df;
+      --pill-bg:rgba(74,62,163,0.24);
+      --pill-line:rgba(124,108,255,0.45);
+      --button:#ffffff;
+      --button-text:#081331;
+      --button-soft:rgba(255,255,255,0.08);
+      --button-soft-text:#eef2ff;
+      --button-line:rgba(255,255,255,0.1);
+      --result-card:rgba(255,255,255,0.04);
+      --result-line:rgba(255,255,255,0.08);
+      --radius-outer:26px;
+      --radius-inner:20px;
+      --shadow:0 20px 56px rgba(0,0,0,0.28);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(53,94,255,0.24), transparent 30%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(760px, calc(100% - 22px));
+      margin:0 auto;
+      padding:16px 0 24px;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:15px;
+      line-height:1.4;
+      color:var(--muted);
+      margin-bottom:12px;
+      opacity:0.95;
+    }
+
+    .shell{
+      background:var(--card-outer);
+      border:1px solid var(--card-outer-line);
+      border-radius:26px;
+      padding:16px 10px 10px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:38px;
+      padding:0 14px;
+      border-radius:999px;
+      background:var(--pill-bg);
+      border:1px solid var(--pill-line);
+      color:#e8ddff;
+      font-size:14px;
+      letter-spacing:-0.01em;
+      margin-bottom:12px;
+    }
+
+    .hero-title{
+      margin:0 0 4px 0;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:-0.05em;
+      font-weight:800;
+    }
+
+    .hero-desc{
+      margin:0 0 12px 0;
+      font-size:15px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    .inner{
+      background:var(--card-inner);
+      border:1px solid var(--card-inner-line);
+      border-radius:20px;
+      padding:16px 10px 12px;
+    }
+
+    .button-stack{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      margin-top:10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      font:inherit;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      cursor:pointer;
+      transition:transform .05s ease, opacity .18s ease;
+    }
+
+    button:active{
+      transform:translateY(1px);
+    }
+
+    .btn-primary{
+      background:var(--button);
+      color:var(--button-text);
+    }
+
+    .btn-soft{
+      background:var(--button-soft);
+      color:var(--button-soft-text);
+      border:1px solid var(--button-line);
+    }
+
+    .status-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:10px;
+      min-height:18px;
+    }
+
+    .status{
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+    }
+
+    .deeper-link{
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+      opacity:0.78;
+      white-space:nowrap;
+      display:none;
+    }
+
+    .result-list{
+      margin-top:12px;
+      display:none;
+      gap:8px;
+      flex-direction:column;
+    }
+
+    .result-card{
+      background:var(--result-card);
+      border:1px solid var(--result-line);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .result-label{
+      font-size:10px;
+      line-height:1.4;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#d7deff;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .result-text{
+      margin:0;
+      font-size:14px;
+      line-height:1.5;
+      color:var(--text);
+      white-space:pre-wrap;
+    }
+
+    .footer{
+      margin-top:12px;
+      font-size:12px;
+      line-height:1.45;
+      color:var(--soft);
+      text-align:center;
+    }
+
+    @media (min-width: 761px){
+      .page{
+        width:min(860px, calc(100% - 40px));
+        padding:28px 0 40px;
+      }
+
+      .back-link{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .shell{
+        padding:34px;
+        border-radius:38px;
+      }
+
+      .pill{
+        min-height:62px;
+        padding:0 28px;
+        font-size:22px;
+        margin-bottom:28px;
+      }
+
+      .hero-title{
+        font-size:74px;
+        margin-bottom:12px;
+      }
+
+      .hero-desc{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .inner{
+        padding:30px;
+        border-radius:30px;
+      }
+
+      .button-stack{
+        gap:14px;
+        margin-top:20px;
+      }
+
+      button{
+        min-height:74px;
+        border-radius:22px;
+        font-size:24px;
+      }
+
+      .status-row{
+        margin-top:16px;
+      }
+
+      .status,
+      .deeper-link{
+        font-size:17px;
+      }
+
+      .result-list{
+        margin-top:24px;
+        gap:12px;
+      }
+
+      .result-card{
+        border-radius:22px;
+        padding:18px;
+      }
+
+      .result-label{
+        font-size:13px;
+        margin-bottom:6px;
+      }
+
+      .result-text{
+        font-size:18px;
+      }
+
+      .footer{
+        font-size:15px;
+        margin-top:18px;
+      }
+    }
+  </style>
 </head>
 <body>
-<main class="page">
-  <div class="container">
-    <a class="back" href="./index.html">← Back to REFRAME Studio</a>
+  <main class="page">
+    <a class="back-link" href="./fragment-collision.html">← Back to Collision</a>
 
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <span class="eyebrow">Creation loop</span>
-          <h1>Fragment Chain</h1>
-          <p>
-            Start with one fragment and let it mutate step by step. The weather changes how the chain moves, so the thought does not stop after one result.
-          </p>
+    <section class="shell">
+      <div class="pill">One chain</div>
+
+      <h1 class="hero-title">Chain</h1>
+      <p class="hero-desc">Let one fragment drift into the next.</p>
+
+      <section class="inner">
+        <div class="button-stack">
+          <button class="btn-primary" id="loadBtn">Load fragments</button>
+          <button class="btn-soft" id="beginBtn">Begin chain</button>
+          <button class="btn-soft" id="continueBtn">Continue</button>
+          <button class="btn-soft" id="copyBtn">Copy result</button>
+          <button class="btn-soft" id="clearBtn">Clear</button>
         </div>
 
-        <section class="panel">
-          <div class="panel-head">
-            <h2>Keep the thought moving</h2>
-            <p>Fragment → mutation → mutation → angle → next thought.</p>
+        <div class="status-row">
+          <div class="status" id="statusText">Waiting</div>
+          <a class="deeper-link" id="deeperLink" href="./thinking-ocean.html">deeper</a>
+        </div>
+
+        <div class="result-list" id="resultList">
+          <div class="result-card">
+            <div class="result-label">Current fragment</div>
+            <p class="result-text" id="currentFragmentText"></p>
           </div>
 
-          <div class="panel-body">
-            <div class="input-wrap">
-              <div class="label-row">
-                <div class="label">Start a chain</div>
-                <div class="count" id="char-count">0 characters</div>
-              </div>
-
-              <textarea id="input" placeholder="People say my ideas are too abstract."></textarea>
-            </div>
-
-            <div class="weather-wrap">
-              <div class="weather-label">Thought Weather</div>
-
-              <div class="weather-row">
-                <button class="weather-button calm" id="weather-calm" type="button" data-weather="calm">Calm</button>
-                <button class="weather-button drift" id="weather-drift" type="button" data-weather="drift">Drift</button>
-                <button class="weather-button storm" id="weather-storm" type="button" data-weather="storm">Storm</button>
-              </div>
-
-              <div class="weather-note" id="weather-note">
-                Calm = clearer, more stable chain.
-              </div>
-            </div>
-
-            <div class="actions">
-              <button class="button primary" id="start-btn" type="button">Start chain</button>
-              <button class="button secondary" id="next-btn" type="button">Next mutation</button>
-              <button class="button" id="example-btn" type="button">Try example</button>
-              <button class="button" id="clear-btn" type="button">Clear</button>
-              <button class="button green" id="copy-btn" type="button">Copy result</button>
-            </div>
-
-            <div class="chain-info">
-              <strong>Chain logic</strong>
-              <span id="chain-summary">Start with one fragment. Each mutation should create the next thought.</span>
-            </div>
-
-            <div class="chain-grid" id="chain-grid">
-              <div class="step">
-                <div class="step-head">
-                  <h3 class="step-title">No chain yet</h3>
-                </div>
-                <div class="step-body">Start a chain to see the fragment mutate step by step.</div>
-              </div>
-            </div>
-
-            <div class="final-card">
-              <h3>Current opening</h3>
-              <p id="current-opening">The current opening will appear here.</p>
-            </div>
-
-            <div class="links">
-              <a class="button" id="router-link" href="./fragment-router.html">Open router</a>
-              <a class="button" id="ocean-link" href="./thinking-ocean.html">Open ocean</a>
-            </div>
-
-            <div class="note" id="status">Start with one unfinished thought.</div>
-
-            <div class="hidden-door">
-              Already curious?
-              <a href="./enter-deeper.html">Enter deeper.</a>
-            </div>
+          <div class="result-card">
+            <div class="result-label">Incoming fragment</div>
+            <p class="result-text" id="incomingFragmentText"></p>
           </div>
-        </section>
-      </div>
+
+          <div class="result-card">
+            <div class="result-label">Collision</div>
+            <p class="result-text" id="collisionText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Next fragment</div>
+            <p class="result-text" id="nextFragmentText"></p>
+          </div>
+
+          <div class="result-card">
+            <div class="result-label">Chain log</div>
+            <p class="result-text" id="chainLogText"></p>
+          </div>
+        </div>
+      </section>
     </section>
 
-    <div class="footer">
-      REFRAME Studio — No login / No tracking / No personal data collected / Runs entirely in your browser
-    </div>
-  </div>
-</main>
+    <div class="footer">No login · No tracking · Runs entirely in browser</div>
+  </main>
 
-<script>
-(function () {
-  "use strict";
+  <script src="./fragment-system.js"></script>
+  <script>
+    const loadBtn = document.getElementById('loadBtn');
+    const beginBtn = document.getElementById('beginBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
 
-  var inputEl = document.getElementById("input");
-  var countEl = document.getElementById("char-count");
-  var weatherNoteEl = document.getElementById("weather-note");
-  var chainSummaryEl = document.getElementById("chain-summary");
-  var chainGridEl = document.getElementById("chain-grid");
-  var currentOpeningEl = document.getElementById("current-opening");
-  var statusEl = document.getElementById("status");
-  var copyBtn = document.getElementById("copy-btn");
-  var routerLinkEl = document.getElementById("router-link");
+    const statusText = document.getElementById('statusText');
+    const deeperLink = document.getElementById('deeperLink');
+    const resultList = document.getElementById('resultList');
 
-  var startBtn = document.getElementById("start-btn");
-  var nextBtn = document.getElementById("next-btn");
-  var exampleBtn = document.getElementById("example-btn");
-  var clearBtn = document.getElementById("clear-btn");
+    const currentFragmentText = document.getElementById('currentFragmentText');
+    const incomingFragmentText = document.getElementById('incomingFragmentText');
+    const collisionText = document.getElementById('collisionText');
+    const nextFragmentText = document.getElementById('nextFragmentText');
+    const chainLogText = document.getElementById('chainLogText');
 
-  var weatherButtons = Array.prototype.slice.call(document.querySelectorAll(".weather-button"));
+    let loaded = false;
+    let currentSeed = '';
+    let currentResult = null;
+    let chainLog = [];
 
-  var EXAMPLE = "People say my ideas are too abstract.";
-  var WEATHER_STORAGE_KEY = "reframe_thought_weather_v1";
-  var selectedWeather = "calm";
-  var chainSteps = [];
-
-  var TYPE_LABELS = {
-    criticism: "Criticism",
-    emotion: "Emotion",
-    problem: "Problem",
-    confusion: "Confusion",
-    failure: "Failure",
-    idea: "Idea"
-  };
-
-  var WEATHER_INFO = {
-    calm: {
-      label: "Calm",
-      note: "Calm = clearer, more stable chain."
-    },
-    drift: {
-      label: "Drift",
-      note: "Drift = slightly stranger chain."
-    },
-    storm: {
-      label: "Storm",
-      note: "Storm = sharper, more unstable chain."
-    }
-  };
-
-  var CHAIN_MAP = {
-    criticism: {
-      calm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"criticism" },
-        { kind:"lesson", title:"Lesson", makeText:function(){ return "The criticism is probably pointing at the entry point, not the value of the idea."; }, nextType:"idea" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "Abstract ideas are not the problem. The real problem is giving people a doorway into them."; }, nextType:"idea" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "Your idea is not too abstract. Your entry point is too weak."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What doorway would make the same idea instantly easier to enter?"; }, nextType:"confusion" }
-      ],
-      drift: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"criticism" },
-        { kind:"question", title:"Question", makeText:function(){ return "What exactly are people failing to catch when they call the idea abstract?"; }, nextType:"confusion" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "Maybe criticism is only failed translation between your thought and their entry point."; }, nextType:"idea" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "When people say your idea is abstract, they may just mean they never found the handle."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the handle is missing, what is the smallest version of the idea people can hold?"; }, nextType:"problem" }
-      ],
-      storm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"criticism" },
-        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe the idea is not too abstract. Maybe the world is too literal."; }, nextType:"idea" },
-        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "The idea is a deep-sea creature. People panic because they only know shallow water."; }, nextType:"idea" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "They call your idea abstract because it came from deeper water than they have seen."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What other deep-sea thought have you been hiding because the surface people would not get it?"; }, nextType:"idea" }
-      ]
-    },
-
-    emotion: {
-      calm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"emotion" },
-        { kind:"action", title:"Action", makeText:function(){ return "Reduce the pressure into one tiny action you can do today."; }, nextType:"problem" },
-        { kind:"constraint", title:"Constraint", makeText:function(){ return "The feeling may be showing that your current system is heavier than your energy."; }, nextType:"problem" },
-        { kind:"move", title:"Move", makeText:function(){ return "Protect one small rhythm instead of trying to solve everything at once."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What would become easier if you designed around your real energy instead of your ideal energy?"; }, nextType:"confusion" }
-      ],
-      drift: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"emotion" },
-        { kind:"question", title:"Question", makeText:function(){ return "What is this feeling trying to prevent you from seeing too quickly?"; }, nextType:"confusion" },
-        { kind:"structure", title:"Structure", makeText:function(){ return "The emotion may need shape before it can become movement."; }, nextType:"idea" },
-        { kind:"action", title:"Action", makeText:function(){ return "Turn the feeling into one question, then one action."; }, nextType:"problem" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What shape would make this feeling useful instead of heavy?"; }, nextType:"idea" }
-      ],
-      storm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"emotion" },
-        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe this feeling is not weakness. Maybe it is pressure from an unlived direction."; }, nextType:"idea" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "The feeling that drains you may be the map, not the obstacle."; }, nextType:"idea" },
-        { kind:"thread", title:"Thread Angle", makeText:function(){ return "What if your exhaustion is not a flaw, but evidence that your current path is false?"; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the feeling is a map, where is it trying to pull you instead?"; }, nextType:"confusion" }
-      ]
-    },
-
-    problem: {
-      calm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"problem" },
-        { kind:"root cause", title:"Root Cause", makeText:function(){ return "The visible problem may be hiding a smaller cause that keeps repeating."; }, nextType:"problem" },
-        { kind:"constraint", title:"Constraint", makeText:function(){ return "One real limit is shaping how this problem behaves."; }, nextType:"problem" },
-        { kind:"action", title:"Action", makeText:function(){ return "Shrink the next move until it fits the real limit."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What is the smallest move that still respects reality?"; }, nextType:"confusion" }
-      ],
-      drift: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"problem" },
-        { kind:"options", title:"Options", makeText:function(){ return "The problem may feel stuck because you are still inside one frame."; }, nextType:"idea" },
-        { kind:"question", title:"Question", makeText:function(){ return "What changes if this is not one problem but three smaller ones?"; }, nextType:"confusion" },
-        { kind:"action", title:"Action", makeText:function(){ return "Test one direction instead of waiting for the whole answer."; }, nextType:"problem" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "Which smaller version of the problem can you test immediately?"; }, nextType:"idea" }
-      ],
-      storm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"problem" },
-        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe the problem is not what blocks the path. Maybe it is the path."; }, nextType:"idea" },
-        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "This problem is a locked cave. The real work is not pushing harder but finding the hidden entrance."; }, nextType:"idea" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "The thing you call the problem may only be the surface crust of a deeper opening."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the problem is an entrance, what lies beneath it?"; }, nextType:"confusion" }
-      ]
-    },
-
-    confusion: {
-      calm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"confusion" },
-        { kind:"question", title:"Question", makeText:function(){ return "The real question is probably still hiding underneath the fog."; }, nextType:"confusion" },
-        { kind:"structure", title:"Structure", makeText:function(){ return "Give the confusion shape before trying to solve it."; }, nextType:"idea" },
-        { kind:"action", title:"Action", makeText:function(){ return "Write one question, then answer only that one."; }, nextType:"problem" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What single question would make the fog thinner right now?"; }, nextType:"idea" }
-      ],
-      drift: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"confusion" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "Confusion may be unfinished movement, not failure."; }, nextType:"idea" },
-        { kind:"question", title:"Question", makeText:function(){ return "What are you still protecting by keeping this unclear?"; }, nextType:"confusion" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "Sometimes confusion is just a thought waiting for the right question."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What question keeps trying to appear through the noise?"; }, nextType:"confusion" }
-      ],
-      storm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"confusion" },
-        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "The thought is mist over deep water. You do not need to clear all of it to know there is depth below."; }, nextType:"idea" },
-        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe clarity is not missing. Maybe you are ignoring the answer because it feels dangerous."; }, nextType:"idea" },
-        { kind:"question", title:"Question", makeText:function(){ return "What truth would force movement if you admitted it?"; }, nextType:"confusion" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "If the danger is real, what makes the truth still worth touching?"; }, nextType:"emotion" }
-      ]
-    },
-
-    failure: {
-      calm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"failure" },
-        { kind:"lesson", title:"Lesson", makeText:function(){ return "Failure revealed something the smoother path would have hidden."; }, nextType:"idea" },
-        { kind:"constraint", title:"Constraint", makeText:function(){ return "The failed attempt exposed the real limit more clearly."; }, nextType:"problem" },
-        { kind:"action", title:"Action", makeText:function(){ return "Build the next attempt around the revealed limit."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What did this failure finally make impossible to ignore?"; }, nextType:"confusion" }
-      ],
-      drift: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"failure" },
-        { kind:"question", title:"Question", makeText:function(){ return "What repeated itself here that you still have not named?"; }, nextType:"confusion" },
-        { kind:"option", title:"Option", makeText:function(){ return "A failed route often creates a more honest second route."; }, nextType:"idea" },
-        { kind:"action", title:"Action", makeText:function(){ return "Use the collapse as a filter for what not to repeat."; }, nextType:"problem" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What new route only exists because the first one broke?"; }, nextType:"idea" }
-      ],
-      storm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"failure" },
-        { kind:"opposite", title:"Opposite", makeText:function(){ return "Maybe this was not failure. Maybe it was the system rejecting the wrong shape."; }, nextType:"idea" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "Collapse can be proof that the thought hit a real boundary."; }, nextType:"idea" },
-        { kind:"thread", title:"Thread Angle", makeText:function(){ return "The failed attempt may be more alive than the polished success you imagined."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What stronger form is trying to emerge through the collapse?"; }, nextType:"idea" }
-      ]
-    },
-
-    idea: {
-      calm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"idea" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "The idea needs a clearer doorway so other people can enter it."; }, nextType:"idea" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "The thought gets stronger when it learns how to land."; }, nextType:"idea" },
-        { kind:"thread", title:"Thread Angle", makeText:function(){ return "What if the whole thread is just different ways to enter the same idea?"; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What is the strongest doorway into this idea?"; }, nextType:"confusion" }
-      ],
-      drift: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"idea" },
-        { kind:"question", title:"Question", makeText:function(){ return "What is still unfinished inside this idea?"; }, nextType:"confusion" },
-        { kind:"angle", title:"Angle", makeText:function(){ return "Maybe the idea is not the answer. Maybe it is the pressure point."; }, nextType:"idea" },
-        { kind:"thread", title:"Thread Angle", makeText:function(){ return "A useful thread may come from showing how the idea mutates, not just what it says."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What happens to this idea if you let it drift one layer further?"; }, nextType:"idea" }
-      ],
-      storm: [
-        { kind:"fragment", title:"Fragment", makeText:function(fragment){ return fragment; }, nextType:"idea" },
-        { kind:"opposite", title:"Opposite", makeText:function(){ return "The opposite version of the idea may be just as alive as the original."; }, nextType:"idea" },
-        { kind:"metaphor", title:"Metaphor", makeText:function(){ return "This idea is a tunnel in the seabed. It matters because it leads somewhere stranger than expected."; }, nextType:"idea" },
-        { kind:"hook", title:"Hook", makeText:function(){ return "The most interesting part of the idea may be the part that does not fit the surface world."; }, nextType:"idea" },
-        { kind:"opening", title:"Next Opening", makeText:function(){ return "What other forbidden or strange tunnel does this idea connect to?"; }, nextType:"idea" }
-      ]
-    }
-  };
-
-  function updateCount() {
-    countEl.textContent = inputEl.value.length + " characters";
-  }
-
-  function detectType(text) {
-    var lower = String(text || "").toLowerCase();
-
-    if (!lower.trim()) return "";
-
-    if (
-      lower.indexOf("people say") !== -1 ||
-      lower.indexOf("they say") !== -1 ||
-      lower.indexOf("criticism") !== -1 ||
-      lower.indexOf("comment") !== -1 ||
-      lower.indexOf("reply") !== -1
-    ) {
-      return "criticism";
+    function cleanText(text) {
+      return String(text || '').trim();
     }
 
-    if (
-      lower.indexOf("feel") !== -1 ||
-      lower.indexOf("heavy") !== -1 ||
-      lower.indexOf("anxious") !== -1 ||
-      lower.indexOf("frustrated") !== -1 ||
-      lower.indexOf("tired") !== -1 ||
-      lower.indexOf("exhaust") !== -1
-    ) {
-      return "emotion";
+    function cleanEnd(text) {
+      return cleanText(text).replace(/[.。!?]+$/, '');
     }
 
-    if (
-      lower.indexOf("problem") !== -1 ||
-      lower.indexOf("can't") !== -1 ||
-      lower.indexOf("cannot") !== -1 ||
-      lower.indexOf("stuck") !== -1 ||
-      lower.indexOf("blocked") !== -1
-    ) {
-      return "problem";
+    function lowerFirst(text) {
+      const value = cleanText(text);
+      if (!value) return '';
+      return value.charAt(0).toLowerCase() + value.slice(1);
     }
 
-    if (
-      lower.indexOf("don't know") !== -1 ||
-      lower.indexOf("do not know") !== -1 ||
-      lower.indexOf("confused") !== -1 ||
-      lower.indexOf("not sure") !== -1 ||
-      lower.indexOf("which direction") !== -1
-    ) {
-      return "confusion";
+    function sentenceCase(text) {
+      const value = cleanText(text);
+      if (!value) return '';
+      return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
-    if (
-      lower.indexOf("failed") !== -1 ||
-      lower.indexOf("failure") !== -1 ||
-      lower.indexOf("didn't work") !== -1 ||
-      lower.indexOf("did not work") !== -1 ||
-      lower.indexOf("collapsed") !== -1
-    ) {
-      return "failure";
+    function makeCollision(a, b) {
+      const left = cleanEnd(a);
+      const right = lowerFirst(cleanEnd(b));
+
+      const patterns = [
+        `${left}.\n${sentenceCase(right)}`,
+        `${left}.\nBut ${right}`,
+        `${left}.\nOr maybe ${right}`,
+        `${left}.\nWhich might mean ${right}`,
+        `${left}.\nAt the same time, ${right}`,
+        `${left}.\nMaybe ${right}`
+      ];
+
+      return patterns[Math.floor(Math.random() * patterns.length)];
     }
 
-    return "idea";
-  }
+    function makeNextFragment(a, b, collision) {
+      const left = lowerFirst(cleanEnd(a));
+      const right = lowerFirst(cleanEnd(b));
 
-  function loadWeather() {
-    var params = new URLSearchParams(window.location.search);
-    var weather = params.get("weather");
-    var saved = "";
+      const patterns = [
+        `maybe the fragment moved`,
+        `maybe something changed between the two`,
+        `maybe the collision is pointing somewhere else`,
+        `something drifted between the fragments`,
+        `maybe the meaning moved in the collision`,
+        `maybe this is another angle trying to appear`,
+        `maybe the problem changed shape`,
+        `something in the reply tilted`,
+        `maybe the second fragment heard the first differently`,
+        `maybe ${right}`,
+        `maybe ${left}`,
+        `something in "${left}" bent toward "${right}"`,
+        `maybe the space between them is the real fragment`,
+        `maybe this chain wants a different door`,
+        `something in the collision kept moving`
+      ];
 
-    try {
-      saved = localStorage.getItem(WEATHER_STORAGE_KEY) || "";
-    } catch (error) {}
-
-    if (weather === "calm" || weather === "drift" || weather === "storm") {
-      selectedWeather = weather;
-      return;
+      return sentenceCase(patterns[Math.floor(Math.random() * patterns.length)]);
     }
 
-    if (saved === "calm" || saved === "drift" || saved === "storm") {
-      selectedWeather = saved;
-    }
-  }
-
-  function loadFragment() {
-    var params = new URLSearchParams(window.location.search);
-    var fragment = params.get("fragment");
-    if (fragment) {
-      inputEl.value = fragment;
-    }
-  }
-
-  function renderWeatherUI() {
-    weatherButtons.forEach(function (button) {
-      var weather = button.getAttribute("data-weather");
-      button.classList.toggle("active", weather === selectedWeather);
-    });
-
-    weatherNoteEl.textContent = WEATHER_INFO[selectedWeather].note;
-
-    try {
-      localStorage.setItem(WEATHER_STORAGE_KEY, selectedWeather);
-    } catch (error) {}
-  }
-
-  function resetCopyButton() {
-    copyBtn.textContent = "Copy result";
-    copyBtn.classList.remove("copied");
-  }
-
-  function showCopiedState() {
-    copyBtn.textContent = "Copied!";
-    copyBtn.classList.add("copied");
-    setTimeout(function () {
-      resetCopyButton();
-    }, 1200);
-  }
-
-  function updateRouterLink() {
-    var text = inputEl.value.trim();
-    if (!text) {
-      routerLinkEl.href = "./fragment-router.html";
-      return;
-    }
-
-    var params = new URLSearchParams();
-    params.set("text", text);
-
-    if (selectedWeather === "calm") params.set("mode", "stable");
-    else if (selectedWeather === "drift") params.set("mode", "drift");
-    else params.set("mode", "chaos");
-
-    routerLinkEl.href = "./fragment-router.html?" + params.toString();
-  }
-
-  function renderChain() {
-    if (!chainSteps.length) {
-      chainGridEl.innerHTML =
-        '<div class="step"><div class="step-head"><h3 class="step-title">No chain yet</h3></div><div class="step-body">Start a chain to see the fragment mutate step by step.</div></div>';
-      currentOpeningEl.textContent = "The current opening will appear here.";
-      chainSummaryEl.textContent = "Start with one fragment. Each mutation should create the next thought.";
-      return;
-    }
-
-    chainGridEl.innerHTML = "";
-
-    chainSteps.forEach(function (step, index) {
-      var stepEl = document.createElement("div");
-      stepEl.className = "step";
-
-      var headEl = document.createElement("div");
-      headEl.className = "step-head";
-
-      var titleEl = document.createElement("h3");
-      titleEl.className = "step-title";
-      titleEl.textContent = "Step " + (index + 1) + " — " + step.title;
-
-      var badgesEl = document.createElement("div");
-      badgesEl.className = "step-badges";
-
-      var typeBadge = document.createElement("div");
-      typeBadge.className = "step-badge type";
-      typeBadge.textContent = TYPE_LABELS[step.type] || "Type";
-
-      var weatherBadge = document.createElement("div");
-      weatherBadge.className = "step-badge weather-" + selectedWeather;
-      weatherBadge.textContent = WEATHER_INFO[selectedWeather].label;
-
-      badgesEl.appendChild(typeBadge);
-      badgesEl.appendChild(weatherBadge);
-
-      headEl.appendChild(titleEl);
-      headEl.appendChild(badgesEl);
-
-      var bodyEl = document.createElement("div");
-      bodyEl.className = "step-body";
-      bodyEl.textContent = step.text;
-
-      stepEl.appendChild(headEl);
-      stepEl.appendChild(bodyEl);
-      chainGridEl.appendChild(stepEl);
-
-      if (index < chainSteps.length - 1) {
-        var arrowEl = document.createElement("div");
-        arrowEl.className = "step-arrow";
-        arrowEl.textContent = "↓";
-        chainGridEl.appendChild(arrowEl);
+    async function loadSystem() {
+      try {
+        statusText.textContent = 'Loading';
+        await window.REFRAMEFragmentSystem.load();
+        loaded = true;
+        statusText.textContent = 'Loaded';
+      } catch (error) {
+        loaded = false;
+        statusText.textContent = 'Load failed';
       }
-    });
-
-    currentOpeningEl.textContent = chainSteps[chainSteps.length - 1].text;
-    chainSummaryEl.textContent =
-      (TYPE_LABELS[chainSteps[0].type] || "Fragment") +
-      " → " +
-      chainSteps.map(function(step){ return step.title; }).join(" → ");
-  }
-
-  function buildChain(maxSteps) {
-    var text = inputEl.value.trim();
-
-    if (!text) {
-      statusEl.textContent = "Please enter a fragment.";
-      chainSteps = [];
-      renderChain();
-      nextBtn.disabled = true;
-      return;
     }
 
-    var type = detectType(text);
-    var chainTemplate = CHAIN_MAP[type][selectedWeather];
-    var steps = [];
+    function renderResult(data) {
+      currentFragmentText.textContent = data.current;
+      incomingFragmentText.textContent = data.incoming;
+      collisionText.textContent = data.collision;
+      nextFragmentText.textContent = data.next;
+      chainLogText.textContent = chainLog.join('\n\n');
 
-    for (var i = 0; i < Math.min(maxSteps, chainTemplate.length); i += 1) {
-      var template = chainTemplate[i];
-      steps.push({
-        title: template.title,
-        kind: template.kind,
-        type: template.nextType || type,
-        text: template.makeText(text)
-      });
+      resultList.style.display = 'flex';
+      deeperLink.style.display = 'inline';
     }
 
-    chainSteps = steps;
-    renderChain();
-    updateRouterLink();
+    function runChainStep(seed) {
+      const incoming = cleanText(window.REFRAMEFragmentSystem.pickMixed(1)[0] || '');
+      const collision = makeCollision(seed, incoming);
+      const next = makeNextFragment(seed, incoming, collision);
 
-    if (chainSteps.length >= chainTemplate.length) {
-      nextBtn.disabled = true;
-      statusEl.textContent = "Chain reached its current opening.";
-    } else {
-      nextBtn.disabled = false;
-      statusEl.textContent = "Chain started.";
-    }
-  }
+      currentResult = {
+        current: seed,
+        incoming,
+        collision,
+        next
+      };
 
-  function startChain() {
-    buildChain(2);
-  }
+      chainLog.push(next);
+      currentSeed = next;
 
-  function nextMutation() {
-    var text = inputEl.value.trim();
-
-    if (!text) {
-      statusEl.textContent = "Please enter a fragment.";
-      return;
+      renderResult(currentResult);
+      statusText.textContent = 'Chain moved';
     }
 
-    var type = detectType(text);
-    var chainTemplate = CHAIN_MAP[type][selectedWeather];
-
-    if (!chainSteps.length) {
-      buildChain(2);
-      return;
-    }
-
-    var nextLength = Math.min(chainSteps.length + 1, chainTemplate.length);
-    buildChain(nextLength);
-  }
-
-  function tryExample() {
-    inputEl.value = EXAMPLE;
-    updateCount();
-    buildChain(2);
-    statusEl.textContent = "Example loaded.";
-  }
-
-  function clearAll() {
-    inputEl.value = "";
-    updateCount();
-    chainSteps = [];
-    renderChain();
-    resetCopyButton();
-    nextBtn.disabled = true;
-    updateRouterLink();
-    statusEl.textContent = "Cleared.";
-  }
-
-  function buildCopyText() {
-    if (!chainSteps.length) return "";
-
-    var lines = [];
-    chainSteps.forEach(function(step, index){
-      lines.push("Step " + (index + 1) + " — " + step.title);
-      lines.push(step.text);
-      lines.push("");
-    });
-    lines.push("Current opening");
-    lines.push(currentOpeningEl.textContent);
-    return lines.join("\n");
-  }
-
-  function copyResult() {
-    var text = buildCopyText();
-
-    if (!text.trim()) {
-      statusEl.textContent = "Nothing to copy yet.";
-      return;
-    }
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () {
-        statusEl.textContent = "Chain copied.";
-        showCopiedState();
-      }).catch(function () {
-        statusEl.textContent = "Copy failed.";
-      });
-    } else {
-      statusEl.textContent = "Copy not supported here.";
-    }
-  }
-
-  weatherButtons.forEach(function(button){
-    button.addEventListener("click", function(){
-      selectedWeather = button.getAttribute("data-weather");
-      renderWeatherUI();
-      updateRouterLink();
-
-      if (inputEl.value.trim()) {
-        var currentLength = chainSteps.length || 2;
-        buildChain(currentLength);
-        statusEl.textContent = "Thought Weather changed to " + WEATHER_INFO[selectedWeather].label + ".";
-      } else {
-        statusEl.textContent = "Thought Weather changed to " + WEATHER_INFO[selectedWeather].label + ".";
+    function beginChain() {
+      if (!loaded) {
+        statusText.textContent = 'Load fragments first';
+        return;
       }
-    });
-  });
 
-  inputEl.addEventListener("input", function(){
-    updateCount();
-    updateRouterLink();
-  });
+      const seed = cleanText(window.REFRAMEFragmentSystem.pickMixed(1)[0] || '');
+      if (!seed) {
+        statusText.textContent = 'No fragment found';
+        return;
+      }
 
-  startBtn.addEventListener("click", startChain);
-  nextBtn.addEventListener("click", nextMutation);
-  exampleBtn.addEventListener("click", tryExample);
-  clearBtn.addEventListener("click", clearAll);
-  copyBtn.addEventListener("click", copyResult);
+      chainLog = [];
+      currentSeed = seed;
+      runChainStep(seed);
+    }
 
-  loadWeather();
-  loadFragment();
-  updateCount();
-  renderWeatherUI();
-  renderChain();
-  updateRouterLink();
-  nextBtn.disabled = true;
+    function continueChain() {
+      if (!loaded) {
+        statusText.textContent = 'Load fragments first';
+        return;
+      }
 
-  if (inputEl.value.trim()) {
-    buildChain(2);
-    statusEl.textContent = "Fragment loaded into chain.";
-  }
-})();
-</script>
+      if (!currentSeed) {
+        statusText.textContent = 'Begin chain first';
+        return;
+      }
+
+      runChainStep(currentSeed);
+    }
+
+    async function copyResult() {
+      if (!currentResult) {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      const text = [
+        currentResult.current,
+        '',
+        currentResult.incoming,
+        '',
+        currentResult.collision,
+        '',
+        currentResult.next,
+        '',
+        chainLog.join('\n\n')
+      ].join('\n');
+
+      try {
+        await navigator.clipboard.writeText(text);
+        statusText.textContent = 'Copied';
+      } catch (error) {
+        statusText.textContent = 'Copy failed';
+      }
+    }
+
+    function clearAll() {
+      currentSeed = '';
+      currentResult = null;
+      chainLog = [];
+
+      currentFragmentText.textContent = '';
+      incomingFragmentText.textContent = '';
+      collisionText.textContent = '';
+      nextFragmentText.textContent = '';
+      chainLogText.textContent = '';
+
+      resultList.style.display = 'none';
+      deeperLink.style.display = 'none';
+      statusText.textContent = loaded ? 'Loaded' : 'Waiting';
+    }
+
+    loadBtn.addEventListener('click', loadSystem);
+    beginBtn.addEventListener('click', beginChain);
+    continueBtn.addEventListener('click', continueChain);
+    copyBtn.addEventListener('click', copyResult);
+    clearBtn.addEventListener('click', clearAll);
+  </script>
 </body>
 </html>
