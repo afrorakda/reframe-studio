@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragment System Test | REFRAME Studio</title>
+  <meta name="description" content="Quiet test page for the REFRAME fragment system." />
+  <style>
+    :root{
+      --bg-top:#081331;
+      --bg-mid:#0b1f4f;
+      --bg-bottom:#07112b;
+      --card-outer:rgba(35,55,122,0.55);
+      --card-outer-line:rgba(122,145,255,0.18);
+      --card-inner:rgba(4,11,40,0.92);
+      --card-inner-line:rgba(103,129,255,0.14);
+      --text:#f4f7ff;
+      --muted:#b7c2f0;
+      --soft:#96a5df;
+      --pill-bg:rgba(74,62,163,0.24);
+      --pill-line:rgba(124,108,255,0.45);
+      --button:#ffffff;
+      --button-text:#081331;
+      --button-soft:rgba(255,255,255,0.08);
+      --button-soft-text:#eef2ff;
+      --button-line:rgba(255,255,255,0.1);
+      --result-card:rgba(255,255,255,0.04);
+      --result-line:rgba(255,255,255,0.08);
+      --radius-outer:26px;
+      --radius-inner:20px;
+      --shadow:0 20px 56px rgba(0,0,0,0.28);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(53,94,255,0.24), transparent 30%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(760px, calc(100% - 22px));
+      margin:0 auto;
+      padding:16px 0 24px;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:15px;
+      line-height:1.4;
+      color:var(--muted);
+      margin-bottom:12px;
+      opacity:0.95;
+    }
+
+    .shell{
+      background:var(--card-outer);
+      border:1px solid var(--card-outer-line);
+      border-radius:26px;
+      padding:16px 10px 10px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:38px;
+      padding:0 14px;
+      border-radius:999px;
+      background:var(--pill-bg);
+      border:1px solid var(--pill-line);
+      color:#e8ddff;
+      font-size:14px;
+      letter-spacing:-0.01em;
+      margin-bottom:12px;
+    }
+
+    .hero-title{
+      margin:0 0 4px 0;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:-0.05em;
+      font-weight:800;
+    }
+
+    .hero-desc{
+      margin:0 0 12px 0;
+      font-size:15px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    .inner{
+      background:var(--card-inner);
+      border:1px solid var(--card-inner-line);
+      border-radius:20px;
+      padding:16px 10px 12px;
+    }
+
+    .button-stack{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      margin-top:10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      font:inherit;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      cursor:pointer;
+      transition:transform .05s ease, opacity .18s ease;
+    }
+
+    button:active{
+      transform:translateY(1px);
+    }
+
+    .btn-primary{
+      background:var(--button);
+      color:var(--button-text);
+    }
+
+    .btn-soft{
+      background:var(--button-soft);
+      color:var(--button-soft-text);
+      border:1px solid var(--button-line);
+    }
+
+    .meta{
+      margin-top:12px;
+      display:grid;
+      gap:8px;
+    }
+
+    .meta-card,
+    .result-card{
+      background:var(--result-card);
+      border:1px solid var(--result-line);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .meta-label{
+      font-size:10px;
+      line-height:1.4;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#d7deff;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .meta-text{
+      margin:0;
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+      white-space:pre-wrap;
+    }
+
+    .result-list{
+      margin-top:12px;
+      display:grid;
+      gap:7px;
+    }
+
+    .result-fragment{
+      margin:0;
+      font-size:14px;
+      line-height:1.5;
+      color:var(--text);
+      white-space:pre-wrap;
+    }
+
+    .status{
+      margin-top:10px;
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+    }
+
+    .footer{
+      margin-top:12px;
+      font-size:12px;
+      line-height:1.45;
+      color:var(--soft);
+      text-align:center;
+    }
+
+    @media (min-width: 761px){
+      .page{
+        width:min(860px, calc(100% - 40px));
+        padding:28px 0 40px;
+      }
+
+      .back-link{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .shell{
+        padding:34px;
+        border-radius:38px;
+      }
+
+      .pill{
+        min-height:62px;
+        padding:0 28px;
+        font-size:22px;
+        margin-bottom:28px;
+      }
+
+      .hero-title{
+        font-size:74px;
+        margin-bottom:12px;
+      }
+
+      .hero-desc{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .inner{
+        padding:30px;
+        border-radius:30px;
+      }
+
+      .button-stack{
+        gap:14px;
+        margin-top:20px;
+      }
+
+      button{
+        min-height:74px;
+        border-radius:22px;
+        font-size:24px;
+      }
+
+      .meta-card,
+      .result-card{
+        border-radius:22px;
+        padding:18px;
+      }
+
+      .meta-label{
+        font-size:13px;
+      }
+
+      .meta-text{
+        font-size:17px;
+      }
+
+      .result-fragment{
+        font-size:18px;
+      }
+
+      .status{
+        margin-top:16px;
+        font-size:17px;
+      }
+
+      .footer{
+        font-size:15px;
+        margin-top:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back-link" href="./fragment-router.html">← Back to Fragment Router</a>
+
+    <section class="shell">
+      <div class="pill">Fragment system</div>
+
+      <h1 class="hero-title">Fragments</h1>
+      <p class="hero-desc">Mix the pool. Drift the tone.</p>
+
+      <section class="inner">
+        <div class="button-stack">
+          <button class="btn-primary" id="loadBtn">Load fragments</button>
+          <button class="btn-soft" id="sample12Btn">Sample 12</button>
+          <button class="btn-soft" id="sample24Btn">Sample 24</button>
+          <button class="btn-soft" id="copyBtn">Copy result</button>
+        </div>
+
+        <div class="status" id="statusText">Waiting</div>
+
+        <div class="meta" id="metaWrap">
+          <div class="meta-card">
+            <div class="meta-label">System</div>
+            <p class="meta-text" id="systemMeta">Not loaded</p>
+          </div>
+        </div>
+
+        <div class="result-list" id="resultList"></div>
+      </section>
+    </section>
+
+    <div class="footer">No login · No tracking · Runs entirely in browser</div>
+  </main>
+
+  <script src="./fragment-system.js"></script>
+  <script>
+    const loadBtn = document.getElementById('loadBtn');
+    const sample12Btn = document.getElementById('sample12Btn');
+    const sample24Btn = document.getElementById('sample24Btn');
+    const copyBtn = document.getElementById('copyBtn');
+    const statusText = document.getElementById('statusText');
+    const systemMeta = document.getElementById('systemMeta');
+    const resultList = document.getElementById('resultList');
+
+    let currentFragments = [];
+
+    function renderState(state) {
+      const sourceLines = state.sources.map((source) => {
+        if (source.ok) {
+          return `${source.path} (${source.count})`;
+        }
+        return `${source.path} (failed)`;
+      });
+
+      systemMeta.textContent =
+`total: ${state.total}
+short: ${state.counts.short}
+half: ${state.counts.half}
+full: ${state.counts.full}
+
+sources:
+${sourceLines.join('\n')}`;
+    }
+
+    function renderFragments(fragments) {
+      resultList.innerHTML = '';
+
+      fragments.forEach((fragment, index) => {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+
+        const label = document.createElement('div');
+        label.className = 'meta-label';
+        label.textContent = `Fragment ${index + 1}`;
+
+        const text = document.createElement('p');
+        text.className = 'result-fragment';
+        text.textContent = fragment;
+
+        card.appendChild(label);
+        card.appendChild(text);
+        resultList.appendChild(card);
+      });
+    }
+
+    async function loadSystem() {
+      try {
+        statusText.textContent = 'Loading';
+        const state = await window.REFRAMEFragmentSystem.load();
+        renderState(state);
+        statusText.textContent = 'Loaded';
+      } catch (error) {
+        statusText.textContent = 'Load failed';
+        systemMeta.textContent = String(error.message || error);
+      }
+    }
+
+    function sample(count) {
+      try {
+        currentFragments = window.REFRAMEFragmentSystem.pickMixed(count);
+        renderFragments(currentFragments);
+        statusText.textContent = `Mixed ${count}`;
+      } catch (error) {
+        statusText.textContent = 'Sample failed';
+      }
+    }
+
+    async function copyResult() {
+      if (!currentFragments.length) {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      const text = currentFragments.join('\n\n');
+
+      try {
+        await navigator.clipboard.writeText(text);
+        statusText.textContent = 'Copied';
+      } catch (error) {
+        statusText.textContent = 'Copy failed';
+      }
+    }
+
+    loadBtn.addEventListener('click', loadSystem);
+    sample12Btn.addEventListener('click', () => sample(12));
+    sample24Btn.addEventListener('click', () => sample(24));
+    copyBtn.addEventListener('click', copyResult);
+  </script>
+</body>
+</html>
