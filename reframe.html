@@ -1,554 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reframe | REFRAME Studio</title>
-  <meta name="description" content="Turn one bad reply into a clearer frame. No login. No tracking. Runs entirely in your browser." />
-  <style>
-    :root{
-      --bg-top:#081331;
-      --bg-mid:#0b1f4f;
-      --bg-bottom:#07112b;
-      --card-outer:rgba(35,55,122,0.55);
-      --card-outer-line:rgba(122,145,255,0.18);
-      --card-inner:rgba(4,11,40,0.92);
-      --card-inner-line:rgba(103,129,255,0.14);
-      --text:#f4f7ff;
-      --muted:#b7c2f0;
-      --soft:#96a5df;
-      --pill-bg:rgba(74,62,163,0.24);
-      --pill-line:rgba(124,108,255,0.45);
-      --textarea-bg:#02081f;
-      --textarea-line:rgba(93,116,236,0.2);
-      --button:#ffffff;
-      --button-text:#081331;
-      --button-soft:rgba(255,255,255,0.08);
-      --button-soft-text:#eef2ff;
-      --button-line:rgba(255,255,255,0.1);
-      --result-card:rgba(255,255,255,0.04);
-      --result-line:rgba(255,255,255,0.08);
-      --radius-outer:26px;
-      --radius-inner:20px;
-      --radius-textarea:16px;
-      --shadow:0 20px 56px rgba(0,0,0,0.28);
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reframe | REFRAME Studio</title>
 
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      padding:0;
-      min-height:100%;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top right, rgba(53,94,255,0.24), transparent 30%),
-        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
-    }
+<style>
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+background:linear-gradient(180deg,#081331,#0b1f4f,#07112b);
+color:#f4f7ff;
+}
 
-    a{
-      color:inherit;
-      text-decoration:none;
-    }
+.page{
+max-width:680px;
+margin:auto;
+padding:20px;
+}
 
-    .page{
-      width:min(760px, calc(100% - 22px));
-      margin:0 auto;
-      padding:16px 0 24px;
-    }
+.back{
+color:#b7c2f0;
+text-decoration:none;
+font-size:14px;
+}
 
-    .back-link{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:15px;
-      line-height:1.4;
-      color:var(--muted);
-      margin-bottom:12px;
-      opacity:0.95;
-    }
+.card{
+background:#0b163a;
+border-radius:22px;
+padding:20px;
+margin-top:14px;
+box-shadow:0 20px 50px rgba(0,0,0,0.35);
+}
 
-    .shell{
-      background:var(--card-outer);
-      border:1px solid var(--card-outer-line);
-      border-radius:var(--radius-outer);
-      padding:16px 10px 10px;
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(6px);
-      -webkit-backdrop-filter:blur(6px);
-    }
+h1{
+margin:10px 0 4px;
+font-size:34px;
+}
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:38px;
-      padding:0 14px;
-      border-radius:999px;
-      background:var(--pill-bg);
-      border:1px solid var(--pill-line);
-      color:#e8ddff;
-      font-size:14px;
-      letter-spacing:-0.01em;
-      margin-bottom:12px;
-    }
+h2{
+margin:0 0 10px;
+font-size:26px;
+}
 
-    .hero-title{
-      margin:0 0 4px 0;
-      font-size:34px;
-      line-height:1;
-      letter-spacing:-0.05em;
-      font-weight:800;
-    }
+p{
+color:#b7c2f0;
+margin-top:0;
+}
 
-    .hero-desc{
-      margin:0 0 12px 0;
-      font-size:15px;
-      line-height:1.45;
-      color:var(--muted);
-    }
+textarea{
+width:100%;
+height:120px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.08);
+background:#02081f;
+color:#fff;
+padding:14px;
+font-size:15px;
+resize:none;
+}
 
-    .inner{
-      background:var(--card-inner);
-      border:1px solid var(--card-inner-line);
-      border-radius:var(--radius-inner);
-      padding:16px 10px 12px;
-    }
+button{
+width:100%;
+margin-top:10px;
+height:46px;
+border-radius:14px;
+border:none;
+font-weight:700;
+font-size:15px;
+cursor:pointer;
+}
 
-    .mutation-title{
-      margin:0 0 6px 0;
-      font-size:27px;
-      line-height:1.03;
-      letter-spacing:-0.04em;
-      font-weight:800;
-    }
+.primary{
+background:#fff;
+color:#081331;
+}
 
-    .mutation-desc{
-      margin:0 0 12px 0;
-      font-size:14px;
-      line-height:1.45;
-      color:var(--muted);
-    }
+.soft{
+background:rgba(255,255,255,0.08);
+color:#fff;
+}
 
-    .label{
-      display:block;
-      margin:0 0 7px 0;
-      font-size:14px;
-      line-height:1.35;
-      font-weight:700;
-      color:var(--text);
-    }
+.status{
+font-size:12px;
+color:#96a5df;
+margin-top:10px;
+display:flex;
+justify-content:space-between;
+}
 
-    textarea{
-      width:100%;
-      min-height:118px;
-      resize:vertical;
-      border:none;
-      outline:none;
-      border-radius:var(--radius-textarea);
-      background:var(--textarea-bg);
-      border:1px solid var(--textarea-line);
-      color:var(--text);
-      padding:14px;
-      font:inherit;
-      font-size:15px;
-      line-height:1.5;
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02);
-    }
+.deeper{
+display:none;
+font-size:12px;
+color:#96a5df;
+text-decoration:none;
+}
 
-    textarea::placeholder{
-      color:var(--soft);
-    }
+.result{
+display:none;
+margin-top:14px;
+padding:12px;
+border-radius:14px;
+background:rgba(255,255,255,0.04);
+}
 
-    .button-stack{
-      display:flex;
-      flex-direction:column;
-      gap:7px;
-      margin-top:10px;
-    }
-
-    button{
-      appearance:none;
-      border:none;
-      width:100%;
-      min-height:46px;
-      border-radius:14px;
-      font:inherit;
-      font-size:15px;
-      font-weight:800;
-      letter-spacing:-0.02em;
-      cursor:pointer;
-      transition:transform .05s ease, opacity .18s ease, background .18s ease;
-    }
-
-    button:active{
-      transform:translateY(1px);
-    }
-
-    .btn-primary{
-      background:var(--button);
-      color:var(--button-text);
-    }
-
-    .btn-soft{
-      background:var(--button-soft);
-      color:var(--button-soft-text);
-      border:1px solid var(--button-line);
-    }
-
-    .subrow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:10px;
-      min-height:18px;
-    }
-
-    .status{
-      font-size:12px;
-      line-height:1.4;
-      color:var(--soft);
-    }
-
-    .deep-link{
-      font-size:12px;
-      line-height:1.4;
-      color:var(--soft);
-      opacity:0.78;
-      white-space:nowrap;
-      display:none;
-    }
-
-    .result{
-      margin-top:12px;
-      display:none;
-      gap:8px;
-      flex-direction:column;
-    }
-
-    .result-card{
-      background:var(--result-card);
-      border:1px solid var(--result-line);
-      border-radius:14px;
-      padding:10px;
-    }
-
-    .result-label{
-      font-size:10px;
-      line-height:1.4;
-      letter-spacing:0.08em;
-      text-transform:uppercase;
-      color:#d7deff;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-
-    .result-text{
-      margin:0;
-      font-size:14px;
-      line-height:1.5;
-      color:var(--text);
-      white-space:pre-wrap;
-    }
-
-    .routes{
-      margin-top:8px;
-      padding-top:8px;
-      border-top:1px solid rgba(255,255,255,0.08);
-      display:grid;
-      gap:6px;
-    }
-
-    .route-link{
-      font-size:13px;
-      line-height:1.4;
-      color:var(--muted);
-    }
-
-    .route-link strong{
-      color:var(--text);
-      font-weight:700;
-    }
-
-    .footer{
-      margin-top:12px;
-      font-size:12px;
-      line-height:1.45;
-      color:var(--soft);
-      text-align:center;
-    }
-
-    @media (min-width: 761px){
-      .page{
-        width:min(860px, calc(100% - 40px));
-        padding:28px 0 40px;
-      }
-
-      .back-link{
-        font-size:22px;
-        margin-bottom:24px;
-      }
-
-      .shell{
-        padding:34px;
-        border-radius:38px;
-      }
-
-      .pill{
-        min-height:62px;
-        padding:0 28px;
-        font-size:22px;
-        margin-bottom:28px;
-      }
-
-      .hero-title{
-        font-size:74px;
-        margin-bottom:12px;
-      }
-
-      .hero-desc{
-        font-size:22px;
-        margin-bottom:24px;
-      }
-
-      .inner{
-        padding:30px;
-        border-radius:30px;
-      }
-
-      .mutation-title{
-        font-size:56px;
-        margin-bottom:12px;
-      }
-
-      .mutation-desc{
-        font-size:22px;
-        margin-bottom:22px;
-      }
-
-      .label{
-        font-size:21px;
-        margin-bottom:14px;
-      }
-
-      textarea{
-        min-height:210px;
-        padding:24px 26px;
-        font-size:24px;
-        border-radius:24px;
-      }
-
-      .button-stack{
-        gap:14px;
-        margin-top:20px;
-      }
-
-      button{
-        min-height:74px;
-        border-radius:22px;
-        font-size:24px;
-      }
-
-      .subrow{
-        margin-top:16px;
-      }
-
-      .status,
-      .deep-link{
-        font-size:17px;
-      }
-
-      .result{
-        margin-top:24px;
-        gap:12px;
-      }
-
-      .result-card{
-        border-radius:22px;
-        padding:18px;
-      }
-
-      .result-label{
-        font-size:13px;
-        margin-bottom:6px;
-      }
-
-      .result-text{
-        font-size:18px;
-      }
-
-      .routes{
-        margin-top:14px;
-        padding-top:14px;
-        gap:10px;
-      }
-
-      .route-link{
-        font-size:17px;
-      }
-
-      .footer{
-        font-size:15px;
-        margin-top:18px;
-      }
-    }
-  </style>
+.footer{
+text-align:center;
+font-size:12px;
+margin-top:16px;
+color:#96a5df;
+}
+</style>
 </head>
+
 <body>
-  <main class="page">
-    <a class="back-link" href="./mutation-router.html">← Back to Mutation Router</a>
 
-    <section class="shell">
-      <div class="pill">One mutation</div>
+<div class="page">
 
-      <h1 class="hero-title">Reframe</h1>
-      <p class="hero-desc">Take the hit. Change the frame.</p>
+<a class="back" href="./mutation-router.html">← Back to Mutation Router</a>
 
-      <section class="inner">
-        <h2 class="mutation-title">Criticism → New frame</h2>
-        <p class="mutation-desc">Turn one bad reply into a clearer perspective.</p>
+<h1>Reframe</h1>
+<p>Take the hit. Change the frame.</p>
 
-        <label class="label" for="inputText">Paste one bad reply</label>
+<div class="card">
 
-        <textarea id="inputText" placeholder="Example:
+<h2>Criticism → New frame</h2>
+<p>Turn one bad reply into a clearer perspective.</p>
+
+<textarea id="input" placeholder="Example:
 
 This is too abstract.
 Nobody needs this.
 You always say vague things."></textarea>
 
-        <div class="button-stack">
-          <button class="btn-primary" id="generateBtn">Generate</button>
-          <button class="btn-soft" id="exampleBtn">Try example</button>
-          <button class="btn-soft" id="copyBtn">Copy result</button>
-          <button class="btn-soft" id="clearBtn">Clear</button>
-        </div>
+<button class="primary" onclick="generate()">Generate</button>
+<button class="soft" onclick="example()">Try example</button>
+<button class="soft" onclick="copy()">Copy result</button>
+<button class="soft" onclick="clearAll()">Clear</button>
 
-        <div class="subrow">
-          <div class="status" id="statusText">Waiting for input</div>
-          <a class="deep-link" id="deepLink" href="./mutation-router.html">deeper</a>
-        </div>
+<div class="status">
+<span id="status">Waiting for input</span>
+<a id="deeper" class="deeper" href="./mutation-router.html">deeper</a>
+</div>
 
-        <div class="result" id="resultWrap">
-          <div class="result-card">
-            <div class="result-label">New frame</div>
-            <p class="result-text" id="resultText"></p>
-          </div>
+<div id="result" class="result"></div>
 
-          <div class="routes">
-            <a class="route-link" href="./hook-generator.html"><strong>hook</strong> →</a>
-            <a class="route-link" href="./mutation-router.html"><strong>another route</strong> →</a>
-          </div>
-        </div>
-      </section>
-    </section>
+</div>
 
-    <div class="footer">No login · No tracking · Runs entirely in browser</div>
-  </main>
+<div class="footer">
+No login · No tracking · Runs entirely in browser
+</div>
 
-  <script>
-    const inputText = document.getElementById('inputText');
-    const generateBtn = document.getElementById('generateBtn');
-    const exampleBtn = document.getElementById('exampleBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const statusText = document.getElementById('statusText');
-    const resultWrap = document.getElementById('resultWrap');
-    const resultText = document.getElementById('resultText');
-    const deepLink = document.getElementById('deepLink');
+</div>
 
-    const exampleReply = `This is too abstract.
+<script>
+
+const exampleText=`This is too abstract.
 Nobody needs this.
-You always say vague things.`;
+You always say vague things.`
 
-    function cleanText(text) {
-      return text.replace(/\r/g, '').trim();
-    }
+function generate(){
 
-    function shorten(text, maxLength) {
-      const value = text.replace(/\s+/g, ' ').trim();
-      if (value.length <= maxLength) return value;
-      return value.slice(0, maxLength).trim().replace(/[.,;:!?-]*$/, '') + '…';
-    }
+let input=document.getElementById("input").value.trim()
 
-    function pickFrame(text) {
-      const lower = text.toLowerCase();
+if(!input){
+document.getElementById("status").innerText="Paste one bad reply first"
+return
+}
 
-      if (lower.includes('abstract') || lower.includes('vague')) {
-        return 'The reaction may be asking for a clearer example, not telling you to stop.';
-      }
+let frame="Inside the criticism there may be a clue about what wants to become clearer."
 
-      if (lower.includes('nobody needs') || lower.includes('useless')) {
-        return 'The attack may contain a demand for sharper relevance.';
-      }
+if(input.toLowerCase().includes("abstract") || input.toLowerCase().includes("vague")){
+frame="The reaction may be asking for a clearer example, not telling you to stop."
+}
 
-      if (lower.includes('too long') || lower.includes('boring')) {
-        return 'The criticism may be pushing the idea toward a tighter form.';
-      }
+if(input.toLowerCase().includes("nobody")){
+frame="The attack may contain a demand for sharper relevance."
+}
 
-      if (lower.includes('wrong') || lower.includes('stupid')) {
-        return 'Even a blunt attack can point at what needs more grounding.';
-      }
+document.getElementById("result").style.display="block"
+document.getElementById("result").innerText=frame
+document.getElementById("status").innerText="Frame changed"
 
-      return 'Inside the criticism there may be a clue about what wants to become clearer.';
-    }
+document.getElementById("deeper").style.display="inline"
 
-    function generateResult() {
-      const value = cleanText(inputText.value);
+}
 
-      if (!value) {
-        resultWrap.style.display = 'none';
-        deepLink.style.display = 'none';
-        statusText.textContent = 'Paste one bad reply first';
-        return;
-      }
+function example(){
+document.getElementById("input").value=exampleText
+generate()
+}
 
-      const frame = shorten(pickFrame(value), 220);
-      resultText.textContent = frame;
-      resultWrap.style.display = 'flex';
-      statusText.textContent = 'Frame changed';
-      deepLink.style.display = 'inline';
-    }
+function copy(){
+let text=document.getElementById("result").innerText
 
-    function clearAll() {
-      inputText.value = '';
-      resultText.textContent = '';
-      resultWrap.style.display = 'none';
-      deepLink.style.display = 'none';
-      statusText.textContent = 'Waiting for input';
-    }
+if(!text) return
 
-    async function copyResult() {
-      const text = resultText.textContent.trim();
+navigator.clipboard.writeText(text)
+document.getElementById("status").innerText="Copied"
+}
 
-      if (!text) {
-        statusText.textContent = 'Nothing to copy';
-        return;
-      }
+function clearAll(){
+document.getElementById("input").value=""
+document.getElementById("result").style.display="none"
+document.getElementById("status").innerText="Waiting for input"
+document.getElementById("deeper").style.display="none"
+}
 
-      try {
-        await navigator.clipboard.writeText(text);
-        statusText.textContent = 'Copied';
-      } catch (error) {
-        const temp = document.createElement('textarea');
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        statusText.textContent = 'Copied';
-      }
-    }
+</script>
 
-    generateBtn.addEventListener('click', generateResult);
-    exampleBtn.addEventListener('click', () => {
-      inputText.value = exampleReply;
-      generateResult();
-    });
-    copyBtn.addEventListener('click', copyResult);
-    clearBtn.addEventListener('click', clearAll);
-  </script>
 </body>
 </html>
