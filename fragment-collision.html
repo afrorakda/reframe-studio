@@ -428,12 +428,12 @@
           <div class="result-card">
             <div class="history-head">
               <div class="result-label" style="margin-bottom:0;">Collision history</div>
-              <button class="history-clear" id="clearHistoryBtn">Clear history</button>
+              <button class="history-clear" id="clearHistoryBtn">Wake up</button>
             </div>
             <div class="history-list" id="historyList">
               <div class="history-item">
-                <div class="history-meta">No collisions yet</div>
-                <div class="history-pair">Pick two fragments and collide them.</div>
+                <div class="history-meta">Nothing stayed</div>
+                <div class="history-pair">Only the latest echoes appear here.</div>
               </div>
             </div>
           </div>
@@ -459,8 +459,8 @@
     const nextText = document.getElementById('nextText');
     const historyList = document.getElementById('historyList');
 
-    const HISTORY_KEY = 'reframe_collision_history_v1';
-    const MAX_HISTORY = 5;
+    const HISTORY_KEY = 'reframe_collision_history_v2';
+    const MAX_HISTORY = 2;
 
     let fragmentPool = [];
     let chosenA = null;
@@ -566,7 +566,6 @@
         pickBtn.disabled = false;
         collideBtn.disabled = true;
         statusText.textContent = `Loaded ${fragmentPool.length} fragments`;
-        alert(`Loaded ${fragmentPool.length} fragments`);
       } catch (err) {
         statusText.textContent = 'Load failed';
       }
@@ -623,7 +622,6 @@
       const seed = seedFromPair(a, b);
       const reading = readingTemplates[seed % readingTemplates.length];
       const next = nextTemplates[(seed * 3) % nextTemplates.length];
-
       return { reading, next };
     }
 
@@ -650,7 +648,7 @@
       return date.toLocaleString([], {
         month: 'short',
         day: 'numeric',
-        hour: '2-digit',
+        hour: 'numeric',
         minute: '2-digit'
       });
     }
@@ -661,8 +659,8 @@
       if (!items.length) {
         historyList.innerHTML = `
           <div class="history-item">
-            <div class="history-meta">No collisions yet</div>
-            <div class="history-pair">Pick two fragments and collide them.</div>
+            <div class="history-meta">Nothing stayed</div>
+            <div class="history-pair">Only the latest echoes appear here.</div>
           </div>
         `;
         return;
@@ -680,7 +678,7 @@
     function clearHistory() {
       localStorage.removeItem(HISTORY_KEY);
       renderHistory();
-      statusText.textContent = 'History cleared';
+      statusText.textContent = 'Gone';
     }
 
     function collideFragments() {
