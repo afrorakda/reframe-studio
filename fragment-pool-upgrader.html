@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragment Pool Upgrader | REFRAME Studio</title>
+  <meta name="description" content="Upgrade fragment-pool.json into tone-based objects. No login. No tracking. Runs entirely in your browser." />
+  <style>
+    :root{
+      --bg-top:#081331;
+      --bg-mid:#0b1f4f;
+      --bg-bottom:#07112b;
+      --card-outer:rgba(35,55,122,0.55);
+      --card-outer-line:rgba(122,145,255,0.18);
+      --card-inner:rgba(4,11,40,0.92);
+      --card-inner-line:rgba(103,129,255,0.14);
+      --text:#f4f7ff;
+      --muted:#b7c2f0;
+      --soft:#96a5df;
+      --pill-bg:rgba(74,62,163,0.24);
+      --pill-line:rgba(124,108,255,0.45);
+      --textarea-bg:#02081f;
+      --textarea-line:rgba(93,116,236,0.2);
+      --button:#ffffff;
+      --button-text:#081331;
+      --button-soft:rgba(255,255,255,0.08);
+      --button-soft-text:#eef2ff;
+      --button-line:rgba(255,255,255,0.1);
+      --result-card:rgba(255,255,255,0.04);
+      --result-line:rgba(255,255,255,0.08);
+      --radius-outer:26px;
+      --radius-inner:20px;
+      --radius-textarea:16px;
+      --shadow:0 20px 56px rgba(0,0,0,0.28);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(53,94,255,0.24), transparent 30%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(820px, calc(100% - 22px));
+      margin:0 auto;
+      padding:16px 0 24px;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:15px;
+      line-height:1.4;
+      color:var(--muted);
+      margin-bottom:12px;
+      opacity:0.95;
+    }
+
+    .shell{
+      background:var(--card-outer);
+      border:1px solid var(--card-outer-line);
+      border-radius:26px;
+      padding:16px 10px 10px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:38px;
+      padding:0 14px;
+      border-radius:999px;
+      background:var(--pill-bg);
+      border:1px solid var(--pill-line);
+      color:#e8ddff;
+      font-size:14px;
+      letter-spacing:-0.01em;
+      margin-bottom:12px;
+    }
+
+    .hero-title{
+      margin:0 0 4px 0;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:-0.05em;
+      font-weight:800;
+    }
+
+    .hero-desc{
+      margin:0 0 12px 0;
+      font-size:15px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    .inner{
+      background:var(--card-inner);
+      border:1px solid var(--card-inner-line);
+      border-radius:20px;
+      padding:16px 10px 12px;
+    }
+
+    .section-title{
+      margin:0 0 6px 0;
+      font-size:16px;
+      line-height:1.35;
+      font-weight:800;
+    }
+
+    .section-desc{
+      margin:0 0 10px 0;
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+    }
+
+    textarea{
+      width:100%;
+      min-height:160px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:var(--radius-textarea);
+      background:var(--textarea-bg);
+      border:1px solid var(--textarea-line);
+      color:var(--text);
+      padding:14px;
+      font:inherit;
+      font-size:14px;
+      line-height:1.5;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    textarea::placeholder{
+      color:var(--soft);
+    }
+
+    .button-stack{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+      margin-top:10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      font:inherit;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      cursor:pointer;
+      transition:transform .05s ease, opacity .18s ease;
+    }
+
+    button:active{
+      transform:translateY(1px);
+    }
+
+    .btn-primary{
+      background:var(--button);
+      color:var(--button-text);
+    }
+
+    .btn-soft{
+      background:var(--button-soft);
+      color:var(--button-soft-text);
+      border:1px solid var(--button-line);
+    }
+
+    .status{
+      margin-top:10px;
+      font-size:12px;
+      line-height:1.4;
+      color:var(--soft);
+    }
+
+    .meta{
+      margin-top:12px;
+      display:grid;
+      gap:8px;
+    }
+
+    .meta-card,
+    .result-card{
+      background:var(--result-card);
+      border:1px solid var(--result-line);
+      border-radius:14px;
+      padding:10px;
+    }
+
+    .meta-label{
+      font-size:10px;
+      line-height:1.4;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:#d7deff;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .meta-text{
+      margin:0;
+      font-size:13px;
+      line-height:1.45;
+      color:var(--muted);
+      white-space:pre-wrap;
+    }
+
+    .result-wrap{
+      margin-top:12px;
+      display:grid;
+      gap:8px;
+    }
+
+    .tone-grid{
+      display:grid;
+      gap:8px;
+    }
+
+    .result-output{
+      white-space:pre-wrap;
+      word-break:break-word;
+      margin:0;
+      font-size:14px;
+      line-height:1.5;
+      color:var(--text);
+    }
+
+    .footer{
+      margin-top:12px;
+      font-size:12px;
+      line-height:1.45;
+      color:var(--soft);
+      text-align:center;
+    }
+
+    @media (min-width: 761px){
+      .page{
+        width:min(940px, calc(100% - 40px));
+        padding:28px 0 40px;
+      }
+
+      .back-link{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .shell{
+        padding:34px;
+        border-radius:38px;
+      }
+
+      .pill{
+        min-height:62px;
+        padding:0 28px;
+        font-size:22px;
+        margin-bottom:28px;
+      }
+
+      .hero-title{
+        font-size:74px;
+        margin-bottom:12px;
+      }
+
+      .hero-desc{
+        font-size:22px;
+        margin-bottom:24px;
+      }
+
+      .inner{
+        padding:30px;
+        border-radius:30px;
+      }
+
+      .section-title{
+        font-size:22px;
+        margin-bottom:10px;
+      }
+
+      .section-desc{
+        font-size:17px;
+        margin-bottom:14px;
+      }
+
+      textarea{
+        min-height:220px;
+        padding:22px;
+        font-size:18px;
+        border-radius:24px;
+      }
+
+      .button-stack{
+        gap:14px;
+        margin-top:20px;
+      }
+
+      button{
+        min-height:68px;
+        border-radius:22px;
+        font-size:22px;
+      }
+
+      .status{
+        margin-top:16px;
+        font-size:17px;
+      }
+
+      .meta-card,
+      .result-card{
+        border-radius:22px;
+        padding:18px;
+      }
+
+      .meta-label{
+        font-size:13px;
+      }
+
+      .meta-text{
+        font-size:17px;
+      }
+
+      .result-output{
+        font-size:17px;
+      }
+
+      .footer{
+        font-size:15px;
+        margin-top:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back-link" href="./fragment-system-test.html">← Back to Fragment System Test</a>
+
+    <section class="shell">
+      <div class="pill">Fragment evolution</div>
+
+      <h1 class="hero-title">Pool Upgrader</h1>
+      <p class="hero-desc">Turn old fragments into tone-based objects.</p>
+
+      <section class="inner">
+        <h2 class="section-title">Paste fragment-pool.json</h2>
+        <p class="section-desc">Works with string arrays and object arrays.</p>
+
+        <textarea id="inputJson" placeholder='Example:
+
+[
+  "Too abstract",
+  "Something is there",
+  "Not landing",
+  "Wrong frame",
+  "Maybe they care"
+]'></textarea>
+
+        <div class="button-stack">
+          <button class="btn-primary" id="upgradeBtn">Upgrade pool</button>
+          <button class="btn-soft" id="exampleBtn">Try example</button>
+          <button class="btn-soft" id="copyBtn">Copy result</button>
+          <button class="btn-soft" id="clearBtn">Clear</button>
+        </div>
+
+        <div class="status" id="statusText">Waiting</div>
+
+        <div class="meta">
+          <div class="meta-card">
+            <div class="meta-label">Counts</div>
+            <p class="meta-text" id="countsText">No data yet</p>
+          </div>
+        </div>
+
+        <div class="result-wrap">
+          <div class="result-card">
+            <div class="meta-label">Upgraded JSON</div>
+            <p class="result-output" id="outputJson"></p>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <div class="footer">No login · No tracking · Runs entirely in browser</div>
+  </main>
+
+  <script>
+    const inputJson = document.getElementById('inputJson');
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    const statusText = document.getElementById('statusText');
+    const countsText = document.getElementById('countsText');
+    const outputJson = document.getElementById('outputJson');
+
+    const exampleData = [
+      "Too abstract",
+      "Something is there",
+      "Not landing",
+      "Wrong frame",
+      "Maybe they care",
+      "Clumsy care",
+      "Wrong door",
+      "Maybe the reaction is the signal"
+    ];
+
+    let upgradedResult = '';
+
+    function cleanText(value) {
+      return String(value || '')
+        .replace(/\r/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getFragmentText(item) {
+      if (typeof item === 'string') return cleanText(item);
+      if (item && typeof item === 'object') {
+        return cleanText(item.text || item.value || '');
+      }
+      return '';
+    }
+
+    function detectTone(text) {
+      const value = cleanText(text).toLowerCase();
+
+      const warmWords = [
+        'care', 'noticed', 'notice', 'gentle', 'kind', 'tried',
+        'attention', 'support', 'hold', 'stay', 'listen'
+      ];
+
+      const chaosWords = [
+        'wrong door', 'off', 'silence', 'not what you think',
+        'drift', 'strange', 'tilted', 'upside down', 'missing'
+      ];
+
+      const edgeWords = [
+        'too clean', 'too safe', 'too abstract', 'bad translation',
+        'clumsy', 'rough', 'frustration', 'not landing', 'wrong frame'
+      ];
+
+      const twistWords = [
+        'signal', 'experiment', 'answered', 'maybe the reply',
+        'maybe the reaction', 'maybe the silence', 'different story'
+      ];
+
+      if (twistWords.some(word => value.includes(word))) return 'twist';
+      if (chaosWords.some(word => value.includes(word))) return 'chaos';
+      if (edgeWords.some(word => value.includes(word))) return 'edge';
+      if (warmWords.some(word => value.includes(word))) return 'warm';
+
+      return 'calm';
+    }
+
+    function upgradePool(rawList) {
+      const seen = new Set();
+      const upgraded = [];
+      const counts = {
+        warm: 0,
+        calm: 0,
+        edge: 0,
+        chaos: 0,
+        twist: 0
+      };
+
+      rawList.forEach((item) => {
+        const text = getFragmentText(item);
+        if (!text) return;
+
+        const key = text.toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        const existingTone = item && typeof item === 'object' ? item.tone : '';
+        const tone = existingTone || detectTone(text);
+
+        upgraded.push({
+          text,
+          tone
+        });
+
+        counts[tone] += 1;
+      });
+
+      return { upgraded, counts };
+    }
+
+    function renderCounts(total, counts) {
+      countsText.textContent =
+`total: ${total}
+warm: ${counts.warm}
+calm: ${counts.calm}
+edge: ${counts.edge}
+chaos: ${counts.chaos}
+twist: ${counts.twist}`;
+    }
+
+    function runUpgrade() {
+      const raw = inputJson.value.trim();
+
+      if (!raw) {
+        statusText.textContent = 'Paste JSON first';
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+          statusText.textContent = 'JSON must be an array';
+          return;
+        }
+
+        const { upgraded, counts } = upgradePool(parsed);
+        upgradedResult = JSON.stringify(upgraded, null, 2);
+
+        outputJson.textContent = upgradedResult;
+        renderCounts(upgraded.length, counts);
+        statusText.textContent = 'Pool upgraded';
+      } catch (error) {
+        statusText.textContent = 'JSON parse failed';
+      }
+    }
+
+    async function copyResult() {
+      if (!upgradedResult) {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(upgradedResult);
+        statusText.textContent = 'Copied';
+      } catch (error) {
+        statusText.textContent = 'Copy failed';
+      }
+    }
+
+    function loadExample() {
+      inputJson.value = JSON.stringify(exampleData, null, 2);
+      runUpgrade();
+    }
+
+    function clearAll() {
+      inputJson.value = '';
+      upgradedResult = '';
+      outputJson.textContent = '';
+      countsText.textContent = 'No data yet';
+      statusText.textContent = 'Waiting';
+    }
+
+    upgradeBtn.addEventListener('click', runUpgrade);
+    exampleBtn.addEventListener('click', loadExample);
+    copyBtn.addEventListener('click', copyResult);
+    clearBtn.addEventListener('click', clearAll);
+  </script>
+</body>
+</html>
