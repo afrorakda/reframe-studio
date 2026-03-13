@@ -3,28 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Fragment Collision</title>
+  <title>Collision</title>
+  <meta name="description" content="Let two fragments become a different reading." />
   <style>
     :root{
       --bg:#03133f;
-      --bg2:#102766;
-      --panel:#23397f;
-      --card:#03124f;
-      --line:rgba(126,146,255,0.20);
-      --soft:rgba(255,255,255,0.72);
-      --text:#f5f7ff;
+      --panel:#2a3f89;
+      --card:#071757;
+      --card-2:#16235f;
+      --ink:#f4f6ff;
+      --soft:rgba(235,239,255,0.76);
       --muted:#aeb9f6;
-      --pill:#2a3170;
+      --line:rgba(126,146,255,0.18);
       --pill-line:rgba(115,102,255,0.55);
-      --button:#202a59;
+      --button:#24305f;
       --button-text:#f4f6ff;
       --button-main:#f2f2f5;
       --button-main-text:#0d1a4d;
       --shadow:0 20px 50px rgba(0,0,0,0.28);
-      --radius-xl:30px;
-      --radius-lg:24px;
-      --radius-md:18px;
-      --radius-sm:16px;
       --max:820px;
     }
 
@@ -36,7 +32,7 @@
         radial-gradient(1200px 700px at 80% 10%, rgba(74,93,195,0.28), transparent 55%),
         radial-gradient(900px 640px at 20% 80%, rgba(10,29,95,0.25), transparent 55%),
         linear-gradient(180deg,var(--bg) 0%, #041245 48%, #04103a 100%);
-      color:var(--text);
+      color:var(--ink);
       min-height:100vh;
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
@@ -47,20 +43,20 @@
     .wrap{
       width:min(var(--max), calc(100% - 24px));
       margin:0 auto;
-      padding:14px 0 30px;
+      padding:18px 0 36px;
     }
 
     .back{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:15px;
       color:var(--muted);
-      margin:2px 0 12px;
+      font-size:15px;
+      margin:6px 0 18px;
     }
 
     .shell{
-      background:linear-gradient(180deg, rgba(39,57,126,0.96), rgba(34,52,121,0.96));
+      background:linear-gradient(180deg, rgba(45,64,139,0.97), rgba(40,58,129,0.97));
       border:1px solid var(--line);
       border-radius:28px;
       padding:14px;
@@ -96,7 +92,7 @@
     h1{
       margin:0;
       font-size:28px;
-      line-height:1.05;
+      line-height:1.02;
       letter-spacing:-0.03em;
       font-weight:800;
     }
@@ -105,12 +101,12 @@
       margin:8px 0 14px;
       color:var(--soft);
       font-size:15px;
-      line-height:1.35;
-      max-width:640px;
+      line-height:1.42;
+      max-width:19em;
     }
 
     .card{
-      background:rgba(2,15,71,0.94);
+      background:rgba(2,15,71,0.95);
       border:1px solid rgba(121,142,255,0.16);
       border-radius:22px;
       padding:12px;
@@ -122,30 +118,27 @@
       margin-bottom:10px;
     }
 
-    button{
+    button.action{
+      appearance:none;
+      border:none;
       width:100%;
-      border:1px solid rgba(130,147,236,0.18);
       border-radius:18px;
       min-height:52px;
       padding:10px 16px;
+      font:inherit;
       font-size:16px;
       font-weight:760;
       background:var(--button);
       color:var(--button-text);
+      border:1px solid rgba(130,147,236,0.18);
       cursor:pointer;
-      transition:transform .04s ease, opacity .15s ease, background .15s ease;
       -webkit-tap-highlight-color:transparent;
     }
 
-    button:active{transform:scale(0.995)}
-    button.primary{
+    button.action.primary{
       background:var(--button-main);
       color:var(--button-main-text);
       border-color:transparent;
-    }
-    button:disabled{
-      opacity:0.48;
-      cursor:not-allowed;
     }
 
     .status-row{
@@ -153,46 +146,109 @@
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      margin:2px 2px 10px;
+      margin:12px 2px 8px;
       color:var(--muted);
       font-size:14px;
+      min-height:18px;
     }
 
     .deeper{
-      color:rgba(193,203,255,0.8);
+      color:rgba(193,203,255,0.45);
       font-size:14px;
       white-space:nowrap;
-      user-select:none;
-      cursor:pointer;
+      transition:opacity .2s ease, color .2s ease;
     }
 
-    .result-stack{
+    .deeper:hover,
+    .deeper:focus{
+      color:rgba(193,203,255,0.72);
+    }
+
+    .result-grid{
+      display:grid;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .result-card{
+      background:rgba(19,31,89,0.95);
+      border:1px solid rgba(121,142,255,0.16);
+      border-radius:20px;
+      padding:14px;
+    }
+
+    .result-label{
+      color:#dbe2ff;
+      font-size:14px;
+      font-weight:800;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .result-text{
+      color:var(--ink);
+      font-size:17px;
+      line-height:1.6;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    .history-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .history-clear{
+      appearance:none;
+      border:none;
+      background:transparent;
+      color:rgba(193,203,255,0.58);
+      font:inherit;
+      font-size:14px;
+      cursor:pointer;
+      padding:0;
+    }
+
+    .history-clear:hover,
+    .history-clear:focus{
+      color:rgba(193,203,255,0.82);
+    }
+
+    .history-list{
       display:grid;
       gap:10px;
     }
 
-    .box{
-      background:rgba(255,255,255,0.05);
-      border:1px solid rgba(130,147,236,0.14);
-      border-radius:16px;
-      padding:11px 12px;
+    .history-item{
+      background:rgba(12,23,73,0.9);
+      border:1px solid rgba(121,142,255,0.14);
+      border-radius:18px;
+      padding:12px;
     }
 
-    .label{
-      font-size:10px;
-      letter-spacing:0.18em;
-      text-transform:uppercase;
-      color:#d7ddff;
-      margin-bottom:6px;
-      font-weight:800;
+    .history-meta{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
     }
 
-    .value{
-      font-size:15px;
-      line-height:1.5;
-      color:var(--text);
+    .history-reading{
+      color:var(--ink);
+      font-size:16px;
+      line-height:1.55;
+      margin-bottom:8px;
       white-space:pre-wrap;
-      word-break:break-word;
+    }
+
+    .history-pair{
+      color:rgba(225,231,255,0.78);
+      font-size:14px;
+      line-height:1.5;
+      white-space:pre-wrap;
     }
 
     .footer{
@@ -209,8 +265,8 @@
       }
 
       .back{
-        font-size:18px;
-        margin:6px 0 18px;
+        font-size:24px;
+        margin:8px 0 22px;
       }
 
       .shell{
@@ -239,6 +295,7 @@
         margin:14px 0 24px;
         font-size:28px;
         line-height:1.34;
+        max-width:18em;
       }
 
       .card{
@@ -251,7 +308,7 @@
         margin-bottom:14px;
       }
 
-      button{
+      button.action{
         min-height:78px;
         padding:14px 18px;
         font-size:28px;
@@ -260,30 +317,61 @@
 
       .status-row{
         font-size:24px;
-        margin:4px 2px 14px;
+        margin:16px 2px 10px;
       }
 
       .deeper{
         font-size:24px;
       }
 
-      .result-stack{
+      .result-grid{
         gap:14px;
       }
 
-      .box{
+      .result-card{
         border-radius:22px;
-        padding:18px 20px;
+        padding:18px;
       }
 
-      .label{
-        font-size:14px;
+      .result-label{
+        font-size:20px;
+        margin-bottom:12px;
+      }
+
+      .result-text{
+        font-size:31px;
+        line-height:1.68;
+      }
+
+      .history-head{
+        margin-bottom:12px;
+      }
+
+      .history-clear{
+        font-size:20px;
+      }
+
+      .history-list{
+        gap:12px;
+      }
+
+      .history-item{
+        border-radius:20px;
+        padding:16px;
+      }
+
+      .history-meta{
+        font-size:18px;
         margin-bottom:10px;
       }
 
-      .value{
-        font-size:25px;
-        line-height:1.48;
+      .history-reading{
+        font-size:24px;
+        margin-bottom:10px;
+      }
+
+      .history-pair{
+        font-size:20px;
       }
 
       .footer{
@@ -304,37 +392,50 @@
 
       <div class="card">
         <div class="buttons">
-          <button id="loadBtn" class="primary">Load fragments</button>
-          <button id="pickBtn" disabled>Pick fragments</button>
-          <button id="collideBtn" disabled>Collide</button>
-          <button id="copyBtn">Copy result</button>
-          <button id="clearBtn">Clear</button>
+          <button class="action primary" id="loadBtn">Load fragments</button>
+          <button class="action" id="pickBtn" disabled>Pick fragments</button>
+          <button class="action" id="collideBtn" disabled>Collide</button>
+          <button class="action" id="copyBtn">Copy result</button>
+          <button class="action" id="clearBtn">Clear</button>
         </div>
 
         <div class="status-row">
           <div id="statusText">Waiting</div>
-          <div id="deeperText" class="deeper" hidden>deeper</div>
+          <a class="deeper" href="./fragment-chain.html">Deeper</a>
         </div>
 
-        <div class="result-stack">
-          <div class="box">
-            <div class="label">Fragment A</div>
-            <div class="value" id="fragmentA">—</div>
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">Fragment A</div>
+            <div class="result-text" id="fragmentAText">—</div>
           </div>
 
-          <div class="box">
-            <div class="label">Fragment B</div>
-            <div class="value" id="fragmentB">—</div>
+          <div class="result-card">
+            <div class="result-label">Fragment B</div>
+            <div class="result-text" id="fragmentBText">—</div>
           </div>
 
-          <div class="box">
-            <div class="label">Reading</div>
-            <div class="value" id="readingText">—</div>
+          <div class="result-card">
+            <div class="result-label">Reading</div>
+            <div class="result-text" id="readingText">—</div>
           </div>
 
-          <div class="box">
-            <div class="label">Next fragment</div>
-            <div class="value" id="nextText">—</div>
+          <div class="result-card">
+            <div class="result-label">Next fragment</div>
+            <div class="result-text" id="nextText">—</div>
+          </div>
+
+          <div class="result-card">
+            <div class="history-head">
+              <div class="result-label" style="margin-bottom:0;">Collision history</div>
+              <button class="history-clear" id="clearHistoryBtn">Clear history</button>
+            </div>
+            <div class="history-list" id="historyList">
+              <div class="history-item">
+                <div class="history-meta">No collisions yet</div>
+                <div class="history-pair">Pick two fragments and collide them.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -344,430 +445,307 @@
   </div>
 
   <script>
-    const SOURCE_FILES = [
-      "./fragment-pool.json",
-      "./fragment-pack-1.json",
-      "./fragment-pack-2.json"
-    ];
+    const loadBtn = document.getElementById('loadBtn');
+    const pickBtn = document.getElementById('pickBtn');
+    const collideBtn = document.getElementById('collideBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
 
-    const loadBtn = document.getElementById("loadBtn");
-    const pickBtn = document.getElementById("pickBtn");
-    const collideBtn = document.getElementById("collideBtn");
-    const copyBtn = document.getElementById("copyBtn");
-    const clearBtn = document.getElementById("clearBtn");
+    const statusText = document.getElementById('statusText');
+    const fragmentAText = document.getElementById('fragmentAText');
+    const fragmentBText = document.getElementById('fragmentBText');
+    const readingText = document.getElementById('readingText');
+    const nextText = document.getElementById('nextText');
+    const historyList = document.getElementById('historyList');
 
-    const statusText = document.getElementById("statusText");
-    const deeperText = document.getElementById("deeperText");
-
-    const fragmentAEl = document.getElementById("fragmentA");
-    const fragmentBEl = document.getElementById("fragmentB");
-    const readingTextEl = document.getElementById("readingText");
-    const nextTextEl = document.getElementById("nextText");
+    const HISTORY_KEY = 'reframe_collision_history_v1';
+    const MAX_HISTORY = 5;
 
     let fragmentPool = [];
-    let pickedA = null;
-    let pickedB = null;
-    let recentReadings = [];
-    let recentPairKeys = [];
+    let chosenA = null;
+    let chosenB = null;
+    let lastCollision = '';
 
-    function normalizeFragment(item){
-      if(typeof item === "string"){
-        const clean = cleanText(item);
-        return clean ? { text: clean, tone: "plain" } : null;
-      }
+    const readingTemplates = [
+      'The collision may be showing that the message and the response are slightly out of sync.',
+      'There may be something real here, but it may still be arriving in the wrong shape.',
+      'The surface reaction may be rough, but the signal underneath may still be usable.',
+      'What looks sharp on the surface may actually be asking for a clearer translation.',
+      'This hit may be less about rejection and more about friction around timing, framing, or wording.',
+      'The collision may be exposing a gap between what is meant and what is being heard.',
+      'There may be a usable angle here hiding inside the roughness of the exchange.',
+      'The reply may be clumsy, but it may still be touching a live part of the thought.'
+    ];
 
-      if(item && typeof item === "object"){
-        const raw = typeof item.text === "string" ? item.text : "";
-        const clean = cleanText(raw);
-        if(!clean) return null;
-        return {
-          text: clean,
-          tone: typeof item.tone === "string" && item.tone.trim() ? item.tone.trim().toLowerCase() : "plain"
-        };
-      }
+    const nextTemplates = [
+      'Maybe the wording changed the signal.',
+      'Maybe the thought needs a different angle.',
+      'Maybe the frame needs to turn once more.',
+      'Maybe the next move is smaller and sharper.',
+      'Maybe the signal matters more than the surface tone.',
+      'Maybe this wants a cleaner translation.',
+      'Maybe the hidden friction is the real fragment.',
+      'Maybe the idea should be re-entered from the side.'
+    ];
 
-      return null;
-    }
-
-    function cleanText(text){
-      return String(text || "")
-        .replace(/\s+/g, " ")
-        .replace(/[“”]/g, '"')
-        .replace(/[‘’]/g, "'")
+    function normalizeText(value) {
+      return String(value || '')
+        .replace(/\s+/g, ' ')
         .trim();
     }
 
-    function tokenize(text){
-      return cleanText(text)
-        .toLowerCase()
-        .replace(/[^a-z0-9'\s]/g, " ")
-        .split(/\s+/)
-        .filter(Boolean);
-    }
-
-    function firstWord(text){
-      const match = cleanText(text).toLowerCase().match(/[a-z']+/);
-      return match ? match[0] : "";
-    }
-
-    function similarityScore(a, b){
-      const aTokens = tokenize(a);
-      const bTokens = tokenize(b);
-      if(!aTokens.length || !bTokens.length) return 0;
-
-      const aSet = new Set(aTokens);
-      const bSet = new Set(bTokens);
-      let overlap = 0;
-
-      aSet.forEach(token => {
-        if(bSet.has(token)) overlap += 1;
-      });
-
-      const minSize = Math.max(1, Math.min(aSet.size, bSet.size));
-      return overlap / minSize;
-    }
-
-    function pairKey(a, b){
-      return [cleanText(a.text).toLowerCase(), cleanText(b.text).toLowerCase()].sort().join(" || ");
-    }
-
-    function pickRandom(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function sentenceCase(text){
-      const clean = cleanText(text);
-      if(!clean) return "";
-      return clean.charAt(0).toUpperCase() + clean.slice(1);
-    }
-
-    function removeLeadingRepeat(a, b){
-      const aWords = tokenize(a);
-      const bWords = tokenize(b);
-      if(!aWords.length || !bWords.length) return b;
-
-      let shared = 0;
-      const maxShared = Math.min(3, aWords.length, bWords.length);
-
-      while(shared < maxShared && aWords[shared] === bWords[shared]){
-        shared += 1;
+    function parsePoolItem(item) {
+      if (typeof item === 'string') {
+        return { text: normalizeText(item), tone: 'plain' };
       }
-
-      if(shared === 0) return b;
-
-      const original = cleanText(b).split(/\s+/);
-      const trimmed = original.slice(shared).join(" ").trim();
-      return trimmed || b;
+      if (item && typeof item === 'object' && typeof item.text === 'string') {
+        return {
+          text: normalizeText(item.text),
+          tone: normalizeText(item.tone || 'plain').toLowerCase() || 'plain'
+        };
+      }
+      return null;
     }
 
-    function compressLeadingRepeat(text){
-      return cleanText(text)
-        .replace(/^maybe maybe\b/i, "Maybe")
-        .replace(/^but but\b/i, "But")
-        .replace(/^the the\b/i, "The")
-        .replace(/^not not\b/i, "Not");
+    function shuffle(array) {
+      const copy = array.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
     }
 
-    async function loadAllFragments(){
-      const gathered = [];
-      const seen = new Set();
+    async function loadFragments() {
+      statusText.textContent = 'Loading...';
 
-      for(const file of SOURCE_FILES){
-        try{
-          const res = await fetch(file, { cache: "no-store" });
-          if(!res.ok) continue;
-          const data = await res.json();
-          if(!Array.isArray(data)) continue;
+      try {
+        const urls = [
+          './fragment-pool.json',
+          './fragment-pack-1.json',
+          './fragment-pack-2.json'
+        ];
 
-          for(const item of data){
-            const normalized = normalizeFragment(item);
-            if(!normalized) continue;
+        const results = await Promise.allSettled(
+          urls.map(url => fetch(url).then(res => {
+            if (!res.ok) throw new Error(url);
+            return res.json();
+          }))
+        );
 
-            const key = normalized.text.toLowerCase();
-            if(seen.has(key)) continue;
+        const merged = [];
 
-            seen.add(key);
-            gathered.push(normalized);
+        results.forEach(result => {
+          if (result.status === 'fulfilled' && Array.isArray(result.value)) {
+            result.value.forEach(item => {
+              const parsed = parsePoolItem(item);
+              if (parsed && parsed.text) merged.push(parsed);
+            });
           }
-        }catch(error){
-          console.warn("Could not load", file, error);
+        });
+
+        const deduped = [];
+        const seen = new Set();
+
+        merged.forEach(item => {
+          const key = item.text.toLowerCase();
+          if (!seen.has(key)) {
+            seen.add(key);
+            deduped.push(item);
+          }
+        });
+
+        fragmentPool = deduped;
+
+        if (!fragmentPool.length) {
+          statusText.textContent = 'No fragments found';
+          return;
         }
-      }
 
-      fragmentPool = gathered;
-      pickedA = null;
-      pickedB = null;
-      recentReadings = [];
-      recentPairKeys = [];
-
-      fragmentAEl.textContent = "—";
-      fragmentBEl.textContent = "—";
-      readingTextEl.textContent = "—";
-      nextTextEl.textContent = "—";
-
-      if(fragmentPool.length){
-        statusText.textContent = `Loaded ${fragmentPool.length} fragments`;
         pickBtn.disabled = false;
         collideBtn.disabled = true;
-        deeperText.hidden = true;
+        statusText.textContent = `Loaded ${fragmentPool.length} fragments`;
         alert(`Loaded ${fragmentPool.length} fragments`);
-      }else{
-        statusText.textContent = "No fragments found";
-        pickBtn.disabled = true;
-        collideBtn.disabled = true;
-        deeperText.hidden = true;
-        alert("No fragments found");
+      } catch (err) {
+        statusText.textContent = 'Load failed';
       }
     }
 
-    function pickDistinctPair(){
-      if(fragmentPool.length < 2) return null;
+    function pickTwoDifferent() {
+      if (fragmentPool.length < 2) return null;
 
-      let best = null;
+      const pool = shuffle(fragmentPool);
+      const a = pool[0];
+      let b = pool[1];
 
-      for(let tries = 0; tries < 100; tries += 1){
-        const a = pickRandom(fragmentPool);
-        let b = pickRandom(fragmentPool);
-
-        while(b.text === a.text){
-          b = pickRandom(fragmentPool);
+      if (a.text === b.text) {
+        for (let i = 2; i < pool.length; i++) {
+          if (pool[i].text !== a.text) {
+            b = pool[i];
+            break;
+          }
         }
-
-        const key = pairKey(a, b);
-        const sim = similarityScore(a.text, b.text);
-        const sameStart = firstWord(a.text) && firstWord(a.text) === firstWord(b.text);
-
-        if(sim >= 0.55) continue;
-        if(sameStart && sim >= 0.22) continue;
-        if(recentPairKeys.includes(key)) continue;
-
-        best = { a, b, key };
-        break;
       }
 
-      return best;
+      if (!b || a.text === b.text) return null;
+      return { a, b };
     }
 
-    function buildReadingPool(a, b){
-      const pool = [
-        "The friction may be coming from shape, timing, or framing rather than simple rejection.",
-        "The surface reaction may be rough, but the signal underneath may still be usable.",
-        "This may be less contradiction than a clue that the thought has not landed in its final form.",
-        "The collision may be showing that the message and the response are slightly out of sync.",
-        "There may be something real here, but it may still be arriving in the wrong shape.",
-        "The reply may be reacting to the frame, not the core idea.",
-        "What looks like rejection here may partly be friction around translation, timing, or tone."
-      ];
+    function pickFragments() {
+      const pair = pickTwoDifferent();
 
-      const tones = [a.tone, b.tone].sort().join("|");
-
-      if(tones.includes("warm") && tones.includes("twist")){
-        pool.push(
-          "The attention may be real even if the wording arrives badly.",
-          "This may be frustration mixed with interest rather than flat rejection."
-        );
-      }
-
-      if(tones.includes("calm") && tones.includes("edge")){
-        pool.push(
-          "The idea may not be wrong. It may simply be landing in the wrong place or order.",
-          "This may be a framing miss, not a dead end."
-        );
-      }
-
-      if(tones.includes("chaos")){
-        pool.push(
-          "The mismatch may be the clue.",
-          "The strange overlap may be more useful than a clean answer."
-        );
-      }
-
-      if(tones.includes("mystery")){
-        pool.push(
-          "The louder line may not be the real line.",
-          "The hidden signal may matter more than the visible tone."
-        );
-      }
-
-      if(tones.includes("edge") && tones.includes("warm")){
-        pool.push(
-          "There may be more interest inside the pushback than the wording admits.",
-          "The hit may be clumsy, but the attention may still be real."
-        );
-      }
-
-      return pool;
-    }
-
-    function createReading(a, b){
-      const aText = cleanText(a.text);
-      const bText = compressLeadingRepeat(removeLeadingRepeat(aText, cleanText(b.text)));
-      const sim = similarityScore(aText, bText);
-      const sameStart = firstWord(aText) && firstWord(aText) === firstWord(bText);
-
-      let pool = buildReadingPool(a, b);
-
-      if(sim > 0.35 || sameStart){
-        pool = pool.filter(line => !/^These two fragments may be pointing/i.test(line));
-      }
-
-      let reading = pickRandom(pool);
-
-      if(recentReadings.includes(reading)){
-        const alternatives = pool.filter(line => !recentReadings.includes(line));
-        if(alternatives.length) reading = pickRandom(alternatives);
-      }
-
-      recentReadings.push(reading);
-      if(recentReadings.length > 6) recentReadings.shift();
-
-      return reading;
-    }
-
-    function createNextFragment(a, b, reading){
-      const options = [];
-
-      if([a.tone, b.tone].includes("warm")){
-        options.push(
-          "Maybe the attention matters more than the wording",
-          "Maybe care arrived wearing the wrong tone"
-        );
-      }
-
-      if([a.tone, b.tone].includes("edge")){
-        options.push(
-          "Maybe the frame needs to turn once more",
-          "Maybe the sharpness is asking for a clearer point"
-        );
-      }
-
-      if([a.tone, b.tone].includes("mystery")){
-        options.push(
-          "Maybe the signal is still under the surface",
-          "Maybe the interesting part is not the loudest part"
-        );
-      }
-
-      if([a.tone, b.tone].includes("twist")){
-        options.push(
-          "Maybe the reply is saying more than its wording",
-          "Maybe the hit is pointing somewhere sideways"
-        );
-      }
-
-      if([a.tone, b.tone].includes("chaos")){
-        options.push(
-          "Maybe the wrong door is still a door",
-          "Maybe the drift is part of the reading"
-        );
-      }
-
-      options.push(
-        "Maybe the next move is smaller and sharper",
-        "Maybe the thought needs a different angle",
-        "Maybe the wording changed the signal",
-        "Maybe the tension is the real fragment"
-      );
-
-      const filtered = options.filter(item => {
-        return similarityScore(item, a.text) < 0.55 &&
-               similarityScore(item, b.text) < 0.55 &&
-               similarityScore(item, reading) < 0.55;
-      });
-
-      return pickRandom(filtered.length ? filtered : options);
-    }
-
-    function runCollision(){
-      if(!pickedA || !pickedB){
-        statusText.textContent = "Pick fragments first";
+      if (!pair) {
+        statusText.textContent = 'Need at least 2 fragments';
         return;
       }
 
-      const reading = createReading(pickedA, pickedB);
-      const nextFragment = createNextFragment(pickedA, pickedB, reading);
+      chosenA = pair.a;
+      chosenB = pair.b;
 
-      readingTextEl.textContent = reading;
-      nextTextEl.textContent = nextFragment;
-      statusText.textContent = "Collision made";
-      deeperText.hidden = false;
-    }
-
-    async function copyResult(){
-      const lines = [];
-      if(cleanText(fragmentAEl.textContent) !== "—") lines.push(fragmentAEl.textContent);
-      if(cleanText(fragmentBEl.textContent) !== "—") lines.push(fragmentBEl.textContent);
-      if(cleanText(readingTextEl.textContent) !== "—") lines.push(readingTextEl.textContent);
-      if(cleanText(nextTextEl.textContent) !== "—") lines.push(nextTextEl.textContent);
-
-      const text = lines.join("\n\n").trim();
-      if(!text){
-        statusText.textContent = "Nothing to copy";
-        return;
-      }
-
-      try{
-        await navigator.clipboard.writeText(text);
-        statusText.textContent = "Copied";
-      }catch(error){
-        const area = document.createElement("textarea");
-        area.value = text;
-        document.body.appendChild(area);
-        area.select();
-        document.execCommand("copy");
-        area.remove();
-        statusText.textContent = "Copied";
-      }
-    }
-
-    function clearAll(){
-      pickedA = null;
-      pickedB = null;
-      fragmentAEl.textContent = "—";
-      fragmentBEl.textContent = "—";
-      readingTextEl.textContent = "—";
-      nextTextEl.textContent = "—";
-      statusText.textContent = fragmentPool.length ? `Loaded ${fragmentPool.length} fragments` : "Waiting";
-      deeperText.hidden = true;
-      collideBtn.disabled = true;
-    }
-
-    loadBtn.addEventListener("click", loadAllFragments);
-
-    pickBtn.addEventListener("click", () => {
-      if(!fragmentPool.length){
-        statusText.textContent = "Load fragments first";
-        return;
-      }
-
-      const picked = pickDistinctPair();
-      if(!picked){
-        statusText.textContent = "Could not pick a pair";
-        return;
-      }
-
-      pickedA = picked.a;
-      pickedB = picked.b;
-
-      recentPairKeys.push(picked.key);
-      if(recentPairKeys.length > 10) recentPairKeys.shift();
-
-      fragmentAEl.textContent = sentenceCase(pickedA.text);
-      fragmentBEl.textContent = sentenceCase(pickedB.text);
-      readingTextEl.textContent = "—";
-      nextTextEl.textContent = "—";
-      statusText.textContent = "Fragments picked";
-      deeperText.hidden = true;
+      fragmentAText.textContent = chosenA.text;
+      fragmentBText.textContent = chosenB.text;
+      readingText.textContent = '—';
+      nextText.textContent = '—';
+      lastCollision = '';
       collideBtn.disabled = false;
-    });
+      statusText.textContent = 'Fragments picked';
+    }
 
-    collideBtn.addEventListener("click", runCollision);
-    copyBtn.addEventListener("click", copyResult);
-    clearBtn.addEventListener("click", clearAll);
+    function seedFromPair(a, b) {
+      const source = `${a.text}|${b.text}|${a.tone}|${b.tone}`;
+      let total = 0;
+      for (let i = 0; i < source.length; i++) total += source.charCodeAt(i);
+      return total;
+    }
 
-    deeperText.addEventListener("click", () => {
-      window.location.href = "./fragment-chain.html";
-    });
+    function synthesizeReading(a, b) {
+      const seed = seedFromPair(a, b);
+      const reading = readingTemplates[seed % readingTemplates.length];
+      const next = nextTemplates[(seed * 3) % nextTemplates.length];
+
+      return { reading, next };
+    }
+
+    function saveHistory(entry) {
+      const current = getHistory();
+      current.unshift(entry);
+      const trimmed = current.slice(0, MAX_HISTORY);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+      renderHistory();
+    }
+
+    function getHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        const data = JSON.parse(raw || '[]');
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function formatTime(ts) {
+      const date = new Date(ts);
+      return date.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function renderHistory() {
+      const items = getHistory();
+
+      if (!items.length) {
+        historyList.innerHTML = `
+          <div class="history-item">
+            <div class="history-meta">No collisions yet</div>
+            <div class="history-pair">Pick two fragments and collide them.</div>
+          </div>
+        `;
+        return;
+      }
+
+      historyList.innerHTML = items.map(item => `
+        <div class="history-item">
+          <div class="history-meta">${formatTime(item.time)}</div>
+          <div class="history-reading">${escapeHtml(item.reading)}</div>
+          <div class="history-pair">A: ${escapeHtml(item.a)}\nB: ${escapeHtml(item.b)}</div>
+        </div>
+      `).join('');
+    }
+
+    function clearHistory() {
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+      statusText.textContent = 'History cleared';
+    }
+
+    function collideFragments() {
+      if (!chosenA || !chosenB) {
+        statusText.textContent = 'Pick fragments first';
+        return;
+      }
+
+      const result = synthesizeReading(chosenA, chosenB);
+      readingText.textContent = result.reading;
+      nextText.textContent = result.next;
+      lastCollision = `${chosenA.text}\n\n${chosenB.text}\n\n${result.reading}\n\n${result.next}`;
+      statusText.textContent = 'Collision made';
+
+      saveHistory({
+        time: Date.now(),
+        a: chosenA.text,
+        b: chosenB.text,
+        reading: result.reading,
+        next: result.next
+      });
+    }
+
+    function copyResult() {
+      if (!lastCollision) {
+        statusText.textContent = 'Nothing to copy';
+        return;
+      }
+
+      navigator.clipboard.writeText(lastCollision).then(() => {
+        statusText.textContent = 'Copied';
+      }).catch(() => {
+        statusText.textContent = 'Copy failed';
+      });
+    }
+
+    function clearCurrent() {
+      chosenA = null;
+      chosenB = null;
+      lastCollision = '';
+      fragmentAText.textContent = '—';
+      fragmentBText.textContent = '—';
+      readingText.textContent = '—';
+      nextText.textContent = '—';
+      collideBtn.disabled = true;
+      statusText.textContent = 'Waiting';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    loadBtn.addEventListener('click', loadFragments);
+    pickBtn.addEventListener('click', pickFragments);
+    collideBtn.addEventListener('click', collideFragments);
+    copyBtn.addEventListener('click', copyResult);
+    clearBtn.addEventListener('click', clearCurrent);
+    clearHistoryBtn.addEventListener('click', clearHistory);
+
+    renderHistory();
   </script>
 </body>
 </html>
