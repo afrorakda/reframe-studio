@@ -21,9 +21,9 @@
       --button-main:#f2f2f5;
       --button-main-text:#0d1a4d;
       --shadow:0 20px 50px rgba(0,0,0,0.28);
-      --radius-xl:34px;
-      --radius-lg:26px;
-      --radius-md:20px;
+      --radius-xl:30px;
+      --radius-lg:24px;
+      --radius-md:18px;
       --radius-sm:16px;
       --max:820px;
     }
@@ -45,25 +45,25 @@
     a{color:inherit;text-decoration:none}
 
     .wrap{
-      width:min(var(--max), calc(100% - 28px));
+      width:min(var(--max), calc(100% - 24px));
       margin:0 auto;
-      padding:18px 0 40px;
+      padding:14px 0 30px;
     }
 
     .back{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:17px;
+      font-size:15px;
       color:var(--muted);
-      margin:4px 0 14px;
+      margin:2px 0 12px;
     }
 
     .shell{
       background:linear-gradient(180deg, rgba(39,57,126,0.96), rgba(34,52,121,0.96));
       border:1px solid var(--line);
-      border-radius:30px;
-      padding:16px;
+      border-radius:28px;
+      padding:14px;
       box-shadow:var(--shadow);
       position:relative;
       overflow:hidden;
@@ -74,7 +74,7 @@
       position:absolute;
       inset:0 auto auto 0;
       width:100%;
-      height:18px;
+      height:16px;
       background:linear-gradient(180deg, rgba(196,212,255,0.32), rgba(196,212,255,0));
       pointer-events:none;
     }
@@ -82,29 +82,29 @@
     .pill{
       display:inline-flex;
       align-items:center;
-      min-height:40px;
-      padding:8px 18px;
+      min-height:32px;
+      padding:6px 14px;
       border-radius:999px;
       border:2px solid var(--pill-line);
       background:rgba(52,57,129,0.58);
       color:#d7ddff;
-      font-size:17px;
+      font-size:14px;
       letter-spacing:0.01em;
-      margin-bottom:12px;
+      margin-bottom:10px;
     }
 
     h1{
       margin:0;
-      font-size:38px;
-      line-height:0.96;
-      letter-spacing:-0.04em;
+      font-size:28px;
+      line-height:1.05;
+      letter-spacing:-0.03em;
       font-weight:800;
     }
 
     .sub{
-      margin:10px 0 16px;
+      margin:8px 0 14px;
       color:var(--soft);
-      font-size:18px;
+      font-size:15px;
       line-height:1.35;
       max-width:640px;
     }
@@ -112,8 +112,8 @@
     .card{
       background:rgba(2,15,71,0.94);
       border:1px solid rgba(121,142,255,0.16);
-      border-radius:24px;
-      padding:14px;
+      border-radius:22px;
+      padding:12px;
     }
 
     .buttons{
@@ -126,9 +126,9 @@
       width:100%;
       border:1px solid rgba(130,147,236,0.18);
       border-radius:18px;
-      min-height:58px;
-      padding:12px 16px;
-      font-size:18px;
+      min-height:52px;
+      padding:10px 16px;
+      font-size:16px;
       font-weight:760;
       background:var(--button);
       color:var(--button-text);
@@ -155,12 +155,12 @@
       gap:12px;
       margin:2px 2px 10px;
       color:var(--muted);
-      font-size:15px;
+      font-size:14px;
     }
 
     .deeper{
       color:rgba(193,203,255,0.8);
-      font-size:15px;
+      font-size:14px;
       white-space:nowrap;
       user-select:none;
       cursor:pointer;
@@ -174,8 +174,8 @@
     .box{
       background:rgba(255,255,255,0.05);
       border:1px solid rgba(130,147,236,0.14);
-      border-radius:18px;
-      padding:12px 14px;
+      border-radius:16px;
+      padding:11px 12px;
     }
 
     .label{
@@ -183,7 +183,7 @@
       letter-spacing:0.18em;
       text-transform:uppercase;
       color:#d7ddff;
-      margin-bottom:7px;
+      margin-bottom:6px;
       font-weight:800;
     }
 
@@ -199,24 +199,27 @@
       text-align:center;
       color:rgba(218,224,255,0.72);
       font-size:14px;
-      margin-top:18px;
+      margin-top:16px;
     }
 
     @media (min-width: 761px){
       .wrap{
         width:min(var(--max), calc(100% - 32px));
-        padding-top:22px;
-        padding-bottom:54px;
+        padding:22px 0 54px;
       }
 
       .back{
         font-size:18px;
-        margin-bottom:18px;
+        margin:6px 0 18px;
       }
 
       .shell{
         border-radius:34px;
         padding:20px;
+      }
+
+      .shell::before{
+        height:22px;
       }
 
       .pill{
@@ -228,11 +231,14 @@
 
       h1{
         font-size:68px;
+        line-height:0.94;
+        letter-spacing:-0.04em;
       }
 
       .sub{
         margin:14px 0 24px;
         font-size:28px;
+        line-height:1.34;
       }
 
       .card{
@@ -361,9 +367,6 @@
     let fragmentPool = [];
     let pickedA = null;
     let pickedB = null;
-    let lastReading = "";
-    let lastNext = "";
-    let lastPairKey = "";
     let recentReadings = [];
     let recentPairKeys = [];
 
@@ -394,17 +397,17 @@
         .trim();
     }
 
-    function firstWord(text){
-      const match = cleanText(text).toLowerCase().match(/[a-z']+/);
-      return match ? match[0] : "";
-    }
-
     function tokenize(text){
       return cleanText(text)
         .toLowerCase()
         .replace(/[^a-z0-9'\s]/g, " ")
         .split(/\s+/)
         .filter(Boolean);
+    }
+
+    function firstWord(text){
+      const match = cleanText(text).toLowerCase().match(/[a-z']+/);
+      return match ? match[0] : "";
     }
 
     function similarityScore(a, b){
@@ -425,109 +428,11 @@
     }
 
     function pairKey(a, b){
-      const parts = [cleanText(a.text).toLowerCase(), cleanText(b.text).toLowerCase()].sort();
-      return parts.join(" || ");
+      return [cleanText(a.text).toLowerCase(), cleanText(b.text).toLowerCase()].sort().join(" || ");
     }
 
     function pickRandom(arr){
       return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    async function loadAllFragments(){
-      const gathered = [];
-      const seen = new Set();
-
-      for(const file of SOURCE_FILES){
-        try{
-          const res = await fetch(file, { cache: "no-store" });
-          if(!res.ok) continue;
-          const data = await res.json();
-          if(!Array.isArray(data)) continue;
-
-          for(const item of data){
-            const normalized = normalizeFragment(item);
-            if(!normalized) continue;
-            const key = normalized.text.toLowerCase();
-            if(seen.has(key)) continue;
-            seen.add(key);
-            gathered.push(normalized);
-          }
-        }catch(error){
-          console.warn("Could not load", file, error);
-        }
-      }
-
-      fragmentPool = gathered;
-      pickedA = null;
-      pickedB = null;
-      lastReading = "";
-      lastNext = "";
-      lastPairKey = "";
-      recentReadings = [];
-      recentPairKeys = [];
-
-      fragmentAEl.textContent = "—";
-      fragmentBEl.textContent = "—";
-      readingTextEl.textContent = "—";
-      nextTextEl.textContent = "—";
-
-      if(fragmentPool.length){
-        statusText.textContent = `Loaded ${fragmentPool.length} fragments`;
-        pickBtn.disabled = false;
-        collideBtn.disabled = true;
-        deeperText.hidden = true;
-        alert(`Loaded ${fragmentPool.length} fragments`);
-      }else{
-        statusText.textContent = "No fragments found";
-        pickBtn.disabled = true;
-        collideBtn.disabled = true;
-        deeperText.hidden = true;
-        alert("No fragments found");
-      }
-    }
-
-    function pickDistinctPair(){
-      if(fragmentPool.length < 2) return null;
-
-      let best = null;
-
-      for(let tries = 0; tries < 80; tries += 1){
-        const a = pickRandom(fragmentPool);
-        let b = pickRandom(fragmentPool);
-
-        if(fragmentPool.length > 1){
-          while(b.text === a.text){
-            b = pickRandom(fragmentPool);
-          }
-        }
-
-        const key = pairKey(a, b);
-        const sim = similarityScore(a.text, b.text);
-        const firstSame = firstWord(a.text) && firstWord(a.text) === firstWord(b.text);
-
-        if(sim >= 0.55) continue;
-        if(firstSame && sim >= 0.22) continue;
-        if(recentPairKeys.includes(key)) continue;
-
-        best = { a, b, key };
-        break;
-      }
-
-      if(!best){
-        for(let tries = 0; tries < 80; tries += 1){
-          const a = pickRandom(fragmentPool);
-          let b = pickRandom(fragmentPool);
-          while(b.text === a.text){
-            b = pickRandom(fragmentPool);
-          }
-          const key = pairKey(a, b);
-          if(recentPairKeys.includes(key)) continue;
-          best = { a, b, key };
-          break;
-        }
-      }
-
-      return best;
     }
 
     function sentenceCase(text){
@@ -563,10 +468,89 @@
         .replace(/^not not\b/i, "Not");
     }
 
+    async function loadAllFragments(){
+      const gathered = [];
+      const seen = new Set();
+
+      for(const file of SOURCE_FILES){
+        try{
+          const res = await fetch(file, { cache: "no-store" });
+          if(!res.ok) continue;
+          const data = await res.json();
+          if(!Array.isArray(data)) continue;
+
+          for(const item of data){
+            const normalized = normalizeFragment(item);
+            if(!normalized) continue;
+
+            const key = normalized.text.toLowerCase();
+            if(seen.has(key)) continue;
+
+            seen.add(key);
+            gathered.push(normalized);
+          }
+        }catch(error){
+          console.warn("Could not load", file, error);
+        }
+      }
+
+      fragmentPool = gathered;
+      pickedA = null;
+      pickedB = null;
+      recentReadings = [];
+      recentPairKeys = [];
+
+      fragmentAEl.textContent = "—";
+      fragmentBEl.textContent = "—";
+      readingTextEl.textContent = "—";
+      nextTextEl.textContent = "—";
+
+      if(fragmentPool.length){
+        statusText.textContent = `Loaded ${fragmentPool.length} fragments`;
+        pickBtn.disabled = false;
+        collideBtn.disabled = true;
+        deeperText.hidden = true;
+        alert(`Loaded ${fragmentPool.length} fragments`);
+      }else{
+        statusText.textContent = "No fragments found";
+        pickBtn.disabled = true;
+        collideBtn.disabled = true;
+        deeperText.hidden = true;
+        alert("No fragments found");
+      }
+    }
+
+    function pickDistinctPair(){
+      if(fragmentPool.length < 2) return null;
+
+      let best = null;
+
+      for(let tries = 0; tries < 100; tries += 1){
+        const a = pickRandom(fragmentPool);
+        let b = pickRandom(fragmentPool);
+
+        while(b.text === a.text){
+          b = pickRandom(fragmentPool);
+        }
+
+        const key = pairKey(a, b);
+        const sim = similarityScore(a.text, b.text);
+        const sameStart = firstWord(a.text) && firstWord(a.text) === firstWord(b.text);
+
+        if(sim >= 0.55) continue;
+        if(sameStart && sim >= 0.22) continue;
+        if(recentPairKeys.includes(key)) continue;
+
+        best = { a, b, key };
+        break;
+      }
+
+      return best;
+    }
+
     function buildReadingPool(a, b){
-      const base = [
+      const pool = [
         "The friction may be coming from shape, timing, or framing rather than simple rejection.",
-        "These two fragments may be pointing at the same tension from different sides.",
         "The surface reaction may be rough, but the signal underneath may still be usable.",
         "This may be less contradiction than a clue that the thought has not landed in its final form.",
         "The collision may be showing that the message and the response are slightly out of sync.",
@@ -576,7 +560,6 @@
       ];
 
       const tones = [a.tone, b.tone].sort().join("|");
-      let pool = base.slice();
 
       if(tones.includes("warm") && tones.includes("twist")){
         pool.push(
@@ -603,6 +586,13 @@
         pool.push(
           "The louder line may not be the real line.",
           "The hidden signal may matter more than the visible tone."
+        );
+      }
+
+      if(tones.includes("edge") && tones.includes("warm")){
+        pool.push(
+          "There may be more interest inside the pushback than the wording admits.",
+          "The hit may be clumsy, but the attention may still be real."
         );
       }
 
@@ -697,9 +687,6 @@
       const reading = createReading(pickedA, pickedB);
       const nextFragment = createNextFragment(pickedA, pickedB, reading);
 
-      lastReading = reading;
-      lastNext = nextFragment;
-
       readingTextEl.textContent = reading;
       nextTextEl.textContent = nextFragment;
       statusText.textContent = "Collision made";
@@ -736,9 +723,6 @@
     function clearAll(){
       pickedA = null;
       pickedB = null;
-      lastReading = "";
-      lastNext = "";
-      lastPairKey = "";
       fragmentAEl.textContent = "—";
       fragmentBEl.textContent = "—";
       readingTextEl.textContent = "—";
@@ -764,8 +748,8 @@
 
       pickedA = picked.a;
       pickedB = picked.b;
-      lastPairKey = picked.key;
-      recentPairKeys.push(lastPairKey);
+
+      recentPairKeys.push(picked.key);
       if(recentPairKeys.length > 10) recentPairKeys.shift();
 
       fragmentAEl.textContent = sentenceCase(pickedA.text);
