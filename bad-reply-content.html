@@ -21,6 +21,7 @@
     }
 
     *{box-sizing:border-box}
+
     html,body{
       margin:0;
       padding:0;
@@ -171,12 +172,6 @@
       word-break:break-word;
     }
 
-    .foot{
-      display:flex;
-      justify-content:flex-end;
-      margin-top:12px;
-    }
-
     .deeper{
       margin-top:14px;
       display:flex;
@@ -207,9 +202,11 @@
       h1{
         font-size:24px;
       }
+
       .actions{
         grid-template-columns:1fr 1fr;
       }
+
       .result{
         min-height:220px;
       }
@@ -275,7 +272,7 @@ nobody gets this"></textarea>
       'A thread on why',
       'A sharp angle on how',
       'A piece on why',
-      ''A short post on how',
+      'A short post on how',
       'A content angle about why',
       'A creator note on how',
       'A post showing why'
@@ -369,21 +366,12 @@ nobody gets this"></textarea>
       return copy;
     }
 
-    function uniquePush(list, value){
-      if(!list.includes(value)) list.push(value);
-    }
-
     function cleanLines(text){
       return text
         .split('\n')
         .map(line => line.trim())
         .filter(Boolean)
         .slice(0, 12);
-    }
-
-    function seedFromInput(lines){
-      if(!lines.length) return 'bad reply';
-      return pick(lines);
     }
 
     function lineFragment(line){
@@ -439,20 +427,12 @@ nobody gets this"></textarea>
       const fallback = ['too abstract', 'nobody gets this', 'boring', 'stop'];
       const source = lines.length ? shuffle(lines) : shuffle(fallback);
 
-      const chosen = [];
-      while(chosen.length < 5){
-        uniquePush(chosen, source[chosen.length % source.length]);
-        if(source.length === 1 && chosen.length < 5){
-          uniquePush(chosen, source[0] + ' ');
-        }
-      }
-
       const ideas = [];
-      ideas.push({ type:'Practical', text: makePractical(chosen[0]) });
-      ideas.push({ type:'Practical', text: makePractical(chosen[1]) });
-      ideas.push({ type:'Practical', text: makePractical(chosen[2]) });
-      ideas.push({ type:'Self-deprecating', text: makeSelf(chosen[3]) });
-      ideas.push({ type:'Spicy', text: makeSpicy(chosen[4]) });
+      ideas.push({ type:'Practical', text: makePractical(source[0 % source.length]) });
+      ideas.push({ type:'Practical', text: makePractical(source[1 % source.length]) });
+      ideas.push({ type:'Practical', text: makePractical(source[2 % source.length]) });
+      ideas.push({ type:'Self-deprecating', text: makeSelf(source[3 % source.length]) });
+      ideas.push({ type:'Spicy', text: makeSpicy(source[4 % source.length]) });
 
       return ideas;
     }
@@ -500,6 +480,7 @@ nobody gets this"></textarea>
       if(!cards.length){
         return;
       }
+
       const text = cards.map(card => {
         const label = card.querySelector('.idea-label')?.textContent || '';
         const body = card.querySelector('.idea-text')?.textContent || '';
