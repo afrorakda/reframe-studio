@@ -336,6 +336,14 @@
 
     let currentFragments = [];
 
+    function getFragmentText(fragment) {
+      if (typeof fragment === 'string') return fragment;
+      if (fragment && typeof fragment === 'object') {
+        return fragment.text || fragment.value || JSON.stringify(fragment);
+      }
+      return String(fragment || '');
+    }
+
     function renderState(state) {
       const sourceLines = state.sources.map((source) => {
         if (source.ok) {
@@ -358,6 +366,8 @@ ${sourceLines.join('\n')}`;
       resultList.innerHTML = '';
 
       fragments.forEach((fragment, index) => {
+        const value = getFragmentText(fragment);
+
         const card = document.createElement('div');
         card.className = 'result-card';
 
@@ -367,7 +377,7 @@ ${sourceLines.join('\n')}`;
 
         const text = document.createElement('p');
         text.className = 'result-fragment';
-        text.textContent = fragment;
+        text.textContent = value;
 
         card.appendChild(label);
         card.appendChild(text);
@@ -403,7 +413,9 @@ ${sourceLines.join('\n')}`;
         return;
       }
 
-      const text = currentFragments.join('\n\n');
+      const text = currentFragments
+        .map(getFragmentText)
+        .join('\n\n');
 
       try {
         await navigator.clipboard.writeText(text);
