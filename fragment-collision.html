@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fragment Collision | REFRAME Studio</title>
-  <meta name="description" content="Let two fragments collide. No login. No tracking. Runs entirely in your browser." />
+  <meta name="description" content="Let two fragments collide and become a new reading. No login. No tracking. Runs entirely in your browser." />
   <style>
     :root{
       --bg-top:#081331;
@@ -306,13 +306,14 @@
       <div class="pill">One collision</div>
 
       <h1 class="hero-title">Collision</h1>
-      <p class="hero-desc">Let two fragments hit each other.</p>
+      <p class="hero-desc">Let two fragments become a different reading.</p>
 
       <section class="inner">
         <div class="button-stack">
           <button class="btn-primary" id="loadBtn">Load fragments</button>
           <button class="btn-soft" id="collideBtn">Collide</button>
           <button class="btn-soft" id="copyBtn">Copy result</button>
+          <button class="btn-soft" id="clearBtn">Clear</button>
         </div>
 
         <div class="status-row">
@@ -332,8 +333,8 @@
           </div>
 
           <div class="result-card">
-            <div class="result-label">Collision</div>
-            <p class="result-text" id="collisionText"></p>
+            <div class="result-label">Reading</div>
+            <p class="result-text" id="readingText"></p>
           </div>
 
           <div class="result-card">
@@ -352,20 +353,24 @@
     const loadBtn = document.getElementById('loadBtn');
     const collideBtn = document.getElementById('collideBtn');
     const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
 
     const statusText = document.getElementById('statusText');
     const deeperLink = document.getElementById('deeperLink');
     const resultList = document.getElementById('resultList');
+
     const fragmentAEl = document.getElementById('fragmentA');
     const fragmentBEl = document.getElementById('fragmentB');
-    const collisionTextEl = document.getElementById('collisionText');
+    const readingTextEl = document.getElementById('readingText');
     const nextFragmentTextEl = document.getElementById('nextFragmentText');
 
     let loaded = false;
+    let recentReadings = [];
+    let recentNextFragments = [];
     let currentResult = {
       a: '',
       b: '',
-      collision: '',
+      reading: '',
       nextFragment: ''
     };
 
@@ -373,14 +378,8 @@
       return String(text || '').trim();
     }
 
-    function cleanEnd(text) {
-      return cleanText(text).replace(/[.。!?]+$/, '');
-    }
-
-    function lowerFirst(text) {
-      const value = cleanText(text);
-      if (!value) return '';
-      return value.charAt(0).toLowerCase() + value.slice(1);
+    function lowerText(text) {
+      return cleanText(text).toLowerCase();
     }
 
     function sentenceCase(text) {
@@ -389,44 +388,233 @@
       return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
-    function makeCollision(a, b) {
-      const left = cleanEnd(a);
-      const right = lowerFirst(cleanEnd(b));
-
-      const patterns = [
-        `${left}.\n${sentenceCase(right)}`,
-        `${left}.\nBut ${right}`,
-        `${left}.\nOr maybe ${right}`,
-        `${left}.\nWhich might mean ${right}`,
-        `${left}.\nAt the same time, ${right}`,
-        `${left}.\nMaybe ${right}`
-      ];
-
-      return patterns[Math.floor(Math.random() * patterns.length)];
+    function dedupeSpaces(text) {
+      return cleanText(text).replace(/\s{2,}/g, ' ');
     }
 
-    function makeNextFragment(a, b) {
-      const left = lowerFirst(cleanEnd(a));
-      const right = lowerFirst(cleanEnd(b));
+    function analyzeFragment(text) {
+      const value = lowerText(text);
 
-      const patterns = [
-        `maybe the reply became a different story`,
-        `maybe something changed between the two`,
-        `maybe the collision is pointing somewhere else`,
-        `something drifted between the fragments`,
-        `maybe the meaning moved in the collision`,
-        `maybe this is another angle trying to appear`,
-        `maybe the problem changed shape`,
-        `something in the reply tilted`,
-        `maybe the fragment is not where it started`,
-        `maybe the second fragment heard the first differently`,
-        `maybe ${right}`,
-        `maybe ${left}`,
-        `something in "${left}" bent toward "${right}"`,
-        `maybe the space between them is the real fragment`
-      ];
+      const tags = new Set();
+      const hooks = [];
 
-      return sentenceCase(patterns[Math.floor(Math.random() * patterns.length)]);
+      function add(tag, hook) {
+        tags.add(tag);
+        if (hook) hooks.push(hook);
+      }
+
+      if (/(watch|looking|read|reads|seeing|seen|noticed|notice|follow|follows)/.test(value)) {
+        add('attention', 'they keep noticing you');
+      }
+
+      if (/(reply|comment|comments|reaction|react|reacts)/.test(value)) {
+        add('reaction', 'the reaction is still engaged');
+      }
+
+      if (/(vague|abstract|unclear|meaningless|meaning|too clear|too vague|wrong thing|translation)/.test(value)) {
+        add('clarity', 'something about the translation is not landing');
+      }
+
+      if (/(wrong frame|frame|door|angle|surface|story|shape|direction)/.test(value)) {
+        add('frame', 'the frame might be doing more than the idea itself');
+      }
+
+      if (/(upside down|misread|heard|different message|interpreted|emotional|sarcasm)/.test(value)) {
+        add('misread', 'the message may be getting heard through another lens');
+      }
+
+      if (/(better|improve|next experiment|pointing|lesson|encourage|encouragement)/.test(value)) {
+        add('care', 'there may be clumsy encouragement inside the friction');
+      }
+
+      if (/(can\'t hold|unfinished|missing|almost|not quite|drifted|something feels off|circling)/.test(value)) {
+        add('unfinished', 'something unfinished is still trying to appear');
+      }
+
+      if (/(late|early|timing|audience)/.test(value)) {
+        add('timing', 'timing or audience might be shaping the response');
+      }
+
+      if (/(silence|stops the conversation|don\'t continue)/.test(value)) {
+        add('distance', 'the silence may still contain a signal');
+      }
+
+      if (!tags.size) {
+        add('drift', 'the fragment may be pointing somewhere sideways');
+      }
+
+      return { tags, hooks };
+    }
+
+    function overlapCount(setA, setB) {
+      let count = 0;
+      for (const item of setA) {
+        if (setB.has(item)) count += 1;
+      }
+      return count;
+    }
+
+    function similarityScore(a, b) {
+      const wordsA = new Set(lowerText(a).split(/[^a-z0-9]+/).filter(Boolean));
+      const wordsB = new Set(lowerText(b).split(/[^a-z0-9]+/).filter(Boolean));
+      return overlapCount(wordsA, wordsB);
+    }
+
+    function pickDistinctPair() {
+      const pool = window.REFRAMEFragmentSystem.pickMixed(18);
+      let bestA = '';
+      let bestB = '';
+      let bestScore = Infinity;
+
+      for (let i = 0; i < pool.length; i += 1) {
+        for (let j = i + 1; j < pool.length; j += 1) {
+          const a = cleanText(pool[i]);
+          const b = cleanText(pool[j]);
+          if (!a || !b) continue;
+
+          const score = similarityScore(a, b);
+          if (score < bestScore) {
+            bestScore = score;
+            bestA = a;
+            bestB = b;
+          }
+        }
+      }
+
+      if (!bestA || !bestB) {
+        const fallback = window.REFRAMEFragmentSystem.pickMixed(2);
+        bestA = cleanText(fallback[0] || '');
+        bestB = cleanText(fallback[1] || '');
+      }
+
+      return { a: bestA, b: bestB };
+    }
+
+    function buildReading(a, b) {
+      const left = analyzeFragment(a);
+      const right = analyzeFragment(b);
+
+      const combinedTags = new Set([...left.tags, ...right.tags]);
+      const both = overlapCount(left.tags, right.tags);
+
+      const candidates = [];
+
+      function push(text) {
+        const value = dedupeSpaces(text);
+        if (!value) return;
+        if (recentReadings.includes(value)) return;
+        candidates.push(value);
+      }
+
+      if (combinedTags.has('attention') && combinedTags.has('reaction')) {
+        push('The reaction may be less like rejection and more like sustained attention wearing rough language.');
+        push('Someone may be staying close to your work, even if they only know how to show it through friction.');
+      }
+
+      if (combinedTags.has('care') && combinedTags.has('clarity')) {
+        push('There may be a clumsy wish for the work to become clearer, not a wish for it to disappear.');
+        push('The harshness may be covering an awkward kind of push toward a stronger version.');
+      }
+
+      if (combinedTags.has('misread') && combinedTags.has('frame')) {
+        push('The message may have changed shape in the listener before it changed shape on the page.');
+        push('What looks like a bad reaction may be a reading problem created by the frame itself.');
+      }
+
+      if (combinedTags.has('unfinished') && combinedTags.has('clarity')) {
+        push('The friction may be circling a part of the work that is still half-born, not fully translated yet.');
+        push('Something unfinished may be getting mistaken for something empty.');
+      }
+
+      if (combinedTags.has('timing') && combinedTags.has('reaction')) {
+        push('The response may be about timing or audience fit more than the worth of the idea itself.');
+      }
+
+      if (combinedTags.has('distance') && combinedTags.has('attention')) {
+        push('Even the silence around the work may be a form of attention that has not found language yet.');
+      }
+
+      if (both >= 2) {
+        push('Both fragments seem to point at the same hidden pressure from two different sides.');
+      }
+
+      if (left.hooks[0] && right.hooks[0]) {
+        push(`${sentenceCase(left.hooks[0])}. At the same time, ${right.hooks[0]}.`);
+      }
+
+      push('The collision may be hiding a different motive than the surface tone suggests.');
+      push('The rough response may be carrying a signal that has not been decoded yet.');
+      push('What sounds hostile at first may still be a distorted form of interest.');
+      push('The attack may be pointing at desire, confusion, or clumsy care rather than simple rejection.');
+
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    function buildNextFragment(a, b, reading) {
+      const left = analyzeFragment(a);
+      const right = analyzeFragment(b);
+      const readingLower = lowerText(reading);
+
+      const candidates = [];
+
+      function push(text) {
+        const value = sentenceCase(dedupeSpaces(text));
+        if (!value) return;
+        if (recentNextFragments.includes(value)) return;
+        candidates.push(value);
+      }
+
+      if (readingLower.includes('attention')) {
+        push('Maybe attention is hiding inside the friction');
+      }
+
+      if (readingLower.includes('care')) {
+        push('Maybe the roughness is clumsy care');
+      }
+
+      if (readingLower.includes('translation')) {
+        push('Maybe the translation is where the damage happened');
+      }
+
+      if (readingLower.includes('frame')) {
+        push('Maybe the frame changed the meaning before the reader did');
+      }
+
+      if (readingLower.includes('interest')) {
+        push('Maybe hostility is only one mask for interest');
+      }
+
+      if (left.tags.has('misread') || right.tags.has('misread')) {
+        push('Maybe the reply is describing a misreading, not a verdict');
+      }
+
+      if (left.tags.has('clarity') || right.tags.has('clarity')) {
+        push('Maybe the signal is there but the wording is not carrying it');
+      }
+
+      if (left.tags.has('care') || right.tags.has('care')) {
+        push('Maybe the shove is trying to act like support');
+      }
+
+      if (left.tags.has('unfinished') || right.tags.has('unfinished')) {
+        push('Maybe the unfinished part is what the reaction is touching');
+      }
+
+      if (left.tags.has('attention') || right.tags.has('attention')) {
+        push('Maybe they keep returning because something there still hooks them');
+      }
+
+      push('Maybe the reaction is saying more about its motive than its wording');
+      push('Maybe the hidden signal matters more than the surface tone');
+      push('Maybe this reply wants a better reading, not a faster defense');
+      push('Maybe the signal inside the hit is the real fragment');
+
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    }
+
+    function remember(list, value, limit = 8) {
+      list.unshift(value);
+      while (list.length > limit) list.pop();
     }
 
     async function loadSystem() {
@@ -447,23 +635,27 @@
         return;
       }
 
-      const picked = window.REFRAMEFragmentSystem.pickMixed(2);
-      if (!picked || picked.length < 2) {
+      const pair = pickDistinctPair();
+      const a = pair.a;
+      const b = pair.b;
+
+      if (!a || !b) {
         statusText.textContent = 'Not enough fragments';
         return;
       }
 
-      const a = cleanText(picked[0]);
-      const b = cleanText(picked[1]);
-      const collision = makeCollision(a, b);
-      const nextFragment = makeNextFragment(a, b);
+      const reading = buildReading(a, b);
+      const nextFragment = buildNextFragment(a, b, reading);
 
-      currentResult = { a, b, collision, nextFragment };
+      currentResult = { a, b, reading, nextFragment };
 
       fragmentAEl.textContent = a;
       fragmentBEl.textContent = b;
-      collisionTextEl.textContent = collision;
+      readingTextEl.textContent = reading;
       nextFragmentTextEl.textContent = nextFragment;
+
+      remember(recentReadings, reading);
+      remember(recentNextFragments, nextFragment);
 
       resultList.style.display = 'flex';
       deeperLink.style.display = 'inline';
@@ -471,7 +663,7 @@
     }
 
     async function copyResult() {
-      if (!currentResult.collision) {
+      if (!currentResult.reading) {
         statusText.textContent = 'Nothing to copy';
         return;
       }
@@ -481,7 +673,7 @@
         '',
         currentResult.b,
         '',
-        currentResult.collision,
+        currentResult.reading,
         '',
         currentResult.nextFragment
       ].join('\n');
@@ -494,9 +686,28 @@
       }
     }
 
+    function clearAll() {
+      currentResult = {
+        a: '',
+        b: '',
+        reading: '',
+        nextFragment: ''
+      };
+
+      fragmentAEl.textContent = '';
+      fragmentBEl.textContent = '';
+      readingTextEl.textContent = '';
+      nextFragmentTextEl.textContent = '';
+
+      resultList.style.display = 'none';
+      deeperLink.style.display = 'none';
+      statusText.textContent = loaded ? 'Loaded' : 'Waiting';
+    }
+
     loadBtn.addEventListener('click', loadSystem);
     collideBtn.addEventListener('click', collide);
     copyBtn.addEventListener('click', copyResult);
+    clearBtn.addEventListener('click', clearAll);
   </script>
 </body>
 </html>
