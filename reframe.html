@@ -212,9 +212,15 @@
     }
 
     .deeper{
-      color:rgba(193,203,255,0.82);
+      color:rgba(193,203,255,0.45);
       font-size:14px;
       white-space:nowrap;
+      transition:opacity .2s ease, color .2s ease;
+    }
+
+    .deeper:hover,
+    .deeper:focus{
+      color:rgba(193,203,255,0.72);
     }
 
     .result-card{
@@ -402,7 +408,7 @@ You always say vague things."></textarea>
 
         <div class="status-row">
           <div id="statusText">Waiting for input</div>
-          <a class="deeper" href="./fragment-router.html">deeper</a>
+          <a class="deeper" href="./fragment-router.html">Deeper</a>
         </div>
 
         <div class="result-card">
@@ -458,7 +464,6 @@ You always say vague things.`;
       }
 
       let base = reframes[Math.floor(Math.random() * reframes.length)];
-
       const lower = raw.toLowerCase();
 
       if (lower.includes('abstract')) {
