@@ -102,7 +102,7 @@
       margin-top:14px;
     }
 
-    button, a.button{
+    button{
       appearance:none;
       border:none;
       border-radius:12px;
@@ -113,19 +113,18 @@
       font-weight:600;
       cursor:pointer;
       text-align:center;
-      text-decoration:none;
       border:1px solid #2d3446;
       transition:transform .04s ease, background .15s ease, border-color .15s ease;
       user-select:none;
       -webkit-tap-highlight-color:transparent;
     }
 
-    button:hover, a.button:hover{
+    button:hover{
       background:var(--hover);
       border-color:#3a4258;
     }
 
-    button:active, a.button:active{
+    button:active{
       transform:translateY(1px);
     }
 
@@ -229,8 +228,6 @@ stop
 boring
 too abstract
 what are you even saying
-leftist
-right-wing
 nobody gets this"></textarea>
 
         <div class="actions">
@@ -267,90 +264,72 @@ nobody gets this"></textarea>
       'nobody gets this'
     ].join('\n');
 
-    const practicalOpeners = [
-      'A post about how',
-      'A thread on why',
-      'A sharp angle on how',
-      'A piece on why',
-      'A short post on how',
-      'A content angle about why',
-      'A creator note on how',
-      'A post showing why'
+    const emptyMessage = '3–5 angles appear here.';
+
+    const practicalTemplates = [
+      '{seed} can mean "I do not get this yet"',
+      '{seed} is often a push for safer, easier ideas',
+      '{seed} can turn into a post about sharing a thought too soon',
+      '{seed} can become a post about how people want fast meaning',
+      '{seed} can mean people want the idea to fit a box right away',
+      '{seed} is sometimes more about speed than truth',
+      '{seed} can become a post about ideas that need more air',
+      '{seed} can show how people pull away from thoughts they cannot hold fast',
+      '{seed} can turn into a post about how the internet likes clean answers',
+      '{seed} can mean the idea is early, not dead',
+      '{seed} can become a post about how some thoughts come out rough first',
+      '{seed} can show the gap between "not clear yet" and "not worth it"'
     ];
 
-    const practicalFrames = [
-      'people reject what they cannot repeat',
-      'clarity is often demanded too early',
-      'the internet punishes ideas before they fully form',
-      'confusion can be the first sign of an original thought',
-      'many reactions are just discomfort wearing confidence',
-      'some criticism is only boredom looking for a target',
-      'people often call something bad when they cannot place it',
-      'certainty spreads faster than thought',
-      'misunderstanding is part of the cost of originality',
-      'the crowd trusts templates more than unfinished insight',
-      'not being understood is different from having nothing to say',
-      'people want ideas that fit in one sentence'
+    const practicalLines = [
+      'Some people only like ideas they can name fast',
+      'Some people want every thought to feel easy right away',
+      'A rough idea can still have heat',
+      'Not clear yet does not mean bad',
+      'People often push away what does not fit fast',
+      'A strange idea can make sense later',
+      'Sometimes a thought needs time, not defense',
+      'The first shape of an idea is often messy',
+      'Some replies come from rush, not care',
+      'People ask for neat words when they want safety',
+      'Some ideas sound wrong before they sound true',
+      'Fast replies are not always deep replies'
     ];
 
-    const practicalTurns = [
-      'and why that matters for creators',
-      'before an idea becomes obvious',
-      'when your work is still alive and unstable',
-      'instead of treating every bad reply as truth',
-      'and how that changes what you should publish next',
-      'without flattening the interesting part',
-      'before you over-explain your own work',
-      'and why friction can be a better signal than praise'
+    const selfTemplates = [
+      'Maybe the idea was fine. Maybe I posted it too soon',
+      'Maybe the thought was good. Maybe I gave it no time to grow',
+      'Maybe I was not wrong. Maybe I was early and loud',
+      'Maybe I did not fail. Maybe I posted the first draft of a feeling',
+      'Maybe the idea needed more shape before I threw it outside',
+      'Maybe I gave people a spark and called it a finished fire',
+      'Maybe the thought was alive. Maybe I posted it before it could stand',
+      'Maybe I was not unclear. Maybe I was still building the bridge'
     ];
 
-    const selfDeprecating = [
-      'Maybe I am not bad at explaining. Maybe I just keep posting thoughts before they learn how to sit still.',
-      'A post called: My ideas are not always unclear. Sometimes they are just still wet.',
-      'Maybe the problem is not that I confuse people. Maybe I publish too early and call it bravery.',
-      'A self-own: I keep serving half-cooked thoughts and acting surprised when people ask for a menu.',
-      'Maybe I do make sense. Just not at the speed the internet prefers.'
+    const spicyTemplates = [
+      'A lot of people do not hate bad ideas. They hate feeling slow',
+      'Some people say "bad" when they really mean "hard to hold"',
+      'The internet is quick to laugh at what it cannot sort fast',
+      'Some replies are not deep. They are just fast',
+      'People love bold words until the thought gets strange',
+      'A lot of online confidence is just speed in a nice coat',
+      'Some people do not want a new idea. They want a quick label',
+      'The crowd often picks easy over alive'
     ];
 
-    const spicy = [
-      'If everyone understands your idea instantly, it may already be too dead to matter.',
-      'The internet does not hate bad ideas. It hates having to think for more than three seconds.',
-      'Some replies are not criticism. They are panic from people whose categories stopped working.',
-      'People call something “nonsense” when they want the comfort of dismissing it fast.',
-      'A lot of certainty online is just low-resolution thinking with good posture.'
+    const selfEndings = [
+      'Start with {seed}.',
+      'Open with {seed}.',
+      'Use {seed} as the first line.',
+      'Begin with {seed}, then turn it on yourself.'
     ];
 
-    const bridgeFragments = [
-      'before it became legible',
-      'while it still had teeth',
-      'before the strange part was cleaned off',
-      'while it still resisted neat language',
-      'before it was turned into a lesson',
-      'while it was still slightly dangerous',
-      'before it learned how to behave',
-      'while it was still open at the edges'
-    ];
-
-    const quietFragments = [
-      'something unfinished can still be worth sharing',
-      'not everything meaningful arrives in a tidy form',
-      'an early idea often sounds wrong before it sounds true',
-      'people often mistake unfamiliarity for weakness',
-      'a rough signal can carry more life than a polished answer',
-      'some ideas lose their force when made too explainable',
-      'what feels vague can also hold room for thought',
-      'the first version of an idea is often mostly atmosphere'
-    ];
-
-    const edgeFragments = [
-      'the crowd prefers repeatable language',
-      'most people want recognition, not surprise',
-      'bad replies often reveal the limits of the reader, not the work',
-      'the internet rewards confidence over perception',
-      'people protect themselves by rejecting what stays open',
-      'many reactions are attempts to end thinking quickly',
-      'ambiguity threatens systems built on fast judgment',
-      'some hostility is just fear of not knowing what to do with a thought'
+    const spicyEndings = [
+      'Lead with {seed}.',
+      'Open with {seed}.',
+      'Start from {seed}.',
+      'Use {seed} as the spark.'
     ];
 
     function pick(arr){
@@ -374,67 +353,57 @@ nobody gets this"></textarea>
         .slice(0, 12);
     }
 
-    function lineFragment(line){
+    function quoteSeed(line){
       const stripped = line.replace(/[“”"'`]/g, '').trim();
-      if(!stripped) return 'a bad reply';
+      if(!stripped) return '"bad reply"';
       return `"${stripped}"`;
     }
 
-    function makePractical(seedLine){
-      const seed = lineFragment(seedLine);
-      const opener = pick(practicalOpeners);
-      const frame = pick(practicalFrames);
-      const turn = pick(practicalTurns);
-      const bridge = pick(bridgeFragments);
-      const quiet = pick(quietFragments);
-      const edge = pick(edgeFragments);
-
-      const variants = [
-        `${opener} ${frame} ${turn}. Use ${seed} as the entry point.`,
-        `${opener} ${quiet} ${bridge}. Start from ${seed}.`,
-        `${opener} ${edge} ${turn}. Build it around ${seed}.`
-      ];
-
-      return pick(variants);
+    function fill(template, seed){
+      return template.replaceAll('{seed}', seed);
     }
 
-    function makeSelf(seedLine){
-      const seed = lineFragment(seedLine);
-      const base = pick(selfDeprecating);
-      const tail = [
-        `Open with ${seed}.`,
-        `Use ${seed} as the first line.`,
-        `Begin from ${seed} and turn the knife slightly toward yourself.`,
-        `Start with ${seed}, then make yourself part of the joke.`
-      ];
-      return `${base} ${pick(tail)}`;
+    function pickDifferent(arr, used){
+      const options = arr.filter(item => !used.has(item));
+      const choice = options.length ? pick(options) : pick(arr);
+      used.add(choice);
+      return choice;
     }
 
-    function makeSpicy(seedLine){
-      const seed = lineFragment(seedLine);
-      const base = pick(spicy);
-      const tail = [
-        `Lead with ${seed}.`,
-        `Use ${seed} as proof.`,
-        `Frame ${seed} as the symptom, not the point.`,
-        `Start from ${seed} and hit the culture around it.`
-      ];
-      return `${base} ${pick(tail)}`;
+    function makePractical(seed, usedTemplates, usedLines){
+      const first = fill(pickDifferent(practicalTemplates, usedTemplates), seed);
+      const second = pickDifferent(practicalLines, usedLines);
+      return `${first}\n${second}`;
+    }
+
+    function makeSelf(seed){
+      return `${pick(selfTemplates)}\n${fill(pick(selfEndings), seed)}`;
+    }
+
+    function makeSpicy(seed){
+      return `${pick(spicyTemplates)}\n${fill(pick(spicyEndings), seed)}`;
     }
 
     function generateIdeas(rawText){
       const lines = cleanLines(rawText);
-      const fallback = ['too abstract', 'nobody gets this', 'boring', 'stop'];
-      const source = lines.length ? shuffle(lines) : shuffle(fallback);
+      if (!lines.length) return null;
 
-      const ideas = [];
-      ideas.push({ type:'Practical', text: makePractical(source[0 % source.length]) });
-      ideas.push({ type:'Practical', text: makePractical(source[1 % source.length]) });
-      ideas.push({ type:'Practical', text: makePractical(source[2 % source.length]) });
-      ideas.push({ type:'Self-deprecating', text: makeSelf(source[3 % source.length]) });
-      ideas.push({ type:'Spicy', text: makeSpicy(source[4 % source.length]) });
+      const source = shuffle(lines);
+      const seeds = [];
+      for(let i = 0; i < 5; i++){
+        seeds.push(quoteSeed(source[i % source.length]));
+      }
 
-      return ideas;
+      const usedTemplates = new Set();
+      const usedLines = new Set();
+
+      return [
+        { type:'Practical', text: makePractical(seeds[0], usedTemplates, usedLines) },
+        { type:'Practical', text: makePractical(seeds[1], usedTemplates, usedLines) },
+        { type:'Practical', text: makePractical(seeds[2], usedTemplates, usedLines) },
+        { type:'Self-deprecating', text: makeSelf(seeds[3]) },
+        { type:'Spicy', text: makeSpicy(seeds[4]) }
+      ];
     }
 
     function renderIdeas(ideas){
@@ -464,22 +433,25 @@ nobody gets this"></textarea>
       result.appendChild(list);
     }
 
+    function resetResult(){
+      result.className = 'result empty';
+      result.textContent = emptyMessage;
+    }
+
     function generate(){
       const ideas = generateIdeas(input.value);
+      if (!ideas) return;
       renderIdeas(ideas);
     }
 
     function clearAll(){
       input.value = '';
-      result.className = 'result empty';
-      result.textContent = '3–5 angles appear here.';
+      resetResult();
     }
 
     function copyResult(){
       const cards = Array.from(result.querySelectorAll('.idea'));
-      if(!cards.length){
-        return;
-      }
+      if(!cards.length) return;
 
       const text = cards.map(card => {
         const label = card.querySelector('.idea-label')?.textContent || '';
@@ -503,12 +475,15 @@ nobody gets this"></textarea>
     }
 
     generateBtn.addEventListener('click', generate);
+
     exampleBtn.addEventListener('click', () => {
       input.value = exampleInput;
-      generate();
     });
+
     clearBtn.addEventListener('click', clearAll);
     copyBtn.addEventListener('click', copyResult);
+
+    resetResult();
   </script>
 </body>
 </html>
