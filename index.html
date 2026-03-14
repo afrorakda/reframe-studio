@@ -9,20 +9,13 @@
       --bg-1:#13256d;
       --bg-2:#0a174a;
       --bg-3:#07102a;
-      --shell:#202a55;
-      --panel:#04104a;
-      --panel-2:#0d173d;
       --line:#2f3f82;
       --line-soft:#3b4f9b;
       --text:#eef3ff;
       --muted:#a9b5e8;
-      --soft:#d6defd;
-      --button:#44559d;
-      --button-2:#3a4a8e;
       --shadow:0 16px 42px rgba(0,0,0,.34);
       --radius-xl:30px;
       --radius-lg:24px;
-      --radius-md:18px;
     }
 
     *{ box-sizing:border-box; }
@@ -39,11 +32,11 @@
     }
 
     body{
-      padding:26px 14px 34px;
+      padding:18px 12px 24px;
     }
 
     .wrap{
-      max-width:860px;
+      max-width:980px;
       margin:0 auto;
     }
 
@@ -52,67 +45,70 @@
       border:1px solid rgba(134,153,236,.18);
       border-radius:var(--radius-xl);
       box-shadow:var(--shadow);
-      padding:26px;
+      padding:18px;
     }
 
     h1{
       margin:0;
-      font-size:56px;
+      font-size:42px;
       line-height:.95;
       letter-spacing:-0.05em;
       font-weight:800;
     }
 
     .sub{
-      margin:18px 0 0;
-      font-size:24px;
-      line-height:1.5;
+      margin:12px 0 0;
+      font-size:18px;
+      line-height:1.45;
       color:var(--muted);
       max-width:740px;
     }
 
     .tool{
-      margin-top:26px;
+      margin-top:16px;
       background:linear-gradient(180deg, rgba(18,26,64,.86), rgba(7,16,58,.92));
       border:1px solid rgba(96,114,191,.24);
       border-radius:var(--radius-lg);
-      padding:18px;
+      padding:14px;
     }
 
     .meta{
       display:flex;
       justify-content:space-between;
-      align-items:center;
+      align-items:flex-start;
       gap:10px;
-      margin:0 6px 12px;
+      margin:0 4px 10px;
     }
 
     .meta-label{
       color:#dfe5ff;
-      font-size:18px;
-      letter-spacing:.22em;
+      font-size:15px;
+      letter-spacing:.20em;
       text-transform:uppercase;
       font-weight:700;
+      line-height:1.25;
     }
 
     .meta-count{
       color:var(--muted);
-      font-size:18px;
+      font-size:14px;
+      white-space:nowrap;
+      padding-top:2px;
     }
 
     textarea{
       width:100%;
-      min-height:190px;
+      min-height:128px;
       border:none;
       outline:none;
       resize:vertical;
-      border-radius:var(--radius-lg);
+      border-radius:20px;
       background:rgba(3,11,50,.96);
       border:1px solid rgba(63,80,151,.45);
       color:var(--text);
-      padding:26px 24px;
-      font-size:26px;
-      line-height:1.48;
+      padding:18px 18px;
+      font-size:15px;
+      line-height:1.5;
       font-family:inherit;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.02);
     }
@@ -124,19 +120,19 @@
     .actions{
       display:grid;
       grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:18px;
-      margin-top:18px;
+      gap:12px;
+      margin-top:14px;
     }
 
     button{
       appearance:none;
       border:none;
       outline:none;
-      min-height:86px;
-      border-radius:22px;
+      min-height:64px;
+      border-radius:18px;
       background:linear-gradient(180deg, rgba(74,91,165,.96), rgba(60,76,136,.96));
       color:var(--text);
-      font-size:26px;
+      font-size:17px;
       font-weight:800;
       letter-spacing:-0.02em;
       cursor:pointer;
@@ -159,18 +155,18 @@
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      margin:16px 4px 8px;
+      margin:12px 2px 8px;
     }
 
     .status{
       color:var(--muted);
-      font-size:17px;
+      font-size:14px;
     }
 
     .quiet-link{
       color:var(--muted);
       text-decoration:none;
-      font-size:18px;
+      font-size:14px;
     }
 
     .quiet-link:hover{
@@ -178,93 +174,160 @@
     }
 
     .result-wrap{
-      margin-top:10px;
+      margin-top:8px;
     }
 
     .empty{
-      min-height:72px;
+      min-height:58px;
       display:flex;
       align-items:center;
       color:var(--muted);
-      font-size:18px;
-      padding:0 6px;
-      border-radius:22px;
+      font-size:15px;
+      padding:0 14px;
+      border-radius:20px;
       background:rgba(3,11,50,.74);
       border:1px solid rgba(63,80,151,.36);
     }
 
     .cards{
       display:grid;
-      gap:18px;
+      gap:14px;
     }
 
     .card{
       background:rgba(13,23,61,.96);
       border:1px solid rgba(73,92,169,.58);
-      border-radius:26px;
-      padding:18px 18px 10px;
+      border-radius:22px;
+      padding:14px 14px 8px;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
     }
 
     .card-top{
       color:var(--muted);
-      font-size:18px;
+      font-size:14px;
       letter-spacing:.18em;
       text-transform:uppercase;
-      padding:2px 6px 10px;
+      padding:2px 4px 8px;
     }
 
     .block{
       border-top:1px solid rgba(89,105,174,.2);
-      padding:16px 6px 12px;
+      padding:12px 4px 10px;
     }
 
     .block-label{
       color:var(--muted);
-      font-size:12px;
+      font-size:10px;
       letter-spacing:.22em;
       text-transform:uppercase;
-      margin-bottom:10px;
+      margin-bottom:8px;
     }
 
     .block-text{
       color:var(--text);
-      font-size:21px;
-      line-height:1.6;
+      font-size:16px;
+      line-height:1.55;
       white-space:pre-wrap;
       word-break:break-word;
     }
 
     .footer{
-      margin-top:18px;
+      margin-top:14px;
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:12px;
       color:var(--muted);
-      font-size:17px;
-      padding:2px 4px 0;
+      font-size:13px;
+      padding:0 2px;
     }
 
-    @media (max-width:680px){
-      body{ padding:18px 10px 28px; }
-      .shell{ padding:18px; }
-      h1{ font-size:46px; }
-      .sub{ font-size:22px; }
-      .tool{ padding:14px; }
-      .meta-count, .status, .footer, .quiet-link{ font-size:16px; }
-      .meta-label{ font-size:17px; }
-      textarea{
-        min-height:172px;
-        font-size:22px;
-        padding:22px 20px;
+    @media (min-width: 900px){
+      body{
+        padding:26px 18px 34px;
       }
+
+      .shell{
+        padding:24px;
+      }
+
+      h1{
+        font-size:56px;
+      }
+
+      .sub{
+        font-size:22px;
+        margin-top:16px;
+      }
+
+      .tool{
+        margin-top:22px;
+        padding:18px;
+      }
+
+      .meta-label{
+        font-size:18px;
+      }
+
+      .meta-count{
+        font-size:18px;
+      }
+
+      textarea{
+        min-height:160px;
+        font-size:20px;
+        padding:22px 22px;
+      }
+
+      .actions{
+        gap:16px;
+        margin-top:18px;
+      }
+
       button{
         min-height:78px;
         font-size:22px;
+        border-radius:20px;
       }
+
+      .status{
+        font-size:17px;
+      }
+
+      .quiet-link{
+        font-size:17px;
+      }
+
+      .empty{
+        min-height:68px;
+        font-size:18px;
+      }
+
+      .card{
+        border-radius:26px;
+        padding:18px 18px 10px;
+      }
+
+      .card-top{
+        font-size:18px;
+      }
+
+      .block{
+        padding:16px 6px 12px;
+      }
+
+      .block-label{
+        font-size:12px;
+      }
+
       .block-text{
-        font-size:19px;
+        font-size:21px;
+      }
+
+      .footer{
+        font-size:17px;
+        margin-top:18px;
+        padding:2px 4px 0;
       }
     }
   </style>
@@ -389,7 +452,6 @@ nobody asked"></textarea>
     const branchLibrary = {
       boring: [
         {
-          id:'boring-show',
           misread:[
             'You wanted a show and got a thought.',
             'You came for snacks and got vegetables.',
@@ -428,7 +490,6 @@ ${twist}
 ${post}`
         },
         {
-          id:'boring-work',
           misread:[
             'You stayed with it long enough to complain.',
             'You gave it more attention than your wording wants to admit.',
@@ -469,7 +530,6 @@ ${post}`
 
       confusing: [
         {
-          id:'confusing-follow',
           misread:[
             'You kept listening even while saying you could not follow it.',
             'You stayed long enough to get annoyed at not catching it.',
@@ -507,7 +567,6 @@ ${twist}
 ${post}`
         },
         {
-          id:'confusing-voice',
           misread:[
             'You say you could not follow it, but you still stayed for the sound of it.',
             'You listened longer than someone with no interest ever would.',
@@ -550,7 +609,6 @@ ${post}`
 
       messy: [
         {
-          id:'messy-prechewed',
           misread:[
             'You wanted the post cleaner so you could beat it faster.',
             'You sound less offended by the idea than by having to sort it yourself.',
@@ -591,7 +649,6 @@ ${post}`
 
       nonsense: [
         {
-          id:'nonsense-dignity',
           misread:[
             'You called it nonsense, but still replied like it touched something.',
             'If it were truly empty, it would not have earned this much heat.',
@@ -632,7 +689,6 @@ ${post}`
 
       stop: [
         {
-          id:'stop-haunted',
           misread:[
             'You do not sound indifferent. You sound haunted.',
             'That is a weird amount of investment for something you want gone.',
@@ -675,7 +731,6 @@ ${post}`
 
       insult: [
         {
-          id:'insult-balance',
           misread:[
             'You ran out of argument and reached for the emergency clown horn.',
             'You skipped the idea and swung at the person because that was easier.',
@@ -718,7 +773,6 @@ ${post}`
 
       stupid: [
         {
-          id:'stupid-lazy',
           misread:[
             'Calling it stupid is often easier than explaining why it bothered you.',
             'You picked the smallest word because the bigger explanation was harder.',
@@ -759,7 +813,6 @@ ${post}`
 
       nobody: [
         {
-          id:'nobody-answered',
           misread:[
             'You still answered.',
             'You noticed it enough to react.',
@@ -800,7 +853,6 @@ ${post}`
 
       default: [
         {
-          id:'default-contact',
           misread:[
             'You noticed it enough to react.',
             'You did not scroll past.',
@@ -865,7 +917,7 @@ ${post}`
         selectedKeys.push('default');
       }
 
-      return selectedKeys.map((key, index) => {
+      return selectedKeys.slice(0,3).map((key, index) => {
         const branch = pick(branchLibrary[key]);
         const misread = pick(branch.misread);
         const twist = pick(branch.twist);
