@@ -6,8 +6,6 @@
   <title>Hate → Content</title>
   <style>
     :root{
-      --bg:#070b16;
-      --panel:#12182a;
       --line:#283252;
       --line-soft:#34406a;
       --text:#eef2ff;
@@ -19,7 +17,6 @@
     }
 
     *{box-sizing:border-box}
-
     html,body{
       margin:0;
       padding:0;
@@ -30,14 +27,8 @@
       line-height:1.45;
     }
 
-    body{
-      padding:28px 14px 44px;
-    }
-
-    .wrap{
-      max-width:820px;
-      margin:0 auto;
-    }
+    body{ padding:28px 14px 44px; }
+    .wrap{ max-width:820px; margin:0 auto; }
 
     .shell{
       background:linear-gradient(180deg, rgba(28,36,62,.96), rgba(17,24,42,.98));
@@ -84,9 +75,7 @@
       font-family:inherit;
     }
 
-    textarea::placeholder{
-      color:var(--muted);
-    }
+    textarea::placeholder{ color:var(--muted); }
 
     .actions{
       margin-top:18px;
@@ -119,9 +108,7 @@
       border-color:rgba(132,149,214,.34);
     }
 
-    button:active{
-      transform:translateY(1px);
-    }
+    button:active{ transform:translateY(1px); }
 
     .result-box{
       min-height:0;
@@ -216,48 +203,15 @@
     }
 
     @media (max-width:640px){
-      body{
-        padding:18px 10px 32px;
-      }
-
-      .shell{
-        padding:18px;
-        border-radius:24px;
-      }
-
-      .title{
-        font-size:28px;
-      }
-
-      .input-box,
-      .result-box{
-        padding:16px;
-        border-radius:20px;
-      }
-
-      textarea{
-        min-height:150px;
-        font-size:16px;
-      }
-
-      button{
-        min-height:66px;
-        font-size:16px;
-        border-radius:18px;
-      }
-
-      .card{
-        border-radius:20px;
-        padding:16px;
-      }
-
-      .block-text{
-        font-size:16px;
-      }
-
-      .result-box.empty{
-        min-height:64px;
-      }
+      body{ padding:18px 10px 32px; }
+      .shell{ padding:18px; border-radius:24px; }
+      .title{ font-size:28px; }
+      .input-box,.result-box{ padding:16px; border-radius:20px; }
+      textarea{ min-height:150px; font-size:16px; }
+      button{ min-height:66px; font-size:16px; border-radius:18px; }
+      .card{ border-radius:20px; padding:16px; }
+      .block-text{ font-size:16px; }
+      .result-box.empty{ min-height:64px; }
     }
   </style>
 </head>
@@ -312,106 +266,356 @@ nobody asked"></textarea>
       'nobody asked'
     ].join('\n');
 
-    const misreadAttention = [
-      'You read the whole thing.',
-      'You stayed long enough to reply.',
-      'You noticed the post.',
-      'You came back to say that.',
-      'You did not scroll past.',
-      'You stopped and reacted.',
-      'You gave it attention.',
-      'You took the time.',
-      'You engaged anyway.',
-      'You were still here.'
+    const boringBranches = [
+      {
+        id:'thinking-work',
+        misread:[
+          'You wanted entertainment and got thought instead.',
+          'You wanted a snack and got a staircase.',
+          'You were hoping this would not ask much from you.'
+        ],
+        flip:[
+          'Sometimes "boring" means "I did not want to think today."',
+          'People call ideas boring when attention starts to feel like work.',
+          'What asks for thought often gets punished before it gets understood.'
+        ],
+        post:[
+          'Why "boring" often means "too much work for me."',
+          'Why some people reject ideas the moment thinking begins.',
+          'Why thought gets mistaken for bad entertainment.'
+        ],
+        hook:[
+          'A lot of "boring" is just fear of slow thinking.',
+          'Some people call thought boring when it is not dressed like entertainment.',
+          '"Boring" is often just effort in disguise.'
+        ]
+      },
+      {
+        id:'missing-middle',
+        misread:[
+          'You may have lost the middle step.',
+          'You wanted the bridge before the big idea.',
+          'You were asking for one more step, not a smaller thought.'
+        ],
+        flip:[
+          'Sometimes "boring" is what a missing middle sounds like.',
+          'A thought can feel flat when the path into it is late.',
+          'What looks dull may just be under-explained.'
+        ],
+        post:[
+          'Why some good ideas die because the middle is missing.',
+          'Why "boring" can really mean "I lost the path."',
+          'Why creators need the bridge before the leap.'
+        ],
+        hook:[
+          '"Boring" sometimes means "show me the missing step."',
+          'A missing middle can make a live idea look dead.',
+          'Sometimes the idea is fine. The bridge is late.'
+        ]
+      },
+      {
+        id:'expectation-gap',
+        misread:[
+          'You expected one thing and got another.',
+          'You showed up for apples and got thunder.',
+          'You may be upset because the post broke the promise in your head.'
+        ],
+        flip:[
+          'Sometimes "boring" is just disappointment wearing a simple word.',
+          'People often say boring when the post is not what they came for.',
+          'Expectation decides more reactions than quality does.'
+        ],
+        post:[
+          'Why people call things boring when they wanted something else.',
+          'Why expectation shapes more comments than truth does.',
+          'Why the wrong audience can make a good post look dull.'
+        ],
+        hook:[
+          'A lot of "boring" is just "this is not what I came for."',
+          'Expectation breaks louder than understanding begins.',
+          'Sometimes "boring" is just mismatched hunger.'
+        ]
+      },
+      {
+        id:'status-safety',
+        misread:[
+          'You may have needed the old frame to stay safe.',
+          'You wanted the room to feel familiar again.',
+          'You were defending comfort before reading meaning.'
+        ],
+        flip:[
+          'Some people call new angles boring when old certainty starts to wobble.',
+          'What moves the frame can get pushed back before it gets read.',
+          'Familiar ideas feel safe. New ones feel suspicious.'
+        ],
+        post:[
+          'Why people protect old frames before they test new ideas.',
+          'Why safe ideas get praise and live ideas get pushback.',
+          'Why a new angle can get called boring before it gets a fair read.'
+        ],
+        hook:[
+          'Sometimes "boring" is just a guard at the door of an old belief.',
+          'The safe idea gets the quick yes. The new idea gets checked at the gate.',
+          'Pushback often protects comfort before truth.'
+        ]
+      },
+      {
+        id:'tired-reader',
+        misread:[
+          'Maybe the room was tired, not the post.',
+          'You may have been low on energy, not low on interest.',
+          'This may have arrived after your patience left.'
+        ],
+        flip:[
+          'A tired reader can call a good post boring.',
+          'Energy changes what people think they are reading.',
+          'Some posts are fine. The audience is just out of battery.'
+        ],
+        post:[
+          'Why low energy makes ideas look worse than they are.',
+          'Why timing and tiredness shape online reactions.',
+          'Why a tired reader can misjudge a live idea.'
+        ],
+        hook:[
+          '"Boring" sometimes means "I do not have the energy for this right now."',
+          'Sometimes the post is fine. The battery is not.',
+          'Energy changes judgment more than people admit.'
+        ]
+      },
+      {
+        id:'needs-self',
+        misread:[
+          'You may not have found yourself in it yet.',
+          'You wanted a mirror and got a window.',
+          'You may have wanted the post to revolve around your taste.'
+        ],
+        flip:[
+          'People call a post boring when it does not hand them a role fast enough.',
+          'What does not reflect the reader can get called dull too soon.',
+          'Some posts fail only because the reader wanted themselves in the center.'
+        ],
+        post:[
+          'Why people reject posts that do not center them.',
+          'Why "boring" can mean "I did not see myself in this."',
+          'Why some readers need a mirror before they trust a window.'
+        ],
+        hook:[
+          'Sometimes "boring" means "where am I in this?"',
+          'A post can be alive and still fail to flatter the reader.',
+          'Not every reader wants truth. Some want a mirror.'
+        ]
+      },
+      {
+        id:'novelty-demand',
+        misread:[
+          'You may have wanted a trick, not a thought.',
+          'You were waiting for sparkle and got structure.',
+          'You may have wanted surprise every second.'
+        ],
+        flip:[
+          'Some people call things boring when they are craving novelty, not meaning.',
+          'A post can lose to stimulation even when the idea is solid.',
+          'The hunger for surprise often beats the hunger for insight.'
+        ],
+        post:[
+          'Why novelty can overpower meaning online.',
+          'Why people ask for fireworks when the post is offering signal.',
+          'Why steady ideas lose to sparkling noise.'
+        ],
+        hook:[
+          '"Boring" sometimes means "where are the fireworks?"',
+          'A hungry scroll can mistake calm for empty.',
+          'The internet trains people to ask for sparkle before substance.'
+        ]
+      },
+      {
+        id:'pace-format',
+        misread:[
+          'You may have wanted this in a lighter form.',
+          'You may have needed a comic, not a block of thought.',
+          'You may have wanted the same idea in a friendlier shape.'
+        ],
+        flip:[
+          'Sometimes the idea is fine and the format is the problem.',
+          'A good thought can die in the wrong shape.',
+          'The container changes the read more than people admit.'
+        ],
+        post:[
+          'Why format can kill a good idea.',
+          'Why some thoughts need a comic before a thread.',
+          'Why shape matters as much as substance online.'
+        ],
+        hook:[
+          'Sometimes "boring" is just bad packaging.',
+          'A live idea in the wrong format can look dead.',
+          'Not every good post is born in the right shape.'
+        ]
+      },
+      {
+        id:'control-need',
+        misread:[
+          'You may have wanted something easier to hold.',
+          'You wanted the idea inside a smaller box.',
+          'You may have needed the post to behave.'
+        ],
+        flip:[
+          'Open thoughts can feel boring to people who want control.',
+          'A loose idea makes some readers uneasy before it makes sense.',
+          'People often prefer neat answers to living thoughts.'
+        ],
+        post:[
+          'Why some readers prefer safe answers to live ideas.',
+          'Why open thoughts make people uneasy online.',
+          'Why neatness wins before truth does.'
+        ],
+        hook:[
+          'Some readers do not want an idea. They want a handle.',
+          'Open ideas make control feel thin.',
+          'A lot of "boring" is really "make this easier to hold."'
+        ]
+      },
+      {
+        id:'performance-voice',
+        misread:[
+          'You may have wanted a louder performance.',
+          'You were grading the delivery before the idea.',
+          'You wanted a show before a point.'
+        ],
+        flip:[
+          'Sometimes people call an idea boring when the performance is too calm.',
+          'Delivery gets judged faster than meaning online.',
+          'A quiet voice can make a sharp idea look flat at first.'
+        ],
+        post:[
+          'Why delivery gets judged before meaning.',
+          'Why quiet posts can carry bigger ideas than loud ones.',
+          'Why people mistake performance for value online.'
+        ],
+        hook:[
+          'Sometimes "boring" is just "you were not loud enough for me."',
+          'Online, delivery often gets judged before meaning even arrives.',
+          'A calm voice can hide a sharp idea.'
+        ]
+      }
     ];
 
-    const misreadFan = [
-      'You might be a quiet follower.',
-      'You keep showing up.',
-      'You watch closer than you admit.',
-      'You seem familiar with my posts.',
-      'You are keeping track.',
-      'You are paying attention.',
-      'You did not miss this one either.',
-      'You might be a regular.'
-    ];
+    const genericBranches = {
+      makesNoSense: [
+        {
+          id:'confusion-early',
+          misread:['You tried to follow it.', 'You cared enough to get annoyed.', 'You wanted the path faster.'],
+          flip:['Confusion is often the first step of understanding.', 'Not getting it fast does not make it empty.', 'Some ideas land after the first reaction.'],
+          post:['Why confusion is not always failure.', 'Why new ideas sound wrong at first.', 'Why not getting it fast is normal.'],
+          hook:['Confusion is not the opposite of interest.', 'Not understanding yet is not the same as nonsense.', 'If it bothered you enough to reply, it landed somewhere.']
+        },
+        {
+          id:'shape-rough',
+          misread:['You may have wanted a cleaner shape.', 'You were asking for a clearer path.', 'You may have wanted the idea to arrive in one step.'],
+          flip:['A rough shape gets called nonsense before it gets a fair read.', 'Some ideas look broken when they are only early.', 'The room often judges shape before signal.'],
+          post:['Why rough ideas get dismissed too early.', 'Why bad packaging makes people miss the point.', 'Why some thoughts need one more step before they land.'],
+          hook:['Sometimes "no sense" just means "not neat enough yet."', 'A rough draft can sound empty to a fast room.', 'Shape gets judged before meaning online.']
+        },
+        {
+          id:'defense-reaction',
+          misread:['You may have wanted the room to stay simple.', 'You may have felt safer saying no than staying open.', 'You chose defense before curiosity.'],
+          flip:['"This makes no sense" can be a shield before it is a judgment.', 'Some people reject first to protect what already feels stable.', 'Quick dismissal often protects comfort before truth.'],
+          post:['Why quick dismissal often hides discomfort.', 'Why some reactions protect comfort, not truth.', 'Why saying "no sense" can be easier than staying curious.'],
+          hook:['Sometimes "no sense" is just a shield in public.', 'Quick dismissal can be self-protection in plain clothes.', 'Comfort often speaks louder than curiosity online.']
+        }
+      ],
+      tooAbstract: [
+        {
+          id:'missing-steps',
+          misread:['You may have wanted the missing step.', 'You wanted the bridge before the leap.', 'You may have needed one more example.'],
+          flip:['"Too abstract" often means the path was hidden, not the idea was weak.', 'A missing middle can make a good idea look distant.', 'People push back when they cannot see the route yet.'],
+          post:['Why missing steps make ideas look abstract.', 'Why a bridge matters more than a big point.', 'Why some good ideas look weak too early.'],
+          hook:['Sometimes "too abstract" means "show me the bridge."', 'A missing middle can make a live idea look far away.', 'The path can fail before the point does.']
+        },
+        {
+          id:'safer-version',
+          misread:['You may have wanted the safer version.', 'You wanted the small version first.', 'You may have wanted the easy read.'],
+          flip:['People ask for simpler shapes when the full idea feels risky.', 'A big idea often gets reduced before it gets read.', 'Safety often gets requested as clarity.'],
+          post:['Why readers ask for the safer version first.', 'Why people shrink ideas before they test them.', 'Why safety often disguises itself as clarity.'],
+          hook:['Sometimes "too abstract" means "make this safer for me."', 'The room often asks for safety before truth.', 'Big ideas get cut down before they get tried.']
+        },
+        {
+          id:'frame-shift',
+          misread:['You may have felt the old frame slipping.', 'You may have wanted the old rules back.', 'You may have needed the room to stay familiar.'],
+          flip:['A new frame often gets called abstract before it gets recognized.', 'What shifts the ground can sound vague at first.', 'The old frame resists before the new one gets a name.'],
+          post:['Why new frames sound vague at first.', 'Why people resist the angle before they read the idea.', 'Why abstract is sometimes just unfamiliar.'],
+          hook:['Sometimes "too abstract" is just the old frame complaining.', 'The new frame sounds vague until it gets a name.', 'Unfamiliar often gets mistaken for empty.']
+        }
+      ],
+      whatAreYouSaying: [
+        {
+          id:'path-missing',
+          misread:['You may have lost the path.', 'You wanted the point before the setup.', 'You may have needed the middle sooner.'],
+          flip:['People ask "what are you even saying" when the route disappears before the point lands.', 'A skipped middle can make a clear idea sound broken.', 'The path often matters more than the line.'],
+          post:['Why a missing path makes people panic.', 'Why people want the point before the setup.', 'Why the middle step decides everything.'],
+          hook:['Sometimes "what are you even saying" means "I lost the path."', 'A skipped middle can make a clean idea sound wild.', 'The route can fail before the point does.']
+        },
+        {
+          id:'fast-room',
+          misread:['You may have been reading at platform speed.', 'You wanted this to land in one glance.', 'You may have been moving too fast for it.'],
+          flip:['Fast rooms punish thoughts that ask for more than one glance.', 'The platform speed changes the sentence more than the sentence changes itself.', 'Online, patience runs out before meaning arrives.'],
+          post:['Why platform speed kills understanding.', 'Why some thoughts fail in fast rooms.', 'Why the scroll changes how ideas sound.'],
+          hook:['The scroll speed edits the sentence before you do.', 'Some posts lose to the room, not the idea.', 'Fast rooms make thoughtful posts sound strange.']
+        },
+        {
+          id:'role-protection',
+          misread:['You may have felt the idea threatened your position.', 'You may have wanted the old story back.', 'You may have needed your role to stay intact.'],
+          flip:['Confusion can become loud when a post disturbs an old role.', 'Some reactions protect identity before they test the sentence.', 'The self often reacts before the mind catches up.'],
+          post:['Why identity reacts faster than understanding.', 'Why some replies protect a role, not a truth.', 'Why confusion gets louder when the frame moves.'],
+          hook:['Sometimes the self reacts before the sentence gets a chance.', 'A shaken role can sound like confusion in public.', 'Identity often jumps in before thought does.']
+        }
+      ],
+      nobodyAsked: [
+        {
+          id:'denied-interest',
+          misread:['You still answered.', 'You noticed it enough to react.', 'You stopped just to say that.'],
+          flip:['"Nobody asked" is still a form of engagement.', 'Dismissal is louder than silence.', 'People reply most when they want to deny interest.'],
+          post:['Why people reply to things they claim not to care about.', 'Why dismissal is still attention.', 'Why loud indifference is rarely real indifference.'],
+          hook:['"Nobody asked" is still a reply.', 'Indifference rarely writes comments.', 'Dismissal is often interest in a cheap mask.']
+        },
+        {
+          id:'audience-policing',
+          misread:['You may have wanted to control who gets to speak.', 'You may have wanted the room to stay gated.', 'You may have been guarding the door.'],
+          flip:['"Nobody asked" often polices the room more than the idea.', 'Some replies protect permission, not truth.', 'Gatekeeping often sounds simpler than argument.'],
+          post:['Why "nobody asked" is often just gatekeeping.', 'Why some comments are really about permission.', 'Why people guard the room before they test the idea.'],
+          hook:['Sometimes "nobody asked" just means "who let this in?"', 'The door gets defended before the idea gets read.', 'Permission politics often wears very small words.']
+        },
+        {
+          id:'silent-reader',
+          misread:['You may be one of the silent readers who finally spoke.', 'You may have been watching longer than you admit.', 'You may have felt too seen by it.'],
+          flip:['The loudest "nobody asked" can come from the people who felt it most.', 'Silent readers often react hardest when the post gets close.', 'A quick dismissal can mean the post touched a nerve.'],
+          post:['Why some silent readers react the loudest.', 'Why feeling seen can turn into dismissal.', 'Why some posts get denied because they got too close.'],
+          hook:['Sometimes the loudest reply comes from the quietest reader.', 'Getting close can sound like rejection in public.', 'A nerve hit can arrive dressed as indifference.']
+        }
+      ]
+    };
 
-    const misreadTsundere = [
-      'You say you do not care, but you are here.',
-      'You say it is nothing, but you replied.',
-      'You say it is bad, but you read it.',
-      'You say it is boring, but you stayed.',
-      'You say it is nonsense, but you reacted.',
-      'You say nobody asked, but you answered.'
-    ];
-
-    const misreadSoft = [
-      'Maybe the step was missing.',
-      'Maybe the path was not clear yet.',
-      'Maybe the idea arrived early.',
-      'Maybe the middle was not visible.',
-      'Maybe it needed another line.',
-      'Maybe it needed one more example.',
-      'Maybe the context was late.'
-    ];
-
-    const flipThinking = [
-      'Confusion often comes before insight.',
-      'Not clear yet does not mean wrong.',
-      'Some ideas need a second look.',
-      'The first reaction is rarely the final one.',
-      'Thinking takes longer than reacting.',
-      'Some thoughts arrive before the map exists.'
-    ];
-
-    const flipTiming = [
-      'Some ideas arrive early.',
-      'Today’s confusion can become tomorrow’s clarity.',
-      'What feels strange today can feel obvious tomorrow.',
-      'Some thoughts open slowly.',
-      'Meaning sometimes catches up later.'
-    ];
-
-    const flipAttention = [
-      'Replies mean someone noticed.',
-      'Pushback still means engagement.',
-      'A reply means the idea reached someone.',
-      'Reaction means it was not ignored.',
-      'Even resistance is a form of attention.'
-    ];
-
-    const flipCreative = [
-      'Friction can fuel ideas.',
-      'Resistance can sharpen thinking.',
-      'Pushback can reveal angles.',
-      'Reaction can spark content.',
-      'Noise can become a story.'
-    ];
-
-    const postIdeas = [
-      'Why people call ideas boring before they understand them.',
-      'Why slow ideas get rejected first.',
-      'Why confusion is not always failure.',
-      'Why people react to things they claim not to care about.',
-      'Why rough ideas look weak too early.',
-      'Why easy answers spread faster than live ones.',
-      'Why hate comments are sometimes just attention in a bad outfit.',
-      'Why people want simple answers before real ones.',
-      'Why criticism often hides curiosity.',
-      'Why fast reactions miss slow ideas.'
-    ];
-
-    const hooks = [
-      '"Boring" is often just slow thinking.',
-      '"Nobody asked" is still a reply.',
-      'Confusion is not the opposite of interest.',
-      'A hate comment is still attention.',
-      'Some criticism is just awkward curiosity.',
-      'The loudest reply is not always the deepest one.',
-      'If they reply, it landed somewhere.',
-      'Not getting it fast does not make it bad.',
-      'Pushback is still contact.',
-      'Sometimes hate is just attention with bad manners.'
+    const defaultBranches = [
+      {
+        id:'cleaner-shape',
+        misread:['You may have wanted a cleaner shape.', 'You may have wanted the point sooner.', 'You may have wanted something easier to hold.'],
+        flip:['The reply may be asking for a simpler path, not a smaller idea.', 'People often want shape before signal.', 'A rough idea gets judged before it gets read.'],
+        post:['Why people ask for shape before they ask for truth.', 'Why rough ideas look weak too early.', 'Why easy answers spread faster than live ones.'],
+        hook:['Sometimes the complaint is really about shape.', 'People often want the handle before the idea.', 'A rough shape can hide a good signal.']
+      },
+      {
+        id:'comfort-before-curiosity',
+        misread:['You may have wanted comfort first.', 'You may have needed the room to stay familiar.', 'You may have chosen safety before curiosity.'],
+        flip:['Comfort often speaks before curiosity online.', 'Some reactions protect what already feels safe.', 'People can reject first and understand later.'],
+        post:['Why comfort beats curiosity online.', 'Why people protect the familiar before they test the new.', 'Why pushback often protects safety, not truth.'],
+        hook:['Safety often gets the first sentence online.', 'Comfort can speak louder than curiosity.', 'A safe room often rejects the live idea first.']
+      },
+      {
+        id:'energy-and-timing',
+        misread:['This may have met the room at the wrong time.', 'You may have been too tired for this shape.', 'The timing may have failed before the idea did.'],
+        flip:['Energy changes judgment more than people admit.', 'A good thought can land badly in a tired room.', 'Timing can distort meaning.'],
+        post:['Why timing can make good ideas look weak.', 'Why tired rooms misread live thoughts.', 'Why energy shapes reactions online.'],
+        hook:['Sometimes the room is tired, not the idea.', 'Timing can fail before meaning does.', 'Energy edits the read more than people admit.']
+      }
     ];
 
     function setEmpty() {
@@ -433,17 +637,6 @@ nobody asked"></textarea>
         .filter(Boolean);
     }
 
-    function pick(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function pickUnused(arr, used) {
-      const options = arr.filter(item => !used.has(item));
-      const choice = options.length ? pick(options) : pick(arr);
-      used.add(choice);
-      return choice;
-    }
-
     function scoreText(text) {
       const t = text.toLowerCase();
       let score = 0;
@@ -452,7 +645,7 @@ nobody asked"></textarea>
         'nobody asked',
         'too abstract',
         'what are you even saying',
-        'makes no sense',
+        'this makes no sense',
         'stupid',
         'idiot',
         'trash',
@@ -467,213 +660,51 @@ nobody asked"></textarea>
     function chooseSeed(text) {
       const lines = cleanLines(text);
       if (lines.length >= 2) {
-        const ranked = [...lines].sort((a, b) => scoreText(b) - scoreText(a));
-        return ranked[0];
+        return [...lines].sort((a, b) => scoreText(b) - scoreText(a))[0];
       }
-
       const parts = splitSentences(text);
       if (parts.length >= 2) {
-        const ranked = [...parts].sort((a, b) => scoreText(b) - scoreText(a));
-        return ranked[0];
+        return [...parts].sort((a, b) => scoreText(b) - scoreText(a))[0];
       }
-
       return text.trim();
     }
 
-    function getMisreadPool(seed) {
-      const t = seed.toLowerCase();
-
-      if (t.includes('nobody asked')) {
-        return [
-          'You still answered.',
-          'You noticed it enough to react.',
-          'You stopped just to say that.',
-          'You found the comment box anyway.'
-        ];
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-
-      if (t.includes('boring')) {
-        return [
-          'You stayed with it long enough to judge it.',
-          'You wanted entertainment and got thought instead.',
-          'You read it anyway.',
-          'You gave it more time than you want to admit.'
-        ];
-      }
-
-      if (t.includes('too abstract')) {
-        return [
-          'You wanted the easy version first.',
-          'You wanted the middle step sooner.',
-          'You wanted the shape before the idea.',
-          'You stayed long enough to feel lost.'
-        ];
-      }
-
-      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
-        return [
-          'You tried to follow it.',
-          'You cared enough to get annoyed.',
-          'You wanted the path faster.',
-          'You expected it to land in one step.'
-        ];
-      }
-
-      return [
-        ...misreadAttention,
-        ...misreadFan,
-        ...misreadTsundere,
-        ...misreadSoft
-      ];
+      return copy;
     }
 
-    function getFlipPool(seed) {
-      const t = seed.toLowerCase();
-
-      if (t.includes('boring')) {
-        return [
-          'People call ideas boring when they wanted fast answers.',
-          'Sometimes "boring" means "I did not want to think today."',
-          'A slow idea can feel boring to a fast reader.',
-          'What asks for attention often gets called boring first.'
-        ];
-      }
-
-      if (t.includes('nobody asked')) {
-        return [
-          'The loudest replies often come from silent readers.',
-          '"Nobody asked" is still a form of engagement.',
-          'People reply most when they want to deny interest.',
-          'Dismissal is still attention.'
-        ];
-      }
-
-      if (t.includes('too abstract')) {
-        return [
-          'Some ideas look abstract when the bridge is missing.',
-          'People push back when they cannot see the path yet.',
-          'What feels abstract is sometimes just early.',
-          'A missing middle step can look like a bad idea.'
-        ];
-      }
-
-      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
-        return [
-          'Confusion is often the first step of understanding.',
-          'Not getting it fast does not make it empty.',
-          'Some ideas land after the first reaction.',
-          'The room is not always ready when the thought arrives.'
-        ];
-      }
-
-      return [
-        ...flipThinking,
-        ...flipTiming,
-        ...flipAttention,
-        ...flipCreative
-      ];
+    function pickOne(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function getPostPool(seed) {
+    function getBranchSet(seed) {
       const t = seed.toLowerCase();
 
-      if (t.includes('boring')) {
-        return [
-          'Why people call ideas boring before they understand them.',
-          'Why fast readers reject slow ideas.',
-          'Why thought gets mistaken for bad entertainment.',
-          'Why "boring" often means "too much work for me."'
-        ];
-      }
+      if (t.includes('boring')) return boringBranches;
+      if (t.includes('this makes no sense')) return genericBranches.makesNoSense;
+      if (t.includes('too abstract')) return genericBranches.tooAbstract;
+      if (t.includes('what are you even saying')) return genericBranches.whatAreYouSaying;
+      if (t.includes('nobody asked')) return genericBranches.nobodyAsked;
 
-      if (t.includes('nobody asked')) {
-        return [
-          'Why people reply to things they claim not to care about.',
-          'Why dismissal is still attention.',
-          'Why loud indifference is rarely real indifference.',
-          'Why silent readers sometimes speak the loudest.'
-        ];
-      }
-
-      if (t.includes('too abstract')) {
-        return [
-          'Why unfinished ideas look weak too early.',
-          'Why people need the bridge before the big idea.',
-          'Why "too abstract" often means "too early for me."',
-          'Why some ideas need a comic before a thread.'
-        ];
-      }
-
-      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
-        return [
-          'Why confusion is not always failure.',
-          'Why new ideas sound wrong at first.',
-          'Why the first reaction to a new thought is often friction.',
-          'Why not getting it fast is normal.'
-        ];
-      }
-
-      return postIdeas;
-    }
-
-    function getHookPool(seed) {
-      const t = seed.toLowerCase();
-
-      if (t.includes('boring')) {
-        return [
-          '"Boring" often means "you wanted a faster answer."',
-          'A lot of "boring" is just fear of slow thinking.',
-          'Some people call thought boring when it is not dressed like entertainment.',
-          'What makes you pause is not always boring.'
-        ];
-      }
-
-      if (t.includes('nobody asked')) {
-        return [
-          '"Nobody asked" is still a reply.',
-          'You can dislike a post and still prove it landed.',
-          'Dismissal is louder than silence.',
-          'Indifference rarely writes comments.'
-        ];
-      }
-
-      if (t.includes('too abstract')) {
-        return [
-          '"Too abstract" sometimes means "I lost the middle."',
-          'Some ideas look abstract only because the bridge is late.',
-          'A missing step can make a good idea look bad.',
-          'Abstract is often just unfinished in public.'
-        ];
-      }
-
-      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
-        return [
-          'Confusion is not the opposite of interest.',
-          'If it bothered you enough to reply, it landed somewhere.',
-          'New thoughts rarely sound neat on day one.',
-          'Not understanding yet is not the same as nonsense.'
-        ];
-      }
-
-      return hooks;
+      return defaultBranches;
     }
 
     function buildCards(text) {
       const seed = chooseSeed(text);
-      const used = new Set();
+      const branches = shuffle(getBranchSet(seed)).slice(0, 3);
 
-      const misreadPool = getMisreadPool(seed);
-      const flipPool = getFlipPool(seed);
-      const postPool = getPostPool(seed);
-      const hookPool = getHookPool(seed);
-
-      return [1, 2, 3].map((n) => ({
-        label: `${n}. angle`,
+      return branches.map((branch, index) => ({
+        label: `${index + 1}. angle`,
         blocks: [
-          ['Misread', pickUnused(misreadPool, used)],
-          ['Flip', pickUnused(flipPool, used)],
-          ['Post idea', pickUnused(postPool, used)],
-          ['Hook', pickUnused(hookPool, used)]
+          ['Misread', pickOne(branch.misread)],
+          ['Flip', pickOne(branch.flip)],
+          ['Post idea', pickOne(branch.post)],
+          ['Hook', pickOne(branch.hook)]
         ]
       }));
     }
@@ -720,7 +751,6 @@ nobody asked"></textarea>
     function generate() {
       const text = input.value.trim();
       if (!text) return;
-
       renderCards(buildCards(text));
     }
 
@@ -751,15 +781,11 @@ nobody asked"></textarea>
       navigator.clipboard.writeText(text).then(() => {
         const old = copyBtn.textContent;
         copyBtn.textContent = 'Copied';
-        setTimeout(() => {
-          copyBtn.textContent = old;
-        }, 1200);
+        setTimeout(() => { copyBtn.textContent = old; }, 1200);
       }).catch(() => {
         const old = copyBtn.textContent;
         copyBtn.textContent = 'Copy failed';
-        setTimeout(() => {
-          copyBtn.textContent = old;
-        }, 1200);
+        setTimeout(() => { copyBtn.textContent = old; }, 1200);
       });
     }
 
