@@ -1,76 +1,41 @@
-(function () {
-  function normalize(path) {
-    return String(path || "").split("?")[0].split("#")[0];
+// REFRAME Random Next Router
+
+const REFRAME_NEXT_TOOLS = [
+  "unknown-mutation.html",
+  "thought-collision.html"
+];
+
+// 前回ツールを避ける
+function getNextTool() {
+
+  const last = sessionStorage.getItem("reframe-last-tool");
+
+  let pool = REFRAME_NEXT_TOOLS.filter(t => t !== last);
+
+  if (pool.length === 0) {
+    pool = REFRAME_NEXT_TOOLS;
   }
 
-  function getCurrentFile() {
-    const parts = window.location.pathname.split("/");
-    return normalize(parts[parts.length - 1] || "");
-  }
+  const next = pool[Math.floor(Math.random() * pool.length)];
 
-  function readHistory() {
-    try {
-      return JSON.parse(sessionStorage.getItem("REFRAME_ROUTE_HISTORY") || "[]");
-    } catch {
-      return [];
-    }
-  }
+  sessionStorage.setItem("reframe-last-tool", next);
 
-  function writeHistory(history) {
-    try {
-      sessionStorage.setItem("REFRAME_ROUTE_HISTORY", JSON.stringify(history.slice(-12)));
-    } catch {}
-  }
+  return next;
+}
 
-  function rememberCurrent() {
-    const current = getCurrentFile();
-    if (!current) return;
+// Next ボタン接続
+function attachNextButton(id) {
 
-    const history = readHistory();
-    if (history[history.length - 1] !== current) {
-      history.push(current);
-      writeHistory(history);
-    }
-  }
+  const btn = document.getElementById(id);
 
-  function pickRandom(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
+  if (!btn) return;
 
-  function pickNext(candidates) {
-    const current = getCurrentFile();
-    const history = readHistory();
-    const last = history.length >= 2 ? history[history.length - 2] : "";
+  btn.addEventListener("click", () => {
 
-    const clean = (candidates || []).map(normalize).filter(Boolean);
+    const next = getNextTool();
 
-    let pool = clean.filter(file => file !== current && file !== last);
+    window.location.href = "./" + next;
 
-    if (!pool.length) {
-      pool = clean.filter(file => file !== current);
-    }
+  });
 
-    if (!pool.length) {
-      pool = clean;
-    }
-
-    return pool.length ? pickRandom(pool) : "";
-  }
-
-  function buildNextUrl(candidates, carryText) {
-    const next = pickNext(candidates);
-    if (!next) return "#";
-
-    const text = String(carryText || "").trim();
-    if (!text) return `./${next}`;
-
-    return `./${next}?q=${encodeURIComponent(text)}`;
-  }
-
-  window.REFRAME_RANDOM_NEXT = {
-    rememberCurrent,
-    buildNextUrl
-  };
-
-  rememberCurrent();
-})();
+}
