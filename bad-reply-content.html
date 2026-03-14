@@ -8,7 +8,6 @@
     :root{
       --bg:#070b16;
       --panel:#12182a;
-      --panel-2:#182038;
       --card:#0d1324;
       --line:#283252;
       --line-soft:#34406a;
@@ -16,7 +15,6 @@
       --muted:#9aa6d1;
       --soft:#cfd7f6;
       --button:#243055;
-      --button-hover:#2c3a66;
       --shadow:0 14px 40px rgba(0,0,0,.34);
       --radius-xl:28px;
       --radius-lg:22px;
@@ -128,13 +126,14 @@
     }
 
     .result-box{
-      min-height:300px;
+      min-height:0;
       display:flex;
       flex-direction:column;
       justify-content:flex-start;
     }
 
     .result-box.empty{
+      min-height:120px;
       justify-content:center;
     }
 
@@ -145,7 +144,7 @@
 
     .cards{
       display:grid;
-      gap:18px;
+      gap:16px;
     }
 
     .card{
@@ -161,14 +160,6 @@
       text-transform:uppercase;
       letter-spacing:.14em;
       margin-bottom:12px;
-    }
-
-    .card-reply{
-      color:var(--text);
-      font-size:17px;
-      line-height:1.5;
-      margin-bottom:14px;
-      font-weight:700;
     }
 
     .block{
@@ -262,9 +253,12 @@
         padding:16px;
       }
 
-      .card-reply,
       .block-text{
         font-size:16px;
+      }
+
+      .result-box.empty{
+        min-height:96px;
       }
     }
   </style>
@@ -294,7 +288,7 @@ nobody gets this"></textarea>
       </section>
 
       <section id="result" class="result-box empty">
-        <div class="empty-text">3 angles appear here.</div>
+        <div class="empty-text">Results appear here.</div>
       </section>
 
       <div class="lower">
@@ -304,8 +298,6 @@ nobody gets this"></textarea>
     </main>
   </div>
 
-  <script src="./fragment-engine.js"></script>
-  <script src="./mutation-engine.js"></script>
   <script>
     const input = document.getElementById('input');
     const result = document.getElementById('result');
@@ -322,34 +314,150 @@ nobody gets this"></textarea>
       'nobody gets this'
     ].join('\n');
 
+    const singleLineWhy = [
+      'They may want a faster point.',
+      'They may want a safer shape.',
+      'They may want simpler words.',
+      'They may want the middle step.',
+      'They may want something easier to hold.'
+    ];
+
+    const singleLineUse = [
+      'Use that as a post about speed vs depth.',
+      'Use that as a post about safety vs change.',
+      'Use that as a post about why people want simple answers.',
+      'Use that as a post about what gets rejected first online.',
+      'Use that as a post about why rough ideas get pushed back.'
+    ];
+
     function setEmpty() {
       result.className = 'result-box empty';
-      result.innerHTML = '<div class="empty-text">3 angles appear here.</div>';
+      result.innerHTML = '<div class="empty-text">Results appear here.</div>';
     }
 
-    function getSeedReplies(text) {
-      if (!window.REFRAME_FRAGMENT_ENGINE) return [];
-      return window.REFRAME_FRAGMENT_ENGINE.cleanLines(text).slice(0, 12);
+    function cleanLines(text) {
+      return String(text || '')
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
     }
 
-    function getCards(text) {
-      const lines = getSeedReplies(text);
-      if (!lines.length) return null;
-      if (!window.REFRAME_MUTATION_ENGINE) return null;
+    function shortText(text, max = 110) {
+      const t = String(text || '').trim().replace(/\s+/g, ' ');
+      if (t.length <= max) return t;
+      return t.slice(0, max).trim() + '...';
+    }
 
-      const mutated = window.REFRAME_MUTATION_ENGINE.mutateList(lines);
-      if (!mutated || !mutated.length) return null;
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
 
-      return mutated.map((item, index) => ({
-        index: index + 1,
-        reply: item.reply,
-        insight: item.mutation.insight,
-        reframe: item.mutation.reframe,
-        opposite: item.mutation.opposite,
-        pattern: item.mutation.pattern,
-        contentSeed: item.mutation.contentSeed,
-        hook: item.mutation.hook
-      }));
+    function detectTheme(text) {
+      const t = text.toLowerCase();
+
+      if (t.includes('boring')) {
+        return {
+          angle: 'This may be less about truth and more about pace.',
+          why: 'People often call something boring when it asks them to slow down.',
+          use: 'Write about why fast reactions often miss the point.'
+        };
+      }
+
+      if (t.includes('too abstract')) {
+        return {
+          angle: 'This may mean the steps were missing, not the idea.',
+          why: 'People often push back when they cannot see the path yet.',
+          use: 'Write about why unfinished ideas look weak too early.'
+        };
+      }
+
+      if (t.includes('what are you even saying') || t.includes("can't tell") || t.includes('cant tell')) {
+        return {
+          angle: 'This may mean the shape was still rough.',
+          why: 'People often want the point before they want the thought.',
+          use: 'Write about why people reject what they cannot place fast.'
+        };
+      }
+
+      if (t.includes('nobody gets this')) {
+        return {
+          angle: 'This may mean they wanted it simpler.',
+          why: 'People often move away from ideas that stay open.',
+          use: 'Write about why easy answers spread faster than live ones.'
+        };
+      }
+
+      if (t.includes('stop') || t.includes('quit') || t.includes('rest')) {
+        return {
+          angle: 'This may be a push for comfort, not a real answer.',
+          why: 'People often protect what already feels safe.',
+          use: 'Write about why new ideas get pushed back first.'
+        };
+      }
+
+      if (t.includes('idiot') || t.includes('stupid') || t.includes('nonsense') || t.includes('trash')) {
+        return {
+          angle: 'The attack may be carrying fear, not just anger.',
+          why: 'People often go harsh when they do not want to sit with the idea.',
+          use: 'Write about how insults are often a shortcut, not a reason.'
+        };
+      }
+
+      return {
+        angle: 'The reply may be asking for a cleaner shape.',
+        why: pick(singleLineWhy),
+        use: pick(singleLineUse)
+      };
+    }
+
+    function buildLineCard(line, index) {
+      const theme = detectTheme(line);
+
+      return {
+        label: `${index}. angle`,
+        blocks: [
+          ['Reply', shortText(line, 72)],
+          ['Angle', theme.angle],
+          ['Why', theme.why],
+          ['Use', theme.use]
+        ]
+      };
+    }
+
+    function buildParagraphCard(text) {
+      const theme = detectTheme(text);
+      const low = text.toLowerCase();
+
+      let summary = 'The reply sounds like a demand for a simpler path.';
+      if (low.includes('idiot') || low.includes('nonsense') || low.includes('stupid')) {
+        summary = 'The tone is hostile, but the signal may still be simple: "make this easier for me."';
+      } else if (low.includes('boring') && (low.includes("can't tell") || low.includes('cant tell'))) {
+        summary = 'The reply mixes "too slow" and "too unclear."';
+      } else if (low.includes('boring') || low.includes('too abstract') || low.includes('nobody gets this')) {
+        summary = 'The reply sounds like "I could not grab this fast."';
+      }
+
+      return [{
+        label: '1. angle',
+        blocks: [
+          ['Read', summary],
+          ['Angle', theme.angle],
+          ['Why', theme.why],
+          ['Use', theme.use]
+        ]
+      }];
+    }
+
+    function buildCards(text) {
+      const lines = cleanLines(text);
+
+      if (!lines.length) return [];
+
+      if (lines.length >= 2 && lines.length <= 12) {
+        return lines.slice(0, 3).map((line, i) => buildLineCard(line, i + 1));
+      }
+
+      return buildParagraphCard(text);
     }
 
     function renderCards(cards) {
@@ -365,27 +473,12 @@ nobody gets this"></textarea>
 
         const label = document.createElement('div');
         label.className = 'card-label';
-        label.textContent = `${cardData.index}. angle`;
-
-        const reply = document.createElement('div');
-        reply.className = 'card-reply';
-        reply.textContent = `"${cardData.reply}"`;
-
-        const sections = [
-          ['Insight', cardData.insight],
-          ['Reframe', cardData.reframe],
-          ['Opposite', cardData.opposite],
-          ['Pattern', cardData.pattern],
-          ['Content seed', cardData.contentSeed],
-          ['Hook', cardData.hook]
-        ];
-
+        label.textContent = cardData.label;
         card.appendChild(label);
-        card.appendChild(reply);
 
-        sections.forEach(([title, text]) => {
+        cardData.blocks.forEach(([title, text], idx) => {
           const block = document.createElement('div');
-          block.className = 'block';
+          block.className = 'block' + (idx === 0 ? ' first' : '');
 
           const blockTitle = document.createElement('div');
           blockTitle.className = 'block-title';
@@ -407,8 +500,12 @@ nobody gets this"></textarea>
     }
 
     function generate() {
-      const cards = getCards(input.value);
-      if (!cards) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const cards = buildCards(text);
+      if (!cards.length) return;
+
       renderCards(cards);
     }
 
@@ -424,9 +521,7 @@ nobody gets this"></textarea>
       const text = cards.map(card => {
         const pieces = [];
         const label = card.querySelector('.card-label')?.textContent || '';
-        const reply = card.querySelector('.card-reply')?.textContent || '';
         pieces.push(label);
-        pieces.push(reply);
 
         const blocks = Array.from(card.querySelectorAll('.block'));
         blocks.forEach(block => {
