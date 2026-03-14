@@ -15,7 +15,6 @@
       --text:#eef2ff;
       --muted:#9aa6d1;
       --soft:#cfd7f6;
-      --button:#243055;
       --shadow:0 14px 40px rgba(0,0,0,.34);
       --radius-xl:28px;
       --radius-lg:22px;
@@ -187,7 +186,28 @@
       word-break:break-word;
     }
 
-    .tiny{margin-top:16px;color:#808bb0;font-size:12px}
+    .lower{
+      margin-top:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .tiny{color:#808bb0;font-size:12px}
+    .quiet-link{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:13px;
+      padding:2px 0;
+      border-bottom:1px solid transparent;
+      transition:color .15s ease, border-color .15s ease;
+    }
+
+    .quiet-link:hover{
+      color:var(--text);
+      border-color:rgba(162,176,230,.34);
+    }
 
     @media (max-width:640px){
       body{padding:18px 10px 32px}
@@ -218,7 +238,7 @@
 
         <div class="input-box">
           <div class="input-label">Thought B</div>
-          <textarea id="inputB" placeholder="People want simple answers."></textarea>
+          <textarea id="inputB" placeholder=""></textarea>
         </div>
       </section>
 
@@ -233,10 +253,14 @@
         <div class="empty-text">3 collisions appear here.</div>
       </section>
 
-      <div class="tiny">No login. No tracking. Browser only.</div>
+      <div class="lower">
+        <div class="tiny">No login. No tracking. Browser only.</div>
+        <a class="quiet-link" id="nextLink" href="./unknown-mutation.html">next</a>
+      </div>
     </main>
   </div>
 
+  <script src="./random-next.js"></script>
   <script>
     const inputA = document.getElementById('inputA');
     const inputB = document.getElementById('inputB');
@@ -245,6 +269,7 @@
     const exampleBtn = document.getElementById('exampleBtn');
     const clearBtn = document.getElementById('clearBtn');
     const copyBtn = document.getElementById('copyBtn');
+    const nextLink = document.getElementById('nextLink');
 
     const exampleA = 'People say my ideas are too abstract.';
     const exampleB = 'People want simple answers.';
@@ -305,14 +330,23 @@
       return String(t || '').trim();
     }
 
+    function uniquePick(pool, used){
+      const filtered = pool.filter(item => !used.has(item));
+      const choice = filtered.length ? filtered[Math.floor(Math.random() * filtered.length)] : pool[Math.floor(Math.random() * pool.length)];
+      used.add(choice);
+      return choice;
+    }
+
     function buildCards(a, b){
       const cards = [];
+      const used = new Set();
+
       for(let i = 0; i < 3; i++){
         cards.push({
-          friction: frictionPool[Math.floor(Math.random() * frictionPool.length)],
-          angle: anglePool[Math.floor(Math.random() * anglePool.length)],
-          seed: seedPool[Math.floor(Math.random() * seedPool.length)],
-          line: linePool[Math.floor(Math.random() * linePool.length)],
+          friction: uniquePick(frictionPool, used),
+          angle: uniquePick(anglePool, used),
+          seed: uniquePick(seedPool, used),
+          line: uniquePick(linePool, used),
           a,
           b
         });
@@ -379,12 +413,14 @@
       const b = clean(inputB.value);
       if (!a || !b) return;
       renderCards(buildCards(a, b));
+      updateNextLink();
     }
 
     function clearAll(){
       inputA.value = '';
       inputB.value = '';
       setEmpty();
+      updateNextLink();
     }
 
     function copyResult(){
@@ -417,10 +453,23 @@
       });
     }
 
+    function updateNextLink(){
+      if (!window.REFRAME_RANDOM_NEXT) {
+        nextLink.href = './unknown-mutation.html';
+        return;
+      }
+
+      nextLink.href = window.REFRAME_RANDOM_NEXT.buildNextUrl(
+        ['unknown-mutation.html'],
+        inputA.value
+      );
+    }
+
     generateBtn.addEventListener('click', generate);
     exampleBtn.addEventListener('click', () => {
       inputA.value = exampleA;
       inputB.value = exampleB;
+      updateNextLink();
     });
     clearBtn.addEventListener('click', clearAll);
     copyBtn.addEventListener('click', copyResult);
@@ -429,6 +478,7 @@
     const q = params.get('q');
     if (q) inputA.value = q;
 
+    updateNextLink();
     setEmpty();
   </script>
 </body>
