@@ -15,6 +15,7 @@
       --muted:#9aa6d1;
       --soft:#cfd7f6;
       --button:#243055;
+      --button-hover:#2c3a66;
       --shadow:0 14px 40px rgba(0,0,0,.34);
       --radius-xl:28px;
       --radius-lg:22px;
@@ -66,7 +67,7 @@
 
     .input-box,
     .result-box{
-      margin-top:26px;
+      margin-top:22px;
       background:rgba(7,12,26,.72);
       border:1px solid var(--line);
       border-radius:var(--radius-lg);
@@ -75,7 +76,7 @@
 
     textarea{
       width:100%;
-      min-height:250px;
+      min-height:188px;
       border:none;
       outline:none;
       resize:vertical;
@@ -133,7 +134,7 @@
     }
 
     .result-box.empty{
-      min-height:120px;
+      min-height:82px;
       justify-content:center;
     }
 
@@ -238,7 +239,7 @@
       }
 
       textarea{
-        min-height:200px;
+        min-height:150px;
         font-size:16px;
       }
 
@@ -258,7 +259,7 @@
       }
 
       .result-box.empty{
-        min-height:96px;
+        min-height:72px;
       }
     }
   </style>
@@ -430,11 +431,11 @@ nobody gets this"></textarea>
 
       let summary = 'The reply sounds like a demand for a simpler path.';
       if (low.includes('idiot') || low.includes('nonsense') || low.includes('stupid')) {
-        summary = 'The tone is hostile, but the signal may still be simple: "make this easier for me."';
+        summary = 'The tone is harsh, but the signal may still be simple: make this easier to hold.';
       } else if (low.includes('boring') && (low.includes("can't tell") || low.includes('cant tell'))) {
-        summary = 'The reply mixes "too slow" and "too unclear."';
+        summary = 'The reply sounds like too slow and too unclear at the same time.';
       } else if (low.includes('boring') || low.includes('too abstract') || low.includes('nobody gets this')) {
-        summary = 'The reply sounds like "I could not grab this fast."';
+        summary = 'The reply sounds like I could not grab this fast.';
       }
 
       return [{
