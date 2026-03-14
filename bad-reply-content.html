@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bad reply → Content</title>
+  <title>Hate → Content</title>
   <style>
     :root{
       --bg:#070b16;
       --panel:#12182a;
-      --card:#0d1324;
       --line:#283252;
       --line-soft:#34406a;
       --text:#eef2ff;
       --muted:#9aa6d1;
       --soft:#cfd7f6;
-      --button:#243055;
-      --button-hover:#2c3a66;
       --shadow:0 14px 40px rgba(0,0,0,.34);
       --radius-xl:28px;
       --radius-lg:22px;
@@ -134,7 +131,7 @@
     }
 
     .result-box.empty{
-      min-height:82px;
+      min-height:72px;
       justify-content:center;
     }
 
@@ -259,7 +256,7 @@
       }
 
       .result-box.empty{
-        min-height:72px;
+        min-height:64px;
       }
     }
   </style>
@@ -267,18 +264,18 @@
 <body>
   <div class="wrap">
     <main class="shell">
-      <h1 class="title">Bad reply → Content</h1>
+      <h1 class="title">Hate → Content</h1>
       <p class="sub">Turn friction into angles.</p>
 
       <section class="input-box">
-        <textarea id="input" placeholder="Paste replies, criticism, or friction.
+        <textarea id="input" placeholder="Paste hate comments.
 
 Example:
-stop
 boring
+this makes no sense
 too abstract
 what are you even saying
-nobody gets this"></textarea>
+nobody asked"></textarea>
       </section>
 
       <section class="actions">
@@ -308,27 +305,113 @@ nobody gets this"></textarea>
     const copyBtn = document.getElementById('copyBtn');
 
     const exampleInput = [
-      'stop',
       'boring',
+      'this makes no sense',
       'too abstract',
       'what are you even saying',
-      'nobody gets this'
+      'nobody asked'
     ].join('\n');
 
-    const singleLineWhy = [
-      'They may want a faster point.',
-      'They may want a safer shape.',
-      'They may want simpler words.',
-      'They may want the middle step.',
-      'They may want something easier to hold.'
+    const misreadAttention = [
+      'You read the whole thing.',
+      'You stayed long enough to reply.',
+      'You noticed the post.',
+      'You came back to say that.',
+      'You did not scroll past.',
+      'You stopped and reacted.',
+      'You gave it attention.',
+      'You took the time.',
+      'You engaged anyway.',
+      'You were still here.'
     ];
 
-    const singleLineUse = [
-      'Use that as a post about speed vs depth.',
-      'Use that as a post about safety vs change.',
-      'Use that as a post about why people want simple answers.',
-      'Use that as a post about what gets rejected first online.',
-      'Use that as a post about why rough ideas get pushed back.'
+    const misreadFan = [
+      'You might be a quiet follower.',
+      'You keep showing up.',
+      'You watch closer than you admit.',
+      'You seem familiar with my posts.',
+      'You are keeping track.',
+      'You are paying attention.',
+      'You did not miss this one either.',
+      'You might be a regular.'
+    ];
+
+    const misreadTsundere = [
+      'You say you do not care, but you are here.',
+      'You say it is nothing, but you replied.',
+      'You say it is bad, but you read it.',
+      'You say it is boring, but you stayed.',
+      'You say it is nonsense, but you reacted.',
+      'You say nobody asked, but you answered.'
+    ];
+
+    const misreadSoft = [
+      'Maybe the step was missing.',
+      'Maybe the path was not clear yet.',
+      'Maybe the idea arrived early.',
+      'Maybe the middle was not visible.',
+      'Maybe it needed another line.',
+      'Maybe it needed one more example.',
+      'Maybe the context was late.'
+    ];
+
+    const flipThinking = [
+      'Confusion often comes before insight.',
+      'Not clear yet does not mean wrong.',
+      'Some ideas need a second look.',
+      'The first reaction is rarely the final one.',
+      'Thinking takes longer than reacting.',
+      'Some thoughts arrive before the map exists.'
+    ];
+
+    const flipTiming = [
+      'Some ideas arrive early.',
+      'Today’s confusion can become tomorrow’s clarity.',
+      'What feels strange today can feel obvious tomorrow.',
+      'Some thoughts open slowly.',
+      'Meaning sometimes catches up later.'
+    ];
+
+    const flipAttention = [
+      'Replies mean someone noticed.',
+      'Pushback still means engagement.',
+      'A reply means the idea reached someone.',
+      'Reaction means it was not ignored.',
+      'Even resistance is a form of attention.'
+    ];
+
+    const flipCreative = [
+      'Friction can fuel ideas.',
+      'Resistance can sharpen thinking.',
+      'Pushback can reveal angles.',
+      'Reaction can spark content.',
+      'Noise can become a story.'
+    ];
+
+    const postIdeas = [
+      'Why people call ideas boring before they understand them.',
+      'Why slow ideas get rejected first.',
+      'Why confusion is not always failure.',
+      'Why people react to things they claim not to care about.',
+      'Why rough ideas look weak too early.',
+      'Why easy answers spread faster than live ones.',
+      'Why hate comments are sometimes just attention in a bad outfit.',
+      'Why people want simple answers before real ones.',
+      'Why criticism often hides curiosity.',
+      'Why fast reactions miss slow ideas.'
+    ];
+
+    const hooks = [
+      '"Boring" is often just slow thinking.',
+      '"Nobody asked" is still a reply.',
+      'Confusion is not the opposite of interest.',
+      'A hate comment is still attention.',
+      'Some criticism is just awkward curiosity.',
+      'The loudest reply is not always the deepest one.',
+      'If they reply, it landed somewhere.',
+      'Not getting it fast does not make it bad.',
+      'Pushback is still contact.',
+      'Sometimes hate is just attention with bad manners.'
     ];
 
     function setEmpty() {
@@ -343,122 +426,256 @@ nobody gets this"></textarea>
         .filter(Boolean);
     }
 
-    function shortText(text, max = 110) {
-      const t = String(text || '').trim().replace(/\s+/g, ' ');
-      if (t.length <= max) return t;
-      return t.slice(0, max).trim() + '...';
+    function splitSentences(text) {
+      return String(text || '')
+        .split(/[\n.!?]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
     }
 
     function pick(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function detectTheme(text) {
+    function pickUnused(arr, used) {
+      const options = arr.filter(item => !used.has(item));
+      const choice = options.length ? pick(options) : pick(arr);
+      used.add(choice);
+      return choice;
+    }
+
+    function scoreText(text) {
       const t = text.toLowerCase();
+      let score = 0;
+      const needles = [
+        'boring',
+        'nobody asked',
+        'too abstract',
+        'what are you even saying',
+        'makes no sense',
+        'stupid',
+        'idiot',
+        'trash',
+        'stop',
+        'shut up'
+      ];
+      needles.forEach(n => { if (t.includes(n)) score += 2; });
+      score += Math.min(3, Math.floor(t.length / 40));
+      return score;
+    }
+
+    function chooseSeed(text) {
+      const lines = cleanLines(text);
+      if (lines.length >= 2) {
+        const ranked = [...lines].sort((a, b) => scoreText(b) - scoreText(a));
+        return ranked[0];
+      }
+
+      const parts = splitSentences(text);
+      if (parts.length >= 2) {
+        const ranked = [...parts].sort((a, b) => scoreText(b) - scoreText(a));
+        return ranked[0];
+      }
+
+      return text.trim();
+    }
+
+    function getMisreadPool(seed) {
+      const t = seed.toLowerCase();
+
+      if (t.includes('nobody asked')) {
+        return [
+          'You still answered.',
+          'You noticed it enough to react.',
+          'You stopped just to say that.',
+          'You found the comment box anyway.'
+        ];
+      }
 
       if (t.includes('boring')) {
-        return {
-          angle: 'This may be less about truth and more about pace.',
-          why: 'People often call something boring when it asks them to slow down.',
-          use: 'Write about why fast reactions often miss the point.'
-        };
+        return [
+          'You stayed with it long enough to judge it.',
+          'You wanted entertainment and got thought instead.',
+          'You read it anyway.',
+          'You gave it more time than you want to admit.'
+        ];
       }
 
       if (t.includes('too abstract')) {
-        return {
-          angle: 'This may mean the steps were missing, not the idea.',
-          why: 'People often push back when they cannot see the path yet.',
-          use: 'Write about why unfinished ideas look weak too early.'
-        };
+        return [
+          'You wanted the easy version first.',
+          'You wanted the middle step sooner.',
+          'You wanted the shape before the idea.',
+          'You stayed long enough to feel lost.'
+        ];
       }
 
-      if (t.includes('what are you even saying') || t.includes("can't tell") || t.includes('cant tell')) {
-        return {
-          angle: 'This may mean the shape was still rough.',
-          why: 'People often want the point before they want the thought.',
-          use: 'Write about why people reject what they cannot place fast.'
-        };
+      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
+        return [
+          'You tried to follow it.',
+          'You cared enough to get annoyed.',
+          'You wanted the path faster.',
+          'You expected it to land in one step.'
+        ];
       }
 
-      if (t.includes('nobody gets this')) {
-        return {
-          angle: 'This may mean they wanted it simpler.',
-          why: 'People often move away from ideas that stay open.',
-          use: 'Write about why easy answers spread faster than live ones.'
-        };
-      }
-
-      if (t.includes('stop') || t.includes('quit') || t.includes('rest')) {
-        return {
-          angle: 'This may be a push for comfort, not a real answer.',
-          why: 'People often protect what already feels safe.',
-          use: 'Write about why new ideas get pushed back first.'
-        };
-      }
-
-      if (t.includes('idiot') || t.includes('stupid') || t.includes('nonsense') || t.includes('trash')) {
-        return {
-          angle: 'The attack may be carrying fear, not just anger.',
-          why: 'People often go harsh when they do not want to sit with the idea.',
-          use: 'Write about how insults are often a shortcut, not a reason.'
-        };
-      }
-
-      return {
-        angle: 'The reply may be asking for a cleaner shape.',
-        why: pick(singleLineWhy),
-        use: pick(singleLineUse)
-      };
+      return [
+        ...misreadAttention,
+        ...misreadFan,
+        ...misreadTsundere,
+        ...misreadSoft
+      ];
     }
 
-    function buildLineCard(line, index) {
-      const theme = detectTheme(line);
+    function getFlipPool(seed) {
+      const t = seed.toLowerCase();
 
-      return {
-        label: `${index}. angle`,
-        blocks: [
-          ['Reply', shortText(line, 72)],
-          ['Angle', theme.angle],
-          ['Why', theme.why],
-          ['Use', theme.use]
-        ]
-      };
-    }
-
-    function buildParagraphCard(text) {
-      const theme = detectTheme(text);
-      const low = text.toLowerCase();
-
-      let summary = 'The reply sounds like a demand for a simpler path.';
-      if (low.includes('idiot') || low.includes('nonsense') || low.includes('stupid')) {
-        summary = 'The tone is harsh, but the signal may still be simple: make this easier to hold.';
-      } else if (low.includes('boring') && (low.includes("can't tell") || low.includes('cant tell'))) {
-        summary = 'The reply sounds like too slow and too unclear at the same time.';
-      } else if (low.includes('boring') || low.includes('too abstract') || low.includes('nobody gets this')) {
-        summary = 'The reply sounds like I could not grab this fast.';
+      if (t.includes('boring')) {
+        return [
+          'People call ideas boring when they wanted fast answers.',
+          'Sometimes "boring" means "I did not want to think today."',
+          'A slow idea can feel boring to a fast reader.',
+          'What asks for attention often gets called boring first.'
+        ];
       }
 
-      return [{
-        label: '1. angle',
-        blocks: [
-          ['Read', summary],
-          ['Angle', theme.angle],
-          ['Why', theme.why],
-          ['Use', theme.use]
-        ]
-      }];
+      if (t.includes('nobody asked')) {
+        return [
+          'The loudest replies often come from silent readers.',
+          '"Nobody asked" is still a form of engagement.',
+          'People reply most when they want to deny interest.',
+          'Dismissal is still attention.'
+        ];
+      }
+
+      if (t.includes('too abstract')) {
+        return [
+          'Some ideas look abstract when the bridge is missing.',
+          'People push back when they cannot see the path yet.',
+          'What feels abstract is sometimes just early.',
+          'A missing middle step can look like a bad idea.'
+        ];
+      }
+
+      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
+        return [
+          'Confusion is often the first step of understanding.',
+          'Not getting it fast does not make it empty.',
+          'Some ideas land after the first reaction.',
+          'The room is not always ready when the thought arrives.'
+        ];
+      }
+
+      return [
+        ...flipThinking,
+        ...flipTiming,
+        ...flipAttention,
+        ...flipCreative
+      ];
+    }
+
+    function getPostPool(seed) {
+      const t = seed.toLowerCase();
+
+      if (t.includes('boring')) {
+        return [
+          'Why people call ideas boring before they understand them.',
+          'Why fast readers reject slow ideas.',
+          'Why thought gets mistaken for bad entertainment.',
+          'Why "boring" often means "too much work for me."'
+        ];
+      }
+
+      if (t.includes('nobody asked')) {
+        return [
+          'Why people reply to things they claim not to care about.',
+          'Why dismissal is still attention.',
+          'Why loud indifference is rarely real indifference.',
+          'Why silent readers sometimes speak the loudest.'
+        ];
+      }
+
+      if (t.includes('too abstract')) {
+        return [
+          'Why unfinished ideas look weak too early.',
+          'Why people need the bridge before the big idea.',
+          'Why "too abstract" often means "too early for me."',
+          'Why some ideas need a comic before a thread.'
+        ];
+      }
+
+      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
+        return [
+          'Why confusion is not always failure.',
+          'Why new ideas sound wrong at first.',
+          'Why the first reaction to a new thought is often friction.',
+          'Why not getting it fast is normal.'
+        ];
+      }
+
+      return postIdeas;
+    }
+
+    function getHookPool(seed) {
+      const t = seed.toLowerCase();
+
+      if (t.includes('boring')) {
+        return [
+          '"Boring" often means "you wanted a faster answer."',
+          'A lot of "boring" is just fear of slow thinking.',
+          'Some people call thought boring when it is not dressed like entertainment.',
+          'What makes you pause is not always boring.'
+        ];
+      }
+
+      if (t.includes('nobody asked')) {
+        return [
+          '"Nobody asked" is still a reply.',
+          'You can dislike a post and still prove it landed.',
+          'Dismissal is louder than silence.',
+          'Indifference rarely writes comments.'
+        ];
+      }
+
+      if (t.includes('too abstract')) {
+        return [
+          '"Too abstract" sometimes means "I lost the middle."',
+          'Some ideas look abstract only because the bridge is late.',
+          'A missing step can make a good idea look bad.',
+          'Abstract is often just unfinished in public.'
+        ];
+      }
+
+      if (t.includes('makes no sense') || t.includes('what are you even saying')) {
+        return [
+          'Confusion is not the opposite of interest.',
+          'If it bothered you enough to reply, it landed somewhere.',
+          'New thoughts rarely sound neat on day one.',
+          'Not understanding yet is not the same as nonsense.'
+        ];
+      }
+
+      return hooks;
     }
 
     function buildCards(text) {
-      const lines = cleanLines(text);
+      const seed = chooseSeed(text);
+      const used = new Set();
 
-      if (!lines.length) return [];
+      const misreadPool = getMisreadPool(seed);
+      const flipPool = getFlipPool(seed);
+      const postPool = getPostPool(seed);
+      const hookPool = getHookPool(seed);
 
-      if (lines.length >= 2 && lines.length <= 12) {
-        return lines.slice(0, 3).map((line, i) => buildLineCard(line, i + 1));
-      }
-
-      return buildParagraphCard(text);
+      return [1, 2, 3].map((n) => ({
+        label: `${n}. angle`,
+        blocks: [
+          ['Misread', pickUnused(misreadPool, used)],
+          ['Flip', pickUnused(flipPool, used)],
+          ['Post idea', pickUnused(postPool, used)],
+          ['Hook', pickUnused(hookPool, used)]
+        ]
+      }));
     }
 
     function renderCards(cards) {
@@ -504,10 +721,7 @@ nobody gets this"></textarea>
       const text = input.value.trim();
       if (!text) return;
 
-      const cards = buildCards(text);
-      if (!cards.length) return;
-
-      renderCards(cards);
+      renderCards(buildCards(text));
     }
 
     function clearAll() {
