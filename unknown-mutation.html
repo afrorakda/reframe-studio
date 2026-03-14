@@ -15,8 +15,6 @@
       --text:#eef2ff;
       --muted:#9aa6d1;
       --soft:#cfd7f6;
-      --button:#243055;
-      --button-hover:#2c3a66;
       --shadow:0 14px 40px rgba(0,0,0,.34);
       --radius-xl:28px;
       --radius-lg:22px;
@@ -71,7 +69,6 @@
       font-size:15px;
       margin-bottom:18px;
       background:rgba(96,89,235,.08);
-      box-shadow:inset 0 0 0 1px rgba(140,132,255,.08);
     }
 
     .title{
@@ -130,12 +127,8 @@
       color:var(--text);
       font-size:18px;
       font-weight:700;
-      letter-spacing:-0.01em;
       cursor:pointer;
       border:1px solid rgba(116,132,193,.22);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
-      transition:transform .06s ease, background .18s ease, border-color .18s ease;
-      -webkit-tap-highlight-color:transparent;
       text-decoration:none;
       display:inline-flex;
       align-items:center;
@@ -180,7 +173,7 @@
     .card-actions{
       margin-top:16px;
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
+      grid-template-columns:1fr;
       gap:12px;
     }
 
@@ -191,7 +184,29 @@
       padding:12px;
     }
 
-    .tiny{margin-top:16px;color:#808bb0;font-size:12px}
+    .lower{
+      margin-top:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .tiny{color:#808bb0;font-size:12px}
+
+    .quiet-link{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:13px;
+      padding:2px 0;
+      border-bottom:1px solid transparent;
+      transition:color .15s ease, border-color .15s ease;
+    }
+
+    .quiet-link:hover{
+      color:var(--text);
+      border-color:rgba(162,176,230,.34);
+    }
 
     @media (max-width:640px){
       body{padding:18px 10px 32px}
@@ -229,10 +244,14 @@
         <div class="empty-text">3 mutations appear here.</div>
       </section>
 
-      <div class="tiny">No login. No tracking. Browser only.</div>
+      <div class="lower">
+        <div class="tiny">No login. No tracking. Browser only.</div>
+        <a class="quiet-link" id="nextLink" href="./thought-collision.html">next</a>
+      </div>
     </main>
   </div>
 
+  <script src="./random-next.js"></script>
   <script>
     const input = document.getElementById('input');
     const result = document.getElementById('result');
@@ -240,6 +259,7 @@
     const exampleBtn = document.getElementById('exampleBtn');
     const clearBtn = document.getElementById('clearBtn');
     const copyBtn = document.getElementById('copyBtn');
+    const nextLink = document.getElementById('nextLink');
 
     const exampleInput = 'People say my ideas are too abstract.';
 
@@ -317,6 +337,10 @@
       return cleanText(text).replace(/\s+/g, ' ');
     }
 
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     function pickThreeDifferent(arr){
       const pool = [...arr];
       const out = [];
@@ -344,10 +368,6 @@
         }
         return text;
       });
-    }
-
-    function pick(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
     }
 
     function renderMutations(items){
@@ -384,14 +404,7 @@
           }catch{}
         });
 
-        const deeper = document.createElement('a');
-        deeper.className = 'mini-btn';
-        deeper.textContent = 'Deeper';
-        deeper.href = `./thought-collision.html?q=${encodeURIComponent(text)}`;
-
         actions.appendChild(copyCard);
-        actions.appendChild(deeper);
-
         card.appendChild(label);
         card.appendChild(body);
         card.appendChild(actions);
@@ -410,11 +423,13 @@
       const value = cleanText(input.value);
       if (!value) return;
       renderMutations(buildMutations(value));
+      updateNextLink();
     }
 
     function clearAll(){
       input.value = '';
       setEmpty();
+      updateNextLink();
     }
 
     function copyResult(){
@@ -436,17 +451,31 @@
       });
     }
 
+    function updateNextLink(){
+      if (!window.REFRAME_RANDOM_NEXT) {
+        nextLink.href = './thought-collision.html';
+        return;
+      }
+
+      nextLink.href = window.REFRAME_RANDOM_NEXT.buildNextUrl(
+        ['thought-collision.html'],
+        input.value
+      );
+    }
+
     generateBtn.addEventListener('click', generate);
-    exampleBtn.addEventListener('click', () => { input.value = exampleInput; });
+    exampleBtn.addEventListener('click', () => {
+      input.value = exampleInput;
+      updateNextLink();
+    });
     clearBtn.addEventListener('click', clearAll);
     copyBtn.addEventListener('click', copyResult);
 
     const params = new URLSearchParams(window.location.search);
     const q = params.get('q');
-    if (q) {
-      input.value = q;
-    }
+    if (q) input.value = q;
 
+    updateNextLink();
     setEmpty();
   </script>
 </body>
