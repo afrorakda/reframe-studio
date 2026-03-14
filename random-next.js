@@ -1,41 +1,76 @@
-// REFRAME Random Next Router
-
-const REFRAME_NEXT_TOOLS = [
-  "unknown-mutation.html",
-  "thought-collision.html"
-];
-
-// 前回ツールを避ける
-function getNextTool() {
-
-  const last = sessionStorage.getItem("reframe-last-tool");
-
-  let pool = REFRAME_NEXT_TOOLS.filter(t => t !== last);
-
-  if (pool.length === 0) {
-    pool = REFRAME_NEXT_TOOLS;
+(function () {
+  function normalize(path) {
+    return String(path || "").split("?")[0].split("#")[0];
   }
 
-  const next = pool[Math.floor(Math.random() * pool.length)];
+  function getCurrentFile() {
+    const parts = window.location.pathname.split("/");
+    return normalize(parts[parts.length - 1] || "");
+  }
 
-  sessionStorage.setItem("reframe-last-tool", next);
+  function readHistory() {
+    try {
+      return JSON.parse(sessionStorage.getItem("REFRAME_ROUTE_HISTORY") || "[]");
+    } catch {
+      return [];
+    }
+  }
 
-  return next;
-}
+  function writeHistory(history) {
+    try {
+      sessionStorage.setItem("REFRAME_ROUTE_HISTORY", JSON.stringify(history.slice(-12)));
+    } catch {}
+  }
 
-// Next ボタン接続
-function attachNextButton(id) {
+  function rememberCurrent() {
+    const current = getCurrentFile();
+    if (!current) return;
 
-  const btn = document.getElementById(id);
+    const history = readHistory();
+    if (history[history.length - 1] !== current) {
+      history.push(current);
+      writeHistory(history);
+    }
+  }
 
-  if (!btn) return;
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
 
-  btn.addEventListener("click", () => {
+  function pickNext(candidates) {
+    const current = getCurrentFile();
+    const history = readHistory();
+    const last = history.length >= 2 ? history[history.length - 2] : "";
 
-    const next = getNextTool();
+    const clean = (candidates || []).map(normalize).filter(Boolean);
 
-    window.location.href = "./" + next;
+    let pool = clean.filter(file => file !== current && file !== last);
 
-  });
+    if (!pool.length) {
+      pool = clean.filter(file => file !== current);
+    }
 
-}
+    if (!pool.length) {
+      pool = clean;
+    }
+
+    return pool.length ? pickRandom(pool) : "";
+  }
+
+  function buildNextUrl(candidates, carryText) {
+    const next = pickNext(candidates);
+    if (!next) return "#";
+
+    const text = String(carryText || "").trim();
+    if (!text) return `./${next}`;
+
+    return `./${next}?q=${encodeURIComponent(text)}`;
+  }
+
+  window.REFRAME_RANDOM_NEXT = {
+    rememberCurrent,
+    buildNextUrl
+  };
+
+  rememberCurrent();
+})();
