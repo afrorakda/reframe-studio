@@ -145,19 +145,19 @@
       font-size:17px;
     }
 
-    .ideas{
+    .cards{
       display:grid;
-      gap:16px;
+      gap:18px;
     }
 
-    .idea{
+    .card{
       background:rgba(18,26,48,.86);
       border:1px solid var(--line-soft);
       border-radius:22px;
       padding:18px;
     }
 
-    .idea-label{
+    .card-label{
       color:var(--muted);
       font-size:12px;
       text-transform:uppercase;
@@ -165,7 +165,35 @@
       margin-bottom:12px;
     }
 
-    .idea-text{
+    .card-reply{
+      color:var(--text);
+      font-size:17px;
+      line-height:1.5;
+      margin-bottom:14px;
+      font-weight:700;
+    }
+
+    .block{
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid rgba(110,126,182,.18);
+    }
+
+    .block:first-of-type{
+      margin-top:0;
+      padding-top:0;
+      border-top:none;
+    }
+
+    .block-title{
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      margin-bottom:8px;
+    }
+
+    .block-text{
       color:var(--soft);
       font-size:17px;
       line-height:1.62;
@@ -231,12 +259,13 @@
         border-radius:18px;
       }
 
-      .idea{
+      .card{
         border-radius:20px;
         padding:16px;
       }
 
-      .idea-text{
+      .card-reply,
+      .block-text{
         font-size:16px;
       }
     }
@@ -267,7 +296,7 @@ nobody gets this"></textarea>
       </section>
 
       <section id="result" class="result-box empty">
-        <div class="empty-text">3–5 angles appear here.</div>
+        <div class="empty-text">3 angles appear here.</div>
       </section>
 
       <div class="lower">
@@ -278,6 +307,7 @@ nobody gets this"></textarea>
   </div>
 
   <script src="./fragment-engine.js"></script>
+  <script src="./mutation-engine.js"></script>
   <script>
     const input = document.getElementById('input');
     const result = document.getElementById('result');
@@ -296,43 +326,92 @@ nobody gets this"></textarea>
 
     function setEmpty() {
       result.className = 'result-box empty';
-      result.innerHTML = '<div class="empty-text">3–5 angles appear here.</div>';
+      result.innerHTML = '<div class="empty-text">3 angles appear here.</div>';
     }
 
-    function renderIdeas(ideas) {
+    function getSeedReplies(text) {
+      if (!window.REFRAME_FRAGMENT_ENGINE) return [];
+      return window.REFRAME_FRAGMENT_ENGINE.cleanLines(text).slice(0, 12);
+    }
+
+    function getCards(text) {
+      const lines = getSeedReplies(text);
+      if (!lines.length) return null;
+      if (!window.REFRAME_MUTATION_ENGINE) return null;
+
+      const mutated = window.REFRAME_MUTATION_ENGINE.mutateList(lines);
+      if (!mutated || !mutated.length) return null;
+
+      return mutated.map((item, index) => ({
+        index: index + 1,
+        reply: item.reply,
+        insight: item.mutation.insight,
+        reframe: item.mutation.reframe,
+        opposite: item.mutation.opposite,
+        pattern: item.mutation.pattern,
+        contentSeed: item.mutation.contentSeed,
+        hook: item.mutation.hook
+      }));
+    }
+
+    function renderCards(cards) {
       result.className = 'result-box';
       result.innerHTML = '';
 
-      const list = document.createElement('div');
-      list.className = 'ideas';
+      const wrap = document.createElement('div');
+      wrap.className = 'cards';
 
-      ideas.forEach((idea, index) => {
+      cards.forEach(cardData => {
         const card = document.createElement('article');
-        card.className = 'idea';
+        card.className = 'card';
 
         const label = document.createElement('div');
-        label.className = 'idea-label';
-        label.textContent = `${index + 1}. ${idea.type}`;
+        label.className = 'card-label';
+        label.textContent = `${cardData.index}. angle`;
 
-        const text = document.createElement('div');
-        text.className = 'idea-text';
-        text.textContent = idea.text;
+        const reply = document.createElement('div');
+        reply.className = 'card-reply';
+        reply.textContent = `"${cardData.reply}"`;
+
+        const sections = [
+          ['Insight', cardData.insight],
+          ['Reframe', cardData.reframe],
+          ['Opposite', cardData.opposite],
+          ['Pattern', cardData.pattern],
+          ['Content seed', cardData.contentSeed],
+          ['Hook', cardData.hook]
+        ];
 
         card.appendChild(label);
-        card.appendChild(text);
-        list.appendChild(card);
+        card.appendChild(reply);
+
+        sections.forEach(([title, text]) => {
+          const block = document.createElement('div');
+          block.className = 'block';
+
+          const blockTitle = document.createElement('div');
+          blockTitle.className = 'block-title';
+          blockTitle.textContent = title;
+
+          const blockText = document.createElement('div');
+          blockText.className = 'block-text';
+          blockText.textContent = text;
+
+          block.appendChild(blockTitle);
+          block.appendChild(blockText);
+          card.appendChild(block);
+        });
+
+        wrap.appendChild(card);
       });
 
-      result.appendChild(list);
+      result.appendChild(wrap);
     }
 
     function generate() {
-      if (!window.REFRAME_FRAGMENT_ENGINE) return;
-
-      const ideas = window.REFRAME_FRAGMENT_ENGINE.mutateReplies(input.value);
-      if (!ideas) return;
-
-      renderIdeas(ideas);
+      const cards = getCards(input.value);
+      if (!cards) return;
+      renderCards(cards);
     }
 
     function clearAll() {
@@ -341,14 +420,25 @@ nobody gets this"></textarea>
     }
 
     function copyResult() {
-      const items = Array.from(result.querySelectorAll('.idea'));
-      if (!items.length) return;
+      const cards = Array.from(result.querySelectorAll('.card'));
+      if (!cards.length) return;
 
-      const text = items.map(item => {
-        const label = item.querySelector('.idea-label')?.textContent || '';
-        const body = item.querySelector('.idea-text')?.textContent || '';
-        return `${label}\n${body}`;
-      }).join('\n\n');
+      const text = cards.map(card => {
+        const pieces = [];
+        const label = card.querySelector('.card-label')?.textContent || '';
+        const reply = card.querySelector('.card-reply')?.textContent || '';
+        pieces.push(label);
+        pieces.push(reply);
+
+        const blocks = Array.from(card.querySelectorAll('.block'));
+        blocks.forEach(block => {
+          const title = block.querySelector('.block-title')?.textContent || '';
+          const body = block.querySelector('.block-text')?.textContent || '';
+          pieces.push(`${title}\n${body}`);
+        });
+
+        return pieces.join('\n\n');
+      }).join('\n\n--------------------\n\n');
 
       navigator.clipboard.writeText(text).then(() => {
         const old = copyBtn.textContent;
