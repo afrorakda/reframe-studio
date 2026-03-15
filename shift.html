@@ -74,17 +74,17 @@ background:#121725;
 border:1px solid #1f2738;
 border-radius:10px;
 padding:14px;
-}
-
-.copy{
-margin-top:8px;
-font-size:12px;
-color:#9aa4ba;
 cursor:pointer;
 }
 
-.copy:hover{
-color:#fff;
+.card:hover{
+background:#1a2032;
+}
+
+.arrow{
+margin-top:8px;
+font-size:12px;
+color:#7e8aa7;
 }
 
 .footer{
@@ -125,12 +125,14 @@ const examples=[
 "Who cares",
 "This makes no sense",
 "Nobody asked",
-"Too abstract"
+"Too abstract",
+"Trying too hard",
+"This is cringe"
 ];
 
 const fragments=[
+
 "Maybe the sentence is quiet, not empty.",
-"Boredom sometimes hides slow interest.",
 "The boredom may belong to the reader.",
 "Contempt is attention wearing armor.",
 "Silence rarely writes comments.",
@@ -142,7 +144,33 @@ const fragments=[
 "This thought refuses to sit still.",
 "The sentence is smaller than the pressure.",
 "Dismissal is attention pretending to leave.",
-"Interest sometimes arrives disguised as boredom."
+"Interest sometimes arrives disguised as boredom.",
+"The sentence moved before meaning caught up.",
+"Some reactions are delayed understanding.",
+"The irritation may be the real message.",
+"The reader may be resisting the mirror.",
+"The thought is still unfolding.",
+"The meaning may arrive later.",
+"Some ideas walk slower than attention.",
+"Noise sometimes hides the signal.",
+"Resistance is still a form of contact.",
+"Even dismissal carries weight.",
+"The comment may be the echo.",
+"The friction may be the point.",
+"Confusion is sometimes unfinished understanding.",
+"The sentence may have landed elsewhere.",
+"Some reactions are reflections.",
+"The discomfort may be the doorway.",
+"The thought may still be forming.",
+"Meaning sometimes walks in circles.",
+"The point may not be where you looked.",
+"Sometimes the reader arrives too early.",
+"The sentence may outlive the reaction.",
+"Attention hides in strange disguises.",
+"Dismissal sometimes means proximity.",
+"The idea may not want to behave.",
+"Thoughts rarely move in straight lines."
+
 ];
 
 function randomFragment(){
@@ -161,19 +189,32 @@ const results=document.getElementById("results");
 
 results.innerHTML="";
 
+let used=new Set();
+
 for(let i=0;i<3;i++){
 
-let text=randomFragment();
+let text;
+
+do{
+text=randomFragment();
+}while(used.has(text));
+
+used.add(text);
 
 const card=document.createElement("div");
 card.className="card";
 
+card.onclick=function(){
+nextTool(text);
+};
+
 card.innerHTML=`
 <div>${text}</div>
-<div class="copy" onclick="copyText('${text.replace(/'/g,"")}')">copy</div>
+<div class="arrow">→</div>
 `;
 
 results.appendChild(card);
+
 }
 
 }
@@ -188,10 +229,6 @@ document.getElementById("input").value="";
 document.getElementById("results").innerHTML="";
 }
 
-function copyText(text){
-navigator.clipboard.writeText(text);
-}
-
 function copyAll(){
 
 const cards=document.querySelectorAll(".card div:first-child");
@@ -203,6 +240,20 @@ text+=c.innerText+"\n\n";
 });
 
 navigator.clipboard.writeText(text);
+
+}
+
+function nextTool(fragment){
+
+const tools=[
+"misread.html",
+"opposite.html",
+"metaphor.html"
+];
+
+const next=tools[Math.floor(Math.random()*tools.length)];
+
+window.location.href=next+"?fragment="+encodeURIComponent(fragment);
 
 }
 
