@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Misread</title>
   <style>
     :root{
       --bg:#04101f;
       --bg2:#081833;
       --panel:rgba(16,31,58,.78);
-      --panel-deep:rgba(7,16,32,.58);
       --line:rgba(173,207,255,.12);
       --line-2:rgba(173,207,255,.08);
       --text:#eaf2ff;
@@ -17,7 +16,6 @@
       --soft:#c7d8f7;
       --shadow:0 20px 60px rgba(0,0,0,.34);
       --radius:22px;
-      --radius-sm:16px;
       --max:720px;
     }
 
@@ -99,7 +97,7 @@
 
     textarea{
       width:100%;
-      min-height:150px;
+      min-height:138px;
       resize:vertical;
       border:none;
       outline:none;
@@ -194,10 +192,9 @@
     }
 
     .card-title{
-      font-size:.92rem;
-      font-weight:700;
+      font-size:.9rem;
       color:var(--soft);
-      letter-spacing:.02em;
+      font-weight:700;
     }
 
     .chip{
@@ -208,28 +205,57 @@
       border-radius:999px;
       background:rgba(255,255,255,.02);
       white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:68%;
     }
 
-    .line{
+    .card-line{
       font-size:1rem;
-      line-height:1.55;
+      line-height:1.58;
       color:var(--text);
       white-space:pre-wrap;
     }
 
-    .echo{
+    .card-echo{
       margin-top:10px;
       padding-top:10px;
       border-top:1px solid var(--line-2);
       color:var(--muted);
       font-size:.86rem;
       line-height:1.45;
+      white-space:pre-wrap;
+    }
+
+    .card-meta{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .mini{
+      min-height:36px;
+      padding:8px 12px;
+      font-size:.8rem;
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+      font-weight:500;
     }
 
     .quiet{
       padding:2px 18px 14px;
       color:var(--muted);
       font-size:.8rem;
+      min-height:1.2em;
     }
 
     footer{
@@ -264,14 +290,7 @@
       </div>
 
       <div class="input-area">
-        <textarea id="input" placeholder="Drop a line.
-
-Example:
-Your posts are always so boring.
-Nobody asked.
-This makes no sense.
-You sound confused.
-Trying too hard."></textarea>
+        <textarea id="input" placeholder="Drop a line."></textarea>
       </div>
 
       <div class="controls">
@@ -282,7 +301,7 @@ Trying too hard."></textarea>
       </div>
 
       <div class="meta">
-        <div class="status" id="status"> </div>
+        <div class="status" id="status">Loading pool...</div>
       </div>
 
       <div class="results" id="results">
@@ -295,192 +314,63 @@ Trying too hard."></textarea>
     <footer>No login. No tracking. Browser only.</footer>
   </main>
 
+  <script src="./random-next.js"></script>
   <script>
     const inputEl = document.getElementById('input');
     const resultsEl = document.getElementById('results');
     const statusEl = document.getElementById('status');
     const quietEl = document.getElementById('quiet');
 
-    const examples = [
-      "Your posts are always so boring.",
-      "Nobody asked.",
+    const EXAMPLES = [
+      "Your posts are boring.",
+      "Who cares.",
       "This makes no sense.",
-      "You sound confused.",
+      "Nobody asked.",
+      "Too abstract.",
       "Trying too hard.",
       "This is cringe.",
-      "Too abstract.",
-      "Who cares.",
-      "Too long.",
-      "Give it a rest."
+      "You sound confused."
     ];
 
-    const quietPool = [
+    const POOL_FILES = [
+      "./fragment-pool.json",
+      "./fragment-pack-1.json",
+      "./fragment-pack-2.json"
+    ];
+
+    const NEXT_CANDIDATES = [
+      "shift.html",
+      "opposite.html",
+      "metaphor.html",
+      "question.html"
+    ];
+
+    const QUIET_LINES = [
       "",
-      "Not every reading needs permission.",
-      "Wrong can still be useful.",
-      "The line is small. The bruise may not be.",
-      "A rude sentence can still leak a clue.",
-      "You do not have to believe it to bend it.",
-      "Bad wording. Usable pressure."
+      "The wrong reading may be the useful one.",
+      "A small misread can still move.",
+      "Sometimes the line bends first."
     ];
 
-    const signalMap = [
-      { key: "boring", test: /boring|dull|dry|flat|bland|sleep/i },
-      { key: "confused", test: /makes no sense|nonsense|confus|what are you even saying|huh|unclear|mumble/i },
-      { key: "abstract", test: /abstract|vague|airy|theory|philosoph|too deep|all over the place/i },
-      { key: "dismissive", test: /nobody asked|who asked|who cares|irrelevant|pointless|give it a rest/i },
-      { key: "trying", test: /trying too hard|desperate|forced|try-hard|pretentious|performing/i },
-      { key: "cringe", test: /cringe|embarrassing|awkward|corny|idiot/i },
-      { key: "length", test: /too long|wall of text|long|essay|yapping/i },
-      { key: "tone", test: /arrogant|smug|annoying|rude|condescending|self-important/i }
-    ];
+    let FRAGMENTS = [];
+    let CURRENT_CARDS = [];
+    let POOL_READY = false;
 
-    const pools = {
-      boring: {
-        tag: "boredom signal",
-        lines: [
-          "You were not bored.\nYou were denied easy sugar.",
-          "You wanted entertainment first.\nThe thought arrived before the seasoning.",
-          "You called it boring because it refused to perform for you.",
-          "You were not under-stimulated.\nYou were under-spoon-fed.",
-          "You wanted movement.\nWhat you got was weight.",
-          "You wanted the point already softened for swallowing."
-        ],
-        echoes: [
-          "Boredom often hides impatience with quiet force.",
-          "Some people call it boring when it does not flatter their speed.",
-          "A calm line can still stay in the room longer."
-        ]
-      },
-      confused: {
-        tag: "confusion signal",
-        lines: [
-          "You did not miss every word.\nYou lost the handrail.",
-          "You understood enough to feel inconvenienced.",
-          "You were following until it stopped escorting you.",
-          "You are calling it nonsense because it would not kneel into packaging.",
-          "The problem may not be meaning.\nIt may be entry.",
-          "Confusion is still contact.\nJust unstable contact."
-        ],
-        echoes: [
-          "A missing handrail is not the same as a missing point.",
-          "People often blame the sentence when they lose the middle.",
-          "Not every difficult entry is emptiness."
-        ]
-      },
-      abstract: {
-        tag: "abstraction signal",
-        lines: [
-          "You wanted instructions.\nYou got altitude.",
-          "You were not rejecting the idea.\nYou were asking where to place your feet.",
-          "You wanted a screwdriver.\nWhat arrived was weather.",
-          "You distrust height when it delays use.",
-          "You did not hate abstraction.\nYou hated not landing yet.",
-          "You wanted grip.\nIt stayed mist."
-        ],
-        echoes: [
-          "Some thoughts hover before they land.",
-          "Altitude looks suspicious to people who only trust tools.",
-          "Not everything vague is empty. Some things are still choosing a shape."
-        ]
-      },
-      dismissive: {
-        tag: "dismissal signal",
-        lines: [
-          "And yet you replied.",
-          "Indifference rarely writes back.",
-          "You announced non-interest with remarkable participation.",
-          "You called it unnecessary while helping it circulate.",
-          "You arrived to deny arrival.",
-          "The refusal still spent energy."
-        ],
-        echoes: [
-          "Dismissal is still contact.",
-          "Contempt still pays attention with its own hands.",
-          "A non-event rarely earns this much motion."
-        ]
-      },
-      trying: {
-        tag: "effort signal",
-        lines: [
-          "You noticed effort because it did not hide its fingerprints.",
-          "You prefer ambition only when it pretends to be accidental.",
-          "Visible labor embarrassed you more than weak thought would.",
-          "You sensed intention and called it a flaw.",
-          "You wanted craft with no human residue.",
-          "You were not reacting to failure.\nYou were reacting to visible trying."
-        ],
-        echoes: [
-          "People praise effort until they can actually see it.",
-          "Ambition becomes awkward the second it stops dressing as ease.",
-          "Some audiences only trust what looks unplanned."
-        ]
-      },
-      cringe: {
-        tag: "shame signal",
-        lines: [
-          "You felt exposed by someone risking visibility.",
-          "You call it cringe when sincerity forgets its camouflage.",
-          "The discomfort came from nakedness more than weakness.",
-          "You were reacting to openness with no irony shield.",
-          "You saw earnestness and reached for shame language.",
-          "This may not be failure.\nIt may be unarmored presence."
-        ],
-        echoes: [
-          "A lot of cringe is fear pretending to be taste.",
-          "The internet forgives emptiness faster than earnestness.",
-          "Awkwardness is sometimes just sincerity without cool lighting."
-        ]
-      },
-      length: {
-        tag: "length signal",
-        lines: [
-          "You wanted compression more than meaning.",
-          "Your attention budget ended before the point did.",
-          "You prefer ideas in snack form.",
-          "You were measuring effort cost, not value.",
-          "You wanted summary speed, not full shape.",
-          "The complaint is about carrying time, not necessarily about truth."
-        ],
-        echoes: [
-          "Short is often cheaper, not clearer.",
-          "Attention negotiates with every extra sentence now.",
-          "Format gets judged before meaning gets heard."
-        ]
-      },
-      tone: {
-        tag: "tone signal",
-        lines: [
-          "You reacted to posture before content.",
-          "The tone touched your pride before the idea reached your mind.",
-          "You heard rank and made that the real event.",
-          "You were not only reading meaning.\nYou were reading position.",
-          "The voice triggered something old before the sentence finished.",
-          "The irritation may live in posture, not argument."
-        ],
-        echoes: [
-          "A fair point can die in the wrong voice.",
-          "People often reject status signals faster than ideas.",
-          "Tone is where hierarchy sneaks in wearing style."
-        ]
-      },
-      default: {
-        tag: "friction signal",
-        lines: [
-          "The reply carries more heat than detail.",
-          "A vague hit is still a hit.",
-          "The sentence is blunt because the reaction outran the language.",
-          "This may be impact without a clean report.",
-          "The wording is thin.\nThe pressure may not be.",
-          "The comment says little.\nThe friction says more."
-        ],
-        echoes: [
-          "A weak comment can still point at a live nerve.",
-          "Not every insult knows what it is revealing.",
-          "Bad wording can still leave usable pressure."
-        ]
-      }
-    };
+    function normalizeText(str){
+      return String(str || "").replace(/\s+/g, " ").trim();
+    }
+
+    function tokenize(str){
+      return normalizeText(str)
+        .toLowerCase()
+        .replace(/[^a-z0-9\s'-]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+    }
+
+    function uniq(arr){
+      return [...new Set(arr)];
+    }
 
     function pick(arr){
       return arr[Math.floor(Math.random() * arr.length)];
@@ -495,45 +385,248 @@ Trying too hard."></textarea>
       return copy;
     }
 
-    function detectSignals(text){
-      const found = [];
-      for(const item of signalMap){
-        if(item.test.test(text)) found.push(item.key);
+    function readQueryInput(){
+      const params = new URLSearchParams(window.location.search);
+      return normalizeText(params.get("q") || params.get("fragment") || "");
+    }
+
+    function toneToStyle(tone){
+      const t = String(tone || "").toLowerCase();
+      if (["warm","calm"].includes(t)) return "clear";
+      if (["mystery","twist"].includes(t)) return "drift";
+      if (["edge"].includes(t)) return "sharp";
+      return "drift";
+    }
+
+    function inferStyleFromText(text){
+      const lower = text.toLowerCase();
+      if (/\bmaybe\b|\bnot\b|\bquiet\b|\bsmall\b|\blate\b|\bearly\b/.test(lower)) return "clear";
+      if (/\bchaos\b|\bpattern\b|\bdoor\b|\bframe\b|\bmap\b|\bunfinished\b|\boff\b/.test(lower)) return "drift";
+      return "sharp";
+    }
+
+    function inferTagsFromText(text){
+      const lower = text.toLowerCase();
+      const tags = [];
+
+      if (/\bboring\b|\bboredom\b|\bquiet\b|\bslow\b/.test(lower)) tags.push("boring","boredom","attention");
+      if (/\bcare\b|\bnobody asked\b|\bdisagreement\b|\bdismiss\b|\breply\b/.test(lower)) tags.push("dismissal","criticism","reaction");
+      if (/\bconfusion\b|\bunclear\b|\bsense\b|\bquestion\b|\btranslation\b/.test(lower)) tags.push("confusion","question","thinking");
+      if (/\babstract\b|\bframe\b|\bmap\b|\bpattern\b|\bunfinished\b/.test(lower)) tags.push("abstract","frame","shift");
+      if (/\bfriction\b|\bedge\b|\bsignal\b/.test(lower)) tags.push("friction","signal","edge");
+      if (/\bcuriosity\b|\binteresting\b/.test(lower)) tags.push("curiosity","idea");
+      if (/\bsilence\b/.test(lower)) tags.push("silence");
+      if (/\bhook\b/.test(lower)) tags.push("hook");
+      if (/\bstory\b/.test(lower)) tags.push("story");
+      if (/\bmutation\b/.test(lower)) tags.push("mutation");
+
+      return uniq(tags);
+    }
+
+    function normalizeFragmentItem(item, source){
+      if (typeof item === "string"){
+        const text = normalizeText(item);
+        if (!text) return null;
+        return {
+          text,
+          tags: inferTagsFromText(text),
+          tone: "",
+          source,
+          style: inferStyleFromText(text)
+        };
       }
-      return found.length ? found : ["default"];
-    }
 
-    function uniqueSignals(baseSignals){
-      const all = ["boring","confused","abstract","dismissive","trying","cringe","length","tone","default"];
-      const chosen = [...baseSignals];
-      const fillers = shuffle(all.filter(x => !chosen.includes(x)));
-      while(chosen.length < 3){
-        chosen.push(fillers.shift() || "default");
+      if (item && typeof item === "object"){
+        const text = normalizeText(item.text || "");
+        if (!text) return null;
+        const tone = normalizeText(item.tone || "");
+        const tags = uniq([...(Array.isArray(item.tags) ? item.tags : []), ...inferTagsFromText(text)]);
+        return {
+          text,
+          tags,
+          tone,
+          source,
+          style: tone ? toneToStyle(tone) : inferStyleFromText(text)
+        };
       }
-      return chosen.slice(0,3);
+
+      return null;
     }
 
-    function getExcerpt(text){
-      const cleaned = text.replace(/\s+/g, " ").trim();
-      if(!cleaned) return "";
-      return cleaned.length > 88 ? cleaned.slice(0,85).trim() + "..." : cleaned;
+    async function loadJson(path){
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Failed to load ${path}`);
+      return response.json();
     }
 
-    function buildCard(signal, usedLines){
-      const source = pools[signal] || pools.default;
-      const available = source.lines.filter(line => !usedLines.has(line));
-      const line = available.length ? pick(available) : pick(source.lines);
-      usedLines.add(line);
-      return {
-        title: signal,
-        tag: source.tag,
-        line,
-        echo: pick(source.echoes)
-      };
+    function flattenPool(json, source){
+      let raw = [];
+
+      if (Array.isArray(json)) raw = json;
+      else if (json && Array.isArray(json.fragments)) raw = json.fragments;
+      else if (json && Array.isArray(json.packs)) raw = json.packs;
+      else if (json && Array.isArray(json.items)) raw = json.items;
+      else raw = [];
+
+      const out = [];
+      const seen = new Set();
+
+      for (const item of raw){
+        const normalized = normalizeFragmentItem(item, source);
+        if (!normalized) continue;
+        if (seen.has(normalized.text)) continue;
+        seen.add(normalized.text);
+        out.push(normalized);
+      }
+
+      return out;
+    }
+
+    async function loadPools(){
+      const merged = [];
+      const seen = new Set();
+
+      for (const path of POOL_FILES){
+        try{
+          const json = await loadJson(path);
+          const items = flattenPool(json, path.split("/").pop());
+
+          for (const item of items){
+            if (seen.has(item.text)) continue;
+            seen.add(item.text);
+            merged.push(item);
+          }
+        }catch(err){
+        }
+      }
+
+      FRAGMENTS = merged;
+      POOL_READY = merged.length > 0;
+      statusEl.textContent = POOL_READY ? `${merged.length} pooled fragments ready.` : "Pool not found.";
+    }
+
+    function extractSignals(input){
+      const text = input.toLowerCase();
+      const words = tokenize(input);
+      const signals = [...words];
+
+      if (/\bboring\b|\bdull\b|\bflat\b/.test(text)) signals.push("boring","boredom","attention");
+      if (/\bwho cares\b|\bnobody asked\b|\bwho asked\b/.test(text)) signals.push("dismissal","criticism","reaction","care");
+      if (/\bmakes no sense\b|\bconfus|\bunclear\b|\bmumble\b|\bnonsense\b/.test(text)) signals.push("confusion","question","thinking","signal");
+      if (/\babstract\b|\bvague\b|\ball over the place\b/.test(text)) signals.push("abstract","frame","shift","pattern");
+      if (/\btrying too hard\b|\bpretentious\b|\bperforming\b/.test(text)) signals.push("effort","edge","reaction");
+      if (/\bcringe\b|\bembarrassing\b|\bidiot\b/.test(text)) signals.push("criticism","reaction","edge");
+      if (/\btoo long\b|\bessay\b|\byapping\b/.test(text)) signals.push("attention","timing","structure");
+
+      return uniq(signals.map(s => String(s).toLowerCase()));
+    }
+
+    function scoreFragment(fragment, signals){
+      let score = 0;
+      const text = fragment.text.toLowerCase();
+      const tagSet = new Set((fragment.tags || []).map(t => String(t).toLowerCase()));
+      const words = new Set(tokenize(fragment.text));
+
+      for (const signal of signals){
+        if (!signal) continue;
+        if (tagSet.has(signal)) score += 8;
+        if (words.has(signal)) score += 6;
+        if (text.includes(signal)) score += 3;
+      }
+
+      if (fragment.tone === "mystery" || fragment.tone === "twist") score += 1;
+      if (fragment.style === "drift") score += 1;
+
+      return score;
+    }
+
+    function chooseThree(input){
+      const signals = extractSignals(input);
+
+      const scored = FRAGMENTS
+        .map(fragment => ({ ...fragment, score: scoreFragment(fragment, signals) }))
+        .sort((a, b) => b.score - a.score);
+
+      const strong = scored.filter(item => item.score > 0);
+      const base = strong.length ? strong : scored;
+
+      const clear = shuffle(base.filter(item => item.style === "clear"));
+      const drift = shuffle(base.filter(item => item.style === "drift"));
+      const sharp = shuffle(base.filter(item => item.style === "sharp"));
+
+      const chosen = [];
+      const used = new Set();
+
+      function take(bucket){
+        while (bucket.length){
+          const item = bucket.shift();
+          if (used.has(item.text)) continue;
+          used.add(item.text);
+          chosen.push(item);
+          return;
+        }
+      }
+
+      take(clear);
+      take(drift);
+      take(sharp);
+
+      const fallback = shuffle(base);
+      while (chosen.length < 3 && fallback.length){
+        const item = fallback.shift();
+        if (used.has(item.text)) continue;
+        used.add(item.text);
+        chosen.push(item);
+      }
+
+      return chosen.slice(0, 3);
+    }
+
+    function excerpt(text){
+      const clean = normalizeText(text);
+      return clean.length > 84 ? clean.slice(0, 81).trim() + "..." : clean;
+    }
+
+    function shortLead(text){
+      const tokens = tokenize(text).filter(t => !["the","a","an","is","are","so","this","that","it","you","your"].includes(t));
+      const picked = tokens.slice(0, 4);
+      return picked.length ? picked.join(" ") : excerpt(text).toLowerCase();
+    }
+
+    function deriveMisread(input, fragment){
+      const lead = shortLead(input);
+      const tags = fragment.tags || [];
+      const f = fragment.text;
+
+      if (tags.includes("dismissal") || tags.includes("criticism") || /\bcare\b|\bdismiss\b|\breply\b/i.test(f)){
+        return `${lead} / attention`;
+      }
+
+      if (tags.includes("confusion") || tags.includes("question") || /\bquestion\b|\bconfusion\b|\btranslation\b/i.test(f)){
+        return `${lead} / wrong map`;
+      }
+
+      if (tags.includes("abstract") || tags.includes("frame") || /\bframe\b|\bdoor\b|\bpattern\b/i.test(f)){
+        return `${lead} / wrong frame`;
+      }
+
+      if (tags.includes("silence") || /\bsilence\b/i.test(f)){
+        return `${lead} / not yet`;
+      }
+
+      if (tags.includes("friction") || tags.includes("edge") || /\bfriction\b|\bedge\b|\bsignal\b/i.test(f)){
+        return `${lead} / signal`;
+      }
+
+      if (tags.includes("story") || tags.includes("mutation") || /\bstory\b|\bmutation\b/i.test(f)){
+        return `${lead} / another version`;
+      }
+
+      return `${lead} / maybe something else`;
     }
 
     function escapeHtml(str){
-      return str
+      return String(str)
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
@@ -541,81 +634,126 @@ Trying too hard."></textarea>
         .replaceAll("'","&#039;");
     }
 
-    function renderCards(cards){
-      resultsEl.innerHTML = cards.map((card, i) => `
+    function renderCards(cards, input){
+      if (!cards.length){
+        resultsEl.innerHTML = `<div class="empty">No fragment found yet.</div>`;
+        return;
+      }
+
+      resultsEl.innerHTML = cards.map((card, index) => `
         <article class="card">
           <div class="card-head">
-            <div class="card-title">Misread ${i + 1}</div>
-            <div class="chip">${escapeHtml(card.tag)}</div>
+            <div class="card-title">Misread ${index + 1}</div>
+            <div class="chip">${escapeHtml(card.source)}</div>
           </div>
-          <div class="line">${escapeHtml(card.line)}</div>
-          <div class="echo">${escapeHtml(card.echo)}</div>
+          <div class="card-line">${escapeHtml(card.text)}</div>
+          <div class="card-echo">${escapeHtml(deriveMisread(input, card))}</div>
+          <div class="card-meta">
+            <div></div>
+            <div class="actions">
+              <button class="mini" type="button" onclick="copyCard(${index})">Copy</button>
+              <button class="mini" type="button" onclick="goNext(${index})">→</button>
+            </div>
+          </div>
         </article>
       `).join("");
     }
 
     function generate(){
-      const text = inputEl.value.trim();
-      if(!text){
+      const input = normalizeText(inputEl.value);
+
+      if (!input){
         resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three wrong readings.</div>`;
-        statusEl.textContent = "Drop one line first.";
+        statusEl.textContent = POOL_READY ? `${FRAGMENTS.length} pooled fragments ready.` : "Loading pool...";
         quietEl.textContent = "";
         return;
       }
 
-      const signals = uniqueSignals(detectSignals(text));
-      const usedLines = new Set();
-      const cards = signals.map(signal => buildCard(signal, usedLines));
+      if (!POOL_READY || !FRAGMENTS.length){
+        statusEl.textContent = "Pool not ready.";
+        return;
+      }
 
-      renderCards(cards);
-      statusEl.textContent = `Read from: “${escapeHtml(getExcerpt(text))}”`;
-      quietEl.textContent = pick(quietPool);
+      CURRENT_CARDS = chooseThree(input);
+      renderCards(CURRENT_CARDS, input);
+      statusEl.textContent = `Read from: “${excerpt(input)}”`;
+      quietEl.textContent = pick(QUIET_LINES);
     }
 
     function tryExample(){
-      inputEl.value = pick(examples);
+      inputEl.value = pick(EXAMPLES);
       generate();
     }
 
     function clearAll(){
       inputEl.value = "";
+      CURRENT_CARDS = [];
       resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three wrong readings.</div>`;
-      statusEl.textContent = " ";
+      statusEl.textContent = POOL_READY ? `${FRAGMENTS.length} pooled fragments ready.` : "Loading pool...";
       quietEl.textContent = "";
       inputEl.focus();
     }
 
-    async function copyResult(){
-      const cards = [...resultsEl.querySelectorAll('.card')];
-      if(!cards.length){
-        statusEl.textContent = "Nothing to copy yet.";
-        return;
-      }
-
-      const text = cards.map((card, i) => {
-        const line = card.querySelector('.line')?.textContent.trim() || "";
-        const echo = card.querySelector('.echo')?.textContent.trim() || "";
-        return `Misread ${i + 1}\n${line}\n\n${echo}`;
-      }).join("\n\n");
+    async function copyCard(index){
+      const item = CURRENT_CARDS[index];
+      if (!item) return;
 
       try{
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(item.text);
         statusEl.textContent = "Copied.";
-      }catch(e){
+      }catch(err){
         statusEl.textContent = "Copy failed.";
       }
     }
 
+    async function copyAll(){
+      if (!CURRENT_CARDS.length){
+        statusEl.textContent = "Nothing to copy yet.";
+        return;
+      }
+
+      try{
+        await navigator.clipboard.writeText(CURRENT_CARDS.map(item => item.text).join("\n\n"));
+        statusEl.textContent = "Copied.";
+      }catch(err){
+        statusEl.textContent = "Copy failed.";
+      }
+    }
+
+    function goNext(index){
+      const item = CURRENT_CARDS[index];
+      if (!item) return;
+
+      if (window.REFRAME_RANDOM_NEXT && typeof window.REFRAME_RANDOM_NEXT.buildNextUrl === "function"){
+        const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(NEXT_CANDIDATES, item.text);
+        window.location.href = url;
+        return;
+      }
+
+      const next = pick(NEXT_CANDIDATES);
+      window.location.href = `./${next}?q=${encodeURIComponent(item.text)}`;
+    }
+
+    window.copyCard = copyCard;
+    window.goNext = goNext;
+
     document.getElementById('generateBtn').addEventListener('click', generate);
     document.getElementById('exampleBtn').addEventListener('click', tryExample);
     document.getElementById('clearBtn').addEventListener('click', clearAll);
-    document.getElementById('copyBtn').addEventListener('click', copyResult);
+    document.getElementById('copyBtn').addEventListener('click', copyAll);
 
     inputEl.addEventListener('keydown', (e) => {
-      if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
         generate();
       }
     });
+
+    (async function init(){
+      const carried = readQueryInput();
+      if (carried) inputEl.value = carried;
+      await loadPools();
+      if (carried) generate();
+    })();
   </script>
 </body>
 </html>
