@@ -1,482 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unknown Mutation</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>deeper</title>
   <style>
     :root{
-      --bg:#070b16;
-      --panel:#12182a;
-      --panel-2:#182038;
-      --card:#0d1324;
-      --line:#283252;
-      --line-soft:#34406a;
-      --text:#eef2ff;
-      --muted:#9aa6d1;
-      --soft:#cfd7f6;
-      --shadow:0 14px 40px rgba(0,0,0,.34);
-      --radius-xl:28px;
-      --radius-lg:22px;
+      --bg:#04101f;
+      --bg2:#081833;
+      --panel:rgba(16,31,58,.78);
+      --panel-deep:rgba(7,16,32,.58);
+      --line:rgba(173,207,255,.12);
+      --line-2:rgba(173,207,255,.08);
+      --text:#eaf2ff;
+      --muted:#95a8c5;
+      --soft:#c7d8f7;
+      --shadow:0 20px 60px rgba(0,0,0,.34);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:720px;
     }
 
     *{box-sizing:border-box}
-    html,body{
-      margin:0;
-      padding:0;
-      background:radial-gradient(circle at top, #10183a 0%, #070b16 48%, #060913 100%);
-      color:var(--text);
+    html,body{margin:0;padding:0}
+    body{
+      min-height:100vh;
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      min-height:100%;
-      line-height:1.45;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(118,180,255,.08), transparent 24%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      letter-spacing:.01em;
     }
 
-    body{padding:28px 14px 44px}
-    .wrap{max-width:820px;margin:0 auto}
+    .wrap{
+      width:min(var(--max),calc(100% - 24px));
+      margin:0 auto;
+      padding:20px 0 28px;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      overflow:hidden;
+    }
+
+    .top{
+      padding:18px 18px 8px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
 
     .back{
-      display:inline-block;
-      margin-bottom:18px;
       color:var(--muted);
       text-decoration:none;
-      font-size:13px;
-      padding:4px 2px;
-      border-bottom:1px solid transparent;
-      transition:color .15s ease, border-color .15s ease;
+      font-size:.82rem;
+      opacity:.9;
+      padding:6px 2px;
     }
 
-    .back:hover{
-      color:var(--text);
-      border-color:rgba(162,176,230,.34);
-    }
+    .back:hover{color:var(--soft)}
 
-    .shell{
-      background:linear-gradient(180deg, rgba(28,36,62,.96), rgba(17,24,42,.98));
-      border:1px solid rgba(95,112,172,.28);
-      border-radius:var(--radius-xl);
-      box-shadow:var(--shadow);
-      padding:26px;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      min-height:44px;
-      padding:0 18px;
-      border-radius:999px;
-      border:1px solid rgba(114,103,255,.5);
-      color:#c7c8ff;
-      font-size:15px;
-      margin-bottom:18px;
-      background:rgba(96,89,235,.08);
-    }
-
-    .title{
-      margin:0;
-      font-size:34px;
-      line-height:1.04;
-      letter-spacing:-0.03em;
-      font-weight:800;
-      color:var(--text);
-    }
-
-    .sub{
-      margin:14px 0 0;
-      font-size:15px;
+    .tiny{
       color:var(--muted);
+      font-size:.78rem;
+      letter-spacing:.08em;
+      text-transform:lowercase;
     }
 
-    .input-box,.result-box{
-      margin-top:26px;
-      background:rgba(7,12,26,.72);
-      border:1px solid var(--line);
-      border-radius:var(--radius-lg);
-      padding:18px;
+    .core{
+      padding:6px 18px 18px;
     }
 
-    textarea{
-      width:100%;
-      min-height:220px;
-      border:none;
-      outline:none;
-      resize:vertical;
-      background:transparent;
-      color:var(--text);
-      font-size:17px;
-      line-height:1.55;
-      font-family:inherit;
-    }
-
-    textarea::placeholder{color:var(--muted)}
-
-    .actions{
-      margin-top:18px;
+    .doors{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:16px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
     }
 
-    button,.mini-btn{
+    button{
       appearance:none;
       border:none;
       outline:none;
-      border-radius:20px;
-      min-height:76px;
-      padding:18px 14px;
-      background:linear-gradient(180deg, rgba(53,67,117,.88), rgba(40,52,91,.94));
-      color:var(--text);
-      font-size:18px;
-      font-weight:700;
-      cursor:pointer;
-      border:1px solid rgba(116,132,193,.22);
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-
-    button:hover,.mini-btn:hover{
-      background:linear-gradient(180deg, rgba(60,75,130,.92), rgba(47,60,106,.96));
-      border-color:rgba(132,149,214,.34);
-    }
-
-    button:active,.mini-btn:active{transform:translateY(1px)}
-
-    .result-box{min-height:260px;display:flex;flex-direction:column;justify-content:flex-start}
-    .result-box.empty{justify-content:center}
-    .empty-text{color:var(--muted);font-size:17px}
-    .cards{display:grid;gap:16px}
-
-    .card{
-      background:rgba(18,26,48,.86);
-      border:1px solid var(--line-soft);
-      border-radius:22px;
-      padding:18px;
-    }
-
-    .card-label{
-      color:var(--muted);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      margin-bottom:12px;
-    }
-
-    .card-text{
-      color:var(--soft);
-      font-size:18px;
-      line-height:1.62;
-      white-space:pre-wrap;
-      word-break:break-word;
-    }
-
-    .card-actions{
-      margin-top:16px;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-
-    .mini-btn{
-      min-height:52px;
+      width:100%;
+      min-height:54px;
       border-radius:16px;
-      font-size:14px;
-      padding:12px;
+      background:rgba(113,154,225,.11);
+      border:1px solid var(--line);
+      color:var(--text);
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+      padding:14px 14px;
     }
 
-    .lower{
-      margin-top:16px;
+    button:hover{
+      background:rgba(113,154,225,.15);
+      border-color:rgba(173,207,255,.22);
+    }
+
+    button:active{transform:scale(.985)}
+
+    .node{
+      margin-top:14px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:var(--panel-deep);
+      padding:16px 14px 14px;
+      min-height:148px;
+    }
+
+    .current-tag{
+      color:var(--muted);
+      font-size:.74rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .current-line{
+      font-size:1.02rem;
+      line-height:1.55;
+      color:var(--text);
+      min-height:4.6em;
+      white-space:pre-wrap;
+    }
+
+    .next{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .next button{
+      min-height:46px;
+      font-size:.92rem;
+      font-weight:500;
+      background:rgba(255,255,255,.03);
+    }
+
+    .echoes{
+      margin-top:14px;
+      border-top:1px solid var(--line-2);
+      padding-top:12px;
+      display:grid;
+      gap:8px;
+    }
+
+    .echo{
+      color:var(--muted);
+      font-size:.88rem;
+      line-height:1.45;
+      padding:8px 10px;
+      border-radius:12px;
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.03);
+    }
+
+    .meta{
+      padding:0 18px 14px;
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:12px;
     }
 
-    .tiny{color:#808bb0;font-size:12px}
-
-    .quiet-link{
+    .quiet{
       color:var(--muted);
-      text-decoration:none;
-      font-size:13px;
-      padding:2px 0;
-      border-bottom:1px solid transparent;
-      transition:color .15s ease, border-color .15s ease;
+      font-size:.8rem;
+      min-height:1.2em;
     }
 
-    .quiet-link:hover{
-      color:var(--text);
-      border-color:rgba(162,176,230,.34);
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
-    @media (max-width:640px){
-      body{padding:18px 10px 32px}
-      .shell{padding:18px;border-radius:24px}
-      .title{font-size:28px}
-      .input-box,.result-box{padding:16px;border-radius:20px}
-      textarea{min-height:190px;font-size:16px}
-      button{min-height:66px;font-size:16px;border-radius:18px}
-      .card{border-radius:20px;padding:16px}
-      .card-text{font-size:16px}
+    .ghost{
+      background:transparent;
+      border:1px solid var(--line-2);
+      min-height:40px;
+      padding:10px 12px;
+      font-size:.82rem;
+      color:var(--muted);
+    }
+
+    footer{
+      padding:10px 18px 0;
+      color:var(--muted);
+      font-size:.8rem;
+      text-align:center;
+    }
+
+    @media (max-width:480px){
+      .next{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .next button:last-child{grid-column:1 / -1}
+    }
+
+    @media (min-width:700px){
+      .wrap{padding-top:28px}
+      .top{padding:20px 22px 8px}
+      .core{padding:6px 22px 18px}
+      .meta{padding:0 22px 14px}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <a class="back" href="./bad-reply-content.html">← Back</a>
-
-    <main class="shell">
-      <div class="eyebrow">Thinking OS layer</div>
-      <h1 class="title">Unknown Mutation</h1>
-      <p class="sub">Drop one thought.</p>
-
-      <section class="input-box">
-        <textarea id="input" placeholder="People say my ideas are too abstract."></textarea>
-      </section>
-
-      <section class="actions">
-        <button id="generateBtn">Mutate</button>
-        <button id="exampleBtn">Try example</button>
-        <button id="clearBtn">Clear</button>
-        <button id="copyBtn">Copy result</button>
-      </section>
-
-      <section id="result" class="result-box empty">
-        <div class="empty-text">3 mutations appear here.</div>
-      </section>
-
-      <div class="lower">
-        <div class="tiny">No login. No tracking. Browser only.</div>
-        <a class="quiet-link" id="nextLink" href="./thought-collision.html">next</a>
+  <main class="wrap">
+    <section class="panel">
+      <div class="top">
+        <a class="back" href="./index.html">surface</a>
+        <div class="tiny">deeper</div>
       </div>
-    </main>
-  </div>
 
-  <script src="./random-next.js"></script>
+      <div class="core">
+        <div class="doors" id="entryDoors">
+          <button data-node="misread">Misread</button>
+          <button data-node="opposite">Opposite</button>
+          <button data-node="metaphor">Metaphor</button>
+          <button data-node="question">Question</button>
+        </div>
+
+        <div class="node" id="nodeBox" style="display:none;">
+          <div class="current-tag" id="currentTag">MISREAD</div>
+          <div class="current-line" id="currentLine"></div>
+
+          <div class="next" id="nextDoors"></div>
+
+          <div class="echoes" id="echoes" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="meta">
+        <div class="quiet" id="quiet"></div>
+        <div class="actions">
+          <button class="ghost" id="driftBtn" type="button">Drift</button>
+          <button class="ghost" id="resetBtn" type="button">Again</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>No login. No tracking. Browser only.</footer>
+  </main>
+
   <script>
-    const input = document.getElementById('input');
-    const result = document.getElementById('result');
-    const generateBtn = document.getElementById('generateBtn');
-    const exampleBtn = document.getElementById('exampleBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const nextLink = document.getElementById('nextLink');
+    const currentTag = document.getElementById('currentTag');
+    const currentLine = document.getElementById('currentLine');
+    const nextDoors = document.getElementById('nextDoors');
+    const nodeBox = document.getElementById('nodeBox');
+    const entryDoors = document.getElementById('entryDoors');
+    const echoes = document.getElementById('echoes');
+    const quiet = document.getElementById('quiet');
+    const driftBtn = document.getElementById('driftBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
-    const exampleInput = 'People say my ideas are too abstract.';
+    const graph = {
+      misread: ["opposite","question","metaphor"],
+      opposite: ["misread","metaphor","question"],
+      metaphor: ["question","misread","opposite"],
+      question: ["metaphor","opposite","misread"]
+    };
 
-    const starters = [
-      'Maybe',
-      'Sometimes',
-      'What if',
-      'Or maybe',
-      'It could be that',
-      'There is a chance that'
+    const labels = {
+      misread: "MISREAD",
+      opposite: "OPPOSITE",
+      metaphor: "METAPHOR",
+      question: "QUESTION"
+    };
+
+    const pools = {
+      misread: [
+        "Maybe it was not resistance.\nMaybe it was hunger wearing a rude face.",
+        "It may not be confusion.\nIt may be a refusal to admit contact.",
+        "Perhaps they did understand enough.\nJust not enough to stay comfortable.",
+        "What looked like dismissal may have been self-protection arriving first.",
+        "Maybe the problem was not the thought.\nMaybe it was the bruise it found.",
+        "That reply may not be judgment.\nIt may be flinch translated badly.",
+        "Some rejection is only interest trying not to kneel.",
+        "The sentence may say no.\nThe attention behind it says something else."
+      ],
+      opposite: [
+        "What if the weak point is the doorway.",
+        "What if the wrong turn is the shape of the path.",
+        "What if the cheap comment is the expensive clue.",
+        "What if coherence is not what this wants first.",
+        "What if losing the thread is how the thread begins.",
+        "What if friction is the more honest welcome.",
+        "What if the failed reading still touched the real thing.",
+        "What if distance is only another form of orbit."
+      ],
+      metaphor: [
+        "A blunt reply is a stone thrown into black water.\nThe splash knows more than the hand.",
+        "Some thoughts do not open like doors.\nThey open like weather.",
+        "You do not enter every idea by walking.\nSome are fog first.",
+        "A careless sentence can still leave a glowing footprint.",
+        "The maze does not hate you.\nIt simply refuses a straight face.",
+        "Some language is not a map.\nIt is a tide.",
+        "The wound is not the tunnel.\nIt is only where the wall touched you.",
+        "Not every signal arrives as light.\nSome arrive as pressure."
+      ],
+      question: [
+        "What did that line protect them from noticing?",
+        "Where did the reply become smaller than the reaction?",
+        "What part still glows after the wording is removed?",
+        "If the insult is stripped away, what pressure remains?",
+        "What would still be true if nobody explained it?",
+        "At which point did irritation turn into evidence?",
+        "What was touched before the answer appeared?",
+        "If the path made no sense, why keep walking?"
+      ]
+    };
+
+    const whispers = [
+      "",
+      "No save.",
+      "Not every step repeats.",
+      "Some doors only look the same.",
+      "A useful line may arrive late.",
+      "The path does not explain itself.",
+      "You can stop anywhere.",
+      "The next turn may not remember this one."
     ];
 
-    const shifts = [
-      'the idea is early',
-      'the shape is still rough',
-      'the room wanted safety',
-      'the point came too late',
-      'the middle went missing',
-      'the thought stayed open too long',
-      'they wanted the easy version',
-      'they wanted a smaller shape',
-      'the fear spoke first',
-      'the old frame pushed back',
-      'the path was thin',
-      'the words arrived before the idea settled',
-      'they wanted something they could hold fast',
-      'the reply came before the reading did',
-      'the pushback was about control'
-    ];
-
-    const opposites = [
-      'easy first, alive later',
-      'quick yes, slow roots',
-      'clean shape, weak signal',
-      'rough start, deeper hold',
-      'safe answer, closed door',
-      'fast read, thin meaning',
-      'small point, lost depth',
-      'simple line, missing middle',
-      'quick calm, late change',
-      'clear now, shallow later'
-    ];
-
-    const questions = [
-      'What is this reply trying to protect?',
-      'What if this reaction is about fear, not truth?',
-      'What part of the thought was still forming?',
-      'What did they want to stay simple?',
-      'What if the room was not ready yet?',
-      'What part felt risky to them?',
-      'What did they want to control?',
-      'What old shape did this idea disturb?',
-      'What if the reply came too early?',
-      'What if the pushback is the signal?'
-    ];
-
-    const turns = [
-      'Turn that into a post.',
-      'Use that as the first line.',
-      'Write from that wound.',
-      'Start there and keep going.',
-      'Let that be the angle.',
-      'That may be the real hook.',
-      'Stay with that a little longer.',
-      'That may be where it opens.',
-      'That may be the deeper path.',
-      'Write from that tension.'
-    ];
-
-    function cleanText(text){
-      return String(text || '').trim();
-    }
-
-    function sentenceSeed(text){
-      return cleanText(text).replace(/\s+/g, ' ');
-    }
+    let historyStack = [];
+    let currentNode = null;
 
     function pick(arr){
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function pickThreeDifferent(arr){
-      const pool = [...arr];
-      const out = [];
-      while(out.length < 3 && pool.length){
-        const idx = Math.floor(Math.random() * pool.length);
-        out.push(pool.splice(idx, 1)[0]);
+    function shuffle(arr){
+      const copy = [...arr];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-      return out;
+      return copy;
     }
 
-    function buildMutations(source){
-      const s = sentenceSeed(source);
-      const selectedShifts = pickThreeDifferent(shifts);
-      const selectedOpposites = pickThreeDifferent(opposites);
-      const selectedQuestions = pickThreeDifferent(questions);
-      const selectedTurns = pickThreeDifferent(turns);
-
-      return [
-        `${pick(starters)} ${selectedShifts[0]}.\n${selectedTurns[0]}`,
-        `${pick(starters)} this is really about ${selectedShifts[1]}.\n${selectedQuestions[1]}`,
-        `${pick(starters)} the pattern is ${selectedOpposites[2]}.\n${selectedTurns[2]}`
-      ].map((text) => {
-        if (Math.random() < 0.55) {
-          return `"${s}"\n\n${text}`;
-        }
-        return text;
-      });
+    function nextChoices(node){
+      const base = graph[node] || ["misread","opposite","metaphor"];
+      return shuffle(base).slice(0,3);
     }
 
-    function renderMutations(items){
-      result.className = 'result-box';
-      result.innerHTML = '';
-
-      const wrap = document.createElement('div');
-      wrap.className = 'cards';
-
-      items.forEach((text, i) => {
-        const card = document.createElement('article');
-        card.className = 'card';
-
-        const label = document.createElement('div');
-        label.className = 'card-label';
-        label.textContent = `${i + 1}. mutation`;
-
-        const body = document.createElement('div');
-        body.className = 'card-text';
-        body.textContent = text;
-
-        const actions = document.createElement('div');
-        actions.className = 'card-actions';
-
-        const copyCard = document.createElement('button');
-        copyCard.className = 'mini-btn';
-        copyCard.textContent = 'Copy card';
-        copyCard.addEventListener('click', async () => {
-          try{
-            await navigator.clipboard.writeText(text);
-            const old = copyCard.textContent;
-            copyCard.textContent = 'Copied';
-            setTimeout(() => copyCard.textContent = old, 1000);
-          }catch{}
-        });
-
-        actions.appendChild(copyCard);
-        card.appendChild(label);
-        card.appendChild(body);
-        card.appendChild(actions);
-        wrap.appendChild(card);
-      });
-
-      result.appendChild(wrap);
-    }
-
-    function setEmpty(){
-      result.className = 'result-box empty';
-      result.innerHTML = '<div class="empty-text">3 mutations appear here.</div>';
-    }
-
-    function generate(){
-      const value = cleanText(input.value);
-      if (!value) return;
-      renderMutations(buildMutations(value));
-      updateNextLink();
-    }
-
-    function clearAll(){
-      input.value = '';
-      setEmpty();
-      updateNextLink();
-    }
-
-    function copyResult(){
-      const items = Array.from(result.querySelectorAll('.card-text'));
-      if (!items.length) return;
-
-      const text = items.map((item, i) => {
-        return `${i + 1}. mutation\n${item.textContent}`;
-      }).join('\n\n');
-
-      navigator.clipboard.writeText(text).then(() => {
-        const old = copyBtn.textContent;
-        copyBtn.textContent = 'Copied';
-        setTimeout(() => copyBtn.textContent = old, 1200);
-      }).catch(() => {
-        const old = copyBtn.textContent;
-        copyBtn.textContent = 'Copy failed';
-        setTimeout(() => copyBtn.textContent = old, 1200);
-      });
-    }
-
-    function updateNextLink(){
-      if (!window.REFRAME_RANDOM_NEXT) {
-        nextLink.href = './thought-collision.html';
+    function renderEchoes(){
+      if(historyStack.length <= 1){
+        echoes.style.display = "none";
+        echoes.innerHTML = "";
         return;
       }
 
-      nextLink.href = window.REFRAME_RANDOM_NEXT.buildNextUrl(
-        ['thought-collision.html'],
-        input.value
-      );
+      const recent = historyStack.slice(-3, -1).reverse();
+      echoes.style.display = "grid";
+      echoes.innerHTML = recent.map(item => (
+        `<div class="echo">${escapeHtml(item.line.replace(/\n/g, " "))}</div>`
+      )).join("");
     }
 
-    generateBtn.addEventListener('click', generate);
-    exampleBtn.addEventListener('click', () => {
-      input.value = exampleInput;
-      updateNextLink();
+    function enterNode(node){
+      currentNode = node;
+      const line = pick(pools[node]);
+      historyStack.push({ node, line });
+
+      currentTag.textContent = labels[node];
+      currentLine.textContent = line;
+      quiet.textContent = pick(whispers);
+
+      nodeBox.style.display = "block";
+
+      const choices = nextChoices(node);
+      nextDoors.innerHTML = choices.map(choice => (
+        `<button type="button" data-node="${choice}">${labels[choice].charAt(0) + labels[choice].slice(1).toLowerCase()}</button>`
+      )).join("");
+
+      renderEchoes();
+    }
+
+    function resetAll(){
+      historyStack = [];
+      currentNode = null;
+      nodeBox.style.display = "none";
+      nextDoors.innerHTML = "";
+      echoes.innerHTML = "";
+      echoes.style.display = "none";
+      quiet.textContent = "";
+    }
+
+    function drift(){
+      const nodes = ["misread","opposite","metaphor","question"];
+      if(!currentNode){
+        enterNode(pick(nodes));
+        return;
+      }
+      const choices = graph[currentNode] || nodes;
+      enterNode(pick(choices));
+    }
+
+    function escapeHtml(str){
+      return str
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    entryDoors.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-node]");
+      if(!btn) return;
+      enterNode(btn.dataset.node);
     });
-    clearBtn.addEventListener('click', clearAll);
-    copyBtn.addEventListener('click', copyResult);
 
-    const params = new URLSearchParams(window.location.search);
-    const q = params.get('q');
-    if (q) input.value = q;
+    nextDoors.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-node]");
+      if(!btn) return;
+      enterNode(btn.dataset.node);
+    });
 
-    updateNextLink();
-    setEmpty();
+    driftBtn.addEventListener("click", drift);
+    resetBtn.addEventListener("click", resetAll);
   </script>
 </body>
 </html>
