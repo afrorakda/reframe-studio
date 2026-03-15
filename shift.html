@@ -9,7 +9,6 @@
       --bg:#04101f;
       --bg2:#081833;
       --panel:rgba(16,31,58,.78);
-      --panel-deep:rgba(7,16,32,.58);
       --line:rgba(173,207,255,.12);
       --line-2:rgba(173,207,255,.08);
       --text:#eaf2ff;
@@ -17,7 +16,6 @@
       --soft:#c7d8f7;
       --shadow:0 20px 60px rgba(0,0,0,.34);
       --radius:22px;
-      --radius-sm:16px;
       --max:720px;
     }
 
@@ -99,7 +97,7 @@
 
     textarea{
       width:100%;
-      min-height:140px;
+      min-height:138px;
       resize:vertical;
       border:none;
       outline:none;
@@ -210,7 +208,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:70%;
+      max-width:72%;
     }
 
     .actions{
@@ -268,14 +266,7 @@
       </div>
 
       <div class="input-area">
-        <textarea id="input" placeholder="Drop a line.
-
-Example:
-Your posts are boring.
-Who cares.
-This makes no sense.
-Nobody asked.
-Too abstract."></textarea>
+        <textarea id="input" placeholder="Drop a line."></textarea>
       </div>
 
       <div class="controls">
@@ -299,13 +290,14 @@ Too abstract."></textarea>
     <footer>No login. No tracking. Browser only.</footer>
   </main>
 
+  <script src="./random-next.js"></script>
   <script>
     const inputEl = document.getElementById('input');
     const resultsEl = document.getElementById('results');
     const statusEl = document.getElementById('status');
     const quietEl = document.getElementById('quiet');
 
-    const examples = [
+    const EXAMPLES = [
       "Your posts are boring.",
       "Who cares.",
       "This makes no sense.",
@@ -316,45 +308,33 @@ Too abstract."></textarea>
       "You sound confused."
     ];
 
-    const quietPool = [
-      "",
-      "Drift as long as you like.",
-      "Some lights are faint on purpose.",
-      "The next line may come from nearby.",
-      "A small shift is still a shift.",
-      "Not every useful line arrives clearly."
-    ];
-
-    const NEXT_TOOLS = [
-      "misread.html",
-      "opposite.html",
-      "metaphor.html"
-    ];
-
     const POOL_FILES = [
       "./fragment-pool.json",
       "./fragment-pack-1.json",
       "./fragment-pack-2.json"
     ];
 
-    let FRAGMENT_POOL = [];
-    let POOL_READY = false;
-
-    const signalMap = [
-      { key: "boredom", test: /\bboring\b|\bdull\b|\bflat\b|\bbland\b|\bsleepy\b/i, boost: ["boring","boredom","dull","flat","attention","slow","quiet"] },
-      { key: "dismissal", test: /\bwho cares\b|\bnobody asked\b|\bwho asked\b|\bnobody cares\b|\bgive it a rest\b/i, boost: ["dismiss","dismissal","care","indifference","reply","attention","leave"] },
-      { key: "confusion", test: /\bmakes no sense\b|\bconfus|\bunclear\b|\bwhat are you saying\b|\bmumble\b|\bnonsense\b/i, boost: ["confusion","unclear","meaning","sense","entry","signal","shape"] },
-      { key: "abstract", test: /\babstract\b|\bvague\b|\bairy\b|\btheory\b|\ball over the place\b/i, boost: ["abstract","altitude","ground","mist","shape","landing","theory"] },
-      { key: "effort", test: /\btrying too hard\b|\btry hard\b|\bpretentious\b|\bperforming\b|\bdesperate\b/i, boost: ["effort","trying","performance","ambition","fingerprints","visible"] },
-      { key: "cringe", test: /\bcringe\b|\bembarrassing\b|\bawkward\b|\bidiot\b/i, boost: ["cringe","shame","earnest","sincerity","awkward","armor"] },
-      { key: "tone", test: /\barrogant\b|\bsmug\b|\bannoying\b|\brude\b|\bcondescending\b/i, boost: ["tone","voice","posture","position","hierarchy","edge"] },
-      { key: "length", test: /\btoo long\b|\bwall of text\b|\bessay\b|\byapping\b/i, boost: ["length","time","attention","compression","pace"] }
+    const NEXT_CANDIDATES = [
+      "misread.html",
+      "opposite.html",
+      "metaphor.html",
+      "question.html"
     ];
 
+    const QUIET_LINES = [
+      "",
+      "Drift as long as you like.",
+      "Some lights are faint on purpose.",
+      "A small shift is still a shift.",
+      "Not every useful line arrives clearly."
+    ];
+
+    let FRAGMENTS = [];
+    let CURRENT_CARDS = [];
+    let POOL_READY = false;
+
     function normalizeText(str){
-      return String(str || "")
-        .replace(/\s+/g, " ")
-        .trim();
+      return String(str || "").replace(/\s+/g, " ").trim();
     }
 
     function tokenize(str){
@@ -369,6 +349,10 @@ Too abstract."></textarea>
       return [...new Set(arr)];
     }
 
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     function shuffle(arr){
       const copy = [...arr];
       for(let i = copy.length - 1; i > 0; i--){
@@ -378,179 +362,174 @@ Too abstract."></textarea>
       return copy;
     }
 
-    function pick(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
+    function readQueryInput(){
+      const params = new URLSearchParams(window.location.search);
+      return normalizeText(params.get("q") || params.get("fragment") || "");
     }
 
-    function safeArray(value){
-      return Array.isArray(value) ? value : [];
+    function toneToStyle(tone){
+      const t = String(tone || "").toLowerCase();
+      if (["warm","calm"].includes(t)) return "clear";
+      if (["mystery","twist"].includes(t)) return "drift";
+      if (["edge"].includes(t)) return "sharp";
+      return "drift";
     }
 
-    function extractStrings(value, depth = 0){
-      if(depth > 6) return [];
-      if(typeof value === "string"){
-        const text = normalizeText(value);
-        return text ? [text] : [];
-      }
-      if(Array.isArray(value)){
-        return value.flatMap(item => extractStrings(item, depth + 1));
-      }
-      if(value && typeof value === "object"){
-        let out = [];
-        const preferred = ["text","line","fragment","content","value","body","sentence","output"];
-        for(const key of preferred){
-          if(key in value) out = out.concat(extractStrings(value[key], depth + 1));
-        }
-        if(out.length) return out;
-        for(const key of Object.keys(value)){
-          out = out.concat(extractStrings(value[key], depth + 1));
-        }
-        return out;
-      }
-      return [];
+    function inferStyleFromText(text){
+      const lower = text.toLowerCase();
+      if (/\bmaybe\b|\bnot\b|\bquiet\b|\bsmall\b|\blate\b|\bearly\b/.test(lower)) return "clear";
+      if (/\bchaos\b|\bpattern\b|\bdoor\b|\bframe\b|\bmap\b|\bunfinished\b|\boff\b/.test(lower)) return "drift";
+      return "sharp";
     }
 
-    function buildFragmentObjects(raw, sourceName){
-      const strings = extractStrings(raw);
-      const clean = [];
-      const seen = new Set();
-
-      for(const text of strings){
-        const normalized = normalizeText(text);
-        if(!normalized) continue;
-        if(normalized.length < 8) continue;
-        if(seen.has(normalized)) continue;
-        seen.add(normalized);
-
-        clean.push({
-          text: normalized,
-          source: sourceName,
-          tags: inferTags(normalized)
-        });
-      }
-
-      return clean;
-    }
-
-    function inferTags(text){
+    function inferTagsFromText(text){
       const lower = text.toLowerCase();
       const tags = [];
 
-      if(/\bboring\b|\bboredom\b|\bquiet\b|\bslow\b|\bdull\b/.test(lower)) tags.push("boredom");
-      if(/\bcare\b|\bindifference\b|\bdismiss\b|\bleave\b|\breply\b/.test(lower)) tags.push("dismissal");
-      if(/\bconfusion\b|\bmeaning\b|\bsense\b|\bunclear\b|\bsignal\b/.test(lower)) tags.push("confusion");
-      if(/\babstract\b|\bmist\b|\bground\b|\bland\b|\baltitude\b|\bshape\b/.test(lower)) tags.push("abstract");
-      if(/\beffort\b|\btrying\b|\bambition\b|\bfingerprint\b|\bvisible\b/.test(lower)) tags.push("effort");
-      if(/\bcringe\b|\bshame\b|\bearnest\b|\bsincerity\b|\bawkward\b/.test(lower)) tags.push("cringe");
-      if(/\btone\b|\bvoice\b|\bposture\b|\bposition\b|\bhierarchy\b/.test(lower)) tags.push("tone");
-      if(/\blength\b|\btime\b|\battention\b|\bcompression\b|\bpace\b/.test(lower)) tags.push("length");
-
-      if(/\bweather\b|\bwater\b|\btide\b|\bunderwater\b|\bdrift\b/.test(lower)) tags.push("drift");
-      if(/\bmirror\b|\bpressure\b|\barmor\b|\bmask\b|\bbruise\b/.test(lower)) tags.push("sharp");
-      if(/\bmaybe\b|\bsometimes\b|\bmay\b|\bstill\b/.test(lower)) tags.push("clear");
-      if(/\brefuses\b|\brefuse\b|\bescaped\b|\boutlive\b|\bwalks in circles\b/.test(lower)) tags.push("weird");
+      if (/\bboring\b|\bboredom\b|\bquiet\b|\bslow\b/.test(lower)) tags.push("boring","boredom","attention");
+      if (/\bcare\b|\bnobody asked\b|\bdisagreement\b|\bdisagree\b|\bdismiss\b|\breply\b/.test(lower)) tags.push("dismissal","criticism","reaction");
+      if (/\bconfusion\b|\bunclear\b|\bsense\b|\bquestion\b|\btranslation\b/.test(lower)) tags.push("confusion","question","thinking");
+      if (/\babstract\b|\bframe\b|\bmap\b|\bpattern\b|\bunfinished\b/.test(lower)) tags.push("abstract","frame","shift");
+      if (/\bfriction\b|\bedge\b|\bsignal\b/.test(lower)) tags.push("friction","signal","edge");
+      if (/\bcuriosity\b|\binteresting\b/.test(lower)) tags.push("curiosity","idea");
+      if (/\bsilence\b/.test(lower)) tags.push("silence");
+      if (/\bhook\b/.test(lower)) tags.push("hook");
+      if (/\bstory\b/.test(lower)) tags.push("story");
+      if (/\bmutation\b/.test(lower)) tags.push("mutation");
 
       return uniq(tags);
     }
 
-    async function loadJsonFile(path){
+    function normalizeFragmentItem(item, source){
+      if (typeof item === "string"){
+        const text = normalizeText(item);
+        if (!text) return null;
+        return {
+          text,
+          tags: inferTagsFromText(text),
+          tone: "",
+          source,
+          style: inferStyleFromText(text)
+        };
+      }
+
+      if (item && typeof item === "object"){
+        const text = normalizeText(item.text || "");
+        if (!text) return null;
+        const tone = normalizeText(item.tone || "");
+        const tags = uniq([...(Array.isArray(item.tags) ? item.tags : []), ...inferTagsFromText(text)]);
+        return {
+          text,
+          tags,
+          tone,
+          source,
+          style: tone ? toneToStyle(tone) : inferStyleFromText(text)
+        };
+      }
+
+      return null;
+    }
+
+    async function loadJson(path){
       const response = await fetch(path, { cache: "no-store" });
-      if(!response.ok) throw new Error(`Failed to load ${path}`);
+      if (!response.ok) throw new Error(`Failed to load ${path}`);
       return response.json();
     }
 
-    async function loadPool(){
-      const loaded = [];
+    function flattenPool(json, source){
+      let raw = [];
+
+      if (Array.isArray(json)) raw = json;
+      else if (json && Array.isArray(json.fragments)) raw = json.fragments;
+      else if (json && Array.isArray(json.packs)) raw = json.packs;
+      else if (json && Array.isArray(json.items)) raw = json.items;
+      else raw = [];
+
+      const out = [];
       const seen = new Set();
 
-      for(const path of POOL_FILES){
-        try{
-          const json = await loadJsonFile(path);
-          const items = buildFragmentObjects(json, path.split("/").pop());
+      for (const item of raw){
+        const normalized = normalizeFragmentItem(item, source);
+        if (!normalized) continue;
+        if (seen.has(normalized.text)) continue;
+        seen.add(normalized.text);
+        out.push(normalized);
+      }
 
-          for(const item of items){
-            if(seen.has(item.text)) continue;
+      return out;
+    }
+
+    async function loadPools(){
+      const merged = [];
+      const seen = new Set();
+
+      for (const path of POOL_FILES){
+        try{
+          const json = await loadJson(path);
+          const items = flattenPool(json, path.split("/").pop());
+
+          for (const item of items){
+            if (seen.has(item.text)) continue;
             seen.add(item.text);
-            loaded.push(item);
+            merged.push(item);
           }
         }catch(err){
-          // stay silent, keep trying next file
         }
       }
 
-      FRAGMENT_POOL = loaded;
-      POOL_READY = loaded.length > 0;
-
-      if(POOL_READY){
-        statusEl.textContent = `${loaded.length} pooled fragments ready.`;
-      }else{
-        statusEl.textContent = "Pool not found.";
-      }
+      FRAGMENTS = merged;
+      POOL_READY = merged.length > 0;
+      statusEl.textContent = POOL_READY ? `${merged.length} pooled fragments ready.` : "Pool not found.";
     }
 
     function extractSignals(input){
-      const lower = input.toLowerCase();
-      let tags = [];
-      for(const item of signalMap){
-        if(item.test.test(lower)){
-          tags.push(item.key, ...item.boost);
-        }
-      }
-      tags = tags.concat(tokenize(input));
-      return uniq(tags);
+      const text = input.toLowerCase();
+      const words = tokenize(input);
+      const signals = [...words];
+
+      if (/\bboring\b|\bdull\b|\bflat\b/.test(text)) signals.push("boring","boredom","attention");
+      if (/\bwho cares\b|\bnobody asked\b|\bwho asked\b/.test(text)) signals.push("dismissal","criticism","reaction","care");
+      if (/\bmakes no sense\b|\bconfus|\bunclear\b|\bmumble\b|\bnonsense\b/.test(text)) signals.push("confusion","question","thinking","signal");
+      if (/\babstract\b|\bvague\b|\ball over the place\b/.test(text)) signals.push("abstract","frame","shift","pattern");
+      if (/\btrying too hard\b|\bpretentious\b|\bperforming\b/.test(text)) signals.push("effort","edge","reaction");
+      if (/\bcringe\b|\bembarrassing\b|\bidiot\b/.test(text)) signals.push("criticism","reaction","edge");
+      if (/\btoo long\b|\bessay\b|\byapping\b/.test(text)) signals.push("attention","timing","structure");
+
+      return uniq(signals.map(s => String(s).toLowerCase()));
     }
 
     function scoreFragment(fragment, signals){
-      const text = fragment.text.toLowerCase();
-      const words = tokenize(text);
-      const set = new Set(words);
-
       let score = 0;
+      const text = fragment.text.toLowerCase();
+      const tagSet = new Set((fragment.tags || []).map(t => String(t).toLowerCase()));
+      const words = new Set(tokenize(fragment.text));
 
-      for(const signal of signals){
-        if(!signal) continue;
-        const s = signal.toLowerCase();
+      for (const signal of signals){
+        if (!signal) continue;
 
-        if(text.includes(s)) score += 6;
-        if(set.has(s)) score += 5;
-        if(fragment.tags.includes(s)) score += 8;
-
-        if(s === "boredom" && /\bboring\b|\bboredom\b|\bquiet\b|\bslow\b/.test(text)) score += 4;
-        if(s === "dismissal" && /\bcare\b|\bindifference\b|\bdismiss\b|\breply\b/.test(text)) score += 4;
-        if(s === "confusion" && /\bmeaning\b|\bsense\b|\bsignal\b|\bentry\b/.test(text)) score += 4;
-        if(s === "abstract" && /\bground\b|\bmist\b|\bshape\b|\baltitude\b/.test(text)) score += 4;
-        if(s === "effort" && /\beffort\b|\btrying\b|\bambition\b|\bfingerprint\b/.test(text)) score += 4;
-        if(s === "cringe" && /\bshame\b|\bearnest\b|\bawkward\b|\barmor\b/.test(text)) score += 4;
-        if(s === "tone" && /\bvoice\b|\bposture\b|\bposition\b|\bedge\b/.test(text)) score += 4;
+        if (tagSet.has(signal)) score += 8;
+        if (words.has(signal)) score += 6;
+        if (text.includes(signal)) score += 3;
       }
 
-      if(fragment.tags.includes("clear")) score += 1;
-      if(fragment.tags.includes("sharp")) score += 1;
-      if(fragment.tags.includes("weird")) score += 1;
+      if (fragment.tone === "mystery" || fragment.tone === "twist") score += 1;
+      if (fragment.style === "drift") score += 1;
 
       return score;
     }
 
-    function classifyStyle(text){
-      const lower = text.toLowerCase();
-
-      if(/\bmaybe\b|\bsometimes\b|\bmay\b|\bstill\b/.test(lower)) return "clear";
-      if(/\bweather\b|\btide\b|\bwater\b|\bunderwater\b|\bmirror\b|\bdrift\b/.test(lower)) return "drift";
-      return "sharp";
-    }
-
     function chooseThree(input){
       const signals = extractSignals(input);
-      const scored = FRAGMENT_POOL
+
+      const scored = FRAGMENTS
         .map(fragment => ({
           ...fragment,
-          score: scoreFragment(fragment, signals),
-          style: classifyStyle(fragment.text)
+          score: scoreFragment(fragment, signals)
         }))
         .sort((a, b) => b.score - a.score);
 
       const strong = scored.filter(item => item.score > 0);
-      const base = strong.length >= 8 ? strong : scored.slice(0, Math.min(24, scored.length));
+      const base = strong.length ? strong : scored;
 
       const clear = shuffle(base.filter(item => item.style === "clear"));
       const drift = shuffle(base.filter(item => item.style === "drift"));
@@ -559,32 +538,24 @@ Too abstract."></textarea>
       const chosen = [];
       const used = new Set();
 
-      function takeFrom(bucket){
-        while(bucket.length){
+      function take(bucket){
+        while (bucket.length){
           const item = bucket.shift();
-          if(used.has(item.text)) continue;
+          if (used.has(item.text)) continue;
           used.add(item.text);
           chosen.push(item);
           return;
         }
       }
 
-      takeFrom(clear);
-      takeFrom(drift);
-      takeFrom(sharp);
+      take(clear);
+      take(drift);
+      take(sharp);
 
       const fallback = shuffle(base);
-      while(chosen.length < 3 && fallback.length){
+      while (chosen.length < 3 && fallback.length){
         const item = fallback.shift();
-        if(used.has(item.text)) continue;
-        used.add(item.text);
-        chosen.push(item);
-      }
-
-      const finalFallback = shuffle(scored);
-      while(chosen.length < 3 && finalFallback.length){
-        const item = finalFallback.shift();
-        if(used.has(item.text)) continue;
+        if (used.has(item.text)) continue;
         used.add(item.text);
         chosen.push(item);
       }
@@ -601,56 +572,54 @@ Too abstract."></textarea>
         .replaceAll("'","&#039;");
     }
 
+    function excerpt(text){
+      const clean = normalizeText(text);
+      return clean.length > 80 ? clean.slice(0, 77).trim() + "..." : clean;
+    }
+
     function renderCards(cards){
-      if(!cards.length){
+      if (!cards.length){
         resultsEl.innerHTML = `<div class="empty">No fragment found yet.</div>`;
         return;
       }
 
-      resultsEl.innerHTML = cards.map((card, i) => `
+      resultsEl.innerHTML = cards.map((card, index) => `
         <article class="card">
           <div class="card-line">${escapeHtml(card.text)}</div>
           <div class="card-meta">
-            <div class="chip">${escapeHtml(card.source || "pool")}</div>
+            <div class="chip">${escapeHtml(card.source)}</div>
             <div class="actions">
-              <button class="mini" type="button" onclick="copyCard(${i})">Copy</button>
-              <button class="mini" type="button" onclick="goNext(${i})">→</button>
+              <button class="mini" type="button" onclick="copyCard(${index})">Copy</button>
+              <button class="mini" type="button" onclick="goNext(${index})">→</button>
             </div>
           </div>
         </article>
       `).join("");
     }
 
-    let CURRENT_CARDS = [];
-
-    function getExcerpt(text){
-      const cleaned = normalizeText(text);
-      return cleaned.length > 80 ? cleaned.slice(0, 77).trim() + "..." : cleaned;
-    }
-
     function generate(){
       const input = normalizeText(inputEl.value);
 
-      if(!input){
+      if (!input){
         resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three shifts.</div>`;
-        statusEl.textContent = "Drop one line first.";
+        statusEl.textContent = POOL_READY ? `${FRAGMENTS.length} pooled fragments ready.` : "Loading pool...";
         quietEl.textContent = "";
         return;
       }
 
-      if(!POOL_READY || FRAGMENT_POOL.length === 0){
+      if (!POOL_READY || !FRAGMENTS.length){
         statusEl.textContent = "Pool not ready.";
         return;
       }
 
       CURRENT_CARDS = chooseThree(input);
       renderCards(CURRENT_CARDS);
-      statusEl.textContent = `Read from: “${getExcerpt(input)}”`;
-      quietEl.textContent = pick(quietPool);
+      statusEl.textContent = `Read from: “${excerpt(input)}”`;
+      quietEl.textContent = pick(QUIET_LINES);
     }
 
-    function example(){
-      inputEl.value = pick(examples);
+    function tryExample(){
+      inputEl.value = pick(EXAMPLES);
       generate();
     }
 
@@ -658,14 +627,15 @@ Too abstract."></textarea>
       inputEl.value = "";
       CURRENT_CARDS = [];
       resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three shifts.</div>`;
-      statusEl.textContent = POOL_READY ? `${FRAGMENT_POOL.length} pooled fragments ready.` : "Loading pool...";
+      statusEl.textContent = POOL_READY ? `${FRAGMENTS.length} pooled fragments ready.` : "Loading pool...";
       quietEl.textContent = "";
       inputEl.focus();
     }
 
     async function copyCard(index){
       const item = CURRENT_CARDS[index];
-      if(!item) return;
+      if (!item) return;
+
       try{
         await navigator.clipboard.writeText(item.text);
         statusEl.textContent = "Copied.";
@@ -675,49 +645,53 @@ Too abstract."></textarea>
     }
 
     async function copyAll(){
-      if(!CURRENT_CARDS.length){
+      if (!CURRENT_CARDS.length){
         statusEl.textContent = "Nothing to copy yet.";
         return;
       }
 
-      const text = CURRENT_CARDS.map(item => item.text).join("\n\n");
-
       try{
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(CURRENT_CARDS.map(item => item.text).join("\n\n"));
         statusEl.textContent = "Copied.";
       }catch(err){
         statusEl.textContent = "Copy failed.";
       }
     }
 
-    function pickNextTool(){
-      return pick(NEXT_TOOLS);
-    }
-
     function goNext(index){
       const item = CURRENT_CARDS[index];
-      if(!item) return;
+      if (!item) return;
 
-      const next = pickNextTool();
-      const params = new URLSearchParams();
-      params.set("fragment", item.text);
-      params.set("from", "shift");
+      if (window.REFRAME_RANDOM_NEXT && typeof window.REFRAME_RANDOM_NEXT.buildNextUrl === "function"){
+        const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(NEXT_CANDIDATES, item.text);
+        window.location.href = url;
+        return;
+      }
 
-      window.location.href = `${next}?${params.toString()}`;
+      const next = pick(NEXT_CANDIDATES);
+      window.location.href = `./${next}?q=${encodeURIComponent(item.text)}`;
     }
 
+    window.copyCard = copyCard;
+    window.goNext = goNext;
+
     document.getElementById('generateBtn').addEventListener('click', generate);
-    document.getElementById('exampleBtn').addEventListener('click', example);
+    document.getElementById('exampleBtn').addEventListener('click', tryExample);
     document.getElementById('clearBtn').addEventListener('click', clearAll);
     document.getElementById('copyBtn').addEventListener('click', copyAll);
 
     inputEl.addEventListener('keydown', (e) => {
-      if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
         generate();
       }
     });
 
-    loadPool();
+    (async function init(){
+      const carried = readQueryInput();
+      if (carried) inputEl.value = carried;
+      await loadPools();
+      if (carried) generate();
+    })();
   </script>
 </body>
 </html>
