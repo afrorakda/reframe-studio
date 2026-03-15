@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>deeper</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Unknown Mutation</title>
   <style>
     :root{
       --bg:#04101f;
@@ -17,7 +17,6 @@
       --soft:#c7d8f7;
       --shadow:0 20px 60px rgba(0,0,0,.34);
       --radius:22px;
-      --radius-sm:16px;
       --max:720px;
     }
 
@@ -62,7 +61,6 @@
       color:var(--muted);
       text-decoration:none;
       font-size:.82rem;
-      opacity:.9;
       padding:6px 2px;
     }
 
@@ -75,125 +73,127 @@
       text-transform:lowercase;
     }
 
-    .core{
-      padding:6px 18px 18px;
+    .hero{
+      padding:4px 18px 14px;
     }
 
-    .doors{
+    h1{
+      margin:0;
+      font-size:1.42rem;
+      line-height:1.08;
+      font-weight:700;
+      letter-spacing:.01em;
+    }
+
+    .sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.4;
+    }
+
+    .stage{
+      padding:0 18px 16px;
+    }
+
+    .tools{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px;
     }
 
-    button{
-      appearance:none;
-      border:none;
-      outline:none;
-      width:100%;
-      min-height:54px;
+    .tool{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      min-height:58px;
+      padding:14px 14px;
       border-radius:16px;
-      background:rgba(113,154,225,.11);
       border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
       color:var(--text);
-      font:inherit;
-      font-weight:600;
+      text-decoration:none;
       cursor:pointer;
       transition:transform .12s ease, background .12s ease, border-color .12s ease;
-      padding:14px 14px;
     }
 
-    button:hover{
-      background:rgba(113,154,225,.15);
+    .tool:hover{
+      background:rgba(113,154,225,.14);
       border-color:rgba(173,207,255,.22);
     }
 
-    button:active{transform:scale(.985)}
+    .tool:active{
+      transform:scale(.985);
+    }
 
-    .node{
+    .tool-label{
+      font-size:.98rem;
+      font-weight:600;
+      letter-spacing:.01em;
+    }
+
+    .tool-mark{
+      color:var(--muted);
+      font-size:.9rem;
+      flex-shrink:0;
+    }
+
+    .drift-box{
       margin-top:14px;
+      padding:14px;
       border-radius:18px;
       border:1px solid var(--line);
       background:var(--panel-deep);
-      padding:16px 14px 14px;
-      min-height:148px;
     }
 
-    .current-tag{
-      color:var(--muted);
-      font-size:.74rem;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      margin-bottom:8px;
-    }
-
-    .current-line{
-      font-size:1.02rem;
-      line-height:1.55;
+    .line{
+      font-size:1rem;
+      line-height:1.58;
       color:var(--text);
-      min-height:4.6em;
+      min-height:3.2em;
       white-space:pre-wrap;
     }
 
-    .next{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .next button{
-      min-height:46px;
-      font-size:.92rem;
-      font-weight:500;
-      background:rgba(255,255,255,.03);
-    }
-
-    .echoes{
-      margin-top:14px;
-      border-top:1px solid var(--line-2);
-      padding-top:12px;
-      display:grid;
-      gap:8px;
-    }
-
-    .echo{
-      color:var(--muted);
-      font-size:.88rem;
-      line-height:1.45;
-      padding:8px 10px;
-      border-radius:12px;
-      background:rgba(255,255,255,.02);
-      border:1px solid rgba(255,255,255,.03);
-    }
-
-    .meta{
-      padding:0 18px 14px;
+    .drift-actions{
+      margin-top:12px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
     }
 
-    .quiet{
+    .ghost{
+      appearance:none;
+      border:none;
+      outline:none;
+      min-height:38px;
+      padding:8px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line-2);
+      color:var(--muted);
+      font:inherit;
+      font-size:.8rem;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .ghost:hover{
+      background:rgba(113,154,225,.10);
+      border-color:rgba(173,207,255,.20);
+      color:var(--text);
+    }
+
+    .ghost:active{
+      transform:scale(.985);
+    }
+
+    .meta{
+      padding:0 18px 14px;
       color:var(--muted);
       font-size:.8rem;
       min-height:1.2em;
-    }
-
-    .actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .ghost{
-      background:transparent;
-      border:1px solid var(--line-2);
-      min-height:40px;
-      padding:10px 12px;
-      font-size:.82rem;
-      color:var(--muted);
     }
 
     footer{
@@ -204,14 +204,16 @@
     }
 
     @media (max-width:480px){
-      .next{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .next button:last-child{grid-column:1 / -1}
+      .tools{
+        grid-template-columns:1fr;
+      }
     }
 
     @media (min-width:700px){
       .wrap{padding-top:28px}
       .top{padding:20px 22px 8px}
-      .core{padding:6px 22px 18px}
+      .hero{padding:4px 22px 14px}
+      .stage{padding:0 22px 16px}
       .meta{padding:0 22px 14px}
     }
   </style>
@@ -221,120 +223,96 @@
     <section class="panel">
       <div class="top">
         <a class="back" href="./index.html">surface</a>
-        <div class="tiny">deeper</div>
+        <div class="tiny">unknown mutation</div>
       </div>
 
-      <div class="core">
-        <div class="doors" id="entryDoors">
-          <button data-node="misread">Misread</button>
-          <button data-node="opposite">Opposite</button>
-          <button data-node="metaphor">Metaphor</button>
-          <button data-node="question">Question</button>
+      <div class="hero">
+        <h1>Unknown Mutation</h1>
+        <div class="sub">Five doors. Start anywhere.</div>
+      </div>
+
+      <div class="stage">
+        <div class="tools" id="tools">
+          <a class="tool" href="./shift.html">
+            <span class="tool-label">Shift</span>
+            <span class="tool-mark">→</span>
+          </a>
+
+          <a class="tool" href="./misread.html">
+            <span class="tool-label">Misread</span>
+            <span class="tool-mark">→</span>
+          </a>
+
+          <a class="tool" href="./opposite.html">
+            <span class="tool-label">Opposite</span>
+            <span class="tool-mark">→</span>
+          </a>
+
+          <a class="tool" href="./metaphor.html">
+            <span class="tool-label">Metaphor</span>
+            <span class="tool-mark">→</span>
+          </a>
+
+          <a class="tool" href="./question.html">
+            <span class="tool-label">Question</span>
+            <span class="tool-mark">→</span>
+          </a>
         </div>
 
-        <div class="node" id="nodeBox" style="display:none;">
-          <div class="current-tag" id="currentTag">MISREAD</div>
-          <div class="current-line" id="currentLine"></div>
-
-          <div class="next" id="nextDoors"></div>
-
-          <div class="echoes" id="echoes" style="display:none;"></div>
+        <div class="drift-box">
+          <div class="line" id="line">...</div>
+          <div class="drift-actions">
+            <button class="ghost" id="driftBtn" type="button">Drift</button>
+            <button class="ghost" id="enterBtn" type="button">Enter</button>
+          </div>
         </div>
       </div>
 
-      <div class="meta">
-        <div class="quiet" id="quiet"></div>
-        <div class="actions">
-          <button class="ghost" id="driftBtn" type="button">Drift</button>
-          <button class="ghost" id="resetBtn" type="button">Again</button>
-        </div>
-      </div>
+      <div class="meta" id="meta"></div>
     </section>
 
     <footer>No login. No tracking. Browser only.</footer>
   </main>
 
+  <script src="./random-next.js"></script>
   <script>
-    const currentTag = document.getElementById('currentTag');
-    const currentLine = document.getElementById('currentLine');
-    const nextDoors = document.getElementById('nextDoors');
-    const nodeBox = document.getElementById('nodeBox');
-    const entryDoors = document.getElementById('entryDoors');
-    const echoes = document.getElementById('echoes');
-    const quiet = document.getElementById('quiet');
+    const lineEl = document.getElementById('line');
+    const metaEl = document.getElementById('meta');
     const driftBtn = document.getElementById('driftBtn');
-    const resetBtn = document.getElementById('resetBtn');
+    const enterBtn = document.getElementById('enterBtn');
 
-    const graph = {
-      misread: ["opposite","question","metaphor"],
-      opposite: ["misread","metaphor","question"],
-      metaphor: ["question","misread","opposite"],
-      question: ["metaphor","opposite","misread"]
-    };
-
-    const labels = {
-      misread: "MISREAD",
-      opposite: "OPPOSITE",
-      metaphor: "METAPHOR",
-      question: "QUESTION"
-    };
-
-    const pools = {
-      misread: [
-        "Maybe it was not resistance.\nMaybe it was hunger wearing a rude face.",
-        "It may not be confusion.\nIt may be a refusal to admit contact.",
-        "Perhaps they did understand enough.\nJust not enough to stay comfortable.",
-        "What looked like dismissal may have been self-protection arriving first.",
-        "Maybe the problem was not the thought.\nMaybe it was the bruise it found.",
-        "That reply may not be judgment.\nIt may be flinch translated badly.",
-        "Some rejection is only interest trying not to kneel.",
-        "The sentence may say no.\nThe attention behind it says something else."
-      ],
-      opposite: [
-        "What if the weak point is the doorway.",
-        "What if the wrong turn is the shape of the path.",
-        "What if the cheap comment is the expensive clue.",
-        "What if coherence is not what this wants first.",
-        "What if losing the thread is how the thread begins.",
-        "What if friction is the more honest welcome.",
-        "What if the failed reading still touched the real thing.",
-        "What if distance is only another form of orbit."
-      ],
-      metaphor: [
-        "A blunt reply is a stone thrown into black water.\nThe splash knows more than the hand.",
-        "Some thoughts do not open like doors.\nThey open like weather.",
-        "You do not enter every idea by walking.\nSome are fog first.",
-        "A careless sentence can still leave a glowing footprint.",
-        "The maze does not hate you.\nIt simply refuses a straight face.",
-        "Some language is not a map.\nIt is a tide.",
-        "The wound is not the tunnel.\nIt is only where the wall touched you.",
-        "Not every signal arrives as light.\nSome arrive as pressure."
-      ],
-      question: [
-        "What did that line protect them from noticing?",
-        "Where did the reply become smaller than the reaction?",
-        "What part still glows after the wording is removed?",
-        "If the insult is stripped away, what pressure remains?",
-        "What would still be true if nobody explained it?",
-        "At which point did irritation turn into evidence?",
-        "What was touched before the answer appeared?",
-        "If the path made no sense, why keep walking?"
-      ]
-    };
-
-    const whispers = [
-      "",
-      "No save.",
-      "Not every step repeats.",
-      "Some doors only look the same.",
-      "A useful line may arrive late.",
-      "The path does not explain itself.",
-      "You can stop anywhere.",
-      "The next turn may not remember this one."
+    const POOL_FILES = [
+      "./fragment-pool.json",
+      "./fragment-pack-1.json",
+      "./fragment-pack-2.json"
     ];
 
-    let historyStack = [];
-    let currentNode = null;
+    const TOOL_CANDIDATES = [
+      "shift.html",
+      "misread.html",
+      "opposite.html",
+      "metaphor.html",
+      "question.html"
+    ];
+
+    const META_LINES = [
+      "",
+      "A faint light is enough.",
+      "The next step does not explain itself.",
+      "Some paths only appear after movement.",
+      "Not every doorway stays where it was."
+    ];
+
+    let FRAGMENTS = [];
+    let CURRENT_LINE = "";
+
+    function normalizeText(str){
+      return String(str || "").replace(/\s+/g, " ").trim();
+    }
+
+    function uniq(arr){
+      return [...new Set(arr)];
+    }
 
     function pick(arr){
       return arr[Math.floor(Math.random() * arr.length)];
@@ -349,87 +327,135 @@
       return copy;
     }
 
-    function nextChoices(node){
-      const base = graph[node] || ["misread","opposite","metaphor"];
-      return shuffle(base).slice(0,3);
+    function inferStyle(text, tone){
+      const t = String(tone || "").toLowerCase();
+      if (["warm","calm"].includes(t)) return "clear";
+      if (["mystery","twist"].includes(t)) return "drift";
+      if (["edge"].includes(t)) return "sharp";
+
+      const lower = text.toLowerCase();
+      if (/\bmaybe\b|\bnot\b|\bquiet\b|\bsmall\b|\blate\b|\bearly\b/.test(lower)) return "clear";
+      if (/\bchaos\b|\bpattern\b|\bdoor\b|\bframe\b|\bmap\b|\bunfinished\b|\boff\b/.test(lower)) return "drift";
+      return "sharp";
     }
 
-    function renderEchoes(){
-      if(historyStack.length <= 1){
-        echoes.style.display = "none";
-        echoes.innerHTML = "";
-        return;
+    function normalizeFragmentItem(item){
+      if (typeof item === "string"){
+        const text = normalizeText(item);
+        if (!text) return null;
+        return {
+          text,
+          tone: "",
+          style: inferStyle(text, "")
+        };
       }
 
-      const recent = historyStack.slice(-3, -1).reverse();
-      echoes.style.display = "grid";
-      echoes.innerHTML = recent.map(item => (
-        `<div class="echo">${escapeHtml(item.line.replace(/\n/g, " "))}</div>`
-      )).join("");
+      if (item && typeof item === "object"){
+        const text = normalizeText(item.text || "");
+        if (!text) return null;
+        const tone = normalizeText(item.tone || "");
+        return {
+          text,
+          tone,
+          style: inferStyle(text, tone)
+        };
+      }
+
+      return null;
     }
 
-    function enterNode(node){
-      currentNode = node;
-      const line = pick(pools[node]);
-      historyStack.push({ node, line });
-
-      currentTag.textContent = labels[node];
-      currentLine.textContent = line;
-      quiet.textContent = pick(whispers);
-
-      nodeBox.style.display = "block";
-
-      const choices = nextChoices(node);
-      nextDoors.innerHTML = choices.map(choice => (
-        `<button type="button" data-node="${choice}">${labels[choice].charAt(0) + labels[choice].slice(1).toLowerCase()}</button>`
-      )).join("");
-
-      renderEchoes();
+    async function loadJson(path){
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Failed to load ${path}`);
+      return response.json();
     }
 
-    function resetAll(){
-      historyStack = [];
-      currentNode = null;
-      nodeBox.style.display = "none";
-      nextDoors.innerHTML = "";
-      echoes.innerHTML = "";
-      echoes.style.display = "none";
-      quiet.textContent = "";
+    function flattenPool(json){
+      let raw = [];
+
+      if (Array.isArray(json)) raw = json;
+      else if (json && Array.isArray(json.fragments)) raw = json.fragments;
+      else if (json && Array.isArray(json.items)) raw = json.items;
+      else raw = [];
+
+      const out = [];
+      const seen = new Set();
+
+      for (const item of raw){
+        const normalized = normalizeFragmentItem(item);
+        if (!normalized) continue;
+        if (seen.has(normalized.text)) continue;
+        seen.add(normalized.text);
+        out.push(normalized);
+      }
+
+      return out;
+    }
+
+    async function loadPools(){
+      const merged = [];
+      const seen = new Set();
+
+      for (const path of POOL_FILES){
+        try{
+          const json = await loadJson(path);
+          const items = flattenPool(json);
+
+          for (const item of items){
+            if (seen.has(item.text)) continue;
+            seen.add(item.text);
+            merged.push(item);
+          }
+        }catch(err){
+        }
+      }
+
+      FRAGMENTS = merged;
+    }
+
+    function chooseLine(){
+      if (!FRAGMENTS.length){
+        return "...";
+      }
+
+      const clear = shuffle(FRAGMENTS.filter(item => item.style === "clear"));
+      const drift = shuffle(FRAGMENTS.filter(item => item.style === "drift"));
+      const sharp = shuffle(FRAGMENTS.filter(item => item.style === "sharp"));
+
+      const pool = [
+        ...(drift.slice(0, 10)),
+        ...(clear.slice(0, 8)),
+        ...(sharp.slice(0, 8))
+      ];
+
+      if (!pool.length) return pick(FRAGMENTS).text;
+      return pick(pool).text;
     }
 
     function drift(){
-      const nodes = ["misread","opposite","metaphor","question"];
-      if(!currentNode){
-        enterNode(pick(nodes));
+      CURRENT_LINE = chooseLine();
+      lineEl.textContent = CURRENT_LINE;
+      metaEl.textContent = pick(META_LINES);
+    }
+
+    function enter(){
+      if (window.REFRAME_RANDOM_NEXT && typeof window.REFRAME_RANDOM_NEXT.buildNextUrl === "function"){
+        const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(TOOL_CANDIDATES, CURRENT_LINE);
+        window.location.href = url;
         return;
       }
-      const choices = graph[currentNode] || nodes;
-      enterNode(pick(choices));
+
+      const next = pick(TOOL_CANDIDATES);
+      window.location.href = `./${next}?q=${encodeURIComponent(CURRENT_LINE)}`;
     }
-
-    function escapeHtml(str){
-      return str
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    entryDoors.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-node]");
-      if(!btn) return;
-      enterNode(btn.dataset.node);
-    });
-
-    nextDoors.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-node]");
-      if(!btn) return;
-      enterNode(btn.dataset.node);
-    });
 
     driftBtn.addEventListener("click", drift);
-    resetBtn.addEventListener("click", resetAll);
+    enterBtn.addEventListener("click", enter);
+
+    (async function init(){
+      await loadPools();
+      drift();
+    })();
   </script>
 </body>
 </html>
