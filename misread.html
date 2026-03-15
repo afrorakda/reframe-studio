@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Misread</title>
+  <style>
+    :root{
+      --bg:#04101f;
+      --bg2:#081833;
+      --panel:rgba(16,31,58,.78);
+      --panel-deep:rgba(7,16,32,.58);
+      --line:rgba(173,207,255,.12);
+      --line-2:rgba(173,207,255,.08);
+      --text:#eaf2ff;
+      --muted:#95a8c5;
+      --soft:#c7d8f7;
+      --shadow:0 20px 60px rgba(0,0,0,.34);
+      --radius:22px;
+      --radius-sm:16px;
+      --max:720px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(118,180,255,.08), transparent 24%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      letter-spacing:.01em;
+    }
+
+    .wrap{
+      width:min(var(--max),calc(100% - 24px));
+      margin:0 auto;
+      padding:20px 0 28px;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      overflow:hidden;
+    }
+
+    .top{
+      padding:18px 18px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .back{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:.82rem;
+      padding:6px 2px;
+    }
+
+    .back:hover{color:var(--soft)}
+
+    .tiny{
+      color:var(--muted);
+      font-size:.78rem;
+      letter-spacing:.08em;
+      text-transform:lowercase;
+    }
+
+    .hero{
+      padding:4px 18px 12px;
+    }
+
+    h1{
+      margin:0;
+      font-size:1.48rem;
+      line-height:1.08;
+      font-weight:700;
+      letter-spacing:.01em;
+    }
+
+    .sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.93rem;
+      line-height:1.35;
+    }
+
+    .input-area{
+      padding:0 18px 10px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:150px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      background:rgba(6,14,28,.72);
+      color:var(--text);
+      padding:14px 14px 15px;
+      font:inherit;
+      line-height:1.5;
+      border:1px solid var(--line);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+    }
+
+    textarea::placeholder{
+      color:#88a0c4;
+    }
+
+    .controls{
+      padding:6px 18px 6px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      outline:none;
+      width:100%;
+      min-height:48px;
+      border-radius:16px;
+      background:rgba(113,154,225,.11);
+      border:1px solid var(--line);
+      color:var(--text);
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+      padding:12px 14px;
+    }
+
+    button:hover{
+      background:rgba(113,154,225,.15);
+      border-color:rgba(173,207,255,.22);
+    }
+
+    button:active{transform:scale(.985)}
+
+    .meta{
+      padding:0 18px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .status{
+      color:var(--muted);
+      font-size:.82rem;
+      min-height:1.2em;
+    }
+
+    .results{
+      padding:0 12px 12px;
+    }
+
+    .empty{
+      margin:0 6px 6px;
+      padding:16px 14px;
+      border-radius:18px;
+      border:1px dashed var(--line);
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+      background:rgba(6,14,28,.28);
+    }
+
+    .card{
+      margin:0 6px 10px;
+      padding:14px 14px 13px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(6,14,28,.5);
+    }
+
+    .card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .card-title{
+      font-size:.92rem;
+      font-weight:700;
+      color:var(--soft);
+      letter-spacing:.02em;
+    }
+
+    .chip{
+      font-size:.73rem;
+      color:var(--muted);
+      border:1px solid var(--line-2);
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.02);
+      white-space:nowrap;
+    }
+
+    .line{
+      font-size:1rem;
+      line-height:1.55;
+      color:var(--text);
+      white-space:pre-wrap;
+    }
+
+    .echo{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid var(--line-2);
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.45;
+    }
+
+    .quiet{
+      padding:2px 18px 14px;
+      color:var(--muted);
+      font-size:.8rem;
+    }
+
+    footer{
+      padding:10px 18px 0;
+      color:var(--muted);
+      font-size:.8rem;
+      text-align:center;
+    }
+
+    @media (min-width:700px){
+      .wrap{padding-top:28px}
+      .top{padding:20px 22px 10px}
+      .hero{padding:4px 22px 12px}
+      .input-area{padding:0 22px 10px}
+      .controls{padding:6px 22px 6px; grid-template-columns:repeat(4,minmax(0,1fr))}
+      .meta{padding:0 22px 14px}
+      .results{padding:0 16px 14px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="panel">
+      <div class="top">
+        <a class="back" href="./unknown-mutation.html">unknown</a>
+        <div class="tiny">misread</div>
+      </div>
+
+      <div class="hero">
+        <h1>Misread</h1>
+        <div class="sub">Read it wrong on purpose.</div>
+      </div>
+
+      <div class="input-area">
+        <textarea id="input" placeholder="Drop a line.
+
+Example:
+Your posts are always so boring.
+Nobody asked.
+This makes no sense.
+You sound confused.
+Trying too hard."></textarea>
+      </div>
+
+      <div class="controls">
+        <button id="generateBtn">Generate</button>
+        <button id="exampleBtn">Try example</button>
+        <button id="clearBtn">Clear</button>
+        <button id="copyBtn">Copy result</button>
+      </div>
+
+      <div class="meta">
+        <div class="status" id="status"> </div>
+      </div>
+
+      <div class="results" id="results">
+        <div class="empty">Leave one line here. Take back three wrong readings.</div>
+      </div>
+
+      <div class="quiet" id="quiet"></div>
+    </section>
+
+    <footer>No login. No tracking. Browser only.</footer>
+  </main>
+
+  <script>
+    const inputEl = document.getElementById('input');
+    const resultsEl = document.getElementById('results');
+    const statusEl = document.getElementById('status');
+    const quietEl = document.getElementById('quiet');
+
+    const examples = [
+      "Your posts are always so boring.",
+      "Nobody asked.",
+      "This makes no sense.",
+      "You sound confused.",
+      "Trying too hard.",
+      "This is cringe.",
+      "Too abstract.",
+      "Who cares.",
+      "Too long.",
+      "Give it a rest."
+    ];
+
+    const quietPool = [
+      "",
+      "Not every reading needs permission.",
+      "Wrong can still be useful.",
+      "The line is small. The bruise may not be.",
+      "A rude sentence can still leak a clue.",
+      "You do not have to believe it to bend it.",
+      "Bad wording. Usable pressure."
+    ];
+
+    const signalMap = [
+      { key: "boring", test: /boring|dull|dry|flat|bland|sleep/i },
+      { key: "confused", test: /makes no sense|nonsense|confus|what are you even saying|huh|unclear|mumble/i },
+      { key: "abstract", test: /abstract|vague|airy|theory|philosoph|too deep|all over the place/i },
+      { key: "dismissive", test: /nobody asked|who asked|who cares|irrelevant|pointless|give it a rest/i },
+      { key: "trying", test: /trying too hard|desperate|forced|try-hard|pretentious|performing/i },
+      { key: "cringe", test: /cringe|embarrassing|awkward|corny|idiot/i },
+      { key: "length", test: /too long|wall of text|long|essay|yapping/i },
+      { key: "tone", test: /arrogant|smug|annoying|rude|condescending|self-important/i }
+    ];
+
+    const pools = {
+      boring: {
+        tag: "boredom signal",
+        lines: [
+          "You were not bored.\nYou were denied easy sugar.",
+          "You wanted entertainment first.\nThe thought arrived before the seasoning.",
+          "You called it boring because it refused to perform for you.",
+          "You were not under-stimulated.\nYou were under-spoon-fed.",
+          "You wanted movement.\nWhat you got was weight.",
+          "You wanted the point already softened for swallowing."
+        ],
+        echoes: [
+          "Boredom often hides impatience with quiet force.",
+          "Some people call it boring when it does not flatter their speed.",
+          "A calm line can still stay in the room longer."
+        ]
+      },
+      confused: {
+        tag: "confusion signal",
+        lines: [
+          "You did not miss every word.\nYou lost the handrail.",
+          "You understood enough to feel inconvenienced.",
+          "You were following until it stopped escorting you.",
+          "You are calling it nonsense because it would not kneel into packaging.",
+          "The problem may not be meaning.\nIt may be entry.",
+          "Confusion is still contact.\nJust unstable contact."
+        ],
+        echoes: [
+          "A missing handrail is not the same as a missing point.",
+          "People often blame the sentence when they lose the middle.",
+          "Not every difficult entry is emptiness."
+        ]
+      },
+      abstract: {
+        tag: "abstraction signal",
+        lines: [
+          "You wanted instructions.\nYou got altitude.",
+          "You were not rejecting the idea.\nYou were asking where to place your feet.",
+          "You wanted a screwdriver.\nWhat arrived was weather.",
+          "You distrust height when it delays use.",
+          "You did not hate abstraction.\nYou hated not landing yet.",
+          "You wanted grip.\nIt stayed mist."
+        ],
+        echoes: [
+          "Some thoughts hover before they land.",
+          "Altitude looks suspicious to people who only trust tools.",
+          "Not everything vague is empty. Some things are still choosing a shape."
+        ]
+      },
+      dismissive: {
+        tag: "dismissal signal",
+        lines: [
+          "And yet you replied.",
+          "Indifference rarely writes back.",
+          "You announced non-interest with remarkable participation.",
+          "You called it unnecessary while helping it circulate.",
+          "You arrived to deny arrival.",
+          "The refusal still spent energy."
+        ],
+        echoes: [
+          "Dismissal is still contact.",
+          "Contempt still pays attention with its own hands.",
+          "A non-event rarely earns this much motion."
+        ]
+      },
+      trying: {
+        tag: "effort signal",
+        lines: [
+          "You noticed effort because it did not hide its fingerprints.",
+          "You prefer ambition only when it pretends to be accidental.",
+          "Visible labor embarrassed you more than weak thought would.",
+          "You sensed intention and called it a flaw.",
+          "You wanted craft with no human residue.",
+          "You were not reacting to failure.\nYou were reacting to visible trying."
+        ],
+        echoes: [
+          "People praise effort until they can actually see it.",
+          "Ambition becomes awkward the second it stops dressing as ease.",
+          "Some audiences only trust what looks unplanned."
+        ]
+      },
+      cringe: {
+        tag: "shame signal",
+        lines: [
+          "You felt exposed by someone risking visibility.",
+          "You call it cringe when sincerity forgets its camouflage.",
+          "The discomfort came from nakedness more than weakness.",
+          "You were reacting to openness with no irony shield.",
+          "You saw earnestness and reached for shame language.",
+          "This may not be failure.\nIt may be unarmored presence."
+        ],
+        echoes: [
+          "A lot of cringe is fear pretending to be taste.",
+          "The internet forgives emptiness faster than earnestness.",
+          "Awkwardness is sometimes just sincerity without cool lighting."
+        ]
+      },
+      length: {
+        tag: "length signal",
+        lines: [
+          "You wanted compression more than meaning.",
+          "Your attention budget ended before the point did.",
+          "You prefer ideas in snack form.",
+          "You were measuring effort cost, not value.",
+          "You wanted summary speed, not full shape.",
+          "The complaint is about carrying time, not necessarily about truth."
+        ],
+        echoes: [
+          "Short is often cheaper, not clearer.",
+          "Attention negotiates with every extra sentence now.",
+          "Format gets judged before meaning gets heard."
+        ]
+      },
+      tone: {
+        tag: "tone signal",
+        lines: [
+          "You reacted to posture before content.",
+          "The tone touched your pride before the idea reached your mind.",
+          "You heard rank and made that the real event.",
+          "You were not only reading meaning.\nYou were reading position.",
+          "The voice triggered something old before the sentence finished.",
+          "The irritation may live in posture, not argument."
+        ],
+        echoes: [
+          "A fair point can die in the wrong voice.",
+          "People often reject status signals faster than ideas.",
+          "Tone is where hierarchy sneaks in wearing style."
+        ]
+      },
+      default: {
+        tag: "friction signal",
+        lines: [
+          "The reply carries more heat than detail.",
+          "A vague hit is still a hit.",
+          "The sentence is blunt because the reaction outran the language.",
+          "This may be impact without a clean report.",
+          "The wording is thin.\nThe pressure may not be.",
+          "The comment says little.\nThe friction says more."
+        ],
+        echoes: [
+          "A weak comment can still point at a live nerve.",
+          "Not every insult knows what it is revealing.",
+          "Bad wording can still leave usable pressure."
+        ]
+      }
+    };
+
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function shuffle(arr){
+      const copy = [...arr];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function detectSignals(text){
+      const found = [];
+      for(const item of signalMap){
+        if(item.test.test(text)) found.push(item.key);
+      }
+      return found.length ? found : ["default"];
+    }
+
+    function uniqueSignals(baseSignals){
+      const all = ["boring","confused","abstract","dismissive","trying","cringe","length","tone","default"];
+      const chosen = [...baseSignals];
+      const fillers = shuffle(all.filter(x => !chosen.includes(x)));
+      while(chosen.length < 3){
+        chosen.push(fillers.shift() || "default");
+      }
+      return chosen.slice(0,3);
+    }
+
+    function getExcerpt(text){
+      const cleaned = text.replace(/\s+/g, " ").trim();
+      if(!cleaned) return "";
+      return cleaned.length > 88 ? cleaned.slice(0,85).trim() + "..." : cleaned;
+    }
+
+    function buildCard(signal, usedLines){
+      const source = pools[signal] || pools.default;
+      const available = source.lines.filter(line => !usedLines.has(line));
+      const line = available.length ? pick(available) : pick(source.lines);
+      usedLines.add(line);
+      return {
+        title: signal,
+        tag: source.tag,
+        line,
+        echo: pick(source.echoes)
+      };
+    }
+
+    function escapeHtml(str){
+      return str
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderCards(cards){
+      resultsEl.innerHTML = cards.map((card, i) => `
+        <article class="card">
+          <div class="card-head">
+            <div class="card-title">Misread ${i + 1}</div>
+            <div class="chip">${escapeHtml(card.tag)}</div>
+          </div>
+          <div class="line">${escapeHtml(card.line)}</div>
+          <div class="echo">${escapeHtml(card.echo)}</div>
+        </article>
+      `).join("");
+    }
+
+    function generate(){
+      const text = inputEl.value.trim();
+      if(!text){
+        resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three wrong readings.</div>`;
+        statusEl.textContent = "Drop one line first.";
+        quietEl.textContent = "";
+        return;
+      }
+
+      const signals = uniqueSignals(detectSignals(text));
+      const usedLines = new Set();
+      const cards = signals.map(signal => buildCard(signal, usedLines));
+
+      renderCards(cards);
+      statusEl.textContent = `Read from: “${escapeHtml(getExcerpt(text))}”`;
+      quietEl.textContent = pick(quietPool);
+    }
+
+    function tryExample(){
+      inputEl.value = pick(examples);
+      generate();
+    }
+
+    function clearAll(){
+      inputEl.value = "";
+      resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three wrong readings.</div>`;
+      statusEl.textContent = " ";
+      quietEl.textContent = "";
+      inputEl.focus();
+    }
+
+    async function copyResult(){
+      const cards = [...resultsEl.querySelectorAll('.card')];
+      if(!cards.length){
+        statusEl.textContent = "Nothing to copy yet.";
+        return;
+      }
+
+      const text = cards.map((card, i) => {
+        const line = card.querySelector('.line')?.textContent.trim() || "";
+        const echo = card.querySelector('.echo')?.textContent.trim() || "";
+        return `Misread ${i + 1}\n${line}\n\n${echo}`;
+      }).join("\n\n");
+
+      try{
+        await navigator.clipboard.writeText(text);
+        statusEl.textContent = "Copied.";
+      }catch(e){
+        statusEl.textContent = "Copy failed.";
+      }
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', generate);
+    document.getElementById('exampleBtn').addEventListener('click', tryExample);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+    document.getElementById('copyBtn').addEventListener('click', copyResult);
+
+    inputEl.addEventListener('keydown', (e) => {
+      if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+        generate();
+      }
+    });
+  </script>
+</body>
+</html>
