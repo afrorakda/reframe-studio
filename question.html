@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Question</title>
+  <style>
+    :root{
+      --bg:#04101f;
+      --bg2:#081833;
+      --panel:rgba(16,31,58,.78);
+      --line:rgba(173,207,255,.12);
+      --line-2:rgba(173,207,255,.08);
+      --text:#eaf2ff;
+      --muted:#95a8c5;
+      --soft:#c7d8f7;
+      --shadow:0 20px 60px rgba(0,0,0,.34);
+      --radius:22px;
+      --max:720px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(118,180,255,.08), transparent 24%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      letter-spacing:.01em;
+    }
+
+    .wrap{
+      width:min(var(--max),calc(100% - 24px));
+      margin:0 auto;
+      padding:20px 0 28px;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      overflow:hidden;
+    }
+
+    .top{
+      padding:18px 18px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .back{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:.82rem;
+      padding:6px 2px;
+    }
+
+    .back:hover{color:var(--soft)}
+
+    .tiny{
+      color:var(--muted);
+      font-size:.78rem;
+      letter-spacing:.08em;
+      text-transform:lowercase;
+    }
+
+    .hero{
+      padding:4px 18px 12px;
+    }
+
+    h1{
+      margin:0;
+      font-size:1.48rem;
+      line-height:1.08;
+      font-weight:700;
+      letter-spacing:.01em;
+    }
+
+    .sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.93rem;
+      line-height:1.35;
+    }
+
+    .input-area{
+      padding:0 18px 10px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:138px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      background:rgba(6,14,28,.72);
+      color:var(--text);
+      padding:14px 14px 15px;
+      font:inherit;
+      line-height:1.5;
+      border:1px solid var(--line);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+    }
+
+    textarea::placeholder{
+      color:#88a0c4;
+    }
+
+    .controls{
+      padding:6px 18px 6px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      outline:none;
+      width:100%;
+      min-height:48px;
+      border-radius:16px;
+      background:rgba(113,154,225,.11);
+      border:1px solid var(--line);
+      color:var(--text);
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+      padding:12px 14px;
+    }
+
+    button:hover{
+      background:rgba(113,154,225,.15);
+      border-color:rgba(173,207,255,.22);
+    }
+
+    button:active{transform:scale(.985)}
+
+    .meta{
+      padding:0 18px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .status{
+      color:var(--muted);
+      font-size:.82rem;
+      min-height:1.2em;
+    }
+
+    .results{
+      padding:0 12px 12px;
+    }
+
+    .empty{
+      margin:0 6px 6px;
+      padding:16px 14px;
+      border-radius:18px;
+      border:1px dashed var(--line);
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+      background:rgba(6,14,28,.28);
+    }
+
+    .card{
+      margin:0 6px 10px;
+      padding:14px 14px 13px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(6,14,28,.5);
+    }
+
+    .card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .card-title{
+      font-size:.9rem;
+      color:var(--soft);
+      font-weight:700;
+    }
+
+    .chip{
+      font-size:.73rem;
+      color:var(--muted);
+      border:1px solid var(--line-2);
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.02);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:68%;
+    }
+
+    .card-line{
+      font-size:1rem;
+      line-height:1.58;
+      color:var(--text);
+      white-space:pre-wrap;
+    }
+
+    .card-echo{
+      margin-top:10px;
+      padding-top:10px;
+      border-top:1px solid var(--line-2);
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.45;
+      white-space:pre-wrap;
+    }
+
+    .card-meta{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .mini{
+      min-height:36px;
+      padding:8px 12px;
+      font-size:.8rem;
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+      font-weight:500;
+    }
+
+    .quiet{
+      padding:2px 18px 14px;
+      color:var(--muted);
+      font-size:.8rem;
+      min-height:1.2em;
+    }
+
+    footer{
+      padding:10px 18px 0;
+      color:var(--muted);
+      font-size:.8rem;
+      text-align:center;
+    }
+
+    @media (min-width:700px){
+      .wrap{padding-top:28px}
+      .top{padding:20px 22px 10px}
+      .hero{padding:4px 22px 12px}
+      .input-area{padding:0 22px 10px}
+      .controls{padding:6px 22px 6px; grid-template-columns:repeat(4,minmax(0,1fr))}
+      .meta{padding:0 22px 14px}
+      .results{padding:0 16px 14px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="panel">
+      <div class="top">
+        <a class="back" href="./unknown-mutation.html">unknown</a>
+        <div class="tiny">question</div>
+      </div>
+
+      <div class="hero">
+        <h1>Question</h1>
+        <div class="sub">Let the line open.</div>
+      </div>
+
+      <div class="input-area">
+        <textarea id="input" placeholder="Drop a line."></textarea>
+      </div>
+
+      <div class="controls">
+        <button id="generateBtn">Generate</button>
+        <button id="exampleBtn">Try example</button>
+        <button id="clearBtn">Clear</button>
+        <button id="copyBtn">Copy result</button>
+      </div>
+
+      <div class="meta">
+        <div class="status" id="status">Loading pool...</div>
+      </div>
+
+      <div class="results" id="results">
+        <div class="empty">Leave one line here. Take back three openings.</div>
+      </div>
+
+      <div class="quiet" id="quiet"></div>
+    </section>
+
+    <footer>No login. No tracking. Browser only.</footer>
+  </main>
+
+  <script src="./random-next.js"></script>
+  <script>
+    const inputEl = document.getElementById('input');
+    const resultsEl = document.getElementById('results');
+    const statusEl = document.getElementById('status');
+    const quietEl = document.getElementById('quiet');
+
+    const EXAMPLES = [
+      "Your posts are boring.",
+      "Who cares.",
+      "This makes no sense.",
+      "Nobody asked.",
+      "Too abstract.",
+      "Trying too hard.",
+      "This is cringe.",
+      "You sound confused."
+    ];
+
+    const POOL_FILES = [
+      "./fragment-pool.json",
+      "./fragment-pack-1.json",
+      "./fragment-pack-2.json"
+    ];
+
+    const NEXT_CANDIDATES = [
+      "shift.html",
+      "misread.html",
+      "opposite.html",
+      "metaphor.html"
+    ];
+
+    const QUIET_LINES = [
+      "",
+      "Some questions stay dim on purpose.",
+      "The opening may be smaller than the room.",
+      "A line can open without explaining itself."
+    ];
+
+    let FRAGMENTS = [];
+    let CURRENT_CARDS = [];
+    let POOL_READY = false;
+
+    function normalizeText(str){
+      return String(str || "").replace(/\s+/g, " ").trim();
+    }
+
+    function tokenize(str){
+      return normalizeText(str)
+        .toLowerCase()
+        .replace(/[^a-z0-9\s'-]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+    }
+
+    function uniq(arr){
+      return [...new Set(arr)];
+    }
+
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function shuffle(arr){
+      const copy = [...arr];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function readQueryInput(){
+      const params = new URLSearchParams(window.location.search);
+      return normalizeText(params.get("q") || params.get("fragment") || "");
+    }
+
+    function toneToStyle(tone){
+      const t = String(tone || "").toLowerCase();
+      if (["warm","calm"].includes(t)) return "clear";
+      if (["mystery","twist"].includes(t)) return "drift";
+      if (["edge"].includes(t)) return "sharp";
+      return "drift";
+    }
+
+    function inferStyleFromText(text){
+      const lower = text.toLowerCase();
+      if (/\bmaybe\b|\bnot\b|\bquiet\b|\bsmall\b|\blate\b|\bearly\b/.test(lower)) return "clear";
+      if (/\bchaos\b|\bpattern\b|\bdoor\b|\bframe\b|\bmap\b|\bunfinished\b|\boff\b/.test(lower)) return "drift";
+      return "sharp";
+    }
+
+    function inferTagsFromText(text){
+      const lower = text.toLowerCase();
+      const tags = [];
+
+      if (/\bboring\b|\bboredom\b|\bquiet\b|\bslow\b/.test(lower)) tags.push("boring","boredom","attention");
+      if (/\bcare\b|\bnobody asked\b|\bdisagreement\b|\bdismiss\b|\breply\b/.test(lower)) tags.push("dismissal","criticism","reaction");
+      if (/\bconfusion\b|\bunclear\b|\bsense\b|\bquestion\b|\btranslation\b/.test(lower)) tags.push("confusion","question","thinking");
+      if (/\babstract\b|\bframe\b|\bmap\b|\bpattern\b|\bunfinished\b/.test(lower)) tags.push("abstract","frame","shift");
+      if (/\bfriction\b|\bedge\b|\bsignal\b/.test(lower)) tags.push("friction","signal","edge");
+      if (/\bcuriosity\b|\binteresting\b/.test(lower)) tags.push("curiosity","idea");
+      if (/\bsilence\b/.test(lower)) tags.push("silence");
+      if (/\bhook\b/.test(lower)) tags.push("hook");
+      if (/\bstory\b/.test(lower)) tags.push("story");
+      if (/\bmutation\b/.test(lower)) tags.push("mutation");
+      if (/\bquestion\b/.test(lower)) tags.push("question");
+      return uniq(tags);
+    }
+
+    function normalizeFragmentItem(item, source){
+      if (typeof item === "string"){
+        const text = normalizeText(item);
+        if (!text) return null;
+        return {
+          text,
+          tags: inferTagsFromText(text),
+          tone: "",
+          source,
+          style: inferStyleFromText(text)
+        };
+      }
+
+      if (item && typeof item === "object"){
+        const text = normalizeText(item.text || "");
+        if (!text) return null;
+        const tone = normalizeText(item.tone || "");
+        const tags = uniq([...(Array.isArray(item.tags) ? item.tags : []), ...inferTagsFromText(text)]);
+        return {
+          text,
+          tags,
+          tone,
+          source,
+          style: tone ? toneToStyle(tone) : inferStyleFromText(text)
+        };
+      }
+
+      return null;
+    }
+
+    async function loadJson(path){
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) throw new Error(`Failed to load ${path}`);
+      return response.json();
+    }
+
+    function flattenPool(json, source){
+      let raw = [];
+
+      if (Array.isArray(json)) raw = json;
+      else if (json && Array.isArray(json.fragments)) raw = json.fragments;
+      else if (json && Array.isArray(json.packs)) raw = json.packs;
+      else if (json && Array.isArray(json.items)) raw = json.items;
+      else raw = [];
+
+      const out = [];
+      const seen = new Set();
+
+      for (const item of raw){
+        const normalized = normalizeFragmentItem(item, source);
+        if (!normalized) continue;
+        if (seen.has(normalized.text)) continue;
+        seen.add(normalized.text);
+        out.push(normalized);
+      }
+
+      return out;
+    }
+
+    async function loadPools(){
+      const merged = [];
+      const seen = new Set();
+
+      for (const path of POOL_FILES){
+        try{
+          const json = await loadJson(path);
+          const items = flattenPool(json, path.split("/").pop());
+
+          for (const item of items){
+            if (seen.has(item.text)) continue;
+            seen.add(item.text);
+            merged.push(item);
+          }
+        }catch(err){
+        }
+      }
+
+      FRAGMENTS = merged;
+      POOL_READY = merged.length > 0;
+      statusEl.textContent = POOL_READY ? `${merged.length} pooled fragments ready.` : "Pool not found.";
+    }
+
+    function extractSignals(input){
+      const text = input.toLowerCase();
+      const words = tokenize(input);
+      const signals = [...words, "question", "thinking", "signal", "confusion"];
+
+      if (/\bboring\b|\bdull\b|\bflat\b/.test(text)) signals.push("boring","boredom","attention");
+      if (/\bwho cares\b|\bnobody asked\b|\bwho asked\b/.test(text)) signals.push("dismissal","criticism","reaction","care");
+      if (/\bmakes no sense\b|\bconfus|\bunclear\b|\bmumble\b|\bnonsense\b/.test(text)) signals.push("confusion","question","thinking","signal");
+      if (/\babstract\b|\bvague\b|\ball over the place\b/.test(text)) signals.push("abstract","frame","pattern");
+      if (/\btrying too hard\b|\bpretentious\b|\bperforming\b/.test(text)) signals.push("effort","edge","reaction");
+      if (/\bcringe\b|\bembarrassing\b|\bidiot\b/.test(text)) signals.push("criticism","reaction","edge");
+      if (/\btoo long\b|\bessay\b|\byapping\b/.test(text)) signals.push("attention","timing","structure");
+
+      return uniq(signals.map(s => String(s).toLowerCase()));
+    }
+
+    function scoreFragment(fragment, signals){
+      let score = 0;
+      const text = fragment.text.toLowerCase();
+      const tagSet = new Set((fragment.tags || []).map(t => String(t).toLowerCase()));
+      const words = new Set(tokenize(fragment.text));
+
+      for (const signal of signals){
+        if (!signal) continue;
+        if (tagSet.has(signal)) score += 8;
+        if (words.has(signal)) score += 6;
+        if (text.includes(signal)) score += 3;
+      }
+
+      if (tagSet.has("question") || tagSet.has("thinking") || tagSet.has("signal")) score += 4;
+      if (fragment.tone === "mystery") score += 2;
+      if (fragment.style === "clear") score += 1;
+
+      return score;
+    }
+
+    function chooseThree(input){
+      const signals = extractSignals(input);
+
+      const scored = FRAGMENTS
+        .map(fragment => ({ ...fragment, score: scoreFragment(fragment, signals) }))
+        .sort((a, b) => b.score - a.score);
+
+      const strong = scored.filter(item => item.score > 0);
+      const base = strong.length ? strong : scored;
+
+      const clear = shuffle(base.filter(item => item.style === "clear"));
+      const drift = shuffle(base.filter(item => item.style === "drift"));
+      const sharp = shuffle(base.filter(item => item.style === "sharp"));
+
+      const chosen = [];
+      const used = new Set();
+
+      function take(bucket){
+        while (bucket.length){
+          const item = bucket.shift();
+          if (used.has(item.text)) continue;
+          used.add(item.text);
+          chosen.push(item);
+          return;
+        }
+      }
+
+      take(clear);
+      take(drift);
+      take(sharp);
+
+      const fallback = shuffle(base);
+      while (chosen.length < 3 && fallback.length){
+        const item = fallback.shift();
+        if (used.has(item.text)) continue;
+        used.add(item.text);
+        chosen.push(item);
+      }
+
+      return chosen.slice(0, 3);
+    }
+
+    function excerpt(text){
+      const clean = normalizeText(text);
+      return clean.length > 84 ? clean.slice(0, 81).trim() + "..." : clean;
+    }
+
+    function shortLead(text){
+      const tokens = tokenize(text).filter(t => !["the","a","an","is","are","so","this","that","it","you","your"].includes(t));
+      const picked = tokens.slice(0, 4);
+      return picked.length ? picked.join(" ") : excerpt(text).toLowerCase();
+    }
+
+    function deriveQuestion(input, fragment){
+      const lead = shortLead(input);
+      const tags = fragment.tags || [];
+      const f = fragment.text.toLowerCase();
+
+      if (tags.includes("dismissal") || /\bcare\b|\breply\b|\bdisagreement\b/i.test(f)){
+        return `what is still here after the dismissal?`;
+      }
+
+      if (tags.includes("confusion") || tags.includes("question") || /\bquestion\b|\btranslation\b|\bunclear\b/i.test(f)){
+        return `what if the line is not wrong, only unfinished?`;
+      }
+
+      if (tags.includes("abstract") || tags.includes("frame") || /\bframe\b|\bmap\b|\bdoor\b/i.test(f)){
+        return `what changes if the frame changes first?`;
+      }
+
+      if (tags.includes("silence") || /\bsilence\b/i.test(f)){
+        return `what is quiet here, but not gone?`;
+      }
+
+      if (tags.includes("friction") || tags.includes("edge") || /\bfriction\b|\bsignal\b/i.test(f)){
+        return `where is the live edge in ${lead}?`;
+      }
+
+      if (tags.includes("story") || tags.includes("mutation") || /\bstory\b|\bmutation\b/i.test(f)){
+        return `what version of the line is trying to appear?`;
+      }
+
+      return `what else could this line be opening?`;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderCards(cards, input){
+      if (!cards.length){
+        resultsEl.innerHTML = `<div class="empty">No fragment found yet.</div>`;
+        return;
+      }
+
+      resultsEl.innerHTML = cards.map((card, index) => `
+        <article class="card">
+          <div class="card-head">
+            <div class="card-title">Question ${index + 1}</div>
+            <div class="chip">${escapeHtml(card.source)}</div>
+          </div>
+          <div class="card-line">${escapeHtml(card.text)}</div>
+          <div class="card-echo">${escapeHtml(deriveQuestion(input, card))}</div>
+          <div class="card-meta">
+            <div></div>
+            <div class="actions">
+              <button class="mini" type="button" onclick="copyCard(${index})">Copy</button>
+              <button class="mini" type="button" onclick="goNext(${index})">→</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function generate(){
+      const input = normalizeText(inputEl.value);
+
+      if (!input){
+        resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three openings.</div>`;
+        statusEl.textContent = POOL_READY ? `${FRAGMENTS.length} pooled fragments ready.` : "Loading pool...";
+        quietEl.textContent = "";
+        return;
+      }
+
+      if (!POOL_READY || !FRAGMENTS.length){
+        statusEl.textContent = "Pool not ready.";
+        return;
+      }
+
+      CURRENT_CARDS = chooseThree(input);
+      renderCards(CURRENT_CARDS, input);
+      statusEl.textContent = `Read from: “${excerpt(input)}”`;
+      quietEl.textContent = pick(QUIET_LINES);
+    }
+
+    function tryExample(){
+      inputEl.value = pick(EXAMPLES);
+      generate();
+    }
+
+    function clearAll(){
+      inputEl.value = "";
+      CURRENT_CARDS = [];
+      resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three openings.</div>`;
+      statusEl.textContent = POOL_READY ? `${FRAGMENTS.length} pooled fragments ready.` : "Loading pool...";
+      quietEl.textContent = "";
+      inputEl.focus();
+    }
+
+    async function copyCard(index){
+      const item = CURRENT_CARDS[index];
+      if (!item) return;
+
+      try{
+        await navigator.clipboard.writeText(item.text);
+        statusEl.textContent = "Copied.";
+      }catch(err){
+        statusEl.textContent = "Copy failed.";
+      }
+    }
+
+    async function copyAll(){
+      if (!CURRENT_CARDS.length){
+        statusEl.textContent = "Nothing to copy yet.";
+        return;
+      }
+
+      try{
+        await navigator.clipboard.writeText(CURRENT_CARDS.map(item => item.text).join("\n\n"));
+        statusEl.textContent = "Copied.";
+      }catch(err){
+        statusEl.textContent = "Copy failed.";
+      }
+    }
+
+    function goNext(index){
+      const item = CURRENT_CARDS[index];
+      if (!item) return;
+
+      if (window.REFRAME_RANDOM_NEXT && typeof window.REFRAME_RANDOM_NEXT.buildNextUrl === "function"){
+        const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(NEXT_CANDIDATES, item.text);
+        window.location.href = url;
+        return;
+      }
+
+      const next = pick(NEXT_CANDIDATES);
+      window.location.href = `./${next}?q=${encodeURIComponent(item.text)}`;
+    }
+
+    window.copyCard = copyCard;
+    window.goNext = goNext;
+
+    document.getElementById('generateBtn').addEventListener('click', generate);
+    document.getElementById('exampleBtn').addEventListener('click', tryExample);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+    document.getElementById('copyBtn').addEventListener('click', copyAll);
+
+    inputEl.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
+        generate();
+      }
+    });
+
+    (async function init(){
+      const carried = readQueryInput();
+      if (carried) inputEl.value = carried;
+      await loadPools();
+      if (carried) generate();
+    })();
+  </script>
+</body>
+</html>
