@@ -1,132 +1,243 @@
 (function () {
+  function ensureFragmentEngine() {
+    if (!window.REFRAME_FRAGMENT_ENGINE) {
+      throw new Error("REFRAME_FRAGMENT_ENGINE is required.");
+    }
+    return window.REFRAME_FRAGMENT_ENGINE;
+  }
+
+  function normalizeText(str) {
+    return String(str || "").replace(/\s+/g, " ").trim();
+  }
+
+  function tokenize(str) {
+    return normalizeText(str)
+      .toLowerCase()
+      .replace(/[^a-z0-9\s'-]/g, " ")
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  function uniq(arr) {
+    return [...new Set(arr)];
+  }
+
   function pick(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function shuffle(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+  function clampWords(str, maxWords = 6) {
+    const words = normalizeText(str).split(/\s+/).filter(Boolean);
+    return words.slice(0, maxWords).join(" ");
+  }
+
+  function shortLead(input) {
+    const stop = new Set(["the","a","an","is","are","am","this","that","it","you","your","to","of","for","and","or","but","so"]);
+    const tokens = tokenize(input).filter(t => !stop.has(t));
+    return clampWords(tokens.join(" "), 4) || clampWords(input, 4).toLowerCase();
+  }
+
+  function stripMaybe(text) {
+    return normalizeText(text).replace(/^maybe\s+/i, "");
+  }
+
+  function removeEndPunctuation(text) {
+    return normalizeText(text).replace(/[.?!]+$/g, "");
+  }
+
+  function maybeQuestion(text) {
+    const clean = removeEndPunctuation(text);
+    return clean ? `${clean}?` : "";
+  }
+
+  function titleCase(text) {
+    const clean = normalizeText(text);
+    if (!clean) return "";
+    return clean.charAt(0).toUpperCase() + clean.slice(1);
+  }
+
+  function getTags(item) {
+    return Array.isArray(item.tags) ? item.tags.map(t => String(t).toLowerCase()) : [];
+  }
+
+  function hasAnyTag(item, list) {
+    const tags = new Set(getTags(item));
+    return list.some(tag => tags.has(String(tag).toLowerCase()));
+  }
+
+  function detectImageWord(item, lead) {
+    const text = `${lead} ${item.text}`.toLowerCase();
+
+    if (/\bdoor\b/.test(text)) return "door";
+    if (/\bmap\b/.test(text)) return "map";
+    if (/\bframe\b/.test(text)) return "frame";
+    if (/\bstory\b/.test(text)) return "story";
+    if (/\bsignal\b/.test(text)) return "signal";
+    if (/\bnoise\b/.test(text)) return "noise";
+    if (/\bpattern\b/.test(text)) return "pattern";
+    if (/\bedge\b/.test(text)) return "edge";
+    if (/\bsilence\b/.test(text)) return "silence";
+    if (/\bcuriosity\b/.test(text)) return "curiosity";
+    if (/\bfriction\b/.test(text)) return "friction";
+    if (/\bchaos\b/.test(text)) return "chaos";
+    if (/\battention\b/.test(text)) return "attention";
+    if (/\bquestion\b/.test(text)) return "question";
+
+    return "shape";
+  }
+
+  function selectMaterials(input, toolName) {
+    const engine = ensureFragmentEngine();
+    return engine.chooseThree(input, toolName);
+  }
+
+  function mutateShift(item, input) {
+    const lead = shortLead(input);
+    const base = normalizeText(item.text);
+
+    if (!lead) return base;
+    if (/^maybe\s+/i.test(base)) return base.replace(/^maybe\s+/i, `maybe ${lead} / `);
+    return `${lead} / ${base}`;
+  }
+
+  function mutateMisread(item, input) {
+    const lead = shortLead(input);
+    const core = stripMaybe(item.text);
+
+    if (!lead) return titleCase(core);
+
+    if (hasAnyTag(item, ["dismissal","criticism","reaction"])) {
+      return titleCase(`${lead} / attention in disguise`);
     }
-    return a;
+
+    if (hasAnyTag(item, ["confusion","question","thinking"])) {
+      return titleCase(`${lead} / not wrong, just mis-entered`);
+    }
+
+    if (hasAnyTag(item, ["abstract","frame","shift"])) {
+      return titleCase(`${lead} / wrong frame, live signal`);
+    }
+
+    if (hasAnyTag(item, ["silence","timing","audience"])) {
+      return titleCase(`${lead} / not absence, delayed contact`);
+    }
+
+    return titleCase(`${lead} / ${core}`);
   }
 
-  function clean(text) {
-    return String(text || "").trim();
+  function mutateOpposite(item, input) {
+    const lead = shortLead(input);
+    const core = stripMaybe(item.text);
+
+    if (hasAnyTag(item, ["dismissal","criticism","reaction"])) {
+      return titleCase(`not rejection / ${lead || core}`);
+    }
+
+    if (hasAnyTag(item, ["confusion","question","thinking"])) {
+      return titleCase(`not nonsense / unfinished entry`);
+    }
+
+    if (hasAnyTag(item, ["abstract","frame","shift"])) {
+      return titleCase(`not vague / wrong frame`);
+    }
+
+    if (hasAnyTag(item, ["silence","timing","audience"])) {
+      return titleCase(`not dead / not yet`);
+    }
+
+    return titleCase(`not ${lead || "that"} / ${core}`);
   }
 
-  function shortReply(text) {
-    return clean(text).replace(/[“”"'`]/g, "");
+  function mutateMetaphor(item, input) {
+    const lead = shortLead(input);
+    const image = detectImageWord(item, lead);
+    const core = stripMaybe(item.text);
+
+    if (image === "door") return titleCase(`${lead || core} / a door opening sideways`);
+    if (image === "map") return titleCase(`${lead || core} / a map drawn in moving water`);
+    if (image === "frame") return titleCase(`${lead || core} / glass bending before it breaks`);
+    if (image === "story") return titleCase(`${lead || core} / a page turning by itself`);
+    if (image === "signal") return titleCase(`${lead || core} / a radio full of weather`);
+    if (image === "noise") return titleCase(`${lead || core} / static hiding a voice`);
+    if (image === "pattern") return titleCase(`${lead || core} / footprints in dark water`);
+    if (image === "edge") return titleCase(`${lead || core} / a wire carrying stormlight`);
+    if (image === "silence") return titleCase(`${lead || core} / a room before the echo`);
+    if (image === "curiosity") return titleCase(`${lead || core} / a hand under the table`);
+    if (image === "friction") return titleCase(`${lead || core} / flint waiting for contact`);
+    if (image === "chaos") return titleCase(`${lead || core} / a pattern still underwater`);
+    if (image === "attention") return titleCase(`${lead || core} / a lamp facing the wall`);
+    if (image === "question") return titleCase(`${lead || core} / a key with no visible door`);
+
+    return titleCase(`${lead || core} / something changing shape in the dark`);
   }
 
-  const insightFrames = [
-    'People often react to protect something they already trust.',
-    'Sometimes the reaction says more about fear than truth.',
-    'A fast reply often hides a need for control.',
-    'Some pushback is really about keeping the old shape safe.',
-    'People often want the point before they want the idea.',
-    'Some reactions are trying to keep the world simple.',
-    'Pushback often starts where the idea stops feeling safe.',
-    'People often move toward the easier shape first.',
-    'A rough reply can show where the fear is.',
-    'Some reactions protect a role, not a truth.'
-  ];
+  function mutateQuestion(item, input) {
+    const lead = shortLead(input);
+    const core = stripMaybe(item.text);
 
-  const reframeFrames = [
-    '"{reply}" may not mean the idea is weak. It may mean the shape is still new.',
-    '"{reply}" may not be rejection. It may be a wish for a safer path.',
-    '"{reply}" may be less about truth and more about pace.',
-    '"{reply}" may mean the reader wanted the point sooner.',
-    '"{reply}" may be a sign that the thought is still ahead of the room.',
-    '"{reply}" may mean the idea stayed open longer than they wanted.',
-    '"{reply}" may be what happens when a thought does not fit fast.',
-    '"{reply}" may show where the old frame starts pushing back.',
-    '"{reply}" may be fear wearing a quick voice.',
-    '"{reply}" may mean they wanted the easy version first.'
-  ];
+    if (hasAnyTag(item, ["dismissal","criticism","reaction"])) {
+      return "What is still here after the dismissal?";
+    }
 
-  const oppositeFrames = [
-    'Clear ideas travel fast. Live ideas often travel slower.',
-    'Easy words spread first. Hard thoughts stay longer.',
-    'The safe idea gets the quick yes. The rough idea keeps growing.',
-    'Fast clarity gets attention. Slow meaning gets roots.',
-    'Simple takes get shared. Strange takes get remembered.',
-    'The clean version lands first. The deeper version lands later.',
-    'What feels easy gets approved. What feels alive gets resisted.',
-    'Quick answers calm people. Open thoughts move them.',
-    'The short path feels safe. The rough path changes more.',
-    'The finished shape gets trust. The forming shape gets doubt.'
-  ];
+    if (hasAnyTag(item, ["confusion","question","thinking"])) {
+      return "What if the line is not wrong, only unfinished?";
+    }
 
-  const patternFrames = [
-    'new thought\n↓\nconfusion\n↓\npushback\n↓\nlater meaning',
-    'rough idea\n↓\nfast reply\n↓\nfriction\n↓\nclearer shape',
-    'new angle\n↓\npeople feel lost\n↓\nthey push back\n↓\nthe idea keeps growing',
-    'strange thought\n↓\nquick judgment\n↓\nresistance\n↓\nsecond look',
-    'early idea\n↓\npeople want the shortcut\n↓\nthey reject it\n↓\nit lands later',
-    'open thought\n↓\nneed for control\n↓\npushback\n↓\nnew path',
-    'hard idea\n↓\nneed for safety\n↓\nsimple reply\n↓\ndeeper read later',
-    'new shape\n↓\nold habit pushes back\n↓\nfriction\n↓\nnew meaning',
-    'thought moves first\n↓\nwords lag behind\n↓\npeople react fast\n↓\nmeaning catches up',
-    'fresh idea\n↓\nthe room is not ready\n↓\nreply comes first\n↓\nunderstanding comes later'
-  ];
+    if (hasAnyTag(item, ["abstract","frame","shift"])) {
+      return "What changes if the frame changes first?";
+    }
 
-  const contentSeedFrames = [
-    'People say "{reply}" when they really mean "give me the point faster."',
-    'Sometimes "{reply}" means "make this easier for me to hold."',
-    '"{reply}" can become a post about how people protect what already feels safe.',
-    'Use "{reply}" as the start of a post about fear of not getting it fast.',
-    '"{reply}" can lead to a post about why open ideas make people uneasy.',
-    'Turn "{reply}" into a post about how pushback often protects an old role.',
-    'Start from "{reply}" and write about why people trust simple shapes first.',
-    '"{reply}" can become a post about how rough ideas get mistaken for weak ones.',
-    'Use "{reply}" to write about fast replies and slow understanding.',
-    'Start with "{reply}" and write about how people react when the shape is still new.'
-  ];
+    if (hasAnyTag(item, ["silence","timing","audience"])) {
+      return "What is quiet here, but not gone?";
+    }
 
-  const hookFrames = [
-    'Maybe the problem was not the idea. Maybe it was the timing.',
-    'People do not always reject the idea. Sometimes they reject the feeling of not getting it fast.',
-    'A lot of "boring" is really "make this easier for me."',
-    'Sometimes pushback is just fear in a simple voice.',
-    'People often call it weak when it is just early.',
-    'Some replies are really asking for safety, not truth.',
-    'The first version of an idea often gets judged like the final one.',
-    'What feels unclear can still be alive.',
-    'People trust finished shapes first.',
-    'Fast judgment often arrives before real understanding.'
-  ];
+    if (lead) {
+      return `What else could ${lead} be opening?`;
+    }
 
-  function buildMutation(reply) {
-    const r = shortReply(reply) || 'bad reply';
-
-    return {
-      insight: pick(insightFrames),
-      reframe: pick(reframeFrames).replaceAll('{reply}', r),
-      opposite: pick(oppositeFrames),
-      pattern: pick(patternFrames),
-      contentSeed: pick(contentSeedFrames).replaceAll('{reply}', r),
-      hook: pick(hookFrames)
-    };
+    return maybeQuestion(core || item.text);
   }
 
-  function mutateList(replies) {
-    const cleaned = (replies || [])
-      .map(shortReply)
-      .filter(Boolean);
+  function mutateItem(item, input, toolName) {
+    if (toolName === "shift") return mutateShift(item, input);
+    if (toolName === "misread") return mutateMisread(item, input);
+    if (toolName === "opposite") return mutateOpposite(item, input);
+    if (toolName === "metaphor") return mutateMetaphor(item, input);
+    if (toolName === "question") return mutateQuestion(item, input);
 
-    if (!cleaned.length) return null;
+    return normalizeText(item.text);
+  }
 
-    const seeds = shuffle(cleaned);
-    return seeds.slice(0, 3).map(reply => ({
-      reply,
-      mutation: buildMutation(reply)
+  function dedupeResults(items) {
+    const seen = new Set();
+    const out = [];
+
+    for (const item of items) {
+      const key = normalizeText(item.text).toLowerCase();
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(item);
+    }
+
+    return out;
+  }
+
+  function generate(input, toolName = "shift") {
+    const materials = selectMaterials(input, toolName);
+
+    const results = materials.map(item => ({
+      source: item.source || "pool",
+      original: item.text,
+      text: mutateItem(item, input, toolName),
+      tags: item.tags || [],
+      tone: item.tone || "",
+      style: item.style || ""
     }));
+
+    return dedupeResults(results).slice(0, 3);
   }
 
   window.REFRAME_MUTATION_ENGINE = {
-    buildMutation,
-    mutateList
+    generate
   };
 })();
