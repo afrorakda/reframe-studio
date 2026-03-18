@@ -1,461 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Unknown Mutation</title>
-  <style>
-    :root{
-      --bg:#04101f;
-      --bg2:#081833;
-      --panel:rgba(16,31,58,.78);
-      --panel-deep:rgba(7,16,32,.58);
-      --line:rgba(173,207,255,.12);
-      --line-2:rgba(173,207,255,.08);
-      --text:#eaf2ff;
-      --muted:#95a8c5;
-      --soft:#c7d8f7;
-      --shadow:0 20px 60px rgba(0,0,0,.34);
-      --radius:22px;
-      --max:720px;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unknown</title>
 
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
-        radial-gradient(circle at 85% 15%, rgba(118,180,255,.08), transparent 24%),
-        linear-gradient(180deg,var(--bg2),var(--bg));
-      letter-spacing:.01em;
-    }
+<style>
+:root{
+  --bg:#04101f;
+  --bg2:#081833;
+  --panel:rgba(16,31,58,.78);
+  --line:rgba(173,207,255,.12);
+  --text:#eaf2ff;
+  --muted:#95a8c5;
+  --shadow:0 20px 60px rgba(0,0,0,.34);
+  --radius:22px;
+  --max:720px;
+}
 
-    .wrap{
-      width:min(var(--max),calc(100% - 24px));
-      margin:0 auto;
-      padding:20px 0 28px;
-    }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+}
 
-    .panel{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      overflow:hidden;
-    }
+.wrap{
+  width:min(var(--max),calc(100% - 24px));
+  margin:auto;
+  padding:24px 0;
+}
 
-    .top{
-      padding:18px 18px 8px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .back{
-      color:var(--muted);
-      text-decoration:none;
-      font-size:.82rem;
-      padding:6px 2px;
-    }
+.header{
+  padding:18px;
+  font-size:.85rem;
+  color:var(--muted);
+}
 
-    .back:hover{color:var(--soft)}
+textarea{
+  width:100%;
+  min-height:120px;
+  border:none;
+  outline:none;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(6,14,28,.7);
+  color:var(--text);
+  margin:0 18px 12px;
+}
 
-    .tiny{
-      color:var(--muted);
-      font-size:.78rem;
-      letter-spacing:.08em;
-      text-transform:lowercase;
-    }
+.card{
+  margin:12px 18px 18px;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:rgba(6,14,28,.5);
+  cursor:pointer;
+  transition:.15s;
+}
 
-    .hero{
-      padding:4px 18px 14px;
-    }
+.card:hover{
+  background:rgba(113,154,225,.1);
+}
 
-    h1{
-      margin:0;
-      font-size:1.42rem;
-      line-height:1.08;
-      font-weight:700;
-      letter-spacing:.01em;
-    }
+.card-line{
+  line-height:1.6;
+  font-size:1.05rem;
+}
 
-    .sub{
-      margin-top:8px;
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.4;
-    }
-
-    .stage{
-      padding:0 18px 16px;
-    }
-
-    .tools{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .tool{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      min-height:58px;
-      padding:14px 14px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-      color:var(--text);
-      text-decoration:none;
-      cursor:pointer;
-      transition:transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-
-    .tool:hover{
-      background:rgba(113,154,225,.14);
-      border-color:rgba(173,207,255,.22);
-    }
-
-    .tool:active{
-      transform:scale(.985);
-    }
-
-    .tool-label{
-      font-size:.98rem;
-      font-weight:600;
-      letter-spacing:.01em;
-    }
-
-    .tool-mark{
-      color:var(--muted);
-      font-size:.9rem;
-      flex-shrink:0;
-    }
-
-    .drift-box{
-      margin-top:14px;
-      padding:14px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:var(--panel-deep);
-    }
-
-    .line{
-      font-size:1rem;
-      line-height:1.58;
-      color:var(--text);
-      min-height:3.2em;
-      white-space:pre-wrap;
-    }
-
-    .drift-actions{
-      margin-top:12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .ghost{
-      appearance:none;
-      border:none;
-      outline:none;
-      min-height:38px;
-      padding:8px 12px;
-      border-radius:12px;
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line-2);
-      color:var(--muted);
-      font:inherit;
-      font-size:.8rem;
-      cursor:pointer;
-      transition:transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-
-    .ghost:hover{
-      background:rgba(113,154,225,.10);
-      border-color:rgba(173,207,255,.20);
-      color:var(--text);
-    }
-
-    .ghost:active{
-      transform:scale(.985);
-    }
-
-    .meta{
-      padding:0 18px 14px;
-      color:var(--muted);
-      font-size:.8rem;
-      min-height:1.2em;
-    }
-
-    footer{
-      padding:10px 18px 0;
-      color:var(--muted);
-      font-size:.8rem;
-      text-align:center;
-    }
-
-    @media (max-width:480px){
-      .tools{
-        grid-template-columns:1fr;
-      }
-    }
-
-    @media (min-width:700px){
-      .wrap{padding-top:28px}
-      .top{padding:20px 22px 8px}
-      .hero{padding:4px 22px 14px}
-      .stage{padding:0 22px 16px}
-      .meta{padding:0 22px 14px}
-    }
-  </style>
+.footer{
+  text-align:center;
+  font-size:.75rem;
+  color:var(--muted);
+  padding-bottom:14px;
+}
+</style>
 </head>
+
 <body>
-  <main class="wrap">
-    <section class="panel">
-      <div class="top">
-        <a class="back" href="./index.html">surface</a>
-        <div class="tiny">unknown mutation</div>
-      </div>
+<div class="wrap">
+  <div class="panel">
 
-      <div class="hero">
-        <h1>Unknown Mutation</h1>
-        <div class="sub">Five doors. Start anywhere.</div>
-      </div>
+    <div class="header">unknown</div>
 
-      <div class="stage">
-        <div class="tools" id="tools">
-          <a class="tool" href="./shift.html">
-            <span class="tool-label">Shift</span>
-            <span class="tool-mark">→</span>
-          </a>
+    <textarea id="input" placeholder="Drop a line."></textarea>
 
-          <a class="tool" href="./misread.html">
-            <span class="tool-label">Misread</span>
-            <span class="tool-mark">→</span>
-          </a>
+    <div class="card" id="card">
+      <div class="card-line" id="text">...</div>
+    </div>
 
-          <a class="tool" href="./opposite.html">
-            <span class="tool-label">Opposite</span>
-            <span class="tool-mark">→</span>
-          </a>
+    <div class="footer">tap → continue</div>
 
-          <a class="tool" href="./metaphor.html">
-            <span class="tool-label">Metaphor</span>
-            <span class="tool-mark">→</span>
-          </a>
+  </div>
+</div>
 
-          <a class="tool" href="./question.html">
-            <span class="tool-label">Question</span>
-            <span class="tool-mark">→</span>
-          </a>
-        </div>
+<script src="./fragment-engine.js"></script>
+<script src="./mutation-engine.js"></script>
+<script src="./random-next.js"></script>
 
-        <div class="drift-box">
-          <div class="line" id="line">...</div>
-          <div class="drift-actions">
-            <button class="ghost" id="driftBtn" type="button">Drift</button>
-            <button class="ghost" id="enterBtn" type="button">Enter</button>
-          </div>
-        </div>
-      </div>
+<script>
+const inputEl = document.getElementById("input");
+const textEl = document.getElementById("text");
+const cardEl = document.getElementById("card");
 
-      <div class="meta" id="meta"></div>
-    </section>
+const MODES = ["shift","misread","opposite","metaphor","question"];
 
-    <footer>No login. No tracking. Browser only.</footer>
-  </main>
+let CURRENT = null;
 
-  <script src="./random-next.js"></script>
-  <script>
-    const lineEl = document.getElementById('line');
-    const metaEl = document.getElementById('meta');
-    const driftBtn = document.getElementById('driftBtn');
-    const enterBtn = document.getElementById('enterBtn');
+function pick(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
 
-    const POOL_FILES = [
-      "./fragment-pool.json",
-      "./fragment-pack-1.json",
-      "./fragment-pack-2.json"
-    ];
+function generate(){
+  const input = window.REFRAME_FRAGMENT_ENGINE.normalizeText(inputEl.value);
 
-    const TOOL_CANDIDATES = [
-      "shift.html",
-      "misread.html",
-      "opposite.html",
-      "metaphor.html",
-      "question.html"
-    ];
+  if(!input){
+    textEl.textContent = "...";
+    return;
+  }
 
-    const META_LINES = [
-      "",
-      "A faint light is enough.",
-      "The next step does not explain itself.",
-      "Some paths only appear after movement.",
-      "Not every doorway stays where it was."
-    ];
+  const mode = pick(MODES);
 
-    let FRAGMENTS = [];
-    let CURRENT_LINE = "";
+  const results = window.REFRAME_MUTATION_ENGINE.generate(input, mode);
 
-    function normalizeText(str){
-      return String(str || "").replace(/\s+/g, " ").trim();
-    }
+  CURRENT = results[0];
 
-    function uniq(arr){
-      return [...new Set(arr)];
-    }
+  textEl.textContent = CURRENT.text;
+}
 
-    function pick(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
+cardEl.onclick = function(){
+  if(!CURRENT) return;
 
-    function shuffle(arr){
-      const copy = [...arr];
-      for(let i = copy.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
+  const nextCandidates = [
+    "shift.html",
+    "misread.html",
+    "opposite.html",
+    "metaphor.html",
+    "question.html"
+  ];
 
-    function inferStyle(text, tone){
-      const t = String(tone || "").toLowerCase();
-      if (["warm","calm"].includes(t)) return "clear";
-      if (["mystery","twist"].includes(t)) return "drift";
-      if (["edge"].includes(t)) return "sharp";
+  const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(
+    nextCandidates,
+    CURRENT.text
+  );
 
-      const lower = text.toLowerCase();
-      if (/\bmaybe\b|\bnot\b|\bquiet\b|\bsmall\b|\blate\b|\bearly\b/.test(lower)) return "clear";
-      if (/\bchaos\b|\bpattern\b|\bdoor\b|\bframe\b|\bmap\b|\bunfinished\b|\boff\b/.test(lower)) return "drift";
-      return "sharp";
-    }
+  window.location.href = url;
+};
 
-    function normalizeFragmentItem(item){
-      if (typeof item === "string"){
-        const text = normalizeText(item);
-        if (!text) return null;
-        return {
-          text,
-          tone: "",
-          style: inferStyle(text, "")
-        };
-      }
+inputEl.addEventListener("input", generate);
 
-      if (item && typeof item === "object"){
-        const text = normalizeText(item.text || "");
-        if (!text) return null;
-        const tone = normalizeText(item.tone || "");
-        return {
-          text,
-          tone,
-          style: inferStyle(text, tone)
-        };
-      }
+(async function init(){
+  const carried = window.REFRAME_FRAGMENT_ENGINE.getCarriedInput();
+  if(carried){
+    inputEl.value = carried;
+  }
 
-      return null;
-    }
+  await window.REFRAME_FRAGMENT_ENGINE.loadPool();
 
-    async function loadJson(path){
-      const response = await fetch(path, { cache: "no-store" });
-      if (!response.ok) throw new Error(`Failed to load ${path}`);
-      return response.json();
-    }
-
-    function flattenPool(json){
-      let raw = [];
-
-      if (Array.isArray(json)) raw = json;
-      else if (json && Array.isArray(json.fragments)) raw = json.fragments;
-      else if (json && Array.isArray(json.items)) raw = json.items;
-      else raw = [];
-
-      const out = [];
-      const seen = new Set();
-
-      for (const item of raw){
-        const normalized = normalizeFragmentItem(item);
-        if (!normalized) continue;
-        if (seen.has(normalized.text)) continue;
-        seen.add(normalized.text);
-        out.push(normalized);
-      }
-
-      return out;
-    }
-
-    async function loadPools(){
-      const merged = [];
-      const seen = new Set();
-
-      for (const path of POOL_FILES){
-        try{
-          const json = await loadJson(path);
-          const items = flattenPool(json);
-
-          for (const item of items){
-            if (seen.has(item.text)) continue;
-            seen.add(item.text);
-            merged.push(item);
-          }
-        }catch(err){
-        }
-      }
-
-      FRAGMENTS = merged;
-    }
-
-    function chooseLine(){
-      if (!FRAGMENTS.length){
-        return "...";
-      }
-
-      const clear = shuffle(FRAGMENTS.filter(item => item.style === "clear"));
-      const drift = shuffle(FRAGMENTS.filter(item => item.style === "drift"));
-      const sharp = shuffle(FRAGMENTS.filter(item => item.style === "sharp"));
-
-      const pool = [
-        ...(drift.slice(0, 10)),
-        ...(clear.slice(0, 8)),
-        ...(sharp.slice(0, 8))
-      ];
-
-      if (!pool.length) return pick(FRAGMENTS).text;
-      return pick(pool).text;
-    }
-
-    function drift(){
-      CURRENT_LINE = chooseLine();
-      lineEl.textContent = CURRENT_LINE;
-      metaEl.textContent = pick(META_LINES);
-    }
-
-    function enter(){
-      if (window.REFRAME_RANDOM_NEXT && typeof window.REFRAME_RANDOM_NEXT.buildNextUrl === "function"){
-        const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(TOOL_CANDIDATES, CURRENT_LINE);
-        window.location.href = url;
-        return;
-      }
-
-      const next = pick(TOOL_CANDIDATES);
-      window.location.href = `./${next}?q=${encodeURIComponent(CURRENT_LINE)}`;
-    }
-
-    driftBtn.addEventListener("click", drift);
-    enterBtn.addEventListener("click", enter);
-
-    (async function init(){
-      await loadPools();
-      drift();
-    })();
-  </script>
+  generate();
+})();
+</script>
 </body>
 </html>
