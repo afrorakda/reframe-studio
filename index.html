@@ -1,855 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Hate → Content</title>
-  <style>
-    :root{
-      --bg:#07111f;
-      --bg2:#0b1830;
-      --panel:rgba(18,32,58,.78);
-      --line:rgba(170,204,255,.14);
-      --line-2:rgba(170,204,255,.08);
-      --text:#eaf2ff;
-      --muted:#9fb2cf;
-      --soft:#c8d8f2;
-      --glow:0 18px 50px rgba(0,0,0,.32);
-      --radius:20px;
-      --radius-sm:14px;
-      --max:720px;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hate → Content</title>
 
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      min-height:100vh;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top, rgba(90,140,230,.16), transparent 34%),
-        radial-gradient(circle at 85% 10%, rgba(110,180,255,.08), transparent 26%),
-        linear-gradient(180deg, var(--bg2), var(--bg));
-      letter-spacing:.01em;
-    }
+<style>
+:root{
+  --bg:#04101f;
+  --bg2:#081833;
+  --panel:rgba(16,31,58,.78);
+  --line:rgba(173,207,255,.12);
+  --text:#eaf2ff;
+  --muted:#95a8c5;
+  --shadow:0 20px 60px rgba(0,0,0,.34);
+  --radius:22px;
+  --max:720px;
+}
 
-    .wrap{
-      width:min(var(--max),calc(100% - 24px));
-      margin:0 auto;
-      padding:20px 0 28px;
-    }
+*{box-sizing:border-box}
 
-    .panel{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--glow);
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      overflow:hidden;
-    }
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+}
 
-    .top{
-      padding:22px 18px 14px;
-    }
+.wrap{
+  width:min(var(--max),calc(100% - 24px));
+  margin:auto;
+  padding:24px 0;
+}
 
-    h1{
-      margin:0;
-      font-size:1.55rem;
-      line-height:1.08;
-      font-weight:700;
-      letter-spacing:.01em;
-    }
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    .sub{
-      margin-top:8px;
-      color:var(--muted);
-      font-size:.93rem;
-      line-height:1.35;
-    }
+.header{
+  padding:18px;
+  font-size:.85rem;
+  color:var(--muted);
+}
 
-    .input-area{
-      padding:0 18px 10px;
-    }
+.title{
+  padding:0 18px 8px;
+  font-size:1.4rem;
+  font-weight:700;
+}
 
-    textarea{
-      width:100%;
-      min-height:126px;
-      resize:vertical;
-      border:none;
-      outline:none;
-      border-radius:18px;
-      background:rgba(6,14,28,.72);
-      color:var(--text);
-      padding:14px 14px 15px;
-      font:inherit;
-      line-height:1.45;
-      border:1px solid var(--line);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
-    }
+textarea{
+  width:100%;
+  min-height:140px;
+  border:none;
+  outline:none;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(6,14,28,.7);
+  color:var(--text);
+  margin:0 18px 12px;
+}
 
-    textarea::placeholder{
-      color:#88a0c4;
-    }
+.buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:0 18px 16px;
+}
 
-    .controls{
-      padding:6px 18px 4px;
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
+button{
+  border:none;
+  border-radius:16px;
+  padding:14px;
+  font-weight:600;
+  background:rgba(113,154,225,.12);
+  color:var(--text);
+}
 
-    button{
-      appearance:none;
-      border:none;
-      outline:none;
-      border-radius:14px;
-      padding:12px 14px;
-      font:inherit;
-      font-weight:600;
-      cursor:pointer;
-      color:var(--text);
-      background:rgba(120,160,230,.11);
-      border:1px solid var(--line);
-      transition:transform .12s ease, background .12s ease, border-color .12s ease;
-      min-height:46px;
-    }
+button:active{
+  transform:scale(.97);
+}
 
-    button:active{transform:scale(.985)}
-    button:hover{
-      background:rgba(120,160,230,.15);
-      border-color:rgba(170,204,255,.24);
-    }
-
-    .meta{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:2px 18px 14px;
-    }
-
-    .status{
-      color:var(--muted);
-      font-size:.82rem;
-      min-height:1.2em;
-    }
-
-    .deeper{
-      color:#c7d8f7;
-      text-decoration:none;
-      font-size:.8rem;
-      opacity:.72;
-      padding:6px 2px;
-      white-space:nowrap;
-    }
-
-    .deeper:hover{opacity:1}
-
-    .results{
-      padding:0 12px 12px;
-    }
-
-    .empty{
-      margin:0 6px 6px;
-      padding:16px 14px;
-      border-radius:18px;
-      border:1px dashed var(--line);
-      color:var(--muted);
-      font-size:.92rem;
-      line-height:1.45;
-      background:rgba(6,14,28,.28);
-    }
-
-    .card{
-      margin:0 6px 10px;
-      padding:14px 14px 13px;
-      border-radius:18px;
-      border:1px solid var(--line);
-      background:rgba(6,14,28,.5);
-    }
-
-    .card-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:10px;
-    }
-
-    .card-title{
-      font-size:.92rem;
-      font-weight:700;
-      color:var(--soft);
-      letter-spacing:.02em;
-    }
-
-    .chip{
-      font-size:.74rem;
-      color:var(--muted);
-      border:1px solid var(--line-2);
-      padding:4px 8px;
-      border-radius:999px;
-      background:rgba(255,255,255,.02);
-    }
-
-    .row{
-      margin:9px 0;
-      padding-top:9px;
-      border-top:1px solid var(--line-2);
-    }
-
-    .row:first-of-type{
-      margin-top:0;
-      padding-top:0;
-      border-top:none;
-    }
-
-    .label{
-      display:block;
-      font-size:.73rem;
-      color:var(--muted);
-      margin-bottom:4px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .value{
-      font-size:.95rem;
-      line-height:1.48;
-      color:var(--text);
-    }
-
-    footer{
-      padding:10px 18px 0;
-      color:var(--muted);
-      font-size:.8rem;
-      text-align:center;
-    }
-
-    @media (min-width:700px){
-      .wrap{padding-top:28px}
-      .top{padding:24px 22px 14px}
-      .input-area{padding:0 22px 10px}
-      .controls{padding:6px 22px 4px; grid-template-columns:repeat(4,minmax(0,1fr))}
-      .meta{padding:2px 22px 14px}
-      .results{padding:0 16px 14px}
-      textarea{min-height:132px}
-    }
-  </style>
+.footer{
+  text-align:center;
+  font-size:.75rem;
+  color:var(--muted);
+  padding-bottom:16px;
+}
+</style>
 </head>
+
 <body>
-  <main class="wrap">
-    <section class="panel">
-      <div class="top">
-        <h1>Hate → Content</h1>
-        <div class="sub">Turn friction into angles.</div>
-      </div>
 
-      <div class="input-area">
-        <textarea id="input" placeholder="Paste hate comments.
+<div class="wrap">
+  <div class="panel">
 
-Example:
-boring
-this makes no sense
-too abstract
-what are you even saying
-nobody asked"></textarea>
-      </div>
+    <div class="header">Hate → Content</div>
+    <div class="title">Turn reaction into fuel.</div>
 
-      <div class="controls">
-        <button id="generateBtn">Generate</button>
-        <button id="exampleBtn">Try example</button>
-        <button id="clearBtn">Clear</button>
-        <button id="copyBtn">Copy result</button>
-      </div>
+    <textarea id="input" placeholder="Your posts are boring.&#10;Who cares.&#10;This makes no sense."></textarea>
 
-      <div class="meta">
-        <div class="status" id="status"> </div>
-        <a class="deeper" href="./unknown-mutation.html">deeper</a>
-      </div>
+    <div class="buttons">
+      <button onclick="go('shift.html')">Reframe</button>
+      <button onclick="goRandom()">deeper</button>
+    </div>
 
-      <div class="results" id="results">
-        <div class="empty">
-          Leave one bad reply here. Take back three angles.
-        </div>
-      </div>
-    </section>
+    <div class="footer">No login. No tracking. Browser only.</div>
 
-    <footer>No login. No tracking. Browser only.</footer>
-  </main>
+  </div>
+</div>
 
-  <script>
-    const inputEl = document.getElementById('input');
-    const resultsEl = document.getElementById('results');
-    const statusEl = document.getElementById('status');
+<script src="./random-next.js"></script>
 
-    const examples = [
-      "boring",
-      "this makes no sense",
-      "too abstract",
-      "what are you even saying",
-      "nobody asked",
-      "trying too hard",
-      "you sound confused",
-      "this is cringe",
-      "who cares",
-      "too long"
-    ];
+<script>
+const inputEl = document.getElementById("input");
 
-    const signalMap = [
-      { key: "boring", test: /boring|dull|dry|flat|bland|sleep/i },
-      { key: "confused", test: /makes no sense|nonsense|confus|what are you even saying|huh|unclear|lost me/i },
-      { key: "abstract", test: /abstract|vague|airy|theory|philosoph|too deep/i },
-      { key: "dismissive", test: /nobody asked|who asked|who cares|irrelevant|pointless|nobody cares/i },
-      { key: "trying", test: /trying too hard|desperate|forced|try-hard|performing|pretentious/i },
-      { key: "cringe", test: /cringe|embarrassing|awkward|corny/i },
-      { key: "length", test: /too long|wall of text|long|essay|yapping/i },
-      { key: "tone", test: /arrogant|smug|annoying|rude|condescending|self-important/i }
-    ];
+function go(page){
+  const input = inputEl.value || "";
+  const url = window.REFRAME_RANDOM_NEXT.buildNextUrl([page], input);
+  window.location.href = url;
+}
 
-    const pools = {
-      boring: {
-        chip: "boredom signal",
-        misread: [
-          "You wanted movement, which means you stayed long enough to notice the pace.",
-          "You called it boring because it refused to entertain before it landed.",
-          "You were not under-stimulated. You were under-spoon-fed.",
-          "You expected sugar and found texture instead.",
-          "You wanted the point to perform before it spoke."
-        ],
-        twist: [
-          "Boredom is sometimes the sound people make when the idea does not flatter their speed.",
-          "What felt flat may just have arrived without decoration.",
-          "Some people call it boring when they cannot consume it in one bite.",
-          "Low drama can still leave a mark later.",
-          "A quiet line can irritate louder than a loud one."
-        ],
-        post: [
-          "Write about how people often reject what does not dance for them immediately.",
-          "Turn this into a post on why calm delivery feels suspicious online.",
-          "Use this to explore the difference between stimulation and substance.",
-          "Make a post about how not everything meaningful arrives with fireworks.",
-          "Write on how speed-trained attention mistakes stillness for emptiness."
-        ],
-        hook: [
-          "Sometimes “boring” just means “you wanted it pre-chewed.”",
-          "People say “boring” when a thought refuses to tap-dance.",
-          "Not every useful idea arrives dressed as entertainment.",
-          "What if “boring” is just unmet appetite for noise?",
-          "A quiet point can still cut."
-        ],
-        thread: [
-          "Start with how online attention expects every sentence to earn applause instantly, then show what gets missed because of that.",
-          "Begin from the pressure to entertain, then move into why some ideas work slowly and still work.",
-          "Open with the boredom accusation, then unpack how delivery style changes perceived value.",
-          "Use the comment as proof that pace alone now gets mistaken for quality.",
-          "Move from “boring” to the cost of making every idea perform."
-        ]
-      },
+function goRandom(){
+  const input = inputEl.value || "";
 
-      confused: {
-        chip: "confusion signal",
-        misread: [
-          "You understood enough to feel inconvenienced.",
-          "You did not miss every word. You lost the handrail.",
-          "You were following until the thought stopped escorting you.",
-          "You call it nonsense because it did not arrive in retail packaging.",
-          "Confusion is often attention with nowhere easy to sit."
-        ],
-        twist: [
-          "Not every idea fails because it is unclear. Sometimes it fails to kneel.",
-          "People blame the sentence when they lose the middle.",
-          "A thought can be valid and still refuse smooth entry.",
-          "Confusion often reveals an interrupted map, not an empty room.",
-          "The complaint may be less “this says nothing” and more “this does not hold my hand.”"
-        ],
-        post: [
-          "Write about how people react when a thought arrives without instructions.",
-          "Turn this into a post on why clarity is good but over-packaging kills tension.",
-          "Use it for a piece on how confusion sometimes precedes a new frame.",
-          "Write about the difference between unclear writing and unfamiliar structure.",
-          "Make a post on how people punish thoughts that do not come with rails."
-        ],
-        hook: [
-          "“What are you even saying?” is often a request for handrails.",
-          "Confusion is not always rejection. Sometimes it is contact without grip.",
-          "Not everything that resists summary is empty.",
-          "A missing handrail is not the same as a missing point.",
-          "People often call a thought “nothing” when it does not escort them."
-        ],
-        thread: [
-          "Start from the moment a reader loses the middle, then explore why not every useful idea should flatten itself immediately.",
-          "Open with the complaint, then separate genuine vagueness from unfamiliar shape.",
-          "Use the comment to talk about how people need frames more than they admit.",
-          "Move from confusion to the cultural demand that every thought be instantly legible.",
-          "Start with the missing handrail and end with why some friction should stay."
-        ]
-      },
+  const tools = [
+    "shift.html",
+    "misread.html",
+    "opposite.html",
+    "metaphor.html",
+    "question.html"
+  ];
 
-      abstract: {
-        chip: "abstraction signal",
-        misread: [
-          "You wanted ground-level instructions and got altitude instead.",
-          "You were not rejecting the idea. You were asking where to place your feet.",
-          "You wanted a screwdriver and found weather.",
-          "You prefer edges you can grab.",
-          "You did not hate abstraction. You hated being left above the floor."
-        ],
-        twist: [
-          "Abstraction feels dishonest only when people expect immediate utility.",
-          "A thought can hover before it lands.",
-          "Some readers distrust altitude because it delays action.",
-          "Not everything vague is empty. Some things are still forming.",
-          "The abstract often looks lazy to people trained to worship steps."
-        ],
-        post: [
-          "Write about why people demand practicality before they allow depth.",
-          "Turn this into a post on the tension between concept and instruction.",
-          "Use it to explore why unfinished thought can still be fertile.",
-          "Write on how abstraction annoys people who want instant use.",
-          "Make a post about the fear of ideas that have not chosen a shape yet."
-        ],
-        hook: [
-          "People call it “too abstract” when they cannot place their feet yet.",
-          "Not every useful thought arrives as a checklist.",
-          "Some ideas hover before they land.",
-          "Abstraction is not emptiness. Sometimes it is pre-form.",
-          "Altitude looks suspicious to people who only trust tools."
-        ],
-        thread: [
-          "Start with the demand for practicality, then show what gets lost when every idea must become instruction immediately.",
-          "Open on the discomfort of abstraction and trace it back to a culture obsessed with usable outputs.",
-          "Use the comment to compare concept, form, and action.",
-          "Move from “too abstract” to why some of the best ideas begin as mist.",
-          "Begin with the need for footing, then talk about how thought forms slowly."
-        ]
-      },
+  const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(tools, input);
+  window.location.href = url;
+}
+</script>
 
-      dismissive: {
-        chip: "dismissal signal",
-        misread: [
-          "And yet you replied.",
-          "Indifference rarely writes back.",
-          "You announced non-interest with remarkable participation.",
-          "You arrived just to deny arrival.",
-          "You called it unnecessary while helping it circulate."
-        ],
-        twist: [
-          "Dismissal is still contact.",
-          "A non-event does not usually earn a response.",
-          "Some people perform detachment as a form of involvement.",
-          "The easiest way to reveal attention is to deny it out loud.",
-          "Contempt still spends energy."
-        ],
-        post: [
-          "Write about how fake indifference is one of the loudest forms of engagement.",
-          "Turn this into a post on why dismissal often hides irritation, not absence.",
-          "Use it to explore why people announce not caring.",
-          "Write on how some reactions try to lower value while increasing visibility.",
-          "Make a post about the theater of nonchalance online."
-        ],
-        hook: [
-          "“Nobody asked” is still a reply.",
-          "Indifference almost never hits send.",
-          "The performance of not caring takes effort.",
-          "Dismissal is rarely empty. It usually leaks attention.",
-          "Some people deny impact while demonstrating it."
-        ],
-        thread: [
-          "Start with the contradiction of replying to say nothing was needed, then unpack the psychology of performative detachment.",
-          "Open from “nobody asked,” then show how refusal becomes distribution.",
-          "Use the comment to talk about irritation as engagement in disguise.",
-          "Move from dismissal to the strange labor people do to look untouched.",
-          "Start with the energy cost of contempt and follow where it points."
-        ]
-      },
-
-      trying: {
-        chip: "effort signal",
-        misread: [
-          "You noticed effort because the post did not pretend to be effortless.",
-          "You were offended by visible labor.",
-          "You prefer ambition only when it hides its own fingerprints.",
-          "You sensed intention and called it a flaw.",
-          "You wanted naturalness but really meant invisible construction."
-        ],
-        twist: [
-          "People praise craft until they can see it.",
-          "Visible effort embarrasses people who worship ease.",
-          "Trying too hard is often just trying where others perform casualness.",
-          "Ambition becomes cringe the second it stops acting cool.",
-          "Some audiences only trust what looks like it happened by accident."
-        ],
-        post: [
-          "Write about why visible effort makes people uncomfortable online.",
-          "Turn this into a post on the strange worship of effortless-looking work.",
-          "Use it to explore how ambition gets mocked when it shows itself.",
-          "Write on why intention is punished more than mediocrity.",
-          "Make a post about the social pressure to look accidental."
-        ],
-        hook: [
-          "People love effort until they can see it.",
-          "“Trying too hard” usually means “you showed your fingerprints.”",
-          "Ambition is acceptable only when it cosplays ease.",
-          "Visible craft makes lazy culture nervous.",
-          "The internet prefers polished accidents."
-        ],
-        thread: [
-          "Start from the accusation, then unpack the cult of effortlessness and what it hides.",
-          "Open with why showing your work now reads as social failure in some spaces.",
-          "Use the comment to contrast honest effort with curated ease.",
-          "Move from visible ambition to the punishment of sincerity.",
-          "Start with fingerprints, then talk about the politics of looking natural."
-        ]
-      },
-
-      cringe: {
-        chip: "shame signal",
-        misread: [
-          "You felt secondhand exposure because the post risked being seen.",
-          "You call it cringe when someone leaves the safety rail.",
-          "You were not reacting to failure. You were reacting to nakedness.",
-          "The discomfort came from visibility, not necessarily weakness.",
-          "You saw sincerity without enough irony around it."
-        ],
-        twist: [
-          "Cringe is often fear wearing superiority.",
-          "People use shame language when a post risks unarmored expression.",
-          "The internet forgives emptiness faster than earnestness.",
-          "Awkwardness is sometimes just sincerity without camouflage.",
-          "Many things called cringe are simply insufficiently numb."
-        ],
-        post: [
-          "Write about why earnestness now gets punished as embarrassment.",
-          "Turn this into a post on shame as crowd-control online.",
-          "Use it to explore the social function of calling something cringe.",
-          "Write on why irony feels safer than direct feeling.",
-          "Make a post about the cost of being visible without protective coolness."
-        ],
-        hook: [
-          "A lot of “cringe” is just uncamouflaged sincerity.",
-          "Shame language often appears when someone risks being seen.",
-          "The internet fears earnestness more than emptiness.",
-          "Cringe can be fear pretending to be taste.",
-          "Not all awkwardness is failure."
-        ],
-        thread: [
-          "Start with why people reach for shame words, then unpack what those words protect them from feeling.",
-          "Open from the cringe label and connect it to sincerity, risk, and visibility.",
-          "Use the comment to talk about why coolness functions as armor.",
-          "Move from embarrassment to the punishment of emotional exposure.",
-          "Start with the fear of being seen trying, then widen it."
-        ]
-      },
-
-      length: {
-        chip: "length signal",
-        misread: [
-          "You wanted compression, not necessarily better thinking.",
-          "Your patience ended before the point did.",
-          "You were measuring effort cost, not meaning.",
-          "You prefer ideas in snack form.",
-          "You wanted summary speed more than full shape."
-        ],
-        twist: [
-          "Too long often means too much attention was requested at once.",
-          "A strong idea can still lose on pacing.",
-          "Readers sometimes reject length before they assess value.",
-          "The complaint may be about format, not substance.",
-          "Attention now negotiates with every extra sentence."
-        ],
-        post: [
-          "Write about how length changes perceived truth online.",
-          "Turn this into a post on why people confuse short with clear.",
-          "Use it to explore pacing versus depth.",
-          "Write on how modern reading habits punish sustained thought.",
-          "Make a post about the market pressure toward compression."
-        ],
-        hook: [
-          "“Too long” often means “I ration attention now.”",
-          "Short is not always clear. It is often just cheaper.",
-          "People judge sentence count before idea weight.",
-          "Length complaints are sometimes budget complaints.",
-          "Attention negotiates with every paragraph."
-        ],
-        thread: [
-          "Start with the attention budget, then show how format now shapes perceived value more than content sometimes does.",
-          "Open on the pressure to compress everything, then ask what depth becomes under that pressure.",
-          "Use the comment to separate bad pacing from simple impatience.",
-          "Move from “too long” to how thinking gets miniaturized for survival online.",
-          "Start with snack-form reading, then widen it into cultural habit."
-        ]
-      },
-
-      tone: {
-        chip: "tone signal",
-        misread: [
-          "You reacted to posture before content.",
-          "The tone touched your pride before the idea reached your mind.",
-          "You heard rank where there may only have been edge.",
-          "Something in the voice felt above you, and that became the real event.",
-          "You were not just reading meaning. You were reading position."
-        ],
-        twist: [
-          "People often reject status signals faster than arguments.",
-          "Tone is where wounded hierarchy hides.",
-          "An edge in delivery can overshadow a fair point.",
-          "The problem may be friction of posture, not emptiness of thought.",
-          "Voice alone can trigger old social alarms."
-        ],
-        post: [
-          "Write about how tone changes whether people let a point in.",
-          "Turn this into a post on status, voice, and resistance.",
-          "Use it to explore why people respond to posture before meaning.",
-          "Write on tone as social texture rather than simple style.",
-          "Make a post about how delivery can provoke before content lands."
-        ],
-        hook: [
-          "People often reject posture before they reject ideas.",
-          "Tone is where status anxiety sneaks in.",
-          "A fair point can die in the wrong voice.",
-          "Sometimes the sentence is fine. The posture is what starts the fire.",
-          "Voice can wound before meaning arrives."
-        ],
-        thread: [
-          "Start with the reaction to tone, then explore how social rank gets projected into style.",
-          "Open from the feeling of being talked down to and ask how often that feeling rewrites meaning.",
-          "Use the comment to talk about delivery as a trigger, not just decoration.",
-          "Move from tone to hierarchy, irritation, and why voice matters.",
-          "Start with posture, then let the argument follow behind it."
-        ]
-      },
-
-      default: {
-        chip: "friction signal",
-        misread: [
-          "The reply carried more heat than detail.",
-          "You were not neutral. You were moved and unwilling to name how.",
-          "The comment says less about the point than about the friction it caused.",
-          "A vague hit often means the reaction outran the language.",
-          "Some replies are just impact without a clean report."
-        ],
-        twist: [
-          "Heat is often clearer than explanation.",
-          "People throw blunt language when they do not want to open the real reason.",
-          "Friction can be useful even when the wording is lazy.",
-          "A weak comment can still point to a live nerve.",
-          "The insult may be thin, but the reaction is not."
-        ],
-        post: [
-          "Write about how vague pushback can still reveal what landed.",
-          "Turn this into a post on reading friction without obeying it.",
-          "Use it to explore how bad feedback still leaves a useful shadow.",
-          "Write on how crude reactions can expose a pressure point.",
-          "Make a post about turning low-resolution criticism into material."
-        ],
-        hook: [
-          "Bad feedback is still a map, just a blurred one.",
-          "A blunt reply can hide a real pressure point.",
-          "Not all lazy criticism is useless.",
-          "Sometimes the insult is thin and the signal is still live.",
-          "Friction can be harvested without being respected."
-        ],
-        thread: [
-          "Start with the low-resolution nature of the comment, then show how even poor feedback can expose a live edge.",
-          "Open from the fact that the reply explains little, then mine the pressure anyway.",
-          "Use the comment to talk about signal extraction from weak criticism.",
-          "Move from insult to usable shadow.",
-          "Start with the blur, then find the shape inside it."
-        ]
-      }
-    };
-
-    const softFragments = [
-      "Still, not every sharp reply deserves obedience.",
-      "You do not have to believe the comment to use it.",
-      "Take the spark, not the verdict.",
-      "The sting can be recycled without being honored.",
-      "You can keep the material and refuse the wound.",
-      "Some replies are only useful after you stop asking them to be fair."
-    ];
-
-    const shadowFragments = [
-      "There is usually a second meaning hiding behind a shallow line.",
-      "Sometimes the weakest comment points at the strongest nerve.",
-      "The wording may be crude. The signal may not be.",
-      "Not every reply knows what it is revealing.",
-      "A bad comment can still leave a useful outline.",
-      "The sentence may be small. The pressure behind it may not be."
-    ];
-
-    function pick(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function shuffle(arr){
-      const copy = [...arr];
-      for(let i = copy.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    function detectSignals(text){
-      const found = [];
-      for(const item of signalMap){
-        if(item.test.test(text)) found.push(item.key);
-      }
-      return found.length ? found : ["default"];
-    }
-
-    function getPrimaryPhrase(text){
-      const cleaned = text.replace(/\s+/g, " ").trim();
-      if(!cleaned) return "";
-      return cleaned.length > 84 ? cleaned.slice(0,81).trim() + "..." : cleaned;
-    }
-
-    function sentenceCap(str){
-      if(!str) return str;
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function buildAngle(signal, index, phrase){
-      const source = pools[signal] || pools.default;
-      const extraA = pick(shadowFragments);
-      const extraB = pick(softFragments);
-
-      const misread = source.misread[index % source.misread.length];
-      const twist = source.twist[(index + 1) % source.twist.length] + " " + (index % 2 === 0 ? extraA : extraB);
-      const post = source.post[(index + 2) % source.post.length];
-      const hook = source.hook[(index + 3) % source.hook.length];
-      const thread = source.thread[(index + 4) % source.thread.length];
-
-      return {
-        chip: source.chip,
-        misread: phrase ? sentenceCap(misread) : misread,
-        twist,
-        post,
-        hook,
-        thread
-      };
-    }
-
-    function uniqueSignals(baseSignals){
-      const all = ["boring","confused","abstract","dismissive","trying","cringe","length","tone","default"];
-      const chosen = [...baseSignals];
-      const fillers = shuffle(all.filter(x => !chosen.includes(x)));
-      while(chosen.length < 3){
-        chosen.push(fillers.shift() || "default");
-      }
-      return chosen.slice(0,3);
-    }
-
-    function renderCards(cards){
-      resultsEl.innerHTML = cards.map((card, i) => `
-        <article class="card">
-          <div class="card-head">
-            <div class="card-title">Angle ${i + 1}</div>
-            <div class="chip">${card.chip}</div>
-          </div>
-
-          <div class="row">
-            <span class="label">Misread</span>
-            <div class="value">${escapeHtml(card.misread)}</div>
-          </div>
-
-          <div class="row">
-            <span class="label">Twist</span>
-            <div class="value">${escapeHtml(card.twist)}</div>
-          </div>
-
-          <div class="row">
-            <span class="label">Post idea</span>
-            <div class="value">${escapeHtml(card.post)}</div>
-          </div>
-
-          <div class="row">
-            <span class="label">Hook</span>
-            <div class="value">${escapeHtml(card.hook)}</div>
-          </div>
-
-          <div class="row">
-            <span class="label">Thread</span>
-            <div class="value">${escapeHtml(card.thread)}</div>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    function escapeHtml(str){
-      return str
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function generate(){
-      const text = inputEl.value.trim();
-      if(!text){
-        resultsEl.innerHTML = `<div class="empty">Leave one bad reply here. Take back three angles.</div>`;
-        statusEl.textContent = "Paste one comment first.";
-        return;
-      }
-
-      const phrase = getPrimaryPhrase(text);
-      const detected = detectSignals(text);
-      const signals = uniqueSignals(detected);
-      const cards = signals.map((signal, i) => buildAngle(signal, i + Math.floor(Math.random() * 3), phrase));
-
-      renderCards(cards);
-      statusEl.textContent = phrase ? `Read from: “${phrase}”` : "3 angles ready.";
-    }
-
-    function tryExample(){
-      inputEl.value = pick(examples);
-      generate();
-    }
-
-    function clearAll(){
-      inputEl.value = "";
-      resultsEl.innerHTML = `<div class="empty">Leave one bad reply here. Take back three angles.</div>`;
-      statusEl.textContent = " ";
-      inputEl.focus();
-    }
-
-    async function copyResult(){
-      const cards = [...resultsEl.querySelectorAll('.card')];
-      if(!cards.length){
-        statusEl.textContent = "Nothing to copy yet.";
-        return;
-      }
-
-      const text = cards.map((card, i) => {
-        const values = [...card.querySelectorAll('.row')].map(row => {
-          const label = row.querySelector('.label').textContent.trim();
-          const value = row.querySelector('.value').textContent.trim();
-          return `${label}: ${value}`;
-        }).join("\n");
-        return `Angle ${i + 1}\n${values}`;
-      }).join("\n\n");
-
-      try{
-        await navigator.clipboard.writeText(text);
-        statusEl.textContent = "Copied.";
-      }catch(e){
-        statusEl.textContent = "Copy failed.";
-      }
-    }
-
-    document.getElementById('generateBtn').addEventListener('click', generate);
-    document.getElementById('exampleBtn').addEventListener('click', tryExample);
-    document.getElementById('clearBtn').addEventListener('click', clearAll);
-    document.getElementById('copyBtn').addEventListener('click', copyResult);
-
-    inputEl.addEventListener('keydown', (e) => {
-      if((e.metaKey || e.ctrlKey) && e.key === 'Enter'){
-        generate();
-      }
-    });
-  </script>
 </body>
 </html>
