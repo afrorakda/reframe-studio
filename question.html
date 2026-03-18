@@ -6,156 +6,401 @@
   <title>Question</title>
   <style>
     :root{
-      --bg:#04101f;--bg2:#081833;--panel:rgba(16,31,58,.78);
-      --line:rgba(173,207,255,.12);--text:#eaf2ff;--muted:#95a8c5;
-      --soft:#c7d8f7;--shadow:0 20px 60px rgba(0,0,0,.34);--radius:22px;--max:720px;
+      --bg:#04101f;
+      --bg2:#081833;
+      --panel:rgba(16,31,58,.78);
+      --line:rgba(173,207,255,.12);
+      --text:#eaf2ff;
+      --muted:#95a8c5;
+      --soft:#c7d8f7;
+      --shadow:0 20px 60px rgba(0,0,0,.34);
+      --radius:22px;
+      --max:720px;
     }
-    *{box-sizing:border-box} html,body{margin:0;padding:0}
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+
     body{
-      min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      min-height:100vh;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       color:var(--text);
-      background:radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
-      radial-gradient(circle at 85% 15%, rgba(118,180,255,.08), transparent 24%),
-      linear-gradient(180deg,var(--bg2),var(--bg));letter-spacing:.01em;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(87,137,228,.16), transparent 30%),
+        radial-gradient(circle at 85% 15%, rgba(118,180,255,.08), transparent 24%),
+        linear-gradient(180deg,var(--bg2),var(--bg));
+      letter-spacing:.01em;
     }
-    .wrap{width:min(var(--max),calc(100% - 24px));margin:0 auto;padding:20px 0 28px}
-    .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden}
-    .top{padding:18px 18px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .back{color:var(--muted);text-decoration:none;font-size:.82rem;padding:6px 2px}.back:hover{color:var(--soft)}
-    .tiny{color:var(--muted);font-size:.78rem;letter-spacing:.08em;text-transform:lowercase}
-    .hero{padding:4px 18px 12px}
-    h1{margin:0;font-size:1.48rem;line-height:1.08;font-weight:700}
-    .sub{margin-top:8px;color:var(--muted);font-size:.93rem;line-height:1.35}
-    .input-area{padding:0 18px 10px}
+
+    .wrap{
+      width:min(var(--max),calc(100% - 24px));
+      margin:0 auto;
+      padding:20px 0 28px;
+    }
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      overflow:hidden;
+    }
+
+    .top{
+      padding:18px 18px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .back{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:.82rem;
+      padding:6px 2px;
+    }
+
+    .back:hover{color:var(--soft)}
+
+    .tiny{
+      color:var(--muted);
+      font-size:.78rem;
+      letter-spacing:.08em;
+      text-transform:lowercase;
+    }
+
+    .hero{
+      padding:4px 18px 12px;
+    }
+
+    h1{
+      margin:0;
+      font-size:1.48rem;
+      line-height:1.08;
+      font-weight:700;
+    }
+
+    .sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:.93rem;
+      line-height:1.35;
+    }
+
+    .input-area{
+      padding:0 18px 10px;
+    }
+
     textarea{
-      width:100%;min-height:138px;resize:vertical;border:none;outline:none;border-radius:18px;
-      background:rgba(6,14,28,.72);color:var(--text);padding:14px 14px 15px;font:inherit;line-height:1.5;
-      border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+      width:100%;
+      min-height:138px;
+      resize:vertical;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      background:rgba(6,14,28,.72);
+      color:var(--text);
+      padding:14px 14px 15px;
+      font:inherit;
+      line-height:1.5;
+      border:1px solid var(--line);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
     }
-    textarea::placeholder{color:#88a0c4}
-    .controls{padding:6px 18px 6px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+
+    textarea::placeholder{
+      color:#88a0c4;
+    }
+
+    .controls{
+      padding:6px 18px 6px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
     button{
-      appearance:none;border:none;outline:none;width:100%;min-height:48px;border-radius:16px;
-      background:rgba(113,154,225,.11);border:1px solid var(--line);color:var(--text);font:inherit;font-weight:600;
-      cursor:pointer;transition:transform .12s ease, background .12s ease, border-color .12s ease;padding:12px 14px;
+      appearance:none;
+      border:none;
+      outline:none;
+      width:100%;
+      min-height:48px;
+      border-radius:16px;
+      background:rgba(113,154,225,.11);
+      border:1px solid var(--line);
+      color:var(--text);
+      font:inherit;
+      font-weight:600;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+      padding:12px 14px;
     }
-    button:hover{background:rgba(113,154,225,.15);border-color:rgba(173,207,255,.22)} button:active{transform:scale(.985)}
-    .meta{padding:0 18px 14px;color:var(--muted);font-size:.82rem;min-height:1.2em}
-    .results{padding:0 12px 12px}
-    .empty{margin:0 6px 6px;padding:16px 14px;border-radius:18px;border:1px dashed var(--line);color:var(--muted);font-size:.92rem;line-height:1.45;background:rgba(6,14,28,.28)}
-    .card{margin:0 6px 10px;padding:14px 14px 13px;border-radius:18px;border:1px solid var(--line);background:rgba(6,14,28,.5);cursor:pointer;transition:transform .12s ease, background .12s ease, border-color .12s ease}
-    .card:hover{background:rgba(113,154,225,.10);border-color:rgba(173,207,255,.22)} .card:active{transform:scale(.985)}
-    .card-line{font-size:1rem;line-height:1.58;color:var(--text);white-space:pre-wrap}
-    .card-meta{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-    .chip{font-size:.73rem;color:var(--muted);border:1px solid rgba(173,207,255,.08);padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.02)}
-    .arrow{color:var(--muted);font-size:.88rem}
-    .quiet{padding:2px 18px 14px;color:var(--muted);font-size:.8rem;min-height:1.2em}
-    footer{padding:10px 18px 0;color:var(--muted);font-size:.8rem;text-align:center}
+
+    button:hover{
+      background:rgba(113,154,225,.15);
+      border-color:rgba(173,207,255,.22);
+    }
+
+    button:active{
+      transform:scale(.985);
+    }
+
+    .meta{
+      padding:0 18px 14px;
+      color:var(--muted);
+      font-size:.82rem;
+      min-height:1.2em;
+    }
+
+    .results{
+      padding:0 12px 12px;
+    }
+
+    .empty{
+      margin:0 6px 6px;
+      padding:16px 14px;
+      border-radius:18px;
+      border:1px dashed var(--line);
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.45;
+      background:rgba(6,14,28,.28);
+    }
+
+    .card{
+      margin:0 6px 10px;
+      padding:14px 14px 13px;
+      border-radius:18px;
+      border:1px solid var(--line);
+      background:rgba(6,14,28,.5);
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .card:hover{
+      background:rgba(113,154,225,.10);
+      border-color:rgba(173,207,255,.22);
+    }
+
+    .card:active{
+      transform:scale(.985);
+    }
+
+    .card-line{
+      font-size:1rem;
+      line-height:1.58;
+      color:var(--text);
+      white-space:pre-wrap;
+    }
+
+    .card-meta{
+      margin-top:12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .chip{
+      font-size:.73rem;
+      color:var(--muted);
+      border:1px solid rgba(173,207,255,.08);
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.02);
+      max-width:72%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .arrow{
+      color:var(--muted);
+      font-size:.88rem;
+      flex-shrink:0;
+    }
+
+    .quiet{
+      padding:2px 18px 14px;
+      color:var(--muted);
+      font-size:.8rem;
+      min-height:1.2em;
+    }
+
+    footer{
+      padding:10px 18px 0;
+      color:var(--muted);
+      font-size:.8rem;
+      text-align:center;
+    }
+
     @media (min-width:700px){
-      .wrap{padding-top:28px}.top{padding:20px 22px 10px}.hero{padding:4px 22px 12px}.input-area{padding:0 22px 10px}
-      .controls{padding:6px 22px 6px}.meta{padding:0 22px 14px}.results{padding:0 16px 14px}
+      .wrap{padding-top:28px}
+      .top{padding:20px 22px 10px}
+      .hero{padding:4px 22px 12px}
+      .input-area{padding:0 22px 10px}
+      .controls{padding:6px 22px 6px}
+      .meta{padding:0 22px 14px}
+      .results{padding:0 16px 14px}
     }
   </style>
 </head>
 <body>
-<main class="wrap">
-  <section class="panel">
-    <div class="top">
-      <a class="back" href="./unknown-mutation.html">unknown</a>
-      <div class="tiny">question</div>
-    </div>
-    <div class="hero">
-      <h1>Question</h1>
-      <div class="sub">Let the line open.</div>
-    </div>
-    <div class="input-area"><textarea id="input" placeholder="Drop a line."></textarea></div>
-    <div class="controls">
-      <button id="generateBtn">Generate</button>
-      <button id="exampleBtn">Try example</button>
-      <button id="clearBtn">Clear</button>
-    </div>
-    <div class="meta" id="status">Loading pool...</div>
-    <div class="results" id="results"><div class="empty">Leave one line here. Take back three openings.</div></div>
-    <div class="quiet" id="quiet"></div>
-  </section>
-  <footer>No login. No tracking. Browser only.</footer>
-</main>
+  <main class="wrap">
+    <section class="panel">
+      <div class="top">
+        <a class="back" href="./unknown-mutation.html">unknown</a>
+        <div class="tiny">question</div>
+      </div>
 
-<script src="./fragment-engine.js"></script>
-<script src="./random-next.js"></script>
-<script>
-  const inputEl = document.getElementById('input');
-  const resultsEl = document.getElementById('results');
-  const statusEl = document.getElementById('status');
-  const quietEl = document.getElementById('quiet');
+      <div class="hero">
+        <h1>Question</h1>
+        <div class="sub">Let the line open.</div>
+      </div>
 
-  const EXAMPLES = ["Your posts are boring.","Who cares.","This makes no sense.","Nobody asked.","Too abstract.","Trying too hard."];
-  const NEXT_CANDIDATES = ["shift.html","misread.html","opposite.html","metaphor.html"];
-  const QUIET = ["","Some openings stay dim.","A question can move without explaining itself.","The next room may be smaller than the opening."];
-  let CURRENT = [];
+      <div class="input-area">
+        <textarea id="input" placeholder="Drop a line."></textarea>
+      </div>
 
-  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function escapeHtml(str){
-    return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-  }
+      <div class="controls">
+        <button id="generateBtn">Generate</button>
+        <button id="exampleBtn">Try example</button>
+        <button id="clearBtn">Clear</button>
+      </div>
 
-  function render(cards){
-    if (!cards.length){
-      resultsEl.innerHTML = `<div class="empty">No fragment found yet.</div>`;
-      return;
+      <div class="meta" id="status">Loading pool...</div>
+
+      <div class="results" id="results">
+        <div class="empty">Leave one line here. Take back three openings.</div>
+      </div>
+
+      <div class="quiet" id="quiet"></div>
+    </section>
+
+    <footer>No login. No tracking. Browser only.</footer>
+  </main>
+
+  <script src="./fragment-engine.js"></script>
+  <script src="./mutation-engine.js"></script>
+  <script src="./random-next.js"></script>
+  <script>
+    const inputEl = document.getElementById('input');
+    const resultsEl = document.getElementById('results');
+    const statusEl = document.getElementById('status');
+    const quietEl = document.getElementById('quiet');
+
+    const EXAMPLES = [
+      "Your posts are boring.",
+      "Who cares.",
+      "This makes no sense.",
+      "Nobody asked.",
+      "Too abstract.",
+      "Trying too hard.",
+      "This is cringe."
+    ];
+
+    const NEXT_CANDIDATES = [
+      "shift.html",
+      "misread.html",
+      "opposite.html",
+      "metaphor.html"
+    ];
+
+    const QUIET = [
+      "",
+      "Some openings stay dim.",
+      "A question can move without explaining itself.",
+      "The next room may be smaller than the opening."
+    ];
+
+    let CURRENT = [];
+
+    function pick(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
     }
-    resultsEl.innerHTML = cards.map((card, index) => `
-      <article class="card" onclick="goNext(${index})">
-        <div class="card-line">${escapeHtml(card.text)}</div>
-        <div class="card-meta">
-          <div class="chip">${escapeHtml(card.source || "pool")}</div>
-          <div class="arrow">→</div>
-        </div>
-      </article>
-    `).join("");
-  }
 
-  function generate(){
-    const input = window.REFRAME_FRAGMENT_ENGINE.normalizeText(inputEl.value);
-    if (!input){
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function render(cards){
+      if (!cards.length){
+        resultsEl.innerHTML = `<div class="empty">No fragment found yet.</div>`;
+        return;
+      }
+
+      resultsEl.innerHTML = cards.map((card, index) => `
+        <article class="card" onclick="goNext(${index})">
+          <div class="card-line">${escapeHtml(card.text)}</div>
+          <div class="card-meta">
+            <div class="chip">${escapeHtml(card.source || "pool")}</div>
+            <div class="arrow">→</div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function generate(){
+      const input = window.REFRAME_FRAGMENT_ENGINE.normalizeText(inputEl.value);
+
+      if (!input){
+        resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three openings.</div>`;
+        statusEl.textContent = `${window.REFRAME_FRAGMENT_ENGINE.getPoolSize()} pooled fragments ready.`;
+        quietEl.textContent = "";
+        return;
+      }
+
+      CURRENT = window.REFRAME_MUTATION_ENGINE.generate(input, "question");
+      render(CURRENT);
+      statusEl.textContent = `Read from: “${window.REFRAME_FRAGMENT_ENGINE.excerpt(input)}”`;
+      quietEl.textContent = pick(QUIET);
+    }
+
+    function tryExample(){
+      inputEl.value = pick(EXAMPLES);
+      generate();
+    }
+
+    function clearAll(){
+      inputEl.value = "";
+      CURRENT = [];
       resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three openings.</div>`;
       statusEl.textContent = `${window.REFRAME_FRAGMENT_ENGINE.getPoolSize()} pooled fragments ready.`;
       quietEl.textContent = "";
-      return;
+      inputEl.focus();
     }
-    CURRENT = window.REFRAME_FRAGMENT_ENGINE.chooseThree(input, "question");
-    render(CURRENT);
-    statusEl.textContent = `Read from: “${window.REFRAME_FRAGMENT_ENGINE.excerpt(input)}”`;
-    quietEl.textContent = pick(QUIET);
-  }
 
-  function tryExample(){ inputEl.value = pick(EXAMPLES); generate(); }
-  function clearAll(){
-    inputEl.value = ""; CURRENT = [];
-    resultsEl.innerHTML = `<div class="empty">Leave one line here. Take back three openings.</div>`;
-    statusEl.textContent = `${window.REFRAME_FRAGMENT_ENGINE.getPoolSize()} pooled fragments ready.`;
-    quietEl.textContent = ""; inputEl.focus();
-  }
+    function goNext(index){
+      const item = CURRENT[index];
+      if (!item) return;
 
-  function goNext(index){
-    const item = CURRENT[index];
-    if (!item) return;
-    const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(NEXT_CANDIDATES, item.text);
-    window.location.href = url;
-  }
+      const carry = item.text || item.original || "";
+      const url = window.REFRAME_RANDOM_NEXT.buildNextUrl(NEXT_CANDIDATES, carry);
+      window.location.href = url;
+    }
 
-  window.goNext = goNext;
-  document.getElementById('generateBtn').addEventListener('click', generate);
-  document.getElementById('exampleBtn').addEventListener('click', tryExample);
-  document.getElementById('clearBtn').addEventListener('click', clearAll);
+    window.goNext = goNext;
 
-  (async function init(){
-    const carried = window.REFRAME_FRAGMENT_ENGINE.getCarriedInput();
-    if (carried) inputEl.value = carried;
-    const state = await window.REFRAME_FRAGMENT_ENGINE.loadPool();
-    statusEl.textContent = state.ready ? `${state.size} pooled fragments ready.` : "Pool not found.";
-    if (carried) generate();
-  })();
-</script>
+    document.getElementById('generateBtn').addEventListener('click', generate);
+    document.getElementById('exampleBtn').addEventListener('click', tryExample);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+
+    (async function init(){
+      const carried = window.REFRAME_FRAGMENT_ENGINE.getCarriedInput();
+      if (carried) inputEl.value = carried;
+
+      const state = await window.REFRAME_FRAGMENT_ENGINE.loadPool();
+      statusEl.textContent = state.ready ? `${state.size} pooled fragments ready.` : "Pool not found.";
+
+      if (carried) generate();
+    })();
+  </script>
 </body>
 </html>
